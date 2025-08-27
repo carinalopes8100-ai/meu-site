@@ -1,128 +1,278 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Filmes Wistia</title>
+<title>MeuFlix</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #111;
-    color: #fff;
-    margin: 0;
-    padding: 0;
-  }
-  h1 {
-    text-align: center;
-    padding: 20px;
-  }
-  .filmes {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px;
-  }
-  .filme {
-    background: #222;
-    padding: 15px;
-    border-radius: 8px;
-    width: 200px;
-    text-align: center;
-  }
-  .filme button {
-    margin-top: 10px;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background: #ff3;
-    color: #000;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  /* Modal */
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8);
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  .modal-content {
-    background: #000;
-    padding: 10px;
-    border-radius: 8px;
-    max-width: 90%;
-    max-height: 80%;
-    position: relative;
-  }
-  .modal iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 5px;
-  }
-  .close {
-    position: absolute;
-    top: 5px; right: 10px;
-    font-size: 25px;
-    cursor: pointer;
-    color: #fff;
-  }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
+
+/* Navbar */
+header {
+  position: fixed; top:0; left:0; width:100%; height:60px; background:#141414; display:flex; align-items:center; justify-content:space-between; padding:0 40px; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.5);
+}
+header h1 { color:#e50914; font-size:24px; cursor:pointer; }
+nav { display:flex; gap:25px; }
+nav div { cursor:pointer; transition:color .2s; }
+nav div:hover { color:#e50914; text-decoration:underline; }
+
+/* Banner */
+.banner {
+  position: relative;
+  width:100%;
+  height:70vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:40px;
+  overflow:hidden;
+}
+.banner::after {
+  content:''; position:absolute; top:0; left:0; width:100%; height:100%;
+  background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%);
+  z-index:1;
+}
+.banner-content { position:relative; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:15px; }
+.banner h1 { font-size:48px; margin-bottom:10px; }
+.banner p { font-size:18px; margin-bottom:20px; }
+.banner-content button {
+  width:160px;
+  padding:12px 0;
+  font-size:16px;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+  font-weight:bold;
+  transition: background .2s;
+}
+.banner-content button.play { background:#fff; color:#000; }
+.banner-content button.play:hover { background:#ddd; }
+.banner-content button.lista { background:rgba(109,109,110,0.7); color:#fff; }
+.banner-content button.lista:hover { background:rgba(109,109,110,0.5); }
+
+/* Container principal */
+#root { margin-top:80px; }
+
+/* Fila de filmes/séries */
+.fila-container { margin:20px 50px; position:relative; }
+.fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
+.fila { display:flex; overflow-x:auto; gap:16px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
+.fila::-webkit-scrollbar { display:none; }
+.filme { width:180px; height:270px; border-radius:5px; overflow:hidden; cursor:pointer; position:relative; flex-shrink:0; transition:transform .3s; }
+.filme:hover { transform:scale(1.08); z-index:2; }
+.filme img { width:100%; height:100%; object-fit:cover; display:block; }
+
+/* Overlay hover com Play/Trailer e + */
+.filme-hover-overlay {
+  position:absolute;
+  top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.7);
+  display:flex; justify-content:center; align-items:center;
+  gap:10px;
+  opacity:0;
+  transition:opacity .3s;
+  flex-direction:column;
+  border-radius:5px;
+  z-index:5;
+}
+.filme:hover .filme-hover-overlay { opacity:1; }
+.filme-hover-overlay button {
+  width:100px;
+  padding:8px 0;
+  background:#e50914;
+  border:none;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+  border-radius:4px;
+  transition: background .2s;
+}
+.filme-hover-overlay button:hover { background:#b20710; }
+
+/* Botão + Minha Lista nos cards só no hover */
+.add-list-btn {
+  position:absolute;
+  bottom:5px; right:5px;
+  width:30px; height:30px;
+  border-radius:50%;
+  border:none;
+  background:#e50914;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+  font-size:18px;
+  z-index:6;
+  transition: background .2s;
+  opacity:0;
+}
+.filme:hover .add-list-btn { opacity:1; }
+.add-list-btn:hover { background:#b20710; }
+
+.btn-scroll { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.6); border:none; color:#fff; font-size:30px; width:40px; height:80px; cursor:pointer; z-index:10; border-radius:4px; display:flex; align-items:center; justify-content:center; }
+.btn-scroll:hover { background:rgba(229,9,20,.8); }
+.btn-left { left:0; }
+.btn-right { right:0; }
+
+/* Modal */
+.modal { display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; }
+.modal-content { background:#222; padding:25px; border-radius:10px; max-width:500px; width:90%; text-align:center; display:flex; flex-direction:column; max-height:90vh; }
+#episodiosList { overflow-y:auto; flex-grow:1; margin-top:10px; margin-bottom:10px; scrollbar-width:none; }
+#episodiosList::-webkit-scrollbar { display:none; }
+.episodio-btn, .temporada-btn { display:block; margin:10px 0; padding:12px; background:#e50914; border:none; border-radius:5px; color:#fff; cursor:pointer; font-size:16px; width:100%; transition:background .2s; }
+.episodio-btn:hover, .temporada-btn:hover { background:#b20710; }
+.close-btn { margin-top:15px; padding:10px 20px; background:#555; border:none; border-radius:5px; color:#fff; cursor:pointer; transition:background .2s; }
+.close-btn:hover { background:#333; }
+
 </style>
 </head>
 <body>
 
-<h1>Filmes</h1>
-<div class="filmes">
-  <div class="filme">
-    <h3>Filme 1</h3>
-    <button onclick="abrirWistia('b57vqroil6')">▶ Assistir</button>
-  </div>
-  <div class="filme">
-    <h3>Filme 2</h3>
-    <button onclick="abrirWistia('x2y3z4abcd')">▶ Assistir</button>
-  </div>
-  <div class="filme">
-    <h3>Filme 3</h3>
-    <button onclick="abrirWistia('lmnop56789')">▶ Assistir</button>
+<header>
+<h1>MeuFlix</h1>
+<nav>
+<div onclick="mostrarSecao('inicio')">Página Inicial</div>
+<div onclick="mostrarSecao('series')">Séries</div>
+<div onclick="mostrarSecao('filmes')">Filmes</div>
+<div onclick="mostrarSecao('novidades')">Novidades Mais Vistas</div>
+<div onclick="mostrarSecao('lista')">A Minha Lista</div>
+</nav>
+</header>
+
+<!-- Banner -->
+<div class="banner">
+  <img id="bannerImage" src="https://images.justwatch.com/poster/334324389/s718/lilo-and-stitch-2025.jpg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;">
+  <video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay muted loop>
+    <source src="#" type="video/mp4">
+  </video>
+  <div class="banner-content">
+    <h1>Lilo & Stitch 2025</h1>
+    <p>Uma animação divertida e emocionante para toda a família.</p>
+    <button class="play" onclick="adicionarAssistir('Lilo & Stitch 2025')">▶ Assistir</button>
+    <button class="lista" onclick="adicionarMinhaLista('Lilo & Stitch 2025')">+ Minha Lista</button>
   </div>
 </div>
 
+<div id="root"></div>
+
 <!-- Modal -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <span class="close" onclick="fecharModal()">&times;</span>
-    <iframe id="wistiaPlayer" src="" allowfullscreen></iframe>
+<div id="modal" class="modal">
+  <div class="modal-content" id="modalContent">
+    <h2 id="modalTitle">Escolha a temporada</h2>
+    <div id="episodiosList"></div>
+    <button class="close-btn" onclick="fecharModal()">Fechar</button>
   </div>
 </div>
 
 <script>
-  function abrirWistia(hash){
-    const modal = document.getElementById('modal');
-    const iframe = document.getElementById('wistiaPlayer');
-    iframe.src = `https://fast.wistia.net/embed/iframe/${hash}`;
-    modal.style.display = 'flex';
-  }
+// Minha Lista
+let minhaLista = [];
 
-  function fecharModal(){
-    const modal = document.getElementById('modal');
-    const iframe = document.getElementById('wistiaPlayer');
-    iframe.src = ''; // para parar o vídeo
-    modal.style.display = 'none';
+// Adicionar à Minha Lista
+function adicionarMinhaLista(titulo){
+  if(!minhaLista.includes(titulo)){
+    minhaLista.push(titulo);
+    alert(`"${titulo}" adicionado à Minha Lista!`);
+  } else {
+    alert(`"${titulo}" já está na Minha Lista.`);
   }
+}
 
-  // Fechar modal ao clicar fora do conteúdo
-  window.onclick = function(event){
-    const modal = document.getElementById('modal');
-    if(event.target === modal){
-      fecharModal();
+// Abrir vídeo do banner ou card
+function adicionarAssistir(titulo){
+  const videoUrl = prompt(`Simulando assistir: Digite URL do vídeo de "${titulo}" ou deixe vazio para demo:`);
+  if(videoUrl){
+    alert(`Agora você está assistindo "${titulo}"!`);
+  } else {
+    alert(`Simulação: Agora você está assistindo "${titulo}"!`);
+  }
+}
+
+// Modal
+function abrirModal(titulo){
+  const modal = document.getElementById('modal');
+  const lista = document.getElementById('episodiosList');
+  document.getElementById('modalTitle').innerText = `Temporadas de "${titulo}"`;
+  lista.innerHTML = '';
+  // Simulação de 3 temporadas com 5 episódios cada
+  for(let t=1; t<=3; t++){
+    const btnTemp = document.createElement('button');
+    btnTemp.className='temporada-btn';
+    btnTemp.innerText=`Temporada ${t}`;
+    btnTemp.onclick=()=> {
+      lista.innerHTML='';
+      for(let e=1;e<=5;e++){
+        const btnEp=document.createElement('button');
+        btnEp.className='episodio-btn';
+        btnEp.innerText=`Episódio ${e}`;
+        btnEp.onclick=()=>alert(`Assistindo ${titulo} - Temporada ${t}, Episódio ${e}`);
+        lista.appendChild(btnEp);
+      }
     }
+    lista.appendChild(btnTemp);
   }
-</script>
+  modal.style.display='flex';
+}
 
+function fecharModal(){
+  document.getElementById('modal').style.display='none';
+}
+
+// Mostrar seções simuladas
+function mostrarSecao(secao){
+  alert(`Você selecionou a seção: ${secao}`);
+}
+
+// Renderizar filas de filmes/séries
+const dadosFilmes = [
+  {titulo:"Lilo & Stitch 2025", img:"https://images.justwatch.com/poster/334324389/s718/lilo-and-stitch-2025.jpg"},
+  {titulo:"Homem-Aranha 2025", img:"https://images.justwatch.com/poster/336436789/s718/spider-man.jpg"},
+  {titulo:"Matrix 4", img:"https://images.justwatch.com/poster/334326789/s718/matrix-4.jpg"},
+  {titulo:"Minions 2025", img:"https://images.justwatch.com/poster/334327111/s718/minions.jpg"}
+];
+
+function renderizarFilmes(){
+  const root=document.getElementById('root');
+  const container=document.createElement('div');
+  container.className='fila-container';
+  const titulo=document.createElement('div');
+  titulo.className='fila-titulo';
+  titulo.innerText='Filmes e Séries';
+  container.appendChild(titulo);
+
+  const fila=document.createElement('div');
+  fila.className='fila';
+  dadosFilmes.forEach(f=>{
+    const div=document.createElement('div');
+    div.className='filme';
+    div.innerHTML=`
+      <img src="${f.img}" alt="${f.titulo}">
+      <div class="filme-hover-overlay">
+        <button onclick="adicionarAssistir('${f.titulo}')">▶ Assistir</button>
+        <button onclick="abrirModal('${f.titulo}')">📺 Temporadas</button>
+      </div>
+      <button class="add-list-btn" onclick="adicionarMinhaLista('${f.titulo}')">+</button>
+    `;
+    fila.appendChild(div);
+  });
+
+  // Botões de scroll
+  const btnLeft=document.createElement('button');
+  btnLeft.className='btn-scroll btn-left';
+  btnLeft.innerText='<';
+  btnLeft.onclick=()=>fila.scrollBy({left:-200,behavior:'smooth'});
+  const btnRight=document.createElement('button');
+  btnRight.className='btn-scroll btn-right';
+  btnRight.innerText='>';
+  btnRight.onclick=()=>fila.scrollBy({left:200,behavior:'smooth'});
+
+  container.appendChild(btnLeft);
+  container.appendChild(btnRight);
+  container.appendChild(fila);
+  root.appendChild(container);
+}
+
+renderizarFilmes();
+</script>
 </body>
 </html>
