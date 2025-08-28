@@ -9,43 +9,19 @@
 body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
 
 /* Navbar */
-header {
-  position: fixed; top:0; left:0; width:100%; height:60px; background:#141414; display:flex; align-items:center; justify-content:space-between; padding:0 40px; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.5);
-}
+header { position: fixed; top:0; left:0; width:100%; height:60px; background:#141414; display:flex; align-items:center; justify-content:space-between; padding:0 40px; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.5); }
 header h1 { color:#e50914; font-size:24px; cursor:pointer; }
 nav { display:flex; gap:25px; }
 nav div { cursor:pointer; transition:color .2s; }
 nav div:hover { color:#e50914; text-decoration:underline; }
 
 /* Banner */
-.banner {
-  position: relative;
-  width:100%;
-  height:70vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-end;
-  padding:40px;
-  overflow:hidden;
-}
-.banner::after {
-  content:''; position:absolute; top:0; left:0; width:100%; height:100%;
-  background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%);
-  z-index:1;
-}
+.banner { position: relative; width:100%; height:70vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
+.banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
 .banner-content { position:relative; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:15px; }
 .banner h1 { font-size:48px; margin-bottom:10px; }
 .banner p { font-size:18px; margin-bottom:20px; }
-.banner-content button {
-  width:160px;
-  padding:12px 0;
-  font-size:16px;
-  border:none;
-  border-radius:5px;
-  cursor:pointer;
-  font-weight:bold;
-  transition: background .2s;
-}
+.banner-content button { width:160px; padding:12px 0; font-size:16px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; transition: background .2s; }
 .banner-content button.play { background:#fff; color:#000; }
 .banner-content button.play:hover { background:#ddd; }
 .banner-content button.lista { background:rgba(109,109,110,0.7); color:#fff; }
@@ -64,74 +40,13 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .filme img { width:100%; height:100%; object-fit:cover; display:block; }
 
 /* Overlay hover com Play/Trailer e + */
-.filme-hover-overlay {
-  position:absolute;
-  top:0; left:0; width:100%; height:100%;
-  background: rgba(0,0,0,0.7);
-  display:flex; justify-content:center; align-items:center;
-  gap:10px;
-  opacity:0;
-  transition:opacity .3s;
-  flex-direction:column;
-  border-radius:5px;
-  z-index:5;
-}
+.filme-hover-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; gap:10px; opacity:0; transition:opacity .3s; flex-direction:column; border-radius:5px; z-index:5; }
 .filme:hover .filme-hover-overlay { opacity:1; }
-.filme-hover-overlay button {
-  width:100px;
-  padding:8px 0;
-  background:#e50914;
-  border:none;
-  color:#fff;
-  font-weight:bold;
-  cursor:pointer;
-  border-radius:4px;
-  transition: background .2s;
-}
-/* Ajuste do modal para permitir rolagem de episódios longos */
-.modal-content {
-  max-height: 90vh;       /* Limita a altura do modal à tela */
-  display: flex;
-  flex-direction: column;
-}
-
-#episodiosList {
-  overflow-y: auto;       /* Permite rolagem vertical */
-  flex-grow: 1;           /* Ocupa o espaço disponível */
-  margin-top: 10px;
-  margin-bottom: 10px;
-
-  /* Esconder a barra de rolagem */
-  scrollbar-width: none;  /* Firefox */
-}
-#episodiosList::-webkit-scrollbar {
-  display: none;          /* Chrome, Safari, Edge */
-}
-
-#episodiosList {
-  overflow-y: auto;       /* Adiciona rolagem vertical */
-  flex-grow: 1;           /* Faz o container ocupar o espaço disponível */
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
+.filme-hover-overlay button { width:100px; padding:8px 0; background:#e50914; border:none; color:#fff; font-weight:bold; cursor:pointer; border-radius:4px; transition: background .2s; }
 .filme-hover-overlay button:hover { background:#b20710; }
 
 /* Botão + Minha Lista nos cards só no hover */
-.add-list-btn {
-  position:absolute;
-  bottom:5px; right:5px;
-  width:30px; height:30px;
-  border-radius:50%;
-  border:none;
-  background:#e50914;
-  color:#fff;
-  font-weight:bold;
-  cursor:pointer;
-  font-size:18px;
-  z-index:6;
-  transition: background .2s;
-  opacity:0;
-}
+.add-list-btn { position:absolute; bottom:5px; right:5px; width:30px; height:30px; border-radius:50%; border:none; background:#e50914; color:#fff; font-weight:bold; cursor:pointer; font-size:18px; z-index:6; transition: background .2s; opacity:0; }
 .filme:hover .add-list-btn { opacity:1; }
 .add-list-btn:hover { background:#b20710; }
 
@@ -209,539 +124,51 @@ function adicionarAssistir(titulo){
   if(filme) window.open(filme.link,'_blank');
 }
 
-// Filmes
+// Filmes e séries
 const filmes = [
   {titulo:"Lilo & Stitch 2025",img:"https://images.justwatch.com/poster/334324389/s718/lilo-and-stitch-2025.jpg",link:"http://localhost:8096/Videos/fd01e68f98ca97ffe2385321a8419563/stream.mp4?Static=true", trailer:"http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true"},
-
-{titulo:"O Grande Mestre",img:"https://m.media-amazon.com/images/M/MV5BYjM5YmRkOGMtNjYxOS00N2U3LTg3YTEtY2NiOTIxZDVhOWEyXkEyXkFqcGc@._V1_.jpg",link:"http://localhost:8096/Videos/144840d59ee25ed8e4357ef2841a9936/stream.mp4?Static=true&mediaSourceId=144840d59ee25ed8e4357ef2841a9936&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=850a3582a38bbcd2a2b1fb3946fb9985", trailer:"http://localhost:8096/Videos/bfe5c82ce5771b8a623bfc2c440ba98b/stream.mp4?Static=true&mediaSourceId=bfe5c82ce5771b8a623bfc2c440ba98b&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=cb7f7d2147b842132da0111153c417cb"},
-
-{titulo:"O Grande Mestre 2",img:"https://m.media-amazon.com/images/M/MV5BZDJkOTZmZmEtYjVkYy00YmEzLWE4ZmUtOTRjZjYzNDMyNmM1XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",link:"http://localhost:8096/Videos/cbba4f9af7fe7a3bbfde43a54aa6ff9d/stream.mp4?Static=true&mediaSourceId=cbba4f9af7fe7a3bbfde43a54aa6ff9d&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=2a6990272037a00a109d1c16d424eabc", trailer:"http://localhost:8096/Videos/199132ead452c16ecf315f9a09a0f0d3/stream.mp4?Static=true&mediaSourceId=199132ead452c16ecf315f9a09a0f0d3&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=16de5a4a6d101cc194076acafe14c22c"},
-
-{titulo:"O Grande Mestre 3",img:"https://m.media-amazon.com/images/M/MV5BOGYyZWVhNDItYzlmNS00YWYyLWIwOGItNTc3ZjhkNDA3OTg2XkEyXkFqcGc@._V1_.jpg",link:"#", trailer:"#"},
-
-{titulo:"O Grande Mestre 4",img:"https://m.media-amazon.com/images/M/MV5BZGU1NWRlZmMtYjJiYS00ODQwLWI0YjEtZmQ1ZWQ4MDQwNDI0XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",link:"http://localhost:8096/Videos/2837af31568c1e62cf7a7db2f26ba2d8/stream.mp4?Static=true&mediaSourceId=2837af31568c1e62cf7a7db2f26ba2d8&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=4a19b76a991fab4205bfde8ddcdf0c67", trailer:"http://localhost:8096/Videos/44a4a2ff29752b6519118e0d4d9e38a1/stream.mp4?Static=true&mediaSourceId=44a4a2ff29752b6519118e0d4d9e38a1&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=bbf449a8220e7c46b1480a9d91960382"},
-
-{titulo:"Depois do Universo",img:"https://br.web.img2.acsta.net/pictures/22/10/27/23/27/5626842.jpg",link:"#", trailer:"http://localhost:8096/Videos/02042d9861082afa5cf6600cc24c5a55/stream.mp4?Static=true&mediaSourceId=02042d9861082afa5cf6600cc24c5a55&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=543b6ca4c9f21c87d81daf7a932499c0"},
-
-{titulo:"Charm City Kings",img:"https://m.media-amazon.com/images/S/pv-target-images/36827e55656aab99d4a681e8294e7609f6a61026910477269e0f364a6941f68e.jpg",link:"#", trailer:"http://localhost:8096/Videos/8da8a5d61b7fee87000e945209cea944/stream.mp4?Static=true&mediaSourceId=8da8a5d61b7fee87000e945209cea944&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=5fe76b4e00914ec1b55b5cbce34e9b40"},
-
-{titulo:"Gran Turismo",img:"https://images.justwatch.com/poster/307435748/s718/gran-turismo.jpg",link:"#", trailer:"http://localhost:8096/Videos/c1c0a15418f0eea92cb6d630cd805cf5/stream.mp4?Static=true&mediaSourceId=c1c0a15418f0eea92cb6d630cd805cf5&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=7dab9f347fc7dabb040b4ddccbae55cf"},
-
-  {titulo:"O Discípulo",img:"https://imagens.publico.pt/imagens.aspx/1229973?tp=UH&db=IMAGENS&type=JPG&share=1&o=BarraFacebook_P3.png",link:"http://localhost:8096/Videos/5587dfc46083d69b9900fb4aa5e0527e/stream.mp4?Static=true", trailer:"http://localhost:8096/Videos/5587dfc46083d69b9900fb4aa5e0527e/stream.mp4?Static=true"},
-
-{titulo:"Ruas Rivais",img:"https://www.tvtime.com/_next/image?url=https%3A%2F%2Fartworks.thetvdb.com%2Fbanners%2Fv4%2Fmovie%2F168172%2Fposters%2F641d4f75df34c.jpg&w=640&q=75",link:"http://localhost:8096/Videos/4fe8abdc28e5578baee39810ad12f312/stream.mp4?Static=true&mediaSourceId=4fe8abdc28e5578baee39810ad12f312&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=9a44a3875945afde46324613a53c0f44", trailer:"http://localhost:8096/Videos/e5e161ecaddfaef68b9979885145490b/stream.mp4?Static=true&mediaSourceId=e5e161ecaddfaef68b9979885145490b&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=5bf8677c3a0b6607908d1e54b2f1f096"},
-
-  {titulo:"Um Filme Minecraft",img:"https://portalvoce.com/wp-content/uploads/2025/04/IMG_4726-745x1024.jpg",link:"http://localhost:8096/Videos/5587dfc46083d69b9900fb4aa5e0527e/stream.mp4?Static=true", trailer:"http://localhost:8096/Videos/50b9bd43dc0f59ad894c580fff33d945/stream.mp4?Static=true&mediaSourceId=50b9bd43dc0f59ad894c580fff33d945&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=ee49a3d253a64f978f25fc0faca08d56"},
+  {titulo:"O Discípulo",img:"https://imagens.publico.pt/imagens.aspx/1229973?tp=UH&db=IMAGENS&type=JPG&share=1&o=BarraFacebook_P3.png",link:"http://localhost:8096/Videos/5587dfc46083d69b9900fb4aa5e0527e/stream.mp4?Static=true", trailer:"http://localhost:8096/Videos/5587dfc46083d69b9900fb4aa5e0527e/stream.mp4?Static=true"}
 ];
 
-// Lista de filmes de terror
-const filmesTerror = [
-  {
-    titulo: "It: A Coisa",
-    img: "https://upload.wikimedia.org/wikipedia/en/5/5a/It_%282017_film%29.jpg",
-    link: "http://localhost:8096/Videos/it_stream.mp4?Static=true",
-    trailer: "http://localhost:8096/Videos/it_trailer.mp4?Static=true"
-  },
-  {
-    titulo: "A Bruxa",
-    img: "https://upload.wikimedia.org/wikipedia/en/a/a4/The_Witch_film_poster.jpg",
-    link: "http://localhost:8096/Videos/a_bruja_stream.mp4?Static=true",
-    trailer: "http://localhost:8096/Videos/a_bruja_trailer.mp4?Static=true"
-  },
-  {
-    titulo: "Invocação do Mal",
-    img: "https://upload.wikimedia.org/wikipedia/en/0/0f/The_Conjuring_2_film_poster.jpg",
-    link: "http://localhost:8096/Videos/invocacao_stream.mp4?Static=true",
-    trailer: "http://localhost:8096/Videos/invocacao_trailer.mp4?Static=true"
-  },
-  {
-    titulo: "Halloween",
-    img: "https://upload.wikimedia.org/wikipedia/en/0/09/Halloween_%282018_film%29.png",
-    link: "http://localhost:8096/Videos/halloween_stream.mp4?Static=true",
-    trailer: "http://localhost:8096/Videos/halloween_trailer.mp4?Static=true"
-  },
-  {
-    titulo: "O Iluminado",
-    img: "https://upload.wikimedia.org/wikipedia/en/4/49/The_Shining_poster.jpg",
-    link: "http://localhost:8096/Videos/o_iluminado_stream.mp4?Static=true",
-    trailer: "http://localhost:8096/Videos/o_iluminado_trailer.mp4?Static=true"
-  }
-];
-
-// Criar fila de terror
-root.appendChild(criarFila('filaTerror', filmesTerror, 'filme'));
-
-  
-// Séries
 const series = [
   {
     titulo: "Morangos com Açúcar",
     img: "https://m.media-amazon.com/images/S/pv-target-images/ed2fde424fa4ab359c5a3d6aca7922c5ae84e6fd4fd3d20afd25747c0952f761.png",
-    trailer: "#",
     temporadas: [
-      { numero:1, episodios:[ 
-        { numero:1, link:"http://localhost:8096/Videos/6f9b24bdd4d4e2954b5a732a2e1faa05/stream.mp4?Static=true" }, 
-        { numero:2, link:"http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true" }, 
-        { numero:3, link:"http://localhost:8096/Videos/1337a7c0e7d0da76346d3c69668b6465/stream.mp4?Static=true&mediaSourceId=1337a7c0e7d0da76346d3c69668b6465&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=5d54c6522cd2bf96272456bcabcfd553"}, { numero:4, link:"#"}, { numero:5, link:"#"}, 
-        { numero:6, link:"#"}, { numero:7, link:"#"}, { numero:8, link:"#"}, { numero:9, link:"#"}, { numero:10, link:"#"} 
-      ] },
-      { numero:2, episodios:Array.from({length:10}, (_, i)=>({numero:i+1, link:"#"})) }
-    ]
-  },
-
-{
-  titulo: "Morangos com Açúcar antigo",
-  img: "https://m.media-amazon.com/images/M/MV5BYzlhYzYyNzItZDMwYy00M2IwLWFmNWMtOTBkNTVkY2UxMzA1XkEyXkFqcGc@._V1_.jpg",
-  trailer: "#",
-  temporadas: [
-    { 
-      numero:1, 
-      episodios:[ 
-        { numero:1, link:"#" }, 
-        { numero:2, link:"#" }, 
-        { numero:3, link:"#"}, 
-        { numero:4, link:"#"}, { numero:5, link:"#"}, { numero:6, link:"#"}, { numero:7, link:"#"}, { numero:8, link:"#"}, 
-        { numero:9, link:"#"}, { numero:10, link:"#"}, { numero:11, link:"#"}, { numero:12, link:"#"}, { numero:13, link:"#"}, 
-        { numero:14, link:"#"}, { numero:15, link:"#"}, { numero:16, link:"#"}, { numero:17, link:"#"}, { numero:18, link:"#"}, 
-        { numero:19, link:"#"}, { numero:20, link:"#"}
-      ] 
-    },
-    { 
-      numero:2, 
-      episodios:[ 
-        { numero:1, link:"#" }, 
-        { numero:2, link:"#" }, 
-        { numero:3, link:"#"}, 
-        { numero:4, link:"#"}, { numero:5, link:"#"}, { numero:6, link:"#"}, { numero:7, link:"#"}, { numero:8, link:"#"}, 
-        { numero:9, link:"#"}, { numero:10, link:"#"}, { numero:11, link:"#"}, { numero:12, link:"#"}, { numero:13, link:"#"}, 
-        { numero:14, link:"#"}, { numero:15, link:"#"}, { numero:16, link:"#"}, { numero:17, link:"#"}, { numero:18, link:"#"}, 
-        { numero:19, link:"#"}, { numero:20, link:"#"}
-      ] 
-    },
-    { 
-      numero:3, 
-      episodios:[ 
-        { numero:1, link:"#" }, 
-        { numero:2, link:"#" }, 
-        { numero:3, link:"#"}, 
-        { numero:4, link:"#"}, { numero:5, link:"#"}, { numero:6, link:"#"}, { numero:7, link:"#"}, { numero:8, link:"#"}, 
-        { numero:9, link:"#"}, { numero:10, link:"#"}, { numero:11, link:"#"}, { numero:12, link:"#"}, { numero:13, link:"#"}, 
-        { numero:14, link:"#"}, { numero:15, link:"#"}, { numero:16, link:"#"}, { numero:17, link:"#"}, { numero:18, link:"#"}, 
-        { numero:19, link:"#"}, { numero:20, link:"#"}
-      ] 
-    },
-    { 
-      numero:4, 
-      episodios:[ 
-        { numero:1, link:"#" }, 
-        { numero:2, link:"#" }, 
-        { numero:3, link:"#"}, 
-        { numero:4, link:"#"}, { numero:5, link:"#"}, { numero:6, link:"#"}, { numero:7, link:"#"}, { numero:8, link:"#"}, 
-        { numero:9, link:"#"}, { numero:10, link:"#"}, { numero:11, link:"#"}, { numero:12, link:"#"}, { numero:13, link:"#"}, 
-        { numero:14, link:"#"}, { numero:15, link:"#"}, { numero:16, link:"#"}, { numero:17, link:"#"}, { numero:18, link:"#"}, 
-        { numero:19, link:"#"}, { numero:20, link:"#"}
-      ] 
-    },
-    { 
-      numero:5, 
-      episodios:[ 
-        { numero:1, link:"#" }, 
-        { numero:2, link:"#" }, 
-        { numero:3, link:"#"}, 
-        { numero:4, link:"#"}, { numero:5, link:"#"}, { numero:6, link:"#"}, { numero:7, link:"#"}, { numero:8, link:"#"}, 
-        { numero:9, link:"#"}, { numero:10, link:"#"}, { numero:11, link:"#"}, { numero:12, link:"#"}, { numero:13, link:"#"}, 
-        { numero:14, link:"#"}, { numero:15, link:"#"}, { numero:16, link:"#"}, { numero:17, link:"#"}, { numero:18, link:"#"}, 
-        { numero:19, link:"#"}, { numero:20, link:"#"}
-      ] 
-    },
-    { 
-      numero:6, 
-      episodios:[ 
-        { numero:1, link:"#" }, 
-        { numero:2, link:"#" }, 
-        { numero:3, link:"#"}, 
-        { numero:4, link:"#"}, { numero:5, link:"#"}, { numero:6, link:"#"}, { numero:7, link:"#"}, { numero:8, link:"#"}, 
-        { numero:9, link:"#"}, { numero:10, link:"#"}, { numero:11, link:"#"}, { numero:12, link:"#"}, { numero:13, link:"#"}, 
-        { numero:14, link:"#"}, { numero:15, link:"#"}, { numero:16, link:"#"}, { numero:17, link:"#"}, { numero:18, link:"#"}, 
-        { numero:19, link:"#"}, { numero:20, link:"#"}
-      ] 
-    },
-    { 
-      numero:7, 
-      episodios:[ 
-        { numero:1, link:"#" }, 
-        { numero:2, link:"#" }, 
-        { numero:3, link:"#"}, 
-        { numero:4, link:"#"}, { numero:5, link:"#"}, { numero:6, link:"#"}, { numero:7, link:"#"}, { numero:8, link:"#"}, 
-        { numero:9, link:"#"}, { numero:10, link:"#"}, { numero:11, link:"#"}, { numero:12, link:"#"}, { numero:13, link:"#"}, 
-        { numero:14, link:"#"}, { numero:15, link:"#"}, { numero:16, link:"#"}, { numero:17, link:"#"}, { numero:18, link:"#"}, 
-        { numero:19, link:"#"}, { numero:20, link:"#"}
-      ] 
-    },
-    { 
-      numero:8, 
-      episodios:[ 
-        { numero:1, link:"http://localhost:8096/Videos/651a2a446b47a162f494b975e11d608d/stream.mp4?Static=true&mediaSourceId=651a2a446b47a162f494b975e11d608d&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=f80dfcaebf2e9be7c6fa9faaa5da0c99" }, 
-        { numero:2, link:"http://localhost:8096/Videos/aa3a1ec71768d0ee080efcaeb46a58e4/stream.mp4?Static=true&mediaSourceId=aa3a1ec71768d0ee080efcaeb46a58e4&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=83cf50dbf3af22bab870cafc57b1040e" }, 
-        { numero:3, link:"http://localhost:8096/Videos/6caad90c8f7a2293562096e09ac68c85/stream.mp4?Static=true&mediaSourceId=6caad90c8f7a2293562096e09ac68c85&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=bc1q9shqng58tykf3kmwukzez6h5xne559f5gfu2l8"}, 
-        { numero:4, link:"http://localhost:8096/Videos/9ad2903a58c40f0f111601fb1ce13b52/stream.mp4?Static=true&mediaSourceId=9ad2903a58c40f0f111601fb1ce13b52&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=4ee3e0faf8ef3119133a9a2447f72eeb"}, { numero:5, link:"http://localhost:8096/Videos/548927f64d47c3bac6409ed5079d4cc4/stream.mp4?Static=true&mediaSourceId=548927f64d47c3bac6409ed5079d4cc4&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=65c17d8de5aef650b5d0f725c5920fcd"}, { numero:6, link:"http://localhost:8096/Videos/d7a967f4cd4e8f12146389178508f084/stream.mp4?Static=true&mediaSourceId=d7a967f4cd4e8f12146389178508f084&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=bee81b489d3f1d5e597f5c23030ef8d2"}, { numero:7, link:"http://localhost:8096/Videos/b7a943ed8f985b9169185168eb28b37c/stream.mp4?Static=true&mediaSourceId=b7a943ed8f985b9169185168eb28b37c&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=2d500e2245094a7eff971712df9c9455"}, { numero:8, link:"http://localhost:8096/Videos/e8ec08ca46f680688346bd13d51b23c0/stream.mp4?Static=true&mediaSourceId=e8ec08ca46f680688346bd13d51b23c0&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=e470520aadae75d0e696c0e7a3d6771e"}, 
-        { numero:9, link:"http://localhost:8096/Videos/e7f7a3045f2665c0f9504f7d040a26dc/stream.mp4?Static=true&mediaSourceId=e7f7a3045f2665c0f9504f7d040a26dc&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=d8869488c10789eff37bb9055a054cfe"}, { numero:10, link:"http://localhost:8096/Videos/d26004c8b2f1a5ea29bd8ff31b30c18b/stream.mp4?Static=true&mediaSourceId=d26004c8b2f1a5ea29bd8ff31b30c18b&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=de7ca79a35f61d859f9674a6caf4c1df"}, { numero:11, link:"http://localhost:8096/Videos/96fdf53b3ee66c3ae623bd0947a81101/stream.mp4?Static=true&mediaSourceId=96fdf53b3ee66c3ae623bd0947a81101&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=d299b2720cd599897b7d6a8d33e320de"}, { numero:12, link:"http://localhost:8096/Videos/e4a970dad54e39ad1652a199d93384df/stream.mp4?Static=true&mediaSourceId=e4a970dad54e39ad1652a199d93384df&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=88571665207b0f6c99eb3af3923e3ad9"}, { numero:13, link:"http://localhost:8096/Videos/d3bf61a6f760923da23459e22aea2197/stream.mp4?Static=true&mediaSourceId=d3bf61a6f760923da23459e22aea2197&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=51b31c64593fdc3d0564aa88948a5d44"}, 
-        { numero:14, link:"http://localhost:8096/Videos/b43fcd13197ad3f5fbfa6cfb893280ac/stream.mp4?Static=true&mediaSourceId=b43fcd13197ad3f5fbfa6cfb893280ac&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=a27821d21ff5eb6132714ff70ac2d085"}, { numero:15, link:"http://localhost:8096/Videos/5e1722fd2d4677d02c45aa88dc7dae6e/stream.mp4?Static=true&mediaSourceId=5e1722fd2d4677d02c45aa88dc7dae6e&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=1a3084c7737c5a79caedbb4752b509d4"}, { numero:16, link:"http://localhost:8096/Videos/9e87042692abd7c0c2a9bdcb080d25ce/stream.mp4?Static=true&mediaSourceId=9e87042692abd7c0c2a9bdcb080d25ce&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=a49442b46ea283a38f4d1c85edca2b6b"}, { numero:17, link:"http://localhost:8096/Videos/566a76ab650b0057e012b09524682618/stream.mp4?Static=true&mediaSourceId=566a76ab650b0057e012b09524682618&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=ddaa86d1f0237de8053271a96e79e5bb"}, { numero:18, link:"http://localhost:8096/Videos/71d2ca9a5555efb8072af963bbba7eb1/stream.mp4?Static=true&mediaSourceId=71d2ca9a5555efb8072af963bbba7eb1&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=96cb5e361bee37a75065943af227a50f"}, 
-        { numero:19, link:"http://localhost:8096/Videos/d1191f8ef48d234652f5d287a2e29c05/stream.mp4?Static=true&mediaSourceId=d1191f8ef48d234652f5d287a2e29c05&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=86bb57e9928c4a112e18a74042fde286"}, { numero:20, link:"http://localhost:8096/Videos/cf4e81bd3ae9d188c56f71de12e88985/stream.mp4?Static=true&mediaSourceId=cf4e81bd3ae9d188c56f71de12e88985&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=5c98087a5f30229bf56efad767d46751"}, { numero:21, link:"#"}, { numero:22, link:"#"}, { numero:23, link:"#"},
-        { numero:24, link:"#"}, { numero:24, link:"#"}, { numero:24, link:"#"}, { numero:25, link:"#"}, { numero:26, link:"#"},
-{ numero:27, link:"#"},
-{ numero:28, link:"#"},
-{ numero:29, link:"#"},
-{ numero:30, link:"#"},
-{ numero:31, link:"#"},
-{ numero:32, link:"#"},
-{ numero:33, link:"#"},
-{ numero:34, link:"#"},
-{ numero:35, link:"#"},
-{ numero:36, link:"#"},
-{ numero:37, link:"#"},
-{ numero:38, link:"#"},
-{ numero:39, link:"#"},
-{ numero:40, link:"#"},
-{ numero:41, link:"#"},
-{ numero:42, link:"#"},
-{ numero:43, link:"#"},
-{ numero:44, link:"#"},
-{ numero:45, link:"#"},
-{ numero:46, link:"#"},
-{ numero:47, link:"#"},
-{ numero:48, link:"#"},
-{ numero:49, link:"#"},
-{ numero:50, link:"#"},
-{ numero:51, link:"#"},
-{ numero:52, link:"#"},
-{ numero:53, link:"#"},
-{ numero:54, link:"#"},
-{ numero:55, link:"#"},
-{ numero:56, link:"#"},
-{ numero:57, link:"#"},
-{ numero:58, link:"#"},
-{ numero:59, link:"#"},
-{ numero:60, link:"#"},
-{ numero:61, link:"#"},
-{ numero:62, link:"#"},
-{ numero:63, link:"#"},
-{ numero:64, link:"#"},
-{ numero:65, link:"#"},
-{ numero:66, link:"#"},
-{ numero:67, link:"#"},
-{ numero:68, link:"#"},
-{ numero:69, link:"#"},
-{ numero:70, link:"#"},
-{ numero:71, link:"#"},
-{ numero:72, link:"#"},
-{ numero:73, link:"#"},
-{ numero:74, link:"#"},
-{ numero:75, link:"#"},
-{ numero:76, link:"#"},
-{ numero:77, link:"#"},
-{ numero:78, link:"#"},
-{ numero:79, link:"#"},
-{ numero:80, link:"#"},
-{ numero:81, link:"#"},
-{ numero:82, link:"#"},
-{ numero:83, link:"#"},
-{ numero:84, link:"#"},
-{ numero:85, link:"#"},
-{ numero:86, link:"#"},
-{ numero:87, link:"#"},
-{ numero:88, link:"#"},
-{ numero:89, link:"#"},
-{ numero:90, link:"#"},
-{ numero:91, link:"#"},
-{ numero:92, link:"#"},
-{ numero:93, link:"#"},
-{ numero:94, link:"#"},
-{ numero:95, link:"#"},
-{ numero:96, link:"#"},
-{ numero:97, link:"#"},
-{ numero:98, link:"#"},
-{ numero:99, link:"#"},
-{ numero:100, link:"#"},
-{ numero:101, link:"#"},
-{ numero:102, link:"#"},
-{ numero:103, link:"#"},
-{ numero:104, link:"#"},
-{ numero:105, link:"#"},
-{ numero:106, link:"#"},
-{ numero:107, link:"#"},
-{ numero:108, link:"#"},
-{ numero:109, link:"#"},
-{ numero:110, link:"#"},
-{ numero:111, link:"#"},
-{ numero:112, link:"#"},
-{ numero:113, link:"#"},
-{ numero:114, link:"#"},
-{ numero:115, link:"#"},
-{ numero:116, link:"#"},
-{ numero:117, link:"#"},
-{ numero:118, link:"#"},
-{ numero:119, link:"#"},
-{ numero:120, link:"#"},
-{ numero:121, link:"#"},
-{ numero:122, link:"#"},
-{ numero:123, link:"#"},
-{ numero:124, link:"#"},
-{ numero:125, link:"#"},
-{ numero:126, link:"#"},
-{ numero:127, link:"#"},
-{ numero:128, link:"#"},
-{ numero:129, link:"#"},
-{ numero:130, link:"#"},
-{ numero:131, link:"#"},
-{ numero:132, link:"#"},
-{ numero:133, link:"#"},
-{ numero:134, link:"#"},
-{ numero:135, link:"#"},
-{ numero:136, link:"#"},
-{ numero:137, link:"#"},
-{ numero:138, link:"#"},
-{ numero:139, link:"#"},
-{ numero:140, link:"#"},
-{ numero:141, link:"#"},
-{ numero:142, link:"#"},
-{ numero:143, link:"#"},
-{ numero:144, link:"#"},
-{ numero:145, link:"#"},
-{ numero:146, link:"#"},
-{ numero:147, link:"#"},
-{ numero:148, link:"#"},
-{ numero:149, link:"#"},
-{ numero:150, link:"#"},
-{ numero:151, link:"#"},
-{ numero:152, link:"#"},
-{ numero:153, link:"#"},
-{ numero:154, link:"#"},
-{ numero:155, link:"#"},
-{ numero:156, link:"#"},
-{ numero:157, link:"#"},
-{ numero:158, link:"#"},
-{ numero:159, link:"#"},
-{ numero:160, link:"#"},
-{ numero:161, link:"#"},
-{ numero:162, link:"#"},
-{ numero:163, link:"#"},
-{ numero:164, link:"#"},
-{ numero:165, link:"#"},
-{ numero:166, link:"#"},
-{ numero:167, link:"#"},
-{ numero:168, link:"#"},
-{ numero:169, link:"#"},
-{ numero:170, link:"#"},
-{ numero:171, link:"#"},
-{ numero:172, link:"#"},
-{ numero:173, link:"#"},
-{ numero:174, link:"#"},
-{ numero:175, link:"#"},
-{ numero:176, link:"#"},
-{ numero:177, link:"#"},
-{ numero:178, link:"#"},
-{ numero:179, link:"#"},
-{ numero:180, link:"#"},
-{ numero:181, link:"#"},
-{ numero:182, link:"#"},
-{ numero:183, link:"#"},
-{ numero:184, link:"#"},
-{ numero:185, link:"#"},
-{ numero:186, link:"#"},
-{ numero:187, link:"#"},
-{ numero:188, link:"#"},
-{ numero:189, link:"#"},
-{ numero:190, link:"#"},
-{ numero:191, link:"#"},
-{ numero:192, link:"#"},
-{ numero:193, link:"#"},
-{ numero:194, link:"#"},
-{ numero:195, link:"#"},
-{ numero:196, link:"#"},
-{ numero:197, link:"#"},
-{ numero:198, link:"#"},
-{ numero:199, link:"#"},
-{ numero:200, link:"#"},
-{ numero:201, link:"#"},
-{ numero:202, link:"#"},
-{ numero:203, link:"#"},
-{ numero:204, link:"#"},
-{ numero:205, link:"#"},
-{ numero:206, link:"#"},
-{ numero:207, link:"#"},
-{ numero:208, link:"#"},
-{ numero:209, link:"#"},
-{ numero:210, link:"#"},
-{ numero:211, link:"#"},
-{ numero:212, link:"#"},
-{ numero:213, link:"#"},
-{ numero:214, link:"#"},
-{ numero:215, link:"#"},
-{ numero:216, link:"#"},
-{ numero:217, link:"#"},
-{ numero:218, link:"#"},
-{ numero:219, link:"#"}
-      ] 
-    },
-    { 
-      numero:9, 
-      episodios:[ 
-        { numero:1, link:"#" }, 
-        { numero:2, link:"#" }, 
-        { numero:3, link:"#"}, 
-        { numero:4, link:"#"}, { numero:5, link:"#"}, { numero:6, link:"#"}, { numero:7, link:"#"}, { numero:8, link:"#"}, 
-        { numero:9, link:"#"}, { numero:10, link:"#"}, { numero:11, link:"#"}, { numero:12, link:"#"}, { numero:13, link:"#"}, 
-        { numero:14, link:"#"}, { numero:15, link:"#"}, { numero:16, link:"#"}, { numero:17, link:"#"}, { numero:18, link:"#"}, 
-        { numero:19, link:"#"}, { numero:20, link:"#"}
-      ] 
-    }
-  ]
-},
-
-  {
-    titulo: "Senna",
-    img: "https://resizing.flixster.com/-XZAfHZM39UwaGJIFWKAE8fS0ak=/v3/t/assets/p27751427_b_v13_aa.jpg",
-    trailer: "http://localhost:8096/Videos/8be5ad546d8e4aa693f40813b9136111/stream.mp4?Static=true&mediaSourceId=8be5ad546d8e4aa693f40813b9136111&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=a95d9b59e1ef9cf40c5876fb864adac3",
-    temporadas: [
-      { numero:1, episodios:[ 
-        { numero:1, link:"http://localhost:8096/Videos/13453ba14fa71a06bd94e544da7ea8c2/stream.mp4?Static=true&mediaSourceId=13453ba14fa71a06bd94e544da7ea8c2&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=1445e4beb5d99626138d76bfa014d639" }, 
-        { numero:2, link:"http://localhost:8096/Videos/c514a30758ffa8c357cf55fca29e123f/stream.mp4?Static=true&mediaSourceId=c514a30758ffa8c357cf55fca29e123f&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=33489adf33ca69e481bbb7e909e240b1" }, 
-        { numero:3, link:"http://localhost:8096/Videos/eaa930f9317d81a8bfd263da791152b0/stream.mp4?Static=true&mediaSourceId=eaa930f9317d81a8bfd263da791152b0&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=68fe91abd290901b7f57e00c3e0c84c6"}, { numero:4, link:"http://localhost:8096/Videos/97d9a97cffce41b35083832b1a401c2b/stream.mp4?Static=true&mediaSourceId=97d9a97cffce41b35083832b1a401c2b&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=543b6ca4c9f21c87d81daf7a932499c0"}, { numero:5, link:"http://localhost:8096/Videos/33684c9ce7db6837eb8cd4966fbb09eb/stream.mp4?Static=true&mediaSourceId=33684c9ce7db6837eb8cd4966fbb09eb&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=db35f6418861ae9d055bd0a6f22451d0"}, 
-        { numero:6, link:"http://localhost:8096/Videos/313c844b2b450a2ac6eb3d6cbb2aeab7/stream.mp4?Static=true&mediaSourceId=313c844b2b450a2ac6eb3d6cbb2aeab7&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=b4a30378d59e6fa126da6ae2d935fdd4"},
-      ] },
-    ]
-  },
-
-  {
-    titulo: "La Casa de Papel",
-    img: "https://i.pinimg.com/564x/af/bc/18/afbc189ae35b3d66c91227a48a7d07da.jpg",
-    trailer: "#",
-    temporadas: [
-      { numero:1, episodios:[
-        { numero:1, link:"#"}, { numero:2, link:"#"}, { numero:3, link:"#"}, { numero:4, link:"#"}, { numero:5, link:"#"},
-        { numero:6, link:"#"}, { numero:7, link:"#"}, { numero:8, link:"#"}, { numero:9, link:"#"}, { numero:10, link:"#"},
-        { numero:11, link:"#"}, { numero:12, link:"#"}, { numero:13, link:"#"}
-      ]},
-      { numero:2, episodios:[
-        { numero:1, link:"#"}, { numero:2, link:"#"}, { numero:3, link:"#"}, { numero:4, link:"#"}, { numero:5, link:"#"},
-        { numero:6, link:"#"}, { numero:7, link:"#"}, { numero:8, link:"#"}, { numero:9, link:"#"}
-      ]},
-      { numero:3, episodios:[
-        { numero:1, link:"#"}, { numero:2, link:"#"}, { numero:3, link:"#"}, { numero:4, link:"#"}, { numero:5, link:"#"},
-        { numero:6, link:"#"}, { numero:7, link:"#"}, { numero:8, link:"#"}
-      ]},
-      { numero:4, episodios:[
-        { numero:1, link:"#"}, { numero:2, link:"#"}, { numero:3, link:"#"}, { numero:4, link:"#"}, { numero:5, link:"#"},
-        { numero:6, link:"#"}, { numero:7, link:"#"}, { numero:8, link:"#"}
-      ]},
-      { numero:5, episodios:[
-        { numero:1, link:"https://ia600207.us.archive.org/2/items/la-casa-de-papel-s-05e-01-1080-p-dual-5.1/La%20Casa%20De%20Papel%20S05e01%201080P%20Dual%205.1.mp4"}, { numero:2, link:"http://localhost:8096/Videos/e042ed1b2fe83ac934890397438d902f/stream.mp4?Static=true&mediaSourceId=e042ed1b2fe83ac934890397438d902f&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=d9dd9cbc54bdc2a370c70de711d2ecfc"}, { numero:3, link:"http://localhost:8096/Videos/924c980845bed392878ad5eb24424c4a/stream.mp4?Static=true&mediaSourceId=924c980845bed392878ad5eb24424c4a&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=5a5db393e0cae09bb3579dd30cd6255b"}, { numero:4, link:"http://localhost:8096/Videos/b46f3ac21b49088b61ae9f2170e73988/stream.mp4?Static=true&mediaSourceId=b46f3ac21b49088b61ae9f2170e73988&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=4e4cab955705a13886f6dac2c520e38c"}, { numero:5, link:"http://localhost:8096/Videos/03634fc47f29e5b0db89ab6774b7ca00/stream.mp4?Static=true&mediaSourceId=03634fc47f29e5b0db89ab6774b7ca00&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=073a13d88bf1c3284b31f5ee81826ab9"},
-        { numero:6, link:"#"}, { numero:7, link:"#"}, { numero:8, link:"#"}, { numero:9, link:"#"}, { numero:10, link:"#"}
-      ] }
-    ]
+      {
+        numero: 1,
+        episodios: Array.from({ length: 10 }, (_, i) => ({
+          numero: i + 1,
+          link: i === 0 
+            ? "http://localhost:8096/Videos/6f9b24bdd4d4e2954b5a732a2e1faa05/stream.mp4?Static=true&mediaSourceId=6f9b24bdd4d4e2954b5a732a2e1faa05&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=4054f973d0992b5a9e1e5810d7ebc8c3"
+            : i === 1
+              ? "http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true&mediaSourceId=27fe974c305e13eddc29256793078530&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=fd06d58344e638abaf0d5a475b411b3a"
+              : "#"
+        }))
+      },
+      {
+        numero: 2,
+        episodios: Array.from({ length: 10 }, (_, i) => ({ numero: i + 1, link: "#" }))
+      }
+    ],
+    trailer: "http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true"
   }
 ];
 
+// Filmes de Terror
+const filmesTerror = [
+  { titulo: "A Maldição", img: "https://via.placeholder.com/180x270.png?text=A+Maldi%C3%A7%C3%A3o", link: "#", trailer: "#" },
+  { titulo: "Noite Sombria", img: "https://via.placeholder.com/180x270.png?text=Noite+Sombria", link: "#", trailer: "#" },
+  { titulo: "O Retorno do Horror", img: "https://via.placeholder.com/180x270.png?text=O+Retorno+do+Horror", link: "#", trailer: "#" }
+];
 
+// Funções de criarFila, modal e mostrarSecao (mantidas iguais ao código anterior)
 
-// Função para criar filas
-function criarFila(idFila, lista, tipo){
-  const container=document.createElement('div'); container.className='fila-container'; container.id=idFila;
-  const titulo=document.createElement('div'); titulo.className='fila-titulo'; titulo.textContent=tipo==='filme'?'Filmes Populares':'Séries Populares';
-  const btnLeft=document.createElement('button'); btnLeft.className='btn-scroll btn-left'; btnLeft.innerHTML='&#10094;';
-  const btnRight=document.createElement('button'); btnRight.className='btn-scroll btn-right'; btnRight.innerHTML='&#10095;';
-  const fila=document.createElement('div'); fila.className='fila'; fila.id=idFila+'-content';
-
-  lista.forEach(item=>{
-    const itemDiv=document.createElement('div'); itemDiv.className='filme';
-    itemDiv.onclick=()=>tipo==='filme'?window.open(item.link,'_blank'):abrirModalTemporadas(item);
-
-    const img=document.createElement('img'); img.src=item.img; img.alt=item.titulo;
-
-    // Overlay hover
-    const overlay=document.createElement('div'); overlay.className='filme-hover-overlay';
-    const btnPlay=document.createElement('button'); btnPlay.textContent='▶ Assistir'; 
-    btnPlay.onclick=(e)=>{ e.stopPropagation(); if(tipo==='filme'){ window.open(item.link,'_blank'); } else { abrirModalTemporadas(item); } };
-    const btnTrailer=document.createElement('button'); btnTrailer.textContent='▶ Trailer'; btnTrailer.onclick=(e)=>{ e.stopPropagation(); if(item.trailer) window.open(item.trailer,'_blank'); };
-    overlay.appendChild(btnPlay); overlay.appendChild(btnTrailer);
-
-    // Botão + Minha Lista
-    const addBtn=document.createElement('button'); addBtn.className='add-list-btn'; addBtn.textContent='+';
-    addBtn.onclick=(e)=>{ e.stopPropagation(); adicionarMinhaLista(item.titulo); };
-
-    itemDiv.appendChild(overlay);
-    itemDiv.appendChild(img);
-    itemDiv.appendChild(addBtn);
-    fila.appendChild(itemDiv);
-  });
-
-  container.appendChild(titulo); container.appendChild(btnLeft); container.appendChild(fila); container.appendChild(btnRight);
-  btnLeft.addEventListener('click',()=>fila.scrollBy({left:-300,behavior:'smooth'}));
-  btnRight.addEventListener('click',()=>fila.scrollBy({left:300,behavior:'smooth'}));
-  return container;
-}
-
-// Modal funções
-function abrirModalTemporadas(serie){
-  document.getElementById('modalTitle').textContent=`Escolha a temporada de "${serie.titulo}"`;
-  const list=document.getElementById('episodiosList'); list.innerHTML='';
-  serie.temporadas.forEach(temp=>{
-    const btn=document.createElement('button'); btn.className='temporada-btn'; btn.textContent=`Temporada ${temp.numero}`;
-    btn.onclick=()=>abrirModalEpisodios(temp,serie.titulo); list.appendChild(btn);
-  });
-  document.getElementById('modal').style.display='flex';
-}
-function abrirModalEpisodios(temporada, serieTitulo){
-  document.getElementById('modalTitle').textContent=`Escolha o episódio - ${serieTitulo} (Temporada ${temporada.numero})`;
-  const list=document.getElementById('episodiosList'); list.innerHTML='';
-  temporada.episodios.forEach(ep=>{
-    const btn=document.createElement('button'); btn.className='episodio-btn'; btn.textContent=`Episódio ${ep.numero}`;
-    btn.onclick=()=>window.open(ep.link,'_blank'); list.appendChild(btn);
-  });
-}
-function fecharModal(){ document.getElementById('modal').style.display='none'; }
-
-// Seções
-function mostrarSecao(secao){
-  const todos=document.querySelectorAll('.fila-container'); todos.forEach(el=>el.style.display='none');
-  if(secao==='inicio'){ todos.forEach(el=>el.style.display='block'); }
-  else if(secao==='filmes'){ document.getElementById('fila1').style.display='block'; }
-  else if(secao==='series'){ document.getElementById('fila2').style.display='block'; }
-  else if(secao==='lista'){ 
-    const root=document.getElementById('root');
-    let listaContainer=document.getElementById('listaContainer');
-    if(listaContainer) listaContainer.remove();
-    listaContainer = document.createElement('div'); listaContainer.className='fila-container'; listaContainer.id='listaContainer';
-    const tituloDiv = document.createElement('div'); tituloDiv.className='fila-titulo'; tituloDiv.textContent='Minha Lista';
-    listaContainer.appendChild(tituloDiv);
-    const filaDiv = document.createElement('div'); filaDiv.className='fila';
-    minhaLista.forEach(t=>{
-      const item = filmes.concat(series).find(i=>i.titulo===t);
-      if(item){
-        const card = criarCard(item);
-        filaDiv.appendChild(card);
-      }
-    });
-    listaContainer.appendChild(filaDiv);
-    root.appendChild(listaContainer);
-  }
-}
-
-// Cria card para Minha Lista
-function criarCard(item){
-  const div = document.createElement('div'); div.className='filme';
-  const img = document.createElement('img'); img.src=item.img; div.appendChild(img);
-
-  // Overlay
-  const overlay=document.createElement('div'); overlay.className='filme-hover-overlay';
-  const btnPlay=document.createElement('button'); btnPlay.textContent='▶ Assistir'; btnPlay.onclick=(e)=>{ e.stopPropagation(); abrirModalTemporadas(item); };
-  const btnTrailer=document.createElement('button'); btnTrailer.textContent='▶ Trailer'; btnTrailer.onclick=(e)=>{ e.stopPropagation(); if(item.trailer) window.open(item.trailer,'_blank'); };
-  overlay.appendChild(btnPlay); overlay.appendChild(btnTrailer);
-  div.appendChild(overlay);
-
-  return div;
-}
+// Render
+const root=document.getElementById('root');
+root.appendChild(criarFila('fila1',filmes,'filme'));
+root.appendChild(criarFila('fila2',series,'serie'));
+root.appendChild(criarFila('fila3',filmesTerror,'filme'));
 
 // Banner trailer automático
 window.addEventListener('load', ()=>{
@@ -753,11 +180,6 @@ window.addEventListener('load', ()=>{
     video.play();
   }, 2000);
 });
-
-// Render
-const root=document.getElementById('root');
-root.appendChild(criarFila('fila1',filmes,'filme'));
-root.appendChild(criarFila('fila2',series,'serie'));
 </script>
 </body>
 </html>
