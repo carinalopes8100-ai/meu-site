@@ -85,7 +85,7 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   <div class="banner-content">
     <h1>Lilo & Stitch 2025</h1>
     <p>Uma animação divertida e emocionante para toda a família.</p>
-    <button class="play" onclick="assistirItem('Lilo & Stitch 2025')">▶ Assistir</button>
+    <button class="play" onclick="adicionarAssistir('Lilo & Stitch 2025')">▶ Assistir</button>
     <button class="lista" onclick="adicionarMinhaLista('Lilo & Stitch 2025')">+ Minha Lista</button>
   </div>
 </div>
@@ -105,37 +105,42 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 <script>
 let minhaLista = [];
 let progresso = {};
-let continuarAssistindo = [];
 
-// ===== LocalStorage =====
+// ===== Funções para localStorage =====
 function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
 function carregarLista() { const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
 function salvarProgresso() { localStorage.setItem("progresso", JSON.stringify(progresso)); }
 function carregarProgresso() { const p = localStorage.getItem("progresso"); if(p) progresso = JSON.parse(p); }
-function salvarContinuar() { localStorage.setItem("continuarAssistindo", JSON.stringify(continuarAssistindo)); }
-function carregarContinuar() { const c = localStorage.getItem("continuarAssistindo"); if(c) continuarAssistindo = JSON.parse(c); }
 
-// ===== Toast =====
-function mostrarToast(msg){ const container=document.getElementById('toastContainer'); const toast=document.createElement('div'); toast.className='toast'; toast.textContent=msg; const btn=document.createElement('button'); btn.textContent='✖'; btn.onclick=()=>container.removeChild(toast); toast.appendChild(btn); container.appendChild(toast); setTimeout(()=>{if(container.contains(toast)) container.removeChild(toast);},4000);}
+// ===== Toast notifications =====
+function mostrarToast(mensagem){
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div'); toast.className = 'toast'; toast.textContent = mensagem;
+  const btn = document.createElement('button'); btn.textContent = '✖'; btn.onclick = () => container.removeChild(toast);
+  toast.appendChild(btn); container.appendChild(toast);
+  setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
+}
 
-// ===== Lista =====
-function adicionarMinhaLista(titulo){ if(!minhaLista.includes(titulo)){ minhaLista.push(titulo); salvarLista(); mostrarToast(`"${titulo}" adicionado à Minha Lista!`); } else { minhaLista = minhaLista.filter(t=>t!==titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`); } mostrarSecao('inicio'); }
+// ===== Funções da lista =====
+function adicionarMinhaLista(titulo){
+  if(!minhaLista.includes(titulo)){
+    minhaLista.push(titulo); salvarLista(); mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
+  } else {
+    minhaLista = minhaLista.filter(t => t!==titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`);
+  }
+  mostrarSecao('inicio'); // Atualiza a página inicial imediatamente
+}
 
-// ===== Assistir =====
-function assistirItem(titulo){
-  // Adiciona a continuarAssistindo
-  if(!continuarAssistindo.includes(titulo)){ continuarAssistindo.push(titulo); salvarContinuar(); }
-  progresso[titulo] = progresso[titulo] || 1; // inicializa progresso
-  salvarProgresso();
-  mostrarSecao('inicio');
-
-  // Abrir link real
+function adicionarAssistir(titulo){
   const filme = filmes.find(f=>f.titulo===titulo);
   if(filme) window.open(filme.link,'_blank');
-  else {
-    const serie = series.find(s=>s.titulo===titulo);
-    if(serie) abrirModalTemporadas(serie);
-  }
+
+  // Atualizar progresso
+  if(!progresso[titulo] || progresso[titulo]===0) progresso[titulo]=1;
+  else progresso[titulo] = Math.min(progresso[titulo]+10,100);
+  salvarProgresso();
+
+  mostrarSecao('inicio'); // Atualiza filas, incluindo "Continuar Assistindo"
 }
 
 // ===== Dados =====
@@ -162,7 +167,7 @@ const filmesTerror = [
   {titulo:"O Retorno do Horror",img:"https://via.placeholder.com/180x270.png?text=O+Retorno+do+Horror",link:"#",trailer:"#"}
 ];
 
-// ===== Interface =====
+// ===== Funções de interface =====
 function criarFila(idFila, lista, tipo, tituloFila=null){
   const container=document.createElement('div'); container.className='fila-container'; container.id=idFila;
   const titulo=document.createElement('div'); titulo.className='fila-titulo'; titulo.textContent=tituloFila || (tipo==='filme'? (idFila==='fila3'?'Filmes de Terror':'Filmes Populares'):'Séries Populares');
@@ -172,7 +177,9 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
 
   lista.forEach(item=>{
     const itemDiv=document.createElement('div'); itemDiv.className='filme';
-    const img=document.createElement('img'); img.src=item.img; img.alt=item.titulo; itemDiv.appendChild(img);
+
+    const img=document.createElement('img'); img.src=item.img; img.alt=item.titulo;
+    itemDiv.appendChild(img);
 
     // Barra de progresso
     if(progresso[item.titulo] && progresso[item.titulo] > 0){
@@ -187,12 +194,21 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
     const btnPlay=document.createElement('button'); btnPlay.textContent='▶ Assistir';
     btnPlay.onclick=(e)=>{
       e.stopPropagation();
-      assistirItem(item.titulo);
+      const s = series.find(s=>s.titulo===item.titulo);
+      if(s){ abrirModalTemporadas(s); }
+      else { window.open(item.link,'_blank'); }
+
+      // Atualizar progresso mínimo
+      if(!progresso[item.titulo] || progresso[item.titulo]===0) progresso[item.titulo]=1;
+      else progresso[item.titulo] = Math.min(progresso[item.titulo]+10,100);
+      salvarProgresso();
+
+      mostrarSecao('inicio'); // Atualiza filas, incluindo "Continuar Assistindo"
     };
     const btnTrailer=document.createElement('button'); btnTrailer.textContent='▶ Trailer'; btnTrailer.onclick=(e)=>{ e.stopPropagation(); if(item.trailer) window.open(item.trailer,'_blank'); };
     overlay.appendChild(btnPlay); overlay.appendChild(btnTrailer); itemDiv.appendChild(overlay);
 
-    // Botão lista
+    // Botão adicionar/remover lista
     const addBtn = document.createElement('button'); addBtn.className = 'add-list-btn';
     function updateButton() { if(minhaLista.includes(item.titulo)){ addBtn.textContent='✖'; addBtn.title='Remover da Minha Lista'; } else { addBtn.textContent='+'; addBtn.title='Adicionar à Minha Lista'; } }
     addBtn.onclick=(e)=>{ e.stopPropagation(); adicionarMinhaLista(item.titulo); updateButton(); }
@@ -232,15 +248,14 @@ function mostrarSecao(secao){
   const root=document.getElementById('root'); root.innerHTML='';
 
   if(secao==='inicio'){
-    if(continuarAssistindo.length>0){
-      const todosItens=[...filmes,...series,...filmesTerror];
-      const itensContinuar = todosItens.filter(i=>continuarAssistindo.includes(i.titulo));
-      root.appendChild(criarFila('fila0',itensContinuar,'filme','Continuar a ver'));
-    }
+    // ===== Fila Continuar Assistindo =====
+    const continuar = [...filmes,...series,...filmesTerror].filter(i=>progresso[i.titulo] && progresso[i.titulo]<100);
+    if(continuar.length>0) root.appendChild(criarFila('filaContinuar',continuar,'filme','Continuar Assistindo'));
+
     if(minhaLista.length>0){
       const todosItens = [...filmes,...series,...filmesTerror];
       const itensLista = todosItens.filter(i=>minhaLista.includes(i.titulo));
-      root.appendChild(criarFila('filaLista',itensLista,'filme','Minha Lista'));
+      root.appendChild(criarFila('fila0',itensLista,'filme','Minha Lista'));
     }
     root.appendChild(criarFila('fila1',filmes,'filme'));
     root.appendChild(criarFila('fila2',series,'serie'));
@@ -264,12 +279,12 @@ function mostrarSecao(secao){
   }
 }
 
-carregarLista(); carregarProgresso(); carregarContinuar();
+carregarLista(); carregarProgresso();
 mostrarSecao('inicio');
 
 window.addEventListener('load', ()=>{
-  const img=document.getElementById('bannerImage');
-  const video=document.getElementById('bannerVideo');
+  const img = document.getElementById('bannerImage');
+  const video = document.getElementById('bannerVideo');
   setTimeout(()=>{ img.style.display='none'; video.style.display='block'; video.play(); },2000);
 });
 </script>
