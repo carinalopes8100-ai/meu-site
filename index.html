@@ -97,9 +97,23 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 <script>
 let minhaLista = [];
 
+// ===== NOVO: Funções para salvar e carregar do localStorage =====
+function salvarLista() {
+  localStorage.setItem("minhaLista", JSON.stringify(minhaLista));
+}
+
+function carregarLista() {
+  const lista = localStorage.getItem("minhaLista");
+  if (lista) {
+    minhaLista = JSON.parse(lista);
+  }
+}
+// ===============================================================
+
 function adicionarMinhaLista(titulo){
   if(!minhaLista.includes(titulo)){
     minhaLista.push(titulo);
+    salvarLista();
     alert(`"${titulo}" adicionado à Minha Lista!`);
   } else {
     alert(`"${titulo}" já está na Minha Lista.`);
@@ -172,9 +186,11 @@ function criarFila(idFila, lista, tipo){
       e.stopPropagation();
       if (minhaLista.includes(item.titulo)) {
         minhaLista = minhaLista.filter(t => t !== item.titulo);
+        salvarLista();
         alert(`"${item.titulo}" removido da Minha Lista!`);
       } else {
         minhaLista.push(item.titulo);
+        salvarLista();
         alert(`"${item.titulo}" adicionado à Minha Lista!`);
       }
       updateButton();
@@ -237,9 +253,11 @@ function criarCard(item){
     e.stopPropagation();
     if (minhaLista.includes(item.titulo)) {
       minhaLista = minhaLista.filter(t => t !== item.titulo);
+      salvarLista();
       alert(`"${item.titulo}" removido da Minha Lista!`);
     } else {
       minhaLista.push(item.titulo);
+      salvarLista();
       alert(`"${item.titulo}" adicionado à Minha Lista!`);
     }
     updateButton();
@@ -297,6 +315,7 @@ function mostrarSecao(secao){
 }
 
 const root=document.getElementById('root');
+carregarLista(); // <<< NOVO: carregar lista salva
 root.appendChild(criarFila('fila1',filmes,'filme'));
 root.appendChild(criarFila('fila2',series,'serie'));
 root.appendChild(criarFila('fila3',filmesTerror,'filme'));
