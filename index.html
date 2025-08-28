@@ -56,6 +56,23 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .episodio-btn:hover, .temporada-btn:hover { background:#b20710; }
 .close-btn { margin-top:15px; padding:10px 20px; background:#555; border:none; border-radius:5px; color:#fff; cursor:pointer; transition:background .2s; }
 .close-btn:hover { background:#333; }
+
+/* Estilo para toast de notificações */
+#toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #e50914;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s;
+  z-index: 10000;
+}
+#toast.show { opacity: 1; pointer-events: auto; }
 </style>
 </head>
 <body>
@@ -94,10 +111,12 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   </div>
 </div>
 
+<div id="toast"></div> <!-- Toast para notificações -->
+
 <script>
 let minhaLista = [];
 
-// ===== Persistência no localStorage =====
+// Funções para salvar e carregar do localStorage
 function salvarLista() {
   localStorage.setItem("minhaLista", JSON.stringify(minhaLista));
 }
@@ -105,15 +124,21 @@ function carregarLista() {
   const lista = localStorage.getItem("minhaLista");
   if (lista) minhaLista = JSON.parse(lista);
 }
-// =======================================
+
+function mostrarToast(msg){
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'),3000);
+}
 
 function adicionarMinhaLista(titulo){
   if(!minhaLista.includes(titulo)){
     minhaLista.push(titulo);
     salvarLista();
-    alert(`"${titulo}" adicionado à Minha Lista!`);
+    mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
   } else {
-    alert(`"${titulo}" já está na Minha Lista.`);
+    mostrarToast(`"${titulo}" já está na Minha Lista.`);
   }
 }
 
@@ -168,24 +193,19 @@ function criarFila(idFila, lista, tipo){
 
     const addBtn = document.createElement('button'); addBtn.className = 'add-list-btn';
     function updateButton() {
-      if (minhaLista.includes(item.titulo)) {
-        addBtn.textContent = '✖';
-        addBtn.title = 'Remover da Minha Lista';
-      } else {
-        addBtn.textContent = '+';
-        addBtn.title = 'Adicionar à Minha Lista';
-      }
+      if (minhaLista.includes(item.titulo)) { addBtn.textContent = '✖'; addBtn.title = 'Remover da Minha Lista'; }
+      else { addBtn.textContent = '+'; addBtn.title = 'Adicionar à Minha Lista'; }
     }
     addBtn.onclick = (e) => {
       e.stopPropagation();
       if (minhaLista.includes(item.titulo)) {
         minhaLista = minhaLista.filter(t => t !== item.titulo);
         salvarLista();
-        alert(`"${item.titulo}" removido da Minha Lista!`);
+        mostrarToast(`"${item.titulo}" removido da Minha Lista!`);
       } else {
         minhaLista.push(item.titulo);
         salvarLista();
-        alert(`"${item.titulo}" adicionado à Minha Lista!`);
+        mostrarToast(`"${item.titulo}" adicionado à Minha Lista!`);
       }
       updateButton();
     };
@@ -232,24 +252,19 @@ function criarCard(item){
 
   const addBtn = document.createElement('button'); addBtn.className = 'add-list-btn';
   function updateButton() {
-    if (minhaLista.includes(item.titulo)) {
-      addBtn.textContent = '✖';
-      addBtn.title = 'Remover da Minha Lista';
-    } else {
-      addBtn.textContent = '+';
-      addBtn.title = 'Adicionar à Minha Lista';
-    }
+    if (minhaLista.includes(item.titulo)) { addBtn.textContent = '✖'; addBtn.title = 'Remover da Minha Lista'; }
+    else { addBtn.textContent = '+'; addBtn.title = 'Adicionar à Minha Lista'; }
   }
   addBtn.onclick = (e) => {
     e.stopPropagation();
     if (minhaLista.includes(item.titulo)) {
       minhaLista = minhaLista.filter(t => t !== item.titulo);
       salvarLista();
-      alert(`"${item.titulo}" removido da Minha Lista!`);
+      mostrarToast(`"${item.titulo}" removido da Minha Lista!`);
     } else {
       minhaLista.push(item.titulo);
       salvarLista();
-      alert(`"${item.titulo}" adicionado à Minha Lista!`);
+      mostrarToast(`"${item.titulo}" adicionado à Minha Lista!`);
     }
     updateButton();
   }
@@ -267,15 +282,9 @@ function mostrarSecao(secao){
     root.appendChild(criarFila('fila2',series,'serie'));
     root.appendChild(criarFila('fila3',filmesTerror,'filme'));
   } 
-  else if(secao==='filmes'){ 
-    root.appendChild(criarFila('fila1',filmes,'filme')); 
-  } 
-  else if(secao==='series'){ 
-    root.appendChild(criarFila('fila2',series,'serie')); 
-  } 
-  else if(secao==='terror'){ 
-    root.appendChild(criarFila('fila3',filmesTerror,'filme')); 
-  } 
+  else if(secao==='filmes'){ root.appendChild(criarFila('fila1',filmes,'filme')); } 
+  else if(secao==='series'){ root.appendChild(criarFila('fila2',series,'serie')); } 
+  else if(secao==='terror'){ root.appendChild(criarFila('fila3',filmesTerror,'filme')); } 
   else if(secao==='lista'){ 
     const listaContainer = document.createElement('div'); 
     listaContainer.className='fila-container'; 
@@ -305,7 +314,7 @@ function mostrarSecao(secao){
 }
 
 const root=document.getElementById('root');
-carregarLista(); // <<< Carregar lista salva
+carregarLista();
 root.appendChild(criarFila('fila1',filmes,'filme'));
 root.appendChild(criarFila('fila2',series,'serie'));
 root.appendChild(criarFila('fila3',filmesTerror,'filme'));
