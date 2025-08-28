@@ -605,23 +605,11 @@ const series = [
   }
 ];
 
-// Exemplo de lista de filmes de terror
-const filmesTerror = [
-  'Halloween',
-  'O Iluminado',
-  'Invocação do Mal',
-  'It: A Coisa',
-  'A Bruxa',
-  'Midsommar'
-];
-
-// Criando a fila de filmes de terror
-criarFila('fila-terror', filmesTerror, 'filme');
   
 // Função para criar filas
 function criarFila(idFila, lista, tipo){
   const container=document.createElement('div'); container.className='fila-container'; container.id=idFila;
-  const titulo=document.createElement('div'); titulo.className='fila-titulo'; titulo.textContent=tipo==='filme'?'Filmes Populares':'Séries Populares';
+  const titulo=document.createElement('div'); titulo.className='fila-titulo'; titulo.textContent=tipo==='filme'?'Filmes Populares':'Séries Populares':'Filmes Populares';
   const btnLeft=document.createElement('button'); btnLeft.className='btn-scroll btn-left'; btnLeft.innerHTML='&#10094;';
   const btnRight=document.createElement('button'); btnRight.className='btn-scroll btn-right'; btnRight.innerHTML='&#10095;';
   const fila=document.createElement('div'); fila.className='fila'; fila.id=idFila+'-content';
