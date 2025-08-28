@@ -171,7 +171,7 @@ function abrirVideo(item){
   // Quando o vídeo terminar
   videoEl.onended = () => {
       terminou = true;
-      progresso[item.titulo] = videoEl.duration; // marca como finalizado
+      delete progresso[item.titulo];
       salvarProgresso();
       mostrarSecao('inicio'); // atualiza a fila imediatamente
   };
@@ -216,7 +216,6 @@ const filmesTerror = [
   {titulo:"A Maldição",img:"https://via.placeholder.com/180x270.png?text=A+Maldi%C3%A7%C3%A3o",link:"#",trailer:"#"},
   {titulo:"Noite Sombria",img:"https://via.placeholder.com/180x270.png?text=Noite+Sombria",link:"#",trailer:"#"},
   {titulo:"O Retorno do Horror",img:"https://via.placeholder.com/180x270.png?text=O+Retorno+do+Horror",link:"#",trailer:"#"}
-
 ];
 
 // ===== Funções de interface =====
@@ -234,10 +233,7 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
     if(progresso[item.titulo] && progresso[item.titulo] > 0){
       const progressoDiv = document.createElement('div');
       progressoDiv.style.position = 'absolute'; progressoDiv.style.bottom='0'; progressoDiv.style.left='0'; progressoDiv.style.width='100%'; progressoDiv.style.height='5px'; progressoDiv.style.backgroundColor='rgba(255,255,255,0.3)';
-      const progressoInner = document.createElement('div'); progressoInner.style.height='100%'; progressoInner.style.backgroundColor='#e50914';
-      const duracao = 100; // Assume 100% se duração desconhecida
-      const pct = Math.min(100, (progresso[item.titulo]/(duracao||1))*100);
-      progressoInner.style.width = pct+'%';
+      const progressoInner = document.createElement('div'); progressoInner.style.height='100%'; progressoInner.style.backgroundColor='#e50914'; progressoInner.style.width=progresso[item.titulo]+'%';
       progressoDiv.appendChild(progressoInner); itemDiv.appendChild(progressoDiv);
     }
 
