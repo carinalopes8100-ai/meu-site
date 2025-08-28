@@ -5,8 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Minha Netflix</title>
   <style>
-    body {
+    /* Reset básico */
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
       font-family: 'Arial', sans-serif;
       background-color: #141414;
       color: white;
@@ -18,17 +24,24 @@
       top: 0;
       width: 100%;
       height: 60px;
-      background-color: rgba(20,20,20,0.9);
       display: flex;
       align-items: center;
-      padding: 0 20px;
+      padding: 0 30px;
       z-index: 1000;
+      transition: background-color 0.5s;
+    }
+
+    header.transparent {
+      background-color: transparent;
+    }
+
+    header.solid {
+      background-color: rgba(20,20,20,0.9);
     }
 
     header h1 {
-      margin: 0;
-      font-size: 24px;
       color: #e50914;
+      font-size: 28px;
     }
 
     nav {
@@ -49,55 +62,99 @@
 
     /* Banner */
     .banner {
-      position: relative;
-      height: 400px;
-      background-image: url('https://via.placeholder.com/1200x400?text=Banner');
+      height: 500px;
+      background-image: url('https://via.placeholder.com/1200x500?text=Banner');
       background-size: cover;
       background-position: center;
+      position: relative;
       display: flex;
-      align-items: flex-end;
-      padding: 20px;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 40px 60px;
+    }
+
+    .banner::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(to top, #141414, transparent);
+    }
+
+    .banner-content {
+      position: relative;
+      z-index: 2;
     }
 
     .banner h2 {
       font-size: 48px;
-      margin: 0;
+      margin-bottom: 20px;
     }
 
-    /* Conteúdo principal */
+    .banner p {
+      font-size: 18px;
+      width: 50%;
+      margin-bottom: 20px;
+    }
+
+    .banner button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-right: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-watch {
+      background-color: white;
+      color: black;
+    }
+
+    .btn-list {
+      background-color: rgba(109,109,110,0.7);
+      color: white;
+    }
+
+    /* Seções */
     main {
       padding-top: 60px;
     }
 
     section {
-      margin: 20px 0;
+      margin: 30px 0;
     }
 
     section h2 {
       margin-left: 20px;
+      margin-bottom: 10px;
+      font-size: 24px;
     }
 
     .row-container {
       position: relative;
+      margin-left: 20px;
     }
 
     .row {
       display: flex;
       overflow-x: hidden;
-      padding: 10px 20px;
       scroll-behavior: smooth;
     }
 
     .card {
-      min-width: 150px;
-      height: 225px;
-      background-color: #333;
+      min-width: 200px;
+      height: 300px;
       margin-right: 10px;
       border-radius: 5px;
-      flex-shrink: 0;
       background-size: cover;
       background-position: center;
+      position: relative;
       transition: transform 0.3s;
+      flex-shrink: 0;
     }
 
     .card:hover {
@@ -105,34 +162,58 @@
       cursor: pointer;
     }
 
+    .card-title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 5px;
+      background: rgba(0,0,0,0.6);
+      text-align: center;
+      font-size: 14px;
+    }
+
     /* Setas */
     .arrow {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       background-color: rgba(0,0,0,0.5);
       border: none;
       color: white;
-      font-size: 24px;
+      font-size: 30px;
       cursor: pointer;
       z-index: 10;
       border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .row-container:hover .arrow {
+      opacity: 1;
     }
 
     .arrow-left {
-      left: 10px;
+      left: -25px;
     }
 
     .arrow-right {
-      right: 10px;
+      right: -25px;
+    }
+
+    @media(max-width: 768px){
+      .banner h2 { font-size: 32px; }
+      .banner p { width: 80%; font-size: 14px; }
+      .card { min-width: 150px; height: 225px; }
+      .arrow { width: 40px; height: 40px; font-size: 24px; }
     }
   </style>
 </head>
 <body>
 
-  <header>
+  <header class="transparent" id="header">
     <h1>Minha Lista</h1>
     <nav>
       <a href="#series">Séries</a>
@@ -142,7 +223,12 @@
   </header>
 
   <div class="banner">
-    <h2>Destaque do Momento</h2>
+    <div class="banner-content">
+      <h2>Destaque do Momento</h2>
+      <p>Assista aos lançamentos mais recentes e descubra novas séries, filmes e conteúdos de terror!</p>
+      <button class="btn-watch">▶ Assistir</button>
+      <button class="btn-list">+ Minha Lista</button>
+    </div>
   </div>
 
   <main>
@@ -152,11 +238,11 @@
       <div class="row-container">
         <button class="arrow arrow-left" onclick="scrollRow('series-row', -300)">&#10094;</button>
         <div class="row" id="series-row">
-          <div class="card" style="background-image: url('https://via.placeholder.com/150x225?text=Série+1');"></div>
-          <div class="card" style="background-image: url('https://via.placeholder.com/150x225?text=Série+2');"></div>
-          <div class="card" style="background-image: url('https://via.placeholder.com/150x225?text=Série+3');"></div>
-          <div class="card" style="background-image: url('https://via.placeholder.com/150x225?text=Série+4');"></div>
-          <div class="card" style="background-image: url('https://via.placeholder.com/150x225?text=Série+5');"></div>
+          <div class="card" style="background-image: url('https://via.placeholder.com/200x300?text=Série+1');"><div class="card-title">Série 1</div></div>
+          <div class="card" style="background-image: url('https://via.placeholder.com/200x300?text=Série+2');"><div class="card-title">Série 2</div></div>
+          <div class="card" style="background-image: url('https://via.placeholder.com/200x300?text=Série+3');"><div class="card-title">Série 3</div></div>
+          <div class="card" style="background-image: url('https://via.placeholder.com/200x300?text=Série+4');"><div class="card-title">Série 4</div></div>
+          <div class="card" style="background-image: url('https://via.placeholder.com/200x300?text=Série+5');"><div class="card-title">Série 5</div></div>
         </div>
         <button class="arrow arrow-right" onclick="scrollRow('series-row', 300)">&#10095;</button>
       </div>
@@ -168,11 +254,11 @@
       <div class="row-container">
         <button class="arrow arrow-left" onclick="scrollRow('filmes-row', -300)">&#10094;</button>
         <div class="row" id="filmes-row">
-          <div class="card" style="background-image: url('https://via.placeholder.com/150x225?text=Filme+1');"></div>
-          <div class="card" style="background-image: url('https://via.placeholder.com/150x225?text=Filme+2');"></div>
-          <div class="card" style="background-image: url('https://via.placeholder.com/150x225?text=Filme+3');"></div>
-          <div class="card" style="background-image: url('https://via.placeholder.com/150x225?text=Filme+4');"></div>
-          <div class="card" style="background-image: url('https://via.placeholder.com/150x225?text=Filme+5');"></div>
+          <div class="card" style="background-image: url('https://via.placeholder.com/200x300?text=Filme+1');"><div class="card-title">Filme 1</div></div>
+          <div class="card" style="background-image: url('https://via.placeholder.com/200x300?text=Filme+2');"><div class="card-title">Filme 2</div></div>
+          <div class="card" style="background-image: url('https://via.placeholder.com/200x300?text=Filme+3');"><div class="card-title">Filme 3</div></div>
+          <div class="card" style="background-image: url('https://via.placeholder.com/200x300?text=Filme+4');"><div class="card-title">Filme 4</div></div>
+          <div class="card" style="background-image: url('https://via.placeholder.com/200x300?text=Filme+5');"><div class="card-title">Filme 5</div></div>
         </div>
         <button class="arrow arrow-right" onclick="scrollRow('filmes-row', 300)">&#10095;</button>
       </div>
@@ -184,23 +270,34 @@
       <div class="row-container">
         <button class="arrow arrow-left" onclick="scrollRow('terror-row', -300)">&#10094;</button>
         <div class="row" id="terror-row">
-          <div class="card" style="background-image: url('https://via.placeholder.com/150x225?text=Terror+1');"></div>
-          <div class="card" style="background-image: url('https://via.placeholder.com/150x225?text=Terror+2');"></div>
-          <div class="card" style="background-image: url('https://via.placeholder.com/150x225?text=Terror+3');"></div>
-          <div class="card" style="background-image: url('https://via.placeholder.com/150x225?text=Terror+4');"></div>
-          <div class="card" style="background-image: url('https://via.placeholder.com/150x225?text=Terror+5');"></div>
+          <div class="card" style="background-image: url('https://via.placeholder.com/200x300?text=Terror+1');"><div class="card-title">Terror 1</div></div>
+          <div class="card" style="background-image: url('https://via.placeholder.com/200x300?text=Terror+2');"><div class="card-title">Terror 2</div></div>
+          <div class="card" style="background-image: url('https://via.placeholder.com/200x300?text=Terror+3');"><div class="card-title">Terror 3</div></div>
+          <div class="card" style="background-image: url('https://via.placeholder.com/200x300?text=Terror+4');"><div class="card-title">Terror 4</div></div>
+          <div class="card" style="background-image: url('https://via.placeholder.com/200x300?text=Terror+5');"><div class="card-title">Terror 5</div></div>
         </div>
         <button class="arrow arrow-right" onclick="scrollRow('terror-row', 300)">&#10095;</button>
       </div>
     </section>
-
   </main>
 
   <script>
-    function scrollRow(id, distance) {
+    function scrollRow(id, distance){
       const row = document.getElementById(id);
       row.scrollBy({ left: distance, behavior: 'smooth' });
     }
+
+    // Mudança do header ao rolar
+    window.addEventListener('scroll', function(){
+      const header = document.getElementById('header');
+      if(window.scrollY > 50){
+        header.classList.remove('transparent');
+        header.classList.add('solid');
+      } else {
+        header.classList.remove('solid');
+        header.classList.add('transparent');
+      }
+    });
   </script>
 
 </body>
