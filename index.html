@@ -226,7 +226,7 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
     if(progresso[item.titulo] && progresso[item.titulo] > 0){
       const progressoDiv = document.createElement('div');
       progressoDiv.style.position = 'absolute'; progressoDiv.style.bottom='0'; progressoDiv.style.left='0'; progressoDiv.style.width='100%'; progressoDiv.style.height='5px'; progressoDiv.style.backgroundColor='rgba(255,255,255,0.3)';
-      const progressoInner = document.createElement('div'); progressoInner.style.height='100%'; progressoInner.style.backgroundColor='#e50914'; progressoInner.style.width=progresso[item.titulo]+'%';
+      const progressoInner = document.createElement('div'); progressoInner.style.height='100%'; progressoInner.style.backgroundColor='#e50914'; progressoInner.style.width=(progresso[item.titulo]+'%');
       progressoDiv.appendChild(progressoInner); itemDiv.appendChild(progressoDiv);
     }
 
@@ -339,6 +339,11 @@ window.addEventListener('load', ()=>{
   const img = document.getElementById('bannerImage');
   const video = document.getElementById('bannerVideo');
   setTimeout(()=>{ img.style.display='none'; video.style.display='block'; video.play(); },2000);
+});
+
+// ===== Pesquisa instantânea =====
+document.getElementById('searchInput').addEventListener('input', () => {
+    pesquisar(); // pesquisa a cada digitação
 });
 </script>
 </body>
