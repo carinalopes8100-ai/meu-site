@@ -609,15 +609,17 @@ const series = [
 
 const FilaManager = {
   criarFila: function(idFila, lista, tipo) {
-    // ===== Fila original =====
+    // Cria o container principal
     const container = document.createElement('div');
     container.className = 'fila-container';
     container.id = idFila;
 
+    // Cria o título da fila
     const titulo = document.createElement('div');
     titulo.className = 'fila-titulo';
     titulo.textContent = tipo === 'filme' ? 'Filmes Populares' : 'Séries Populares';
 
+    // Botões de scroll
     const btnLeft = document.createElement('button');
     btnLeft.className = 'btn-scroll btn-left';
     btnLeft.innerHTML = '&#10094;';
@@ -626,14 +628,16 @@ const FilaManager = {
     btnRight.className = 'btn-scroll btn-right';
     btnRight.innerHTML = '&#10095;';
 
+    // Div para os itens
     const fila = document.createElement('div');
     fila.className = 'fila';
     fila.id = idFila + '-content';
 
+    // Adiciona os itens
     lista.forEach(item => {
       const itemDiv = document.createElement('div');
       itemDiv.className = 'filme';
-      itemDiv.onclick = () => tipo === 'filme' ? window.open(item.link, '_blank') : abrirModalTemporadas(item);
+      itemDiv.onclick = () => window.open(item.link, '_blank');
 
       const img = document.createElement('img');
       img.src = item.img;
@@ -654,10 +658,7 @@ const FilaManager = {
     if (tipo === 'filme') {
       const filmesTerror = [
         { titulo: 'Halloween', img: 'link-da-imagem', link: 'https://example.com/halloween' },
-        { titulo: 'O Exorcista', img: 'link-da-imagem', link: 'https://example.com/exorcista' },
-        { titulo: 'It: A Coisa', img: 'link-da-imagem', link: 'https://example.com/it' },
-        { titulo: 'Invocação do Mal', img: 'link-da-imagem', link: 'https://example.com/invocacao' },
-        { titulo: 'A Bruxa', img: 'link-da-imagem', link: 'https://example.com/abruxa' }
+        { titulo: 'O Exorcista', img: 'link-da-imagem', link: 'https://example.com/exorcista' }
       ];
 
       const containerTerror = document.createElement('div');
@@ -700,14 +701,16 @@ const FilaManager = {
 
       document.body.appendChild(containerTerror);
     }
-  }, // <- vírgula aqui permite adicionar outra função ao objeto
-
-  // Outra função de exemplo
-  scrollFila: function(idFila, direcao) {
-    const fila = document.getElementById(idFila + '-content');
-    fila.scrollLeft += direcao === 'left' ? -300 : 300;
   }
 };
+
+// ===== Exemplo de chamada =====
+const listaFilmes = [
+  { titulo: 'Filme 1', img: 'link-da-imagem', link: 'https://example.com/1' },
+  { titulo: 'Filme 2', img: 'link-da-imagem', link: 'https://example.com/2' }
+];
+
+FilaManager.criarFila('fila1', listaFilmes, 'filme');
 
 
 
