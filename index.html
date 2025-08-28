@@ -607,102 +607,109 @@ const series = [
 
 
 
-// Função para criar filas
-function criarFila(idFila, lista, tipo) {
-  // ===== Fila original =====
-  const container = document.createElement('div');
-  container.className = 'fila-container';
-  container.id = idFila;
+const FilaManager = {
+  criarFila: function(idFila, lista, tipo) {
+    // ===== Fila original =====
+    const container = document.createElement('div');
+    container.className = 'fila-container';
+    container.id = idFila;
 
-  const titulo = document.createElement('div');
-  titulo.className = 'fila-titulo';
-  titulo.textContent = tipo === 'filme' ? 'Filmes Populares' : 'Séries Populares';
+    const titulo = document.createElement('div');
+    titulo.className = 'fila-titulo';
+    titulo.textContent = tipo === 'filme' ? 'Filmes Populares' : 'Séries Populares';
 
-  const btnLeft = document.createElement('button');
-  btnLeft.className = 'btn-scroll btn-left';
-  btnLeft.innerHTML = '&#10094;';
+    const btnLeft = document.createElement('button');
+    btnLeft.className = 'btn-scroll btn-left';
+    btnLeft.innerHTML = '&#10094;';
 
-  const btnRight = document.createElement('button');
-  btnRight.className = 'btn-scroll btn-right';
-  btnRight.innerHTML = '&#10095;';
+    const btnRight = document.createElement('button');
+    btnRight.className = 'btn-scroll btn-right';
+    btnRight.innerHTML = '&#10095;';
 
-  const fila = document.createElement('div');
-  fila.className = 'fila';
-  fila.id = idFila + '-content';
+    const fila = document.createElement('div');
+    fila.className = 'fila';
+    fila.id = idFila + '-content';
 
-  // Preencher a fila original
-  lista.forEach(item => {
-    const itemDiv = document.createElement('div');
-    itemDiv.className = 'filme';
-    itemDiv.onclick = () => tipo === 'filme' ? window.open(item.link, '_blank') : abrirModalTemporadas(item);
-
-    const img = document.createElement('img');
-    img.src = item.img;
-    img.alt = item.titulo;
-
-    itemDiv.appendChild(img);
-    fila.appendChild(itemDiv);
-  });
-
-  container.appendChild(titulo);
-  container.appendChild(btnLeft);
-  container.appendChild(fila);
-  container.appendChild(btnRight);
-
-  document.body.appendChild(container);
-
-  // ===== Fila de Terror =====
-  if (tipo === 'filme') {
-    const filmesTerror = [
-      { titulo: 'Halloween', img: 'link-da-imagem', link: 'https://example.com/halloween' },
-      { titulo: 'O Exorcista', img: 'link-da-imagem', link: 'https://example.com/exorcista' },
-      { titulo: 'It: A Coisa', img: 'link-da-imagem', link: 'https://example.com/it' },
-      { titulo: 'Invocação do Mal', img: 'link-da-imagem', link: 'https://example.com/invocacao' },
-      { titulo: 'A Bruxa', img: 'link-da-imagem', link: 'https://example.com/abruxa' }
-    ];
-
-    const containerTerror = document.createElement('div');
-    containerTerror.className = 'fila-container';
-    containerTerror.id = idFila + '-terror';
-
-    const tituloTerror = document.createElement('div');
-    tituloTerror.className = 'fila-titulo';
-    tituloTerror.textContent = 'Filmes de Terror';
-
-    const btnLeftT = document.createElement('button');
-    btnLeftT.className = 'btn-scroll btn-left';
-    btnLeftT.innerHTML = '&#10094;';
-
-    const btnRightT = document.createElement('button');
-    btnRightT.className = 'btn-scroll btn-right';
-    btnRightT.innerHTML = '&#10095;';
-
-    const filaTerror = document.createElement('div');
-    filaTerror.className = 'fila';
-    filaTerror.id = idFila + '-terror-content';
-
-    // Preencher a fila de terror
-    filmesTerror.forEach(item => {
+    lista.forEach(item => {
       const itemDiv = document.createElement('div');
       itemDiv.className = 'filme';
-      itemDiv.onclick = () => window.open(item.link, '_blank');
+      itemDiv.onclick = () => tipo === 'filme' ? window.open(item.link, '_blank') : abrirModalTemporadas(item);
 
       const img = document.createElement('img');
       img.src = item.img;
       img.alt = item.titulo;
 
       itemDiv.appendChild(img);
-      filaTerror.appendChild(itemDiv);
+      fila.appendChild(itemDiv);
     });
 
-    containerTerror.appendChild(tituloTerror);
-    containerTerror.appendChild(btnLeftT);
-    containerTerror.appendChild(filaTerror);
-    containerTerror.appendChild(btnRightT);
+    container.appendChild(titulo);
+    container.appendChild(btnLeft);
+    container.appendChild(fila);
+    container.appendChild(btnRight);
 
-    document.body.appendChild(containerTerror);
+    document.body.appendChild(container);
+
+    // ===== Fila de Terror =====
+    if (tipo === 'filme') {
+      const filmesTerror = [
+        { titulo: 'Halloween', img: 'link-da-imagem', link: 'https://example.com/halloween' },
+        { titulo: 'O Exorcista', img: 'link-da-imagem', link: 'https://example.com/exorcista' },
+        { titulo: 'It: A Coisa', img: 'link-da-imagem', link: 'https://example.com/it' },
+        { titulo: 'Invocação do Mal', img: 'link-da-imagem', link: 'https://example.com/invocacao' },
+        { titulo: 'A Bruxa', img: 'link-da-imagem', link: 'https://example.com/abruxa' }
+      ];
+
+      const containerTerror = document.createElement('div');
+      containerTerror.className = 'fila-container';
+      containerTerror.id = idFila + '-terror';
+
+      const tituloTerror = document.createElement('div');
+      tituloTerror.className = 'fila-titulo';
+      tituloTerror.textContent = 'Filmes de Terror';
+
+      const btnLeftT = document.createElement('button');
+      btnLeftT.className = 'btn-scroll btn-left';
+      btnLeftT.innerHTML = '&#10094;';
+
+      const btnRightT = document.createElement('button');
+      btnRightT.className = 'btn-scroll btn-right';
+      btnRightT.innerHTML = '&#10095;';
+
+      const filaTerror = document.createElement('div');
+      filaTerror.className = 'fila';
+      filaTerror.id = idFila + '-terror-content';
+
+      filmesTerror.forEach(item => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'filme';
+        itemDiv.onclick = () => window.open(item.link, '_blank');
+
+        const img = document.createElement('img');
+        img.src = item.img;
+        img.alt = item.titulo;
+
+        itemDiv.appendChild(img);
+        filaTerror.appendChild(itemDiv);
+      });
+
+      containerTerror.appendChild(tituloTerror);
+      containerTerror.appendChild(btnLeftT);
+      containerTerror.appendChild(filaTerror);
+      containerTerror.appendChild(btnRightT);
+
+      document.body.appendChild(containerTerror);
+    }
+  }, // <- vírgula aqui permite adicionar outra função ao objeto
+
+  // Outra função de exemplo
+  scrollFila: function(idFila, direcao) {
+    const fila = document.getElementById(idFila + '-content');
+    fila.scrollLeft += direcao === 'left' ? -300 : 300;
   }
-}
+};
+
+
 
 
     // Overlay hover
