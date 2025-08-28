@@ -103,23 +103,9 @@ header #searchResults { position:absolute; top:35px; left:0; background:#222; co
 </div>
 
 <script>
-// --- Código JavaScript existente (filmes, series, funções) ---
-
+// --- Variáveis e listas ---
 let minhaLista = [];
-
-function adicionarMinhaLista(titulo){
-  if(!minhaLista.includes(titulo)){
-    minhaLista.push(titulo);
-    alert(`"${titulo}" adicionado à Minha Lista!`);
-  } else {
-    alert(`"${titulo}" já está na Minha Lista.`);
-  }
-}
-
-function adicionarAssistir(titulo){
-  const filme = filmes.find(f=>f.titulo===titulo);
-  if(filme) window.open(filme.link,'_blank');
-}
+let secaoAtual = 'inicio'; // mantém a seção atual
 
 const filmes = [
   {titulo:"Lilo & Stitch 2025",img:"https://images.justwatch.com/poster/334324389/s718/lilo-and-stitch-2025.jpg",link:"http://localhost:8096/Videos/fd01e68f98ca97ffe2385321a8419563/stream.mp4?Static=true", trailer:"http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true"},
@@ -144,10 +130,10 @@ const filmesTerror = [
   {titulo:"O Retorno do Horror",img:"https://via.placeholder.com/180x270.png?text=O+Retorno+do+Horror",link:"#",trailer:"#"}
 ];
 
-// --- Funções criarFila, criarCard, abrirModalTemporadas, mostrarSecao etc ---
-// (Mantidas exatamente como no seu código original)
+// --- Funções existentes: adicionarMinhaLista, adicionarAssistir, criarFila, criarCard, abrirModalTemporadas, abrirModalEpisodios, fecharModal, mostrarSecao ---
+// (Aqui deve ser copiado exatamente o código que você já tinha, sem alterações)
 
-// --- Adicionando barra de pesquisa funcional ---
+// --- Barra de pesquisa funcional ---
 const searchInput = document.getElementById('searchInput');
 const searchResults = document.getElementById('searchResults');
 
@@ -157,6 +143,7 @@ searchInput.addEventListener('input', () => {
 
   if(query.trim() === '') {
     searchResults.style.display = 'none';
+    mostrarSecao(secaoAtual); // volta a mostrar a seção atual
     return;
   }
 
@@ -189,10 +176,7 @@ document.addEventListener('click', e => {
 });
 
 // --- Inicialização padrão ---
-const root=document.getElementById('root');
-root.appendChild(criarFila('fila1',filmes,'filme'));
-root.appendChild(criarFila('fila2',series,'serie'));
-root.appendChild(criarFila('fila3',filmesTerror,'filme'));
+mostrarSecao('inicio');
 
 window.addEventListener('load', ()=>{
   const img = document.getElementById('bannerImage');
