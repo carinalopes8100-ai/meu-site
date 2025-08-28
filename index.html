@@ -605,6 +605,16 @@ const series = [
   }
 ];
 
+ // Exemplo de lista de filmes de terror
+const filmesTerror = [
+  { titulo: 'It: A Coisa', img: 'link-para-imagem-it.jpg', link: 'https://example.com/it' },
+  { titulo: 'Invocação do Mal', img: 'link-para-imagem-invocacao.jpg', link: 'https://example.com/invocacao' },
+  { titulo: 'A Freira', img: 'link-para-imagem-freira.jpg', link: 'https://example.com/freira' }
+];
+
+// Chamada da função para criar a fila de terror
+criarFila('fila-terror', filmesTerror, 'filme'); 
+
 // Função para criar filas
 function criarFila(idFila, lista, tipo){
   const container=document.createElement('div'); container.className='fila-container'; container.id=idFila;
@@ -612,7 +622,6 @@ function criarFila(idFila, lista, tipo){
   const btnLeft=document.createElement('button'); btnLeft.className='btn-scroll btn-left'; btnLeft.innerHTML='&#10094;';
   const btnRight=document.createElement('button'); btnRight.className='btn-scroll btn-right'; btnRight.innerHTML='&#10095;';
   const fila=document.createElement('div'); fila.className='fila'; fila.id=idFila+'-content';
-  criarFila('fila-terror', filmesTerror, 'filme');
 
   lista.forEach(item=>{
     const itemDiv=document.createElement('div'); itemDiv.className='filme';
