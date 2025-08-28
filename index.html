@@ -167,7 +167,14 @@ function abrirVideo(item){
   if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
 
   // Salvar progresso em tempo real
-  videoEl.ontimeupdate = () => { progresso[item.titulo] = videoEl.currentTime; salvarProgresso(); mostrarSecao('inicio'); };
+  videoEl.ontimeupdate = () => { progresso[item.titulo] = videoEl.currentTime; salvarProgresso(); };
+
+  // Remover da fila Continuar Assistindo somente quando terminar
+  videoEl.onended = () => {
+      delete progresso[item.titulo];
+      salvarProgresso();
+      mostrarSecao('inicio');
+  };
 
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
