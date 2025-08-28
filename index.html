@@ -8,6 +8,29 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
 
+  
+  <!-- Botão de assistir -->
+  <button id="btn-assistir">▶ Assistir</button>
+
+  <!-- Player Wistia (inicialmente escondido) -->
+  <div id="player-container" style="display:none;">
+    <wistia-player media-id="b57vqroil6" aspect="1.7777777777777777"></wistia-player>
+  </div>
+
+  <!-- Script que mostra o player ao clicar -->
+  <script>
+    const btn = document.getElementById('btn-assistir');
+    const player = document.getElementById('player-container');
+
+    btn.addEventListener('click', () => {
+      player.style.display = 'block'; // Mostra o player
+      player.scrollIntoView({behavior: 'smooth'}); // Rola a tela até ele
+    });
+  </script>
+
+</body>
+</html>
+
 /* Navbar */
 header {
   position: fixed; top:0; left:0; width:100%; height:60px; background:#141414; display:flex; align-items:center; justify-content:space-between; padding:0 40px; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.5);
