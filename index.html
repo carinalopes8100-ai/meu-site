@@ -234,6 +234,44 @@ const filmes = [
   {titulo:"Um Filme Minecraft",img:"https://portalvoce.com/wp-content/uploads/2025/04/IMG_4726-745x1024.jpg",link:"http://localhost:8096/Videos/5587dfc46083d69b9900fb4aa5e0527e/stream.mp4?Static=true", trailer:"http://localhost:8096/Videos/50b9bd43dc0f59ad894c580fff33d945/stream.mp4?Static=true&mediaSourceId=50b9bd43dc0f59ad894c580fff33d945&deviceId=TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzOS4wLjAuMCBTYWZhcmkvNTM3LjM2fDE3NTYyMDE1NDYxNzg1&api_key=8e082bf668a54800b8d129e3da2523e6&Tag=ee49a3d253a64f978f25fc0faca08d56"},
 ];
 
+// Lista de filmes de terror
+const filmesTerror = [
+  {
+    titulo: "It: A Coisa",
+    img: "https://upload.wikimedia.org/wikipedia/en/5/5a/It_%282017_film%29.jpg",
+    link: "http://localhost:8096/Videos/it_stream.mp4?Static=true",
+    trailer: "http://localhost:8096/Videos/it_trailer.mp4?Static=true"
+  },
+  {
+    titulo: "A Bruxa",
+    img: "https://upload.wikimedia.org/wikipedia/en/a/a4/The_Witch_film_poster.jpg",
+    link: "http://localhost:8096/Videos/a_bruja_stream.mp4?Static=true",
+    trailer: "http://localhost:8096/Videos/a_bruja_trailer.mp4?Static=true"
+  },
+  {
+    titulo: "Invocação do Mal",
+    img: "https://upload.wikimedia.org/wikipedia/en/0/0f/The_Conjuring_2_film_poster.jpg",
+    link: "http://localhost:8096/Videos/invocacao_stream.mp4?Static=true",
+    trailer: "http://localhost:8096/Videos/invocacao_trailer.mp4?Static=true"
+  },
+  {
+    titulo: "Halloween",
+    img: "https://upload.wikimedia.org/wikipedia/en/0/09/Halloween_%282018_film%29.png",
+    link: "http://localhost:8096/Videos/halloween_stream.mp4?Static=true",
+    trailer: "http://localhost:8096/Videos/halloween_trailer.mp4?Static=true"
+  },
+  {
+    titulo: "O Iluminado",
+    img: "https://upload.wikimedia.org/wikipedia/en/4/49/The_Shining_poster.jpg",
+    link: "http://localhost:8096/Videos/o_iluminado_stream.mp4?Static=true",
+    trailer: "http://localhost:8096/Videos/o_iluminado_trailer.mp4?Static=true"
+  }
+];
+
+// Criar fila de terror
+root.appendChild(criarFila('filaTerror', filmesTerror, 'filme'));
+
+  
 // Séries
 const series = [
   {
