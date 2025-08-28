@@ -97,7 +97,6 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 <div onclick="mostrarSecao('terror')">Terror</div>
 <div onclick="mostrarSecao('lista')">A Minha Lista</div>
 </nav>
-<!-- Barra de pesquisa -->
 <div id="searchContainer">
   <input type="text" id="searchInput" placeholder="Pesquisar...">
   <button onclick="pesquisar()">🔍</button>
@@ -133,13 +132,11 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 let minhaLista = [];
 let progresso = {};
 
-// ===== Funções para localStorage =====
 function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
 function carregarLista() { const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
 function salvarProgresso() { localStorage.setItem("progresso", JSON.stringify(progresso)); }
 function carregarProgresso() { const p = localStorage.getItem("progresso"); if(p) progresso = JSON.parse(p); }
 
-// ===== Toast notifications =====
 function mostrarToast(mensagem){
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div'); toast.className = 'toast'; toast.textContent = mensagem;
@@ -148,17 +145,15 @@ function mostrarToast(mensagem){
   setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
 
-// ===== Funções da lista =====
 function adicionarMinhaLista(titulo){
   if(!minhaLista.includes(titulo)){
     minhaLista.push(titulo); salvarLista(); mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
   } else {
     minhaLista = minhaLista.filter(t => t!==titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`);
   }
-  mostrarSecao('inicio'); // Atualiza a página inicial imediatamente
+  mostrarSecao('inicio');
 }
 
-// ===== Player embutido =====
 function abrirVideo(item){
   const videoModal = document.createElement('div');
   videoModal.style.position='fixed';
@@ -226,7 +221,7 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
     if(progresso[item.titulo] && progresso[item.titulo] > 0){
       const progressoDiv = document.createElement('div');
       progressoDiv.style.position = 'absolute'; progressoDiv.style.bottom='0'; progressoDiv.style.left='0'; progressoDiv.style.width='100%'; progressoDiv.style.height='5px'; progressoDiv.style.backgroundColor='rgba(255,255,255,0.3)';
-      const progressoInner = document.createElement('div'); progressoInner.style.height='100%'; progressoInner.style.backgroundColor='#e50914'; progressoInner.style.width=(progresso[item.titulo]+'%');
+      const progressoInner = document.createElement('div'); progressoInner.style.height='100%'; progressoInner.style.backgroundColor='#e50914'; progressoInner.style.width=progresso[item.titulo]+'%';
       progressoDiv.appendChild(progressoInner); itemDiv.appendChild(progressoDiv);
     }
 
@@ -321,10 +316,15 @@ function mostrarSecao(secao){
 }
 
 function pesquisar(){
-  const termo = document.getElementById('searchInput').value.toLowerCase();
+  const termo = document.getElementById('searchInput').value.toLowerCase().trim();
+  const root = document.getElementById('root');
+  if (termo === "") {
+    mostrarSecao('inicio');
+    return;
+  }
   const todosItens = [...filmes,...series,...filmesTerror];
   const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
-  const root = document.getElementById('root'); root.innerHTML='';
+  root.innerHTML='';
   if(resultados.length>0){
     root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
   } else {
@@ -342,9 +342,7 @@ window.addEventListener('load', ()=>{
 });
 
 // ===== Pesquisa instantânea =====
-document.getElementById('searchInput').addEventListener('input', () => {
-    pesquisar(); // pesquisa a cada digitação
-});
+document.getElementById('searchInput').addEventListener('input', () => pesquisar());
 </script>
 </body>
 </html>
