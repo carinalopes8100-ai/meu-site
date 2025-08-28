@@ -245,7 +245,12 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
       if(s){ abrirModalTemporadas(s); }
       else { abrirVideo(item); }
     };
-    const btnTrailer=document.createElement('button'); btnTrailer.textContent='▶ Trailer'; btnTrailer.onclick=(e)=>{ e.stopPropagation(); if(item.trailer) window.open(item.trailer,'_blank'); };
+    const btnTrailer=document.createElement('button');
+    btnTrailer.textContent='▶ Trailer';
+    btnTrailer.onclick=(e)=>{
+        e.stopPropagation();
+        if(item.trailer) abrirVideo({titulo:item.titulo+' - Trailer', link:item.trailer});
+    };
     overlay.appendChild(btnPlay); overlay.appendChild(btnTrailer); itemDiv.appendChild(overlay);
 
     const addBtn = document.createElement('button'); addBtn.className = 'add-list-btn';
