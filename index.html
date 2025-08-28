@@ -605,61 +605,12 @@ const series = [
   }
 ];
 
-// Função para criar filas
-function criarFila(idFila, lista, tipo, tituloCustomizado){
-  const container = document.createElement('div'); 
-  container.className = 'fila-container'; 
-  container.id = idFila;
-
-  const titulo = document.createElement('div'); 
-  titulo.className = 'fila-titulo'; 
-  // Se passar um título customizado, usa ele, senão usa o padrão
-  titulo.textContent = tituloCustomizado || (tipo === 'filme' ? 'Filmes Populares' : 'Séries Populares');
-
-  const btnLeft = document.createElement('button'); 
-  btnLeft.className = 'btn-scroll btn-left'; 
-  btnLeft.innerHTML = '&#10094;';
-
-  const btnRight = document.createElement('button'); 
-  btnRight.className = 'btn-scroll btn-right'; 
-  btnRight.innerHTML = '&#10095;';
-
-  const fila = document.createElement('div'); 
-  fila.className = 'fila'; 
-  fila.id = idFila + '-content';
-
-  lista.forEach(item => {
-    const itemDiv = document.createElement('div'); 
-    itemDiv.className = 'filme';
-
-    itemDiv.onclick = () => tipo === 'filme' ? window.open(item.link, '_blank') : abrirModalTemporadas(item);
-
-    const img = document.createElement('img'); 
-    img.src = item.poster; 
-    img.alt = item.titulo; 
-    itemDiv.appendChild(img);
-
-    fila.appendChild(itemDiv);
-  });
-
-  container.appendChild(titulo);
-  container.appendChild(btnLeft);
-  container.appendChild(fila);
-  container.appendChild(btnRight);
-
-  document.body.appendChild(container);
-
-  btnLeft.onclick = () => fila.scrollBy({ left: -300, behavior: 'smooth' });
-  btnRight.onclick = () => fila.scrollBy({ left: 300, behavior: 'smooth' });
-}
-
-// Exemplo de criação da fila de terror populares
-const terrorPopulares = [
-  { titulo: 'It', poster: 'link_para_poster_it.jpg', link: 'https://www.exemplo.com/it' },
-  { titulo: 'Annabelle', poster: 'link_para_poster_annabelle.jpg', link: 'https://www.exemplo.com/annabelle' },
-  { titulo: 'A Hora do Pesadelo', poster: 'link_para_poster_nightmare.jpg', link: 'https://www.exemplo.com/nightmare' },
-  { titulo: 'O Exorcista', poster: 'link_para_poster_exorcist.jpg', link: 'https://www.exemplo.com/exorcist' },
-];
+// Função para criar filas function criarFila(idFila, lista, tipo){ const container=document.createElement('div');
+  container.className='fila-container'; container.id=idFila; const titulo=document.createElement('div'); titulo.className='fila-titulo';
+  titulo.textContent=tipo==='filme'?'Filmes Populares':'Séries Populares'; const btnLeft=document.createElement('button');
+  btnLeft.className='btn-scroll btn-left'; btnLeft.innerHTML='&#10094;'; const btnRight=document.createElement('button');
+  btnRight.className='btn-scroll btn-right'; btnRight.innerHTML='&#10095;'; const fila=document.createElement('div'); fila.className='fila';
+  fila.id=idFila+'-content'; lista.forEach(item=>{ const itemDiv=document.createElement('div'); itemDiv.className='filme'; itemDiv.onclick=()=>tipo==='filme'?window.open(item.link,'_blank'):abrirModalTemporadas(item);
 
 // Cria a fila de terror com título customizado
 criarFila('terror-populares', terrorPopulares, 'filme', 'Terror Populares');
