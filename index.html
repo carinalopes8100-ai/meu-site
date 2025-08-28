@@ -144,7 +144,7 @@ function adicionarMinhaLista(titulo){
   } else {
     minhaLista = minhaLista.filter(t => t!==titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`);
   }
-  mostrarSecao('inicio'); // Atualiza a página inicial imediatamente
+  mostrarSecao('inicio');
 }
 
 // ===== Player embutido =====
@@ -169,7 +169,7 @@ function abrirVideo(item){
   // Salvar progresso em tempo real
   videoEl.ontimeupdate = () => { progresso[item.titulo] = videoEl.currentTime; salvarProgresso(); };
 
-  // Remover da fila Continuar Assistindo somente quando terminar
+  // Remover da fila Continuar Assistindo apenas quando termina
   videoEl.onended = () => {
       delete progresso[item.titulo];
       salvarProgresso();
@@ -181,7 +181,12 @@ function abrirVideo(item){
   fecharBtn.style.position='absolute'; fecharBtn.style.top='20px'; fecharBtn.style.right='20px';
   fecharBtn.style.padding='10px 20px';
   fecharBtn.style.cursor='pointer';
-  fecharBtn.onclick = () => { videoModal.remove(); };
+  fecharBtn.onclick = () => {
+      progresso[item.titulo] = videoEl.currentTime; // Salva o progresso ao fechar
+      salvarProgresso();
+      mostrarSecao('inicio'); // Atualiza fila Continuar Assistindo
+      videoModal.remove();
+  };
 
   videoModal.appendChild(videoEl);
   videoModal.appendChild(fecharBtn);
