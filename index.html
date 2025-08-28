@@ -1,212 +1,241 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meu Prime Video</title>
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #0f0f0f;
-    color: white;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clone Netflix</title>
+  <style>
+    /* Reset de margens e padding */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  /* Header */
-  header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    height: 60px;
-    background-color: #141414;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    z-index: 1000;
-  }
+    /* Corpo da página */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #141414;
+      color: white;
+    }
 
-  header h1 {
-    color: #00a8e1;
-    font-size: 24px;
-  }
+    /* Menu superior */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: #141414;
+      padding: 10px 20px;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-  nav {
-    margin-left: 40px;
-  }
+    header img {
+      width: 100px;
+    }
 
-  nav a {
-    color: white;
-    text-decoration: none;
-    margin-right: 20px;
-    font-weight: bold;
-    transition: color 0.3s;
-  }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+    }
 
-  nav a:hover {
-    color: #00a8e1;
-  }
+    nav a:hover {
+      color: #e50914;
+    }
 
-  main {
-    padding-top: 70px;
-  }
+    /* Banner principal */
+    .banner {
+      width: 100%;
+      height: 400px;
+      background-image: url('https://via.placeholder.com/1500x600/000000/ffffff?text=Banner+Principal');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      margin-top: 60px;
+    }
 
-  /* Banner estilo Prime */
-  .banner {
-    width: 100%;
-    height: 250px;
-    background-image: url('https://via.placeholder.com/1200x250?text=Banner+Prime');
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: flex-end;
-    padding: 20px 40px;
-    box-shadow: inset 0 -80px 80px -20px rgba(0,0,0,0.9);
-  }
+    .banner h1 {
+      font-size: 3rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
 
-  .banner h2 {
-    font-size: 32px;
-    margin: 0;
-  }
+    .banner p {
+      font-size: 1.2rem;
+      margin: 10px 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
 
-  /* Seções */
-  section {
-    margin: 30px 0;
-  }
+    .banner button {
+      padding: 10px 20px;
+      background-color: #e50914;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+    }
 
-  section h2 {
-    margin-left: 20px;
-    font-size: 22px;
-    margin-bottom: 10px;
-  }
+    /* Seções de conteúdo */
+    section {
+      margin: 20px 0;
+      padding: 0 20px;
+    }
 
-  .row-container {
-    position: relative;
-    margin-left: 20px;
-  }
+    section h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
 
-  .row {
-    display: flex;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
-  }
+    .row {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+    }
 
-  .card {
-    min-width: 180px;
-    height: 270px;
-    margin-right: 10px;
-    border-radius: 5px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    transition: transform 0.3s;
-    flex-shrink: 0;
-  }
+    .card {
+      width: 200px;
+      height: 300px;
+      background-color: #333;
+      border-radius: 5px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
 
-  .card:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-  }
+    .card h3 {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      font-size: 1.2rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
 
-  .card-title {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 5px;
-    background: rgba(0,0,0,0.7);
-    text-align: center;
-    font-size: 14px;
-  }
+    /* Setas de navegação */
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      z-index: 10;
+      border-radius: 50%;
+    }
 
-  /* Setas */
-  .arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    background-color: rgba(0,0,0,0.5);
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    z-index: 10;
-    border-radius: 50%;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
+    .arrow-left {
+      left: 10px;
+    }
 
-  .row-container:hover .arrow {
-    opacity: 1;
-  }
-
-  .arrow-left {
-    left: -20px;
-  }
-
-  .arrow-right {
-    right: -20px;
-  }
-
-  @media(max-width: 768px){
-    .banner h2 { font-size: 24px; }
-    .card { min-width: 140px; height: 210px; }
-  }
-</style>
+    .arrow-right {
+      right: 10px;
+    }
+  </style>
 </head>
 <body>
 
 <header>
-  <h1>Meu Prime Video</h1>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Netflix_2015_logo.svg" alt="Logo Netflix">
   <nav>
     <a href="#filmes">Filmes</a>
     <a href="#series">Séries</a>
+    <a href="#terror">Terror</a>
   </nav>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="Perfil" width="40">
 </header>
 
 <div class="banner">
-  <h2>Destaque da Semana</h2>
+  <div>
+    <h1>Filme em Destaque</h1>
+    <p>Sinopse curta do filme em destaque.</p>
+    <button>Assistir</button>
+  </div>
 </div>
 
-<main>
-  <!-- Filmes -->
-  <section id="filmes">
-    <h2>Filmes Populares</h2>
-    <div class="row-container">
-      <button class="arrow arrow-left" onclick="scrollRow('filmes-row', -300)">&#10094;</button>
-      <div class="row" id="filmes-row">
-        <div class="card" style="background-image: url('https://via.placeholder.com/180x270?text=Filme+1');"><div class="card-title">Filme 1</div></div>
-        <div class="card" style="background-image: url('https://via.placeholder.com/180x270?text=Filme+2');"><div class="card-title">Filme 2</div></div>
-        <div class="card" style="background-image: url('https://via.placeholder.com/180x270?text=Filme+3');"><div class="card-title">Filme 3</div></div>
-        <div class="card" style="background-image: url('https://via.placeholder.com/180x270?text=Filme+4');"><div class="card-title">Filme 4</div></div>
-        <div class="card" style="background-image: url('https://via.placeholder.com/180x270?text=Filme+5');"><div class="card-title">Filme 5</div></div>
-      </div>
-      <button class="arrow arrow-right" onclick="scrollRow('filmes-row', 300)">&#10095;</button>
+<section id="filmes">
+  <h2>Filmes</h2>
+  <div class="row">
+    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Filme+1');">
+      <h3>Filme 1</h3>
     </div>
-  </section>
+    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Filme+2');">
+      <h3>Filme 2</h3>
+    </div>
+    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Filme+3');">
+      <h3>Filme 3</h3>
+    </div>
+    <!-- Adicione mais cards conforme necessário -->
+  </div>
+</section>
 
-  <!-- Séries -->
-  <section id="series">
-    <h2>Séries em Alta</h2>
-    <div class="row-container">
-      <button class="arrow arrow-left" onclick="scrollRow('series-row', -300)">&#10094;</button>
-      <div class="row" id="series-row">
-        <div class="card" style="background-image: url('https://via.placeholder.com/180x270?text=Série+1');"><div class="card-title">Série 1</div></div>
-        <div class="card" style="background-image: url('https://via.placeholder.com/180x270?text=Série+2');"><div class="card-title">Série 2</div></div>
-        <div class="card" style="background-image: url('https://via.placeholder.com/180x270?text=Série+3');"><div class="card-title">Série 3</div></div>
-        <div class="card" style="background-image: url('https://via.placeholder.com/180x270?text=Série+4');"><div class="card-title">Série 4</div></div>
-        <div class="card" style="background-image: url('https://via.placeholder.com/180x270?text=Série+5');"><div class="card-title">Série 5</div></div>
-      </div>
-      <button class="arrow arrow-right" onclick="scrollRow('series-row', 300)">&#10095;</button>
+<section id="series">
+  <h2>Séries</h2>
+  <div class="row">
+    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Série+1');">
+      <h3>Série 1</h3>
     </div>
-  </section>
-</main>
+    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Série+2');">
+      <h3>Série 2</h3>
+    </div>
+    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Série+3');">
+      <h3>Série 3</h3>
+    </div>
+    <!-- Adicione mais cards conforme necessário -->
+  </div>
+</section>
+
+<section id="terror">
+  <h2>Terror</h2>
+  <div class="row">
+    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Terror+1');">
+      <h3>Terror 1</h3>
+    </div>
+    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Terror+2');">
+      <h3>Terror 2</h3>
+    </div>
+    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Terror+3');">
+      <h3>Terror 3</h3>
+    </div>
+    <!-- Adicione mais cards conforme necessário -->
+  </div>
+</section>
 
 <script>
-  function scrollRow(id, distance){
-    const row = document.getElementById(id);
-    row.scrollBy({ left: distance, behavior: 'smooth' });
-  }
+  // Função para rolar as listas horizontalmente
+  document.querySelectorAll('.row').forEach(row => {
+    let isMouseDown = false;
+    let startX, scrollLeft;
+
+    row.addEventListener('mousedown', (e) => {
+      isMouseDown = true;
+      startX = e.pageX - row.offsetLeft;
+      scrollLeft = row.scrollLeft;
+    });
+
+    row.addEventListener('mouseleave', () => {
+      isMouseDown = false;
+    });
+
+    row.addEventListener('mouseup', () => {
+      isMouseDown = false;
+    });
+
+    row.addEventListener('mousemove', (e) => {
+      if (!isMouseDown) return;
+      e.preventDefault();
+      const x = e.pageX - row.offsetLeft;
+      const walk = (x - startX) * 2;
+      row.scrollLeft = scrollLeft - walk;
+    });
+  });
 </script>
 
 </body>
