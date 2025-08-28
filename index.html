@@ -101,7 +101,7 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   <div class="banner-content">
     <h1>Lilo & Stitch 2025</h1>
     <p>Uma animação divertida e emocionante para toda a família.</p>
-    <!-- Alterado para abrirVideo para a fila continuar assistindo -->
+    <!-- Botão corrigido -->
     <button class="play" onclick="abrirVideo(filmes[0])">▶ Assistir</button>
     <button class="lista" onclick="adicionarMinhaLista('Lilo & Stitch 2025')">+ Minha Lista</button>
   </div>
@@ -120,7 +120,149 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 <div id="toastContainer" class="toast-container"></div>
 
 <script>
-// (A mesma lógica de JS que criamos anteriormente, incluindo abrirVideo, criarFila, mostrarSecao, progresso, minhaLista...)
+let minhaLista = [];
+let progresso = {};
+
+// ===== Funções para localStorage =====
+function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
+function carregarLista() { const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
+function salvarProgresso() { localStorage.setItem("progresso", JSON.stringify(progresso)); }
+function carregarProgresso() { const p = localStorage.getItem("progresso"); if(p) progresso = JSON.parse(p); }
+
+// ===== Toast notifications =====
+function mostrarToast(mensagem){
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div'); toast.className = 'toast'; toast.textContent = mensagem;
+  const btn = document.createElement('button'); btn.textContent = '✖'; btn.onclick = () => container.removeChild(toast);
+  toast.appendChild(btn); container.appendChild(toast);
+  setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
+}
+
+// ===== Funções da lista =====
+function adicionarMinhaLista(titulo){
+  if(!minhaLista.includes(titulo)){
+    minhaLista.push(titulo); salvarLista(); mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
+  } else {
+    minhaLista = minhaLista.filter(t => t!==titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`);
+  }
+  mostrarSecao('inicio'); // Atualiza a página inicial imediatamente
+}
+
+// ===== Dados =====
+const filmes = [
+  {titulo:"Lilo & Stitch 2025",img:"https://images.justwatch.com/poster/334324389/s718/lilo-and-stitch-2025.jpg",link:"http://localhost:8096/Videos/fd01e68f98ca97ffe2385321a8419563/stream.mp4?Static=true", trailer:"http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true"},
+  {titulo:"O Discípulo",img:"https://imagens.publico.pt/imagens.aspx/1229973?tp=UH&db=IMAGENS&type=JPG&share=1&o=BarraFacebook_P3.png",link:"http://localhost:8096/Videos/5587dfc46083d69b9900fb4aa5e0527e/stream.mp4?Static=true", trailer:"http://localhost:8096/Videos/5587dfc46083d69b9900fb4aa5e0527e/stream.mp4?Static=true"}
+];
+
+const series = [
+  {titulo:"Morangos com Açúcar",img:"https://m.media-amazon.com/images/S/pv-target-images/ed2fde424fa4ab359c5a3d6aca7922c5ae84e6fd4fd3d20afd25747c0952f761.png",
+   temporadas:[{numero:1,episodios:[{numero:1,link:"#"}]}], trailer:"#"}
+];
+
+const filmesTerror = [
+  {titulo:"A Maldição",img:"https://via.placeholder.com/180x270.png?text=A+Maldi%C3%A7%C3%A3o",link:"#",trailer:"#"}
+];
+
+// ===== Função abrirVideo =====
+function abrirVideo(item){
+  if(!progresso[item.titulo]) {
+    progresso[item.titulo] = 0;
+    salvarProgresso();
+    mostrarSecao('inicio');
+  }
+
+  const videoModal = document.createElement('div');
+  videoModal.style.position='fixed';
+  videoModal.style.top='0'; videoModal.style.left='0';
+  videoModal.style.width='100%'; videoModal.style.height='100%';
+  videoModal.style.background='rgba(0,0,0,0.9)';
+  videoModal.style.display='flex'; videoModal.style.justifyContent='center'; videoModal.style.alignItems='center';
+  videoModal.style.zIndex='10000';
+
+  const videoEl = document.createElement('video');
+  videoEl.src = item.link;
+  videoEl.controls = true;
+  videoEl.style.width='80%';
+  videoEl.style.height='80%';
+  videoEl.currentTime = progresso[item.titulo] || 0;
+
+  videoEl.ontimeupdate = () => {
+    progresso[item.titulo] = videoEl.currentTime;
+    salvarProgresso();
+    mostrarSecao('inicio');
+  };
+
+  const fecharBtn = document.createElement('button');
+  fecharBtn.textContent = 'Fechar';
+  fecharBtn.style.position='absolute';
+  fecharBtn.style.top='20px';
+  fecharBtn.style.right='20px';
+  fecharBtn.style.padding='10px 20px';
+  fecharBtn.style.cursor='pointer';
+  fecharBtn.onclick = () => { videoModal.remove(); };
+
+  videoModal.appendChild(videoEl);
+  videoModal.appendChild(fecharBtn);
+  document.body.appendChild(videoModal);
+
+  videoEl.play();
+}
+
+// ===== Funções de interface =====
+function mostrarSecao(secao){
+  const root=document.getElementById('root'); root.innerHTML='';
+  const todosItens = [...filmes,...series,...filmesTerror];
+
+  if(secao==='inicio'){
+    const continuar = todosItens.filter(i=>progresso[i.titulo] && progresso[i.titulo]<100);
+    if(continuar.length>0) root.appendChild(criarFila('filaContinuar',continuar,'filme','Continuar Assistindo'));
+
+    if(minhaLista.length>0){
+      const itensLista = todosItens.filter(i=>minhaLista.includes(i.titulo));
+      root.appendChild(criarFila('fila0',itensLista,'filme','Minha Lista'));
+    }
+    root.appendChild(criarFila('fila1',filmes,'filme'));
+    root.appendChild(criarFila('fila2',series,'serie'));
+    root.appendChild(criarFila('fila3',filmesTerror,'filme'));
+  }
+}
+
+// ===== Criar fila =====
+function criarFila(idFila, lista, tipo, tituloFila=null){
+  const container=document.createElement('div'); container.className='fila-container'; container.id=idFila;
+  const titulo=document.createElement('div'); titulo.className='fila-titulo'; titulo.textContent=tituloFila || tipo;
+  const fila=document.createElement('div'); fila.className='fila';
+
+  lista.forEach(item=>{
+    const itemDiv=document.createElement('div'); itemDiv.className='filme';
+    const img=document.createElement('img'); img.src=item.img; img.alt=item.titulo; itemDiv.appendChild(img);
+
+    // Overlay
+    const overlay=document.createElement('div'); overlay.className='filme-hover-overlay';
+    const btnPlay=document.createElement('button'); btnPlay.textContent='▶ Assistir'; btnPlay.onclick=(e)=>{ e.stopPropagation(); abrirVideo(item); }
+    overlay.appendChild(btnPlay); itemDiv.appendChild(overlay);
+
+    // Botão remover continuar assistindo
+    if(idFila==='filaContinuar'){
+      const removeBtn = document.createElement('button'); removeBtn.className='remove-continuar-btn'; removeBtn.textContent='✖';
+      removeBtn.onclick = (e)=>{ e.stopPropagation(); delete progresso[item.titulo]; salvarProgresso(); mostrarSecao('inicio'); };
+      itemDiv.appendChild(removeBtn);
+    }
+
+    fila.appendChild(itemDiv);
+  });
+
+  container.appendChild(titulo); container.appendChild(fila);
+  return container;
+}
+
+carregarLista(); carregarProgresso(); mostrarSecao('inicio');
+
+window.addEventListener('load', ()=>{
+  const img = document.getElementById('bannerImage');
+  const video = document.getElementById('bannerVideo');
+  setTimeout(()=>{ img.style.display='none'; video.style.display='block'; video.play(); },2000);
+});
 </script>
 </body>
 </html>
