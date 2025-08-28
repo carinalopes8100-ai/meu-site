@@ -1,242 +1,217 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clone Netflix</title>
-  <style>
-    /* Reset de margens e padding */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HorrorFlix - Streaming de Terror</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+        }
 
-    /* Corpo da página */
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #141414;
-      color: white;
-    }
+        body {
+            background-color: #111;
+            color: #fff;
+        }
 
-    /* Menu superior */
-    header {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background-color: #141414;
-      padding: 10px 20px;
-      z-index: 1000;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+        header {
+            background-color: #141414;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-    header img {
-      width: 100px;
-    }
+        header h1 {
+            font-size: 24px;
+            color: #e50914;
+        }
 
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 0 15px;
-      font-weight: bold;
-    }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
 
-    nav a:hover {
-      color: #e50914;
-    }
+        nav a:hover {
+            color: #e50914;
+        }
 
-    /* Banner principal */
-    .banner {
-      width: 100%;
-      height: 400px;
-      background-image: url('https://via.placeholder.com/1500x600/000000/ffffff?text=Banner+Principal');
-      background-size: cover;
-      background-position: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-      margin-top: 60px;
-    }
+        .banner {
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1617181474307-8de15754ff14?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8dGVycm9yfHx8fHx8MTY5MzAwNDM1OQ&ixlib=rb-4.0.3&q=80&w=1920');
+            background-size: cover;
+            background-position: center;
+            height: 60vh;
+            display: flex;
+            align-items: flex-end;
+            padding: 40px;
+        }
 
-    .banner h1 {
-      font-size: 3rem;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-    }
+        .banner h2 {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
 
-    .banner p {
-      font-size: 1.2rem;
-      margin: 10px 0;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-    }
+        .banner p {
+            font-size: 18px;
+            max-width: 600px;
+        }
 
-    .banner button {
-      padding: 10px 20px;
-      background-color: #e50914;
-      border: none;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-      border-radius: 5px;
-    }
+        section {
+            padding: 20px 40px;
+        }
 
-    /* Seções de conteúdo */
-    section {
-      margin: 20px 0;
-      padding: 0 20px;
-    }
+        h3 {
+            margin-bottom: 15px;
+        }
 
-    section h2 {
-      font-size: 2rem;
-      margin-bottom: 10px;
-    }
+        .movie-row {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            scrollbar-width: none; /* Firefox */
+        }
 
-    .row {
-      display: flex;
-      overflow-x: auto;
-      gap: 10px;
-    }
+        .movie-row::-webkit-scrollbar {
+            display: none; /* Chrome */
+        }
 
-    .card {
-      width: 200px;
-      height: 300px;
-      background-color: #333;
-      border-radius: 5px;
-      background-size: cover;
-      background-position: center;
-      position: relative;
-    }
+        .movie-card {
+            min-width: 160px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
 
-    .card h3 {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      font-size: 1.2rem;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-    }
+        .movie-card img {
+            width: 100%;
+            display: block;
+        }
 
-    /* Setas de navegação */
-    .arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background-color: rgba(0, 0, 0, 0.5);
-      color: white;
-      border: none;
-      padding: 10px;
-      cursor: pointer;
-      z-index: 10;
-      border-radius: 50%;
-    }
+        .movie-card:hover {
+            transform: scale(1.1);
+        }
 
-    .arrow-left {
-      left: 10px;
-    }
+        .movie-title {
+            position: absolute;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
 
-    .arrow-right {
-      right: 10px;
-    }
-  </style>
+        footer {
+            background-color: #141414;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        @media(max-width: 768px) {
+            .banner h2 {
+                font-size: 32px;
+            }
+
+            .banner p {
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <h1>HorrorFlix</h1>
+        <nav>
+            <a href="#">Início</a>
+            <a href="#">Filmes</a>
+            <a href="#">Séries</a>
+            <a href="#">Minha Lista</a>
+        </nav>
+    </header>
 
-<header>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Netflix_2015_logo.svg" alt="Logo Netflix">
-  <nav>
-    <a href="#filmes">Filmes</a>
-    <a href="#series">Séries</a>
-    <a href="#terror">Terror</a>
-  </nav>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="Perfil" width="40">
-</header>
-
-<div class="banner">
-  <div>
-    <h1>Filme em Destaque</h1>
-    <p>Sinopse curta do filme em destaque.</p>
-    <button>Assistir</button>
-  </div>
-</div>
-
-<section id="filmes">
-  <h2>Filmes</h2>
-  <div class="row">
-    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Filme+1');">
-      <h3>Filme 1</h3>
+    <div class="banner">
+        <div>
+            <h2>Filmes de Terror em Destaque</h2>
+            <p>Assista aos filmes mais assustadores, disponíveis 24/7. Prepare-se para o susto!</p>
+        </div>
     </div>
-    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Filme+2');">
-      <h3>Filme 2</h3>
-    </div>
-    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Filme+3');">
-      <h3>Filme 3</h3>
-    </div>
-    <!-- Adicione mais cards conforme necessário -->
-  </div>
-</section>
 
-<section id="series">
-  <h2>Séries</h2>
-  <div class="row">
-    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Série+1');">
-      <h3>Série 1</h3>
-    </div>
-    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Série+2');">
-      <h3>Série 2</h3>
-    </div>
-    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Série+3');">
-      <h3>Série 3</h3>
-    </div>
-    <!-- Adicione mais cards conforme necessário -->
-  </div>
-</section>
+    <section>
+        <h3>Filmes de Terror</h3>
+        <div class="movie-row">
+            <div class="movie-card">
+                <img src="https://m.media-amazon.com/images/I/81jA2Lbt0PL._AC_SY679_.jpg" alt="It - A Coisa">
+                <div class="movie-title">It - A Coisa</div>
+            </div>
+            <div class="movie-card">
+                <img src="https://m.media-amazon.com/images/I/71c05lTE03L._AC_SY679_.jpg" alt="O Exorcista">
+                <div class="movie-title">O Exorcista</div>
+            </div>
+            <div class="movie-card">
+                <img src="https://m.media-amazon.com/images/I/91UUE5SKT5L._AC_SY679_.jpg" alt="Invocação do Mal">
+                <div class="movie-title">Invocação do Mal</div>
+            </div>
+            <div class="movie-card">
+                <img src="https://m.media-amazon.com/images/I/91fnx7gkEJL._AC_SY679_.jpg" alt="Halloween">
+                <div class="movie-title">Halloween</div>
+            </div>
+        </div>
+    </section>
 
-<section id="terror">
-  <h2>Terror</h2>
-  <div class="row">
-    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Terror+1');">
-      <h3>Terror 1</h3>
-    </div>
-    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Terror+2');">
-      <h3>Terror 2</h3>
-    </div>
-    <div class="card" style="background-image: url('https://via.placeholder.com/200x300/000000/ffffff?text=Terror+3');">
-      <h3>Terror 3</h3>
-    </div>
-    <!-- Adicione mais cards conforme necessário -->
-  </div>
-</section>
+    <section>
+        <h3>Filmes</h3>
+        <div class="movie-row">
+            <div class="movie-card">
+                <img src="https://m.media-amazon.com/images/I/71niXI3lxlL._AC_SY679_.jpg" alt="Inception">
+                <div class="movie-title">Inception</div>
+            </div>
+            <div class="movie-card">
+                <img src="https://m.media-amazon.com/images/I/81p+xe8cbnL._AC_SY679_.jpg" alt="Interstellar">
+                <div class="movie-title">Interstellar</div>
+            </div>
+            <div class="movie-card">
+                <img src="https://m.media-amazon.com/images/I/71xLmdyMURL._AC_SY679_.jpg" alt="Matrix">
+                <div class="movie-title">Matrix</div>
+            </div>
+        </div>
+    </section>
 
-<script>
-  // Função para rolar as listas horizontalmente
-  document.querySelectorAll('.row').forEach(row => {
-    let isMouseDown = false;
-    let startX, scrollLeft;
+    <section>
+        <h3>Séries</h3>
+        <div class="movie-row">
+            <div class="movie-card">
+                <img src="https://m.media-amazon.com/images/I/81k5P7tWR+L._AC_SY679_.jpg" alt="Stranger Things">
+                <div class="movie-title">Stranger Things</div>
+            </div>
+            <div class="movie-card">
+                <img src="https://m.media-amazon.com/images/I/81pF1U0nRkL._AC_SY679_.jpg" alt="The Haunting of Hill House">
+                <div class="movie-title">The Haunting of Hill House</div>
+            </div>
+            <div class="movie-card">
+                <img src="https://m.media-amazon.com/images/I/71X8TgwwQ+L._AC_SY679_.jpg" alt="American Horror Story">
+                <div class="movie-title">American Horror Story</div>
+            </div>
+        </div>
+    </section>
 
-    row.addEventListener('mousedown', (e) => {
-      isMouseDown = true;
-      startX = e.pageX - row.offsetLeft;
-      scrollLeft = row.scrollLeft;
-    });
-
-    row.addEventListener('mouseleave', () => {
-      isMouseDown = false;
-    });
-
-    row.addEventListener('mouseup', () => {
-      isMouseDown = false;
-    });
-
-    row.addEventListener('mousemove', (e) => {
-      if (!isMouseDown) return;
-      e.preventDefault();
-      const x = e.pageX - row.offsetLeft;
-      const walk = (x - startX) * 2;
-      row.scrollLeft = scrollLeft - walk;
-    });
-  });
-</script>
-
+    <footer>
+        © 2025 HorrorFlix. Todos os direitos reservados.
+    </footer>
 </body>
 </html>
