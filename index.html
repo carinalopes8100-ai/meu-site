@@ -130,6 +130,22 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 <div id="toastContainer" class="toast-container"></div>
 
 <script>
+const searchButton = document.getElementById('searchButton');
+const searchContainer = document.getElementById('searchContainer');
+const searchInput = document.getElementById('searchInput');
+
+searchButton.addEventListener('click', () => {
+  if(!searchContainer.classList.contains('show-input')){
+    // Mostra o input e foca nele
+    searchContainer.classList.add('show-input');
+    searchInput.focus();
+  } else {
+    // Se já estiver visível, executa a pesquisa
+    pesquisar();
+  }
+});
+
+  
 let minhaLista = [];
 let progresso = {};
 
