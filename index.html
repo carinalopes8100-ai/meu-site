@@ -8,6 +8,7 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
 
+/* Cabeçalho fixo */
 header { 
   position: fixed; 
   top:0; left:0; width:100%; height:60px; 
@@ -18,32 +19,44 @@ header {
   z-index:1000; 
   box-shadow:0 2px 5px rgba(0,0,0,0.5); 
 }
-
 header h1 { 
   color:#e50914; 
   font-size:24px; 
   cursor:pointer; 
 }
-
 nav { 
   display:flex; 
   gap:25px; 
-  margin-left:auto; /* menu ao lado direito do logo */
+  margin-left:auto; /* menu à direita do logo */
 }
-
 nav div { 
   cursor:pointer; 
   transition:color .2s; 
 }
-
 nav div:hover { 
   color:#e50914; 
   text-decoration:underline; 
 }
 
-/* restante do CSS permanece igual */
-.banner { position: relative; width:100%; height:70vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
-.banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
+/* Banner */
+.banner { 
+  position: relative; 
+  width:100%; 
+  height:70vh; 
+  display:flex; 
+  flex-direction:column; 
+  justify-content:flex-end; 
+  padding:40px; 
+  overflow:hidden; 
+  z-index:0; 
+}
+.banner::after { 
+  content:''; 
+  position:absolute; 
+  top:0; left:0; width:100%; height:100%; 
+  background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); 
+  z-index:1; 
+}
 .banner-content { position:relative; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:15px; }
 .banner h1 { font-size:48px; margin-bottom:10px; }
 .banner p { font-size:18px; margin-bottom:20px; }
@@ -53,9 +66,15 @@ nav div:hover {
 .banner-content button.lista { background:rgba(109,109,110,0.7); color:#fff; }
 .banner-content button.lista:hover { background:rgba(109,109,110,0.5); }
 
-#root { margin-top:80px; }
-
-.fila-container { margin:20px 50px; position:relative; }
+/* Root e filas */
+#root { 
+  margin-top:100px; /* garante que o conteúdo fique abaixo do header fixo */
+}
+.fila-container { 
+  margin:20px 50px; 
+  position:relative; 
+  z-index:2; /* garante que não fique atrás do banner */
+}
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
 .fila { display:flex; overflow-x:auto; gap:16px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
 .fila::-webkit-scrollbar { display:none; }
@@ -63,11 +82,11 @@ nav div:hover {
 .filme:hover { transform:scale(1.08); z-index:2; }
 .filme img { width:100%; height:100%; object-fit:cover; display:block; }
 
+/* Overlay e botões */
 .filme-hover-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; gap:10px; opacity:0; transition:opacity .3s; flex-direction:column; border-radius:5px; z-index:5; }
 .filme:hover .filme-hover-overlay { opacity:1; }
 .filme-hover-overlay button { width:100px; padding:8px 0; background:#e50914; border:none; color:#fff; font-weight:bold; cursor:pointer; border-radius:4px; transition: background .2s; }
 .filme-hover-overlay button:hover { background:#b20710; }
-
 .add-list-btn { position:absolute; bottom:5px; right:5px; width:30px; height:30px; border-radius:50%; border:none; background:#e50914; color:#fff; font-weight:bold; cursor:pointer; font-size:18px; z-index:6; transition: background .2s; opacity:0; }
 .filme:hover .add-list-btn { opacity:1; }
 .add-list-btn:hover { background:#b20710; }
@@ -77,6 +96,7 @@ nav div:hover {
 .btn-left { left:0; }
 .btn-right { right:0; }
 
+/* Modal */
 .modal { display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; }
 .modal-content { background:#222; padding:25px; border-radius:10px; max-width:500px; width:90%; text-align:center; }
 .modal h2 { margin-bottom:20px; }
@@ -123,7 +143,7 @@ nav div:hover {
 </div>
 
 <script>
-// Todo o JS permanece igual
+// Todo o JS do seu código permanece igual, sem alterações
 </script>
 </body>
 </html>
