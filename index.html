@@ -214,7 +214,19 @@ const filmesTerror = [
 ];
 
 // ===== Funções de interface =====
-// (continua igual como no código original)
+// ... (o restante das funções mostrarSecao, criarFila, abrirModalTemporadas, abrirModalEpisodios, fecharModal, pesquisar continuam iguais)
+
+// ===== Modificação para lupa =====
+document.getElementById('searchButton').addEventListener('click', ()=>{
+  const container = document.getElementById('searchContainer');
+  const input = document.getElementById('searchInput');
+  if(!container.classList.contains('show-input')){
+    container.classList.add('show-input');
+    input.focus();
+  } else {
+    pesquisar();
+  }
+});
 
 carregarLista(); carregarProgresso();
 mostrarSecao('inicio');
@@ -223,15 +235,6 @@ window.addEventListener('load', ()=>{
   const img = document.getElementById('bannerImage');
   const video = document.getElementById('bannerVideo');
   setTimeout(()=>{ img.style.display='none'; video.style.display='block'; video.play(); },2000);
-});
-
-// ===== Nova funcionalidade: mostrar input ao clicar na lupa =====
-document.getElementById('searchButton').addEventListener('click', ()=>{
-  const container = document.getElementById('searchContainer');
-  container.classList.toggle('show-input');
-  if(container.classList.contains('show-input')){
-    document.getElementById('searchInput').focus();
-  }
 });
 </script>
 </body>
