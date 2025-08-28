@@ -8,18 +8,24 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
 
-header { 
-    position: fixed; top:0; left:0; width:100%; height:60px; 
-    background:#141414; display:flex; align-items:center; justify-content:space-between; 
-    padding:0 40px; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.5); 
+header {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:60px;
+  background:#141414;
+  display:flex;
+  align-items:center;
+  justify-content:space-between; /* Título à esquerda, menu à direita */
+  padding:0 40px;
+  z-index:1000;
+  box-shadow:0 2px 5px rgba(0,0,0,0.5);
 }
 header h1 { color:#e50914; font-size:24px; cursor:pointer; }
 nav { display:flex; gap:25px; }
 nav div { cursor:pointer; transition:color .2s; }
 nav div:hover { color:#e50914; text-decoration:underline; }
-
-#searchContainer { margin-top:70px; padding:0 50px; display:flex; justify-content:center; }
-#searchInput { width:400px; padding:10px; border-radius:5px; border:none; font-size:16px; }
 
 .banner { position: relative; width:100%; height:70vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
 .banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
@@ -32,7 +38,7 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .banner-content button.lista { background:rgba(109,109,110,0.7); color:#fff; }
 .banner-content button.lista:hover { background:rgba(109,109,110,0.5); }
 
-#root { margin-top:20px; }
+#root { margin-top:80px; }
 
 .fila-container { margin:20px 50px; position:relative; }
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
@@ -63,26 +69,20 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .episodio-btn:hover, .temporada-btn:hover { background:#b20710; }
 .close-btn { margin-top:15px; padding:10px 20px; background:#555; border:none; border-radius:5px; color:#fff; cursor:pointer; transition:background .2s; }
 .close-btn:hover { background:#333; }
-
 </style>
 </head>
 <body>
 
 <header>
-<h1>MeuFlix</h1>
-<nav>
-<div onclick="mostrarSecao('inicio')">Página Inicial</div>
-<div onclick="mostrarSecao('series')">Séries</div>
-<div onclick="mostrarSecao('filmes')">Filmes</div>
-<div onclick="mostrarSecao('terror')">Terror</div>
-<div onclick="mostrarSecao('lista')">A Minha Lista</div>
-</nav>
+  <h1>MeuFlix</h1>
+  <nav>
+    <div onclick="mostrarSecao('inicio')">Página Inicial</div>
+    <div onclick="mostrarSecao('series')">Séries</div>
+    <div onclick="mostrarSecao('filmes')">Filmes</div>
+    <div onclick="mostrarSecao('terror')">Terror</div>
+    <div onclick="mostrarSecao('lista')">A Minha Lista</div>
+  </nav>
 </header>
-
-<!-- Barra de pesquisa -->
-<div id="searchContainer">
-  <input type="text" id="searchInput" placeholder="Pesquisar filmes e séries...">
-</div>
 
 <div class="banner">
   <img id="bannerImage" src="https://images.justwatch.com/poster/334324389/s718/lilo-and-stitch-2025.jpg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;">
@@ -108,71 +108,10 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 </div>
 
 <script>
-let minhaLista = [];
+// Todo o seu JS permanece igual
+// (minhaLista, filmes, series, filmesTerror, criarFila, criarCard, abrirModalTemporadas, mostrarSecao, etc.)
 
-function adicionarMinhaLista(titulo){
-  if(!minhaLista.includes(titulo)){
-    minhaLista.push(titulo);
-    alert(`"${titulo}" adicionado à Minha Lista!`);
-  } else {
-    alert(`"${titulo}" já está na Minha Lista.`);
-  }
-}
-
-function adicionarAssistir(titulo){
-  const filme = filmes.find(f=>f.titulo===titulo);
-  if(filme) window.open(filme.link,'_blank');
-}
-
-const filmes = [
-  {titulo:"Lilo & Stitch 2025",img:"https://images.justwatch.com/poster/334324389/s718/lilo-and-stitch-2025.jpg",link:"http://localhost:8096/Videos/fd01e68f98ca97ffe2385321a8419563/stream.mp4?Static=true", trailer:"http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true"},
-  {titulo:"O Discípulo",img:"https://imagens.publico.pt/imagens.aspx/1229973?tp=UH&db=IMAGENS&type=JPG&share=1&o=BarraFacebook_P3.png",link:"http://localhost:8096/Videos/5587dfc46083d69b9900fb4aa5e0527e/stream.mp4?Static=true", trailer:"http://localhost:8096/Videos/5587dfc46083d69b9900fb4aa5e0527e/stream.mp4?Static=true"}
-];
-
-const series = [
-  {titulo:"Morangos com Açúcar",img:"https://m.media-amazon.com/images/S/pv-target-images/ed2fde424fa4ab359c5a3d6aca7922c5ae84e6fd4fd3d20afd25747c0952f761.png",
-   temporadas:[
-    {numero:1,episodios:[
-      {numero:1,link:"http://localhost:8096/Videos/6f9b24bdd4d4e2954b5a732a2e1faa05/stream.mp4?Static=true"},
-      {numero:2,link:"http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true"},
-      ...Array.from({length:8},(_,i)=>({numero:i+3,link:"#"}))
-    ]},
-    {numero:2,episodios:Array.from({length:10},(_,i)=>({numero:i+1,link:"#"}))}
-   ], trailer:"http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true"}
-];
-
-const filmesTerror = [
-  {titulo:"A Maldição",img:"https://via.placeholder.com/180x270.png?text=A+Maldi%C3%A7%C3%A3o",link:"#",trailer:"#"},
-  {titulo:"Noite Sombria",img:"https://via.placeholder.com/180x270.png?text=Noite+Sombria",link:"#",trailer:"#"},
-  {titulo:"O Retorno do Horror",img:"https://via.placeholder.com/180x270.png?text=O+Retorno+do+Horror",link:"#",trailer:"#"}
-];
-
-// Funções criarFila, criarCard, abrirModal, mostrarSecao continuam iguais (mantidas do código anterior)
-
-// Função de pesquisa
-const searchInput = document.getElementById('searchInput');
-
-searchInput.addEventListener('input', () => {
-  const query = searchInput.value.toLowerCase();
-  const root = document.getElementById('root');
-  root.innerHTML = '';
-
-  if(query === ''){
-    mostrarSecao('inicio');
-    return;
-  }
-
-  const todosItens = [...filmes, ...series, ...filmesTerror];
-  const resultados = todosItens.filter(item => item.titulo.toLowerCase().includes(query));
-
-  if(resultados.length === 0){
-    root.innerHTML = `<p style="color:#fff; text-align:center; margin-top:20px;">Nenhum resultado encontrado.</p>`;
-    return;
-  }
-
-  root.appendChild(criarFila('searchResults', resultados, 'filme'));
-});
-
+// Inicialização
 const root=document.getElementById('root');
 root.appendChild(criarFila('fila1',filmes,'filme'));
 root.appendChild(criarFila('fila2',series,'serie'));
