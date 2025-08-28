@@ -8,34 +8,40 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
 
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  background: #141414;
-  display: flex;
-  align-items: center;
-  padding: 0 40px;
-  z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+header { 
+  position: fixed; 
+  top:0; left:0; width:100%; height:60px; 
+  background:#141414; 
+  display:flex; 
+  align-items:center; 
+  padding:0 40px; 
+  z-index:1000; 
+  box-shadow:0 2px 5px rgba(0,0,0,0.5); 
 }
 
-/* Container interno para alinhar título e menu juntos */
-.header-content {
-  display: flex;
-  align-items: center;
-  gap: 50px; /* distância entre o título e o menu */
+header h1 { 
+  color:#e50914; 
+  font-size:24px; 
+  cursor:pointer; 
 }
 
-header h1 { color:#e50914; font-size:24px; cursor:pointer; }
+nav { 
+  display:flex; 
+  gap:25px; 
+  margin-left:auto; /* menu ao lado direito do logo */
+}
 
-nav { display:flex; gap:25px; }
-nav div { cursor:pointer; transition:color .2s; }
-nav div:hover { color:#e50914; text-decoration:underline; }
+nav div { 
+  cursor:pointer; 
+  transition:color .2s; 
+}
 
-/* Resto do CSS permanece igual... */
+nav div:hover { 
+  color:#e50914; 
+  text-decoration:underline; 
+}
+
+/* restante do CSS permanece igual */
 .banner { position: relative; width:100%; height:70vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
 .banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
 .banner-content { position:relative; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:15px; }
@@ -83,16 +89,14 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 <body>
 
 <header>
-  <div class="header-content">
-    <h1>MeuFlix</h1>
-    <nav>
-      <div onclick="mostrarSecao('inicio')">Página Inicial</div>
-      <div onclick="mostrarSecao('series')">Séries</div>
-      <div onclick="mostrarSecao('filmes')">Filmes</div>
-      <div onclick="mostrarSecao('terror')">Terror</div>
-      <div onclick="mostrarSecao('lista')">A Minha Lista</div>
-    </nav>
-  </div>
+<h1>MeuFlix</h1>
+<nav>
+<div onclick="mostrarSecao('inicio')">Página Inicial</div>
+<div onclick="mostrarSecao('series')">Séries</div>
+<div onclick="mostrarSecao('filmes')">Filmes</div>
+<div onclick="mostrarSecao('terror')">Terror</div>
+<div onclick="mostrarSecao('lista')">A Minha Lista</div>
+</nav>
 </header>
 
 <div class="banner">
@@ -119,7 +123,7 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 </div>
 
 <script>
-/* Mantém todo o seu JavaScript original sem alterações */
+// Todo o JS permanece igual
 </script>
 </body>
 </html>
