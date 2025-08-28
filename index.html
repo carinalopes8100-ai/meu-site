@@ -134,8 +134,6 @@ const filmesTerror = [
   {titulo:"O Retorno do Horror",img:"https://via.placeholder.com/180x270.png?text=O+Retorno+do+Horror",link:"#",trailer:"#"}
 ];
 
-// Funções para criar filas, cards, modal e renderização
-
 function criarFila(idFila, lista, tipo){
   const container=document.createElement('div'); container.className='fila-container'; container.id=idFila;
   const titulo=document.createElement('div'); titulo.className='fila-titulo'; titulo.textContent=tipo==='filme'? (idFila==='fila3'?'Filmes de Terror':'Filmes Populares'):'Séries Populares';
@@ -190,7 +188,6 @@ function abrirModalEpisodios(temporada, serieTitulo){
 
 function fecharModal(){ document.getElementById('modal').style.display='none'; }
 
-// Função atualizar cards com opção de remover
 function criarCard(item, removivel=false){
   const div = document.createElement('div'); div.className='filme';
   const img = document.createElement('img'); img.src=item.img; div.appendChild(img);
@@ -202,13 +199,14 @@ function criarCard(item, removivel=false){
   div.appendChild(overlay);
 
   const addBtn=document.createElement('button'); addBtn.className='add-list-btn';
-  addBtn.textContent = removivel ? '−' : '+';
+  addBtn.textContent = removivel ? '✖' : '+';
+  addBtn.title = removivel ? 'Remover da Minha Lista' : 'Adicionar à Minha Lista';
   addBtn.onclick = (e)=>{
     e.stopPropagation();
     if(removivel){
       minhaLista = minhaLista.filter(t => t !== item.titulo);
       alert(`"${item.titulo}" removido da Minha Lista!`);
-      mostrarSecao('lista'); // Atualiza a seção
+      mostrarSecao('lista');
     } else {
       adicionarMinhaLista(item.titulo);
     }
@@ -254,7 +252,7 @@ function mostrarSecao(secao){
     minhaLista.forEach(titulo=>{
       const item = todosItens.find(i=>i.titulo===titulo);
       if(item){
-        const card = criarCard(item, true); // true habilita remover
+        const card = criarCard(item, true);
         filaDiv.appendChild(card);
       }
     });
