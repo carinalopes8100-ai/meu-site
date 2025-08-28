@@ -174,7 +174,8 @@ function criarFila(idFila, lista, tipo){
         minhaLista = minhaLista.filter(t => t !== item.titulo);
         alert(`"${item.titulo}" removido da Minha Lista!`);
       } else {
-        adicionarMinhaLista(item.titulo);
+        minhaLista.push(item.titulo);
+        alert(`"${item.titulo}" adicionado à Minha Lista!`);
       }
       updateButton();
     };
@@ -212,29 +213,16 @@ function abrirModalEpisodios(temporada, serieTitulo){
 function fecharModal(){ document.getElementById('modal').style.display='none'; }
 
 function criarCard(item){
-  const div = document.createElement('div'); 
-  div.className='filme';
+  const div = document.createElement('div'); div.className='filme';
+  const img = document.createElement('img'); img.src=item.img; div.appendChild(img);
 
-  const img = document.createElement('img'); 
-  img.src=item.img; 
-  div.appendChild(img);
-
-  const overlay=document.createElement('div'); 
-  overlay.className='filme-hover-overlay';
-
-  const btnPlay=document.createElement('button'); 
-  btnPlay.textContent='▶ Assistir'; 
-  btnPlay.onclick=(e)=>{ e.stopPropagation(); window.open(item.link,'_blank'); };
-
-  const btnTrailer=document.createElement('button'); 
-  btnTrailer.textContent='▶ Trailer'; 
-  btnTrailer.onclick=(e)=>{ e.stopPropagation(); if(item.trailer) window.open(item.trailer,'_blank'); };
-
-  overlay.appendChild(btnPlay); 
-  overlay.appendChild(btnTrailer); 
-  div.appendChild(overlay);
+  const overlay=document.createElement('div'); overlay.className='filme-hover-overlay';
+  const btnPlay=document.createElement('button'); btnPlay.textContent='▶ Assistir'; btnPlay.onclick=(e)=>{ e.stopPropagation(); window.open(item.link,'_blank'); };
+  const btnTrailer=document.createElement('button'); btnTrailer.textContent='▶ Trailer'; btnTrailer.onclick=(e)=>{ e.stopPropagation(); if(item.trailer) window.open(item.trailer,'_blank'); };
+  overlay.appendChild(btnPlay); overlay.appendChild(btnTrailer); div.appendChild(overlay);
 
   const addBtn = document.createElement('button'); addBtn.className = 'add-list-btn';
+
   function updateButton() {
     if (minhaLista.includes(item.titulo)) {
       addBtn.textContent = '✖';
@@ -251,7 +239,8 @@ function criarCard(item){
       minhaLista = minhaLista.filter(t => t !== item.titulo);
       alert(`"${item.titulo}" removido da Minha Lista!`);
     } else {
-      adicionarMinhaLista(item.titulo);
+      minhaLista.push(item.titulo);
+      alert(`"${item.titulo}" adicionado à Minha Lista!`);
     }
     updateButton();
   }
