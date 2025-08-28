@@ -144,7 +144,7 @@ function adicionarMinhaLista(titulo){
   } else {
     minhaLista = minhaLista.filter(t => t!==titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`);
   }
-  mostrarSecao('inicio');
+  mostrarSecao('inicio'); // Atualiza a página inicial imediatamente
 }
 
 // ===== Player embutido =====
@@ -164,36 +164,35 @@ function abrirVideo(item){
   videoEl.style.height='80%';
 
   // Retomar do progresso salvo
-  if(progresso[item.titulo]){
-    if(typeof progresso[item.titulo] === 'number'){
-      progresso[item.titulo] = {tempo: progresso[item.titulo], terminou: false};
-    }
-    videoEl.currentTime = progresso[item.titulo].tempo || 0;
-    if(progresso[item.titulo].tempo < videoEl.duration) progresso[item.titulo].terminou = false;
-  }
+  if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
 
-  // Salvar progresso em tempo real
-  videoEl.ontimeupdate = () => {
-    if(!progresso[item.titulo]) progresso[item.titulo] = {tempo:0, terminou:false};
-    progresso[item.titulo].tempo = videoEl.currentTime;
-    if(videoEl.currentTime < videoEl.duration) progresso[item.titulo].terminou = false;
-    salvarProgresso();
-    mostrarSecao('inicio');
+  let terminou = false;
+
+  // Quando o vídeo terminar
+  videoEl.onended = () => {
+      terminou = true;
+      progresso[item.titulo] = videoEl.duration; // marca como finalizado
+      salvarProgresso();
+      mostrarSecao('inicio'); // atualiza a fila imediatamente
   };
 
-  videoEl.onended = () => {
-    if(!progresso[item.titulo]) progresso[item.titulo] = {tempo:0, terminou:true};
-    else progresso[item.titulo].terminou = true;
-    salvarProgresso();
-    mostrarSecao('inicio');
+  // Salvar progresso em tempo real apenas se não terminou
+  videoEl.ontimeupdate = () => {
+      if(!terminou) progresso[item.titulo] = videoEl.currentTime;
   };
 
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
-  fecharBtn.style.position='absolute'; fecharBtn.style.top='20px'; fecharBtn.style.right='20px';
+  fecharBtn.style.position='absolute';
+  fecharBtn.style.top='20px';
+  fecharBtn.style.right='20px';
   fecharBtn.style.padding='10px 20px';
   fecharBtn.style.cursor='pointer';
-  fecharBtn.onclick = () => { videoModal.remove(); };
+  fecharBtn.onclick = () => {
+      if(!terminou) salvarProgresso(); // só salva se não terminou
+      mostrarSecao('inicio'); // atualiza a fila
+      videoModal.remove();
+  };
 
   videoModal.appendChild(videoEl);
   videoModal.appendChild(fecharBtn);
@@ -217,6 +216,7 @@ const filmesTerror = [
   {titulo:"A Maldição",img:"https://via.placeholder.com/180x270.png?text=A+Maldi%C3%A7%C3%A3o",link:"#",trailer:"#"},
   {titulo:"Noite Sombria",img:"https://via.placeholder.com/180x270.png?text=Noite+Sombria",link:"#",trailer:"#"},
   {titulo:"O Retorno do Horror",img:"https://via.placeholder.com/180x270.png?text=O+Retorno+do+Horror",link:"#",trailer:"#"}
+
 ];
 
 // ===== Funções de interface =====
@@ -231,11 +231,12 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
     const itemDiv=document.createElement('div'); itemDiv.className='filme';
     const img=document.createElement('img'); img.src=item.img; img.alt=item.titulo; itemDiv.appendChild(img);
 
-    if(progresso[item.titulo] && progresso[item.titulo].tempo > 0 && !progresso[item.titulo].terminou){
+    if(progresso[item.titulo] && progresso[item.titulo] > 0){
       const progressoDiv = document.createElement('div');
       progressoDiv.style.position = 'absolute'; progressoDiv.style.bottom='0'; progressoDiv.style.left='0'; progressoDiv.style.width='100%'; progressoDiv.style.height='5px'; progressoDiv.style.backgroundColor='rgba(255,255,255,0.3)';
       const progressoInner = document.createElement('div'); progressoInner.style.height='100%'; progressoInner.style.backgroundColor='#e50914';
-      const pct = (progresso[item.titulo].tempo / (videoEl?.duration || 1)) * 100 || 0;
+      const duracao = 100; // Assume 100% se duração desconhecida
+      const pct = Math.min(100, (progresso[item.titulo]/(duracao||1))*100);
       progressoInner.style.width = pct+'%';
       progressoDiv.appendChild(progressoInner); itemDiv.appendChild(progressoDiv);
     }
@@ -304,7 +305,7 @@ function mostrarSecao(secao){
   const root=document.getElementById('root'); root.innerHTML='';
 
   if(secao==='inicio'){
-    const continuar = [...filmes,...series,...filmesTerror].filter(i => progresso[i.titulo] && !progresso[i.titulo].terminou);
+    const continuar = [...filmes,...series,...filmesTerror].filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
     if(continuar.length>0) root.appendChild(criarFila('filaContinuar',continuar,'filme','Continuar Assistindo'));
 
     if(minhaLista.length>0){
