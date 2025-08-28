@@ -144,7 +144,7 @@ function adicionarMinhaLista(titulo){
   } else {
     minhaLista = minhaLista.filter(t => t!==titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`);
   }
-  mostrarSecao('inicio');
+  mostrarSecao('inicio'); // Atualiza a página inicial imediatamente
 }
 
 // ===== Player embutido =====
@@ -166,25 +166,31 @@ function abrirVideo(item){
   // Retomar do progresso salvo
   if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
 
-  // Salvar progresso em tempo real
-  videoEl.ontimeupdate = () => { progresso[item.titulo] = videoEl.currentTime; salvarProgresso(); };
+  let terminou = false;
 
-  // Remover da fila Continuar Assistindo apenas quando termina
+  // Quando o vídeo terminar
   videoEl.onended = () => {
+      terminou = true;
       delete progresso[item.titulo];
       salvarProgresso();
-      mostrarSecao('inicio');
+      mostrarSecao('inicio'); // atualiza a fila imediatamente
+  };
+
+  // Salvar progresso em tempo real apenas se não terminou
+  videoEl.ontimeupdate = () => {
+      if(!terminou) progresso[item.titulo] = videoEl.currentTime;
   };
 
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
-  fecharBtn.style.position='absolute'; fecharBtn.style.top='20px'; fecharBtn.style.right='20px';
+  fecharBtn.style.position='absolute';
+  fecharBtn.style.top='20px';
+  fecharBtn.style.right='20px';
   fecharBtn.style.padding='10px 20px';
   fecharBtn.style.cursor='pointer';
   fecharBtn.onclick = () => {
-      progresso[item.titulo] = videoEl.currentTime; // Salva o progresso ao fechar
-      salvarProgresso();
-      mostrarSecao('inicio'); // Atualiza fila Continuar Assistindo
+      if(!terminou) salvarProgresso(); // só salva se não terminou
+      mostrarSecao('inicio'); // atualiza a fila
       videoModal.remove();
   };
 
