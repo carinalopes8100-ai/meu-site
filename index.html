@@ -146,7 +146,6 @@ let minhaLista = [];
 
 function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
 function carregarLista() { const lista = localStorage.getItem("minhaLista"); if (lista) minhaLista = JSON.parse(lista); }
-
 function mostrarToast(mensagem){
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div'); toast.className='toast'; toast.textContent=mensagem;
@@ -164,8 +163,10 @@ function adicionarMinhaLista(titulo){
     mostrarToast(`"${titulo}" removido da Minha Lista!`);
   }
   salvarLista();
-  // Atualiza a seção "Minha Lista" se estiver ativa
-  if (document.getElementById('listaContainer')) mostrarSecao('lista');
+  // Atualiza a interface se estiver na própria lista
+  if(document.getElementById('listaContainer')) mostrarSecao('lista');
+  // Atualiza a página inicial se estiver nela
+  if(root.innerHTML.includes('fila1')) mostrarSecao('inicio');
 }
 
 function adicionarAssistir(titulo){
@@ -196,9 +197,11 @@ const filmesTerror = [
 ];
 
 // ==== Funções de interface ====
-function criarFila(idFila, lista, tipo){
+function criarFila(idFila, lista, tipo, tituloPersonalizado){
   const container=document.createElement('div'); container.className='fila-container'; container.id=idFila;
-  const titulo=document.createElement('div'); titulo.className='fila-titulo'; titulo.textContent=tipo==='filme'? (idFila==='fila3'?'Filmes de Terror':'Filmes Populares'):'Séries Populares';
+  const titulo=document.createElement('div'); titulo.className='fila-titulo';
+  titulo.textContent = tituloPersonalizado || (tipo==='filme'? (idFila==='fila3'?'Filmes de Terror':'Filmes Populares'):'Séries Populares');
+  
   const btnLeft=document.createElement('button'); btnLeft.className='btn-scroll btn-left'; btnLeft.innerHTML='&#10094;';
   const btnRight=document.createElement('button'); btnRight.className='btn-scroll btn-right'; btnRight.innerHTML='&#10095;';
   const fila=document.createElement('div'); fila.className='fila'; fila.id=idFila+'-content';
@@ -280,7 +283,19 @@ function criarCard(item){
 
 function mostrarSecao(secao){
   const root=document.getElementById('root'); root.innerHTML='';
-  if(secao==='inicio'){ root.appendChild(criarFila('fila1',filmes,'filme')); root.appendChild(criarFila('fila2',series,'serie')); root.appendChild(criarFila('fila3',filmesTerror,'filme')); } 
+
+  if(secao==='inicio'){
+    root.appendChild(criarFila('fila1',filmes,'filme'));
+    root.appendChild(criarFila('fila2',series,'serie'));
+    root.appendChild(criarFila('fila3',filmesTerror,'filme'));
+
+    // Fila Minha Lista
+    if(minhaLista.length>0){
+      const todosItens = [...filmes, ...series, ...filmesTerror];
+      const listaItens = minhaLista.map(t => todosItens.find(i => i.titulo===t)).filter(Boolean);
+      root.appendChild(criarFila('filaMinhaLista', listaItens, 'filme', 'Minha Lista'));
+    }
+  }
   else if(secao==='filmes'){ root.appendChild(criarFila('fila1',filmes,'filme')); } 
   else if(secao==='series'){ root.appendChild(criarFila('fila2',series,'serie')); } 
   else if(secao==='terror'){ root.appendChild(criarFila('fila3',filmesTerror,'filme')); } 
@@ -290,21 +305,19 @@ function mostrarSecao(secao){
     listaContainer.appendChild(tituloDiv);
     const filaDiv = document.createElement('div'); filaDiv.className='fila';
     const todosItens = [...filmes, ...series, ...filmesTerror];
-    minhaLista.forEach(titulo=>{ const item = todosItens.find(i=>i.titulo===titulo); if(item){ const card = criarCard(item); filaDiv.appendChild(card); } });
+    minhaLista.forEach(titulo=>{ const item = todosItens.find(i=>i.titulo===titulo); if(item){ filaDiv.appendChild(criarCard(item)); } });
     listaContainer.appendChild(filaDiv); root.appendChild(listaContainer);
   }
 }
 
 const root=document.getElementById('root');
 carregarLista();
-root.appendChild(criarFila('fila1',filmes,'filme'));
-root.appendChild(criarFila('fila2',series,'serie'));
-root.appendChild(criarFila('fila3',filmesTerror,'filme'));
+mostrarSecao('inicio');
 
 window.addEventListener('load', ()=>{
   const img = document.getElementById('bannerImage');
   const video = document.getElementById('bannerVideo');
-  setTimeout(()=>{ img.style.display='none'; video.style.display='block'; video.play(); }, 2000);
+  setTimeout(()=>{ img.style.display='none'; video.style.display='block'; video.play(); },2000);
 });
 </script>
 </body>
