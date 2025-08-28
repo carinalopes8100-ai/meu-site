@@ -97,18 +97,15 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 <script>
 let minhaLista = [];
 
-// ===== NOVO: Funções para salvar e carregar do localStorage =====
+// ===== Persistência no localStorage =====
 function salvarLista() {
   localStorage.setItem("minhaLista", JSON.stringify(minhaLista));
 }
-
 function carregarLista() {
   const lista = localStorage.getItem("minhaLista");
-  if (lista) {
-    minhaLista = JSON.parse(lista);
-  }
+  if (lista) minhaLista = JSON.parse(lista);
 }
-// ===============================================================
+// =======================================
 
 function adicionarMinhaLista(titulo){
   if(!minhaLista.includes(titulo)){
@@ -169,9 +166,7 @@ function criarFila(idFila, lista, tipo){
     itemDiv.appendChild(overlay);
     itemDiv.appendChild(img);
 
-    // Botão + ou ✖ atualizado dinamicamente
     const addBtn = document.createElement('button'); addBtn.className = 'add-list-btn';
-
     function updateButton() {
       if (minhaLista.includes(item.titulo)) {
         addBtn.textContent = '✖';
@@ -181,7 +176,6 @@ function criarFila(idFila, lista, tipo){
         addBtn.title = 'Adicionar à Minha Lista';
       }
     }
-
     addBtn.onclick = (e) => {
       e.stopPropagation();
       if (minhaLista.includes(item.titulo)) {
@@ -195,7 +189,6 @@ function criarFila(idFila, lista, tipo){
       }
       updateButton();
     };
-
     updateButton();
     itemDiv.appendChild(addBtn);
     fila.appendChild(itemDiv);
@@ -238,7 +231,6 @@ function criarCard(item){
   overlay.appendChild(btnPlay); overlay.appendChild(btnTrailer); div.appendChild(overlay);
 
   const addBtn = document.createElement('button'); addBtn.className = 'add-list-btn';
-
   function updateButton() {
     if (minhaLista.includes(item.titulo)) {
       addBtn.textContent = '✖';
@@ -248,7 +240,6 @@ function criarCard(item){
       addBtn.title = 'Adicionar à Minha Lista';
     }
   }
-
   addBtn.onclick = (e) => {
     e.stopPropagation();
     if (minhaLista.includes(item.titulo)) {
@@ -262,7 +253,6 @@ function criarCard(item){
     }
     updateButton();
   }
-
   updateButton();
   div.appendChild(addBtn);
   return div;
@@ -315,7 +305,7 @@ function mostrarSecao(secao){
 }
 
 const root=document.getElementById('root');
-carregarLista(); // <<< NOVO: carregar lista salva
+carregarLista(); // <<< Carregar lista salva
 root.appendChild(criarFila('fila1',filmes,'filme'));
 root.appendChild(criarFila('fila2',series,'serie'));
 root.appendChild(criarFila('fila3',filmesTerror,'filme'));
