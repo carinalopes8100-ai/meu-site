@@ -283,7 +283,7 @@ function mostrarSecao(secao){
   const root=document.getElementById('root'); root.innerHTML='';
 
   if(secao==='inicio'){
-    const continuar = [...filmes,...series,...filmesTerror].filter(i=>progresso[i.titulo] && progresso[i.titulo]>0 && progresso[i.titulo]<100);
+    const continuar = [...filmes,...series,...filmesTerror].filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
     if(continuar.length>0) root.appendChild(criarFila('filaContinuar',continuar,'filme','Continuar Assistindo'));
 
     if(minhaLista.length>0){
