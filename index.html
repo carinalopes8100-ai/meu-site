@@ -163,7 +163,7 @@ function adicionarMinhaLista(titulo){
   } else {
     minhaLista = minhaLista.filter(t => t!==titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`);
   }
-  mostrarSecao('inicio'); // Atualiza a página inicial imediatamente
+  mostrarSecao('inicio');
 }
 
 // ===== Player embutido =====
@@ -204,9 +204,8 @@ function abrirVideo(item){
   videoEl.play();
 }
 
-// ===== Demais funções de interface e dados (mesmo do seu código original) =====
-// Aqui permanecem todas as funções de criarFila, abrirModalTemporadas, mostrarSecao, pesquisar etc.
-// Para economizar espaço, estou mantendo exatamente igual ao código que você enviou, sem alterações.
+// ===== Aqui permanecem todas as funções de criarFila, abrirModalTemporadas, mostrarSecao, pesquisar etc. exatamente como no seu código original =====
+
 carregarLista(); carregarProgresso();
 mostrarSecao('inicio');
 
