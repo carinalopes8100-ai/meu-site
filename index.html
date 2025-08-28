@@ -149,6 +149,12 @@ function adicionarMinhaLista(titulo){
 
 // ===== Player embutido =====
 function abrirVideo(item){
+  if(!progresso[item.titulo]) {
+    progresso[item.titulo] = 0;
+    salvarProgresso();
+    mostrarSecao('inicio');
+  }
+
   const videoModal = document.createElement('div');
   videoModal.style.position='fixed';
   videoModal.style.top='0'; videoModal.style.left='0';
@@ -163,11 +169,13 @@ function abrirVideo(item){
   videoEl.style.width='80%';
   videoEl.style.height='80%';
 
-  // Retomar do progresso salvo
   if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
 
-  // Salvar progresso em tempo real
-  videoEl.ontimeupdate = () => { progresso[item.titulo] = videoEl.currentTime; salvarProgresso(); mostrarSecao('inicio'); };
+  videoEl.ontimeupdate = () => { 
+    progresso[item.titulo] = videoEl.currentTime; 
+    salvarProgresso(); 
+    mostrarSecao('inicio'); 
+  };
 
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
