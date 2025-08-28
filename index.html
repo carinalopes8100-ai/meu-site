@@ -122,13 +122,11 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 let minhaLista = [];
 let progresso = {};
 
-// ===== Funções para localStorage =====
 function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
 function carregarLista() { const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
 function salvarProgresso() { localStorage.setItem("progresso", JSON.stringify(progresso)); }
 function carregarProgresso() { const p = localStorage.getItem("progresso"); if(p) progresso = JSON.parse(p); }
 
-// ===== Toast notifications =====
 function mostrarToast(mensagem){
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div'); toast.className = 'toast'; toast.textContent = mensagem;
@@ -137,17 +135,15 @@ function mostrarToast(mensagem){
   setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
 
-// ===== Funções da lista =====
 function adicionarMinhaLista(titulo){
   if(!minhaLista.includes(titulo)){
     minhaLista.push(titulo); salvarLista(); mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
   } else {
     minhaLista = minhaLista.filter(t => t!==titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`);
   }
-  mostrarSecao('inicio'); // Atualiza a página inicial imediatamente
+  mostrarSecao('inicio');
 }
 
-// ===== Player embutido =====
 function abrirVideo(item){
   const videoModal = document.createElement('div');
   videoModal.style.position='fixed';
@@ -163,11 +159,20 @@ function abrirVideo(item){
   videoEl.style.width='80%';
   videoEl.style.height='80%';
 
-  // Retomar do progresso salvo
   if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
 
-  // Salvar progresso em tempo real
-  videoEl.ontimeupdate = () => { progresso[item.titulo] = videoEl.currentTime; salvarProgresso(); mostrarSecao('inicio'); };
+  videoEl.ontimeupdate = () => { 
+    progresso[item.titulo] = videoEl.currentTime; 
+    salvarProgresso(); 
+    mostrarSecao('inicio'); 
+  };
+
+  // Remover automaticamente da fila Continuar Assistindo quando terminar
+  videoEl.onended = () => {
+    delete progresso[item.titulo];
+    salvarProgresso();
+    mostrarSecao('inicio');
+  };
 
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
@@ -283,7 +288,7 @@ function mostrarSecao(secao){
   const root=document.getElementById('root'); root.innerHTML='';
 
   if(secao==='inicio'){
-    const continuar = [...filmes,...series,...filmesTerror].filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
+    const continuar = [...filmes,...series,...filmesTerror].filter(i=>progresso[i.titulo] && progresso[i.titulo]>0 && progresso[i.titulo]<100);
     if(continuar.length>0) root.appendChild(criarFila('filaContinuar',continuar,'filme','Continuar Assistindo'));
 
     if(minhaLista.length>0){
