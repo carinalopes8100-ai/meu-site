@@ -429,27 +429,46 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
     const itemDiv=document.createElement('div'); itemDiv.className='filme';
     const img=document.createElement('img'); img.src=item.img; img.alt=item.titulo; itemDiv.appendChild(img);
 
-if (progresso[item.titulo] && progresso[item.titulo] > 0) {
-  const duracao = item.duracao || 100; // total em segundos
-  const porcentagem = Math.min((progresso[item.titulo] / duracao) * 100, 100); // evita passar de 100%
+if(progresso[item.titulo] && progresso[item.titulo] > 0){
+    const progressoDiv = document.createElement('div');
+    progressoDiv.style.position = 'absolute';
+    progressoDiv.style.bottom = '0';
+    progressoDiv.style.left = '0';
+    progressoDiv.style.width = '100%';
+    progressoDiv.style.height = '5px';
+    progressoDiv.style.backgroundColor = 'rgba(255,255,255,0.3)';
 
-  const progressoDiv = document.createElement('div');
-  progressoDiv.style.position = 'absolute';
-  progressoDiv.style.bottom = '0';
-  progressoDiv.style.left = '0';
-  progressoDiv.style.width = '100%';
-  progressoDiv.style.height = '5px';
-  progressoDiv.style.backgroundColor = 'rgba(255,255,255,0.3)';
+    const progressoInner = document.createElement('div');
+    progressoInner.style.height = '100%';
+    progressoInner.style.backgroundColor = '#e50914';
+    progressoInner.style.width = '0%'; // começa em 0 até calcularmos
 
-  const progressoInner = document.createElement('div');
-  progressoInner.style.height = '100%';
-  progressoInner.style.width = porcentagem + '%';
-  progressoInner.style.backgroundColor = '#e50914';
+    progressoDiv.appendChild(progressoInner);
+    itemDiv.appendChild(progressoDiv);
 
-  progressoDiv.appendChild(progressoInner);
-  itemDiv.style.position = 'relative'; // importante para a barra ficar sobre a imagem
-  itemDiv.appendChild(progressoDiv);
+    // Função para atualizar a barra
+    const atualizarBarra = (duracao) => {
+        const porcentagem = Math.min((progresso[item.titulo] / duracao) * 100, 100);
+        progressoInner.style.width = porcentagem + '%';
+    };
+
+    // Se tiver duração já definida no objeto
+    if(item.duracao){
+        atualizarBarra(item.duracao);
+    } else if(item.link){
+        // Criar vídeo temporário para pegar a duração
+        const tempVideo = document.createElement('video');
+        tempVideo.src = item.link;
+        tempVideo.preload = 'metadata';
+        tempVideo.addEventListener('loadedmetadata', () => {
+            atualizarBarra(tempVideo.duration);
+        });
+    } else {
+        // fallback
+        progressoInner.style.width = '50%';
+    }
 }
+
 
 
     const overlay=document.createElement('div'); overlay.className='filme-hover-overlay';
