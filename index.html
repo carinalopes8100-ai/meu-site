@@ -15,14 +15,29 @@ nav div { cursor:pointer; transition:color .2s; }
 nav div:hover { color:#e50914; text-decoration:underline; }
 
 
- /* Ajuste para telas pequenas (celular) */
-@media (max-width: 768px) {
-.botao-scroll {
- width: 40px;
- height: 40px;
-font-size: 18px;
-}
- }
+        /* Estilo padrão dos botões */
+        .botao-scroll {
+            width: 30px;
+            height: 30px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Ajuste para telas pequenas (celular) */
+        @media (max-width: 768px) {
+            .botao-scroll {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+        }
+
+        /* Exemplo de fila horizontal */
+        .fila {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+        }
 
 /* Barra de pesquisa */
 #searchContainer { margin-left:auto; }
