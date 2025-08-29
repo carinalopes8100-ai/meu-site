@@ -520,7 +520,7 @@ function mostrarSecao(secao){
     if(secao === 'inicio'){
         const continuar = [...filmes,...series,...filmesTerror].filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
         if(continuar.length > 0){
-            root.appendChild(criarFila('filaContinuar', continuar, 'filme', 'Continuar Assistindo'));
+            root.appendChild(criarFila('filaContinuar', continuar, 'filme', 'Continuar a ver'));
         }
 
         if(minhaLista.length > 0){
