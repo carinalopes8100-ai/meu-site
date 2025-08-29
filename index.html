@@ -441,18 +441,15 @@ if(progresso[item.titulo] && progresso[item.titulo] > 0){
     const progressoInner = document.createElement('div');
     progressoInner.style.height = '100%';
     progressoInner.style.backgroundColor = '#e50914';
-    progressoInner.style.width = '0%';
-    progressoInner.dataset.titulo = item.titulo; // pra identificar depois
-
     progressoDiv.appendChild(progressoInner);
     itemDiv.appendChild(progressoDiv);
 
-    // atualiza a barra com a duração do item
     const atualizarBarra = (duracao) => {
         const pct = Math.min((progresso[item.titulo] / duracao) * 100, 100);
         progressoInner.style.width = pct + '%';
     };
 
+    // Se tiver duração definida
     if(item.duracao){
         atualizarBarra(item.duracao);
     } else if(item.link){
@@ -460,21 +457,23 @@ if(progresso[item.titulo] && progresso[item.titulo] > 0){
         tempVideo.src = item.link;
         tempVideo.preload = 'metadata';
         tempVideo.addEventListener('loadedmetadata', () => {
+            item.duracao = tempVideo.duration; // salva duração no item
             atualizarBarra(tempVideo.duration);
         });
     }
 
-    // EVENTO: quando o vídeo for aberto, atualizar barra em tempo real
-    const video = document.getElementById('playerVideo'); // seu elemento de vídeo
-    video?.addEventListener('timeupdate', () => {
-        if(video.dataset.titulo === item.titulo){ // só atualiza a barra correta
-            progresso[item.titulo] = video.currentTime;
-            const dur = item.duracao || video.duration;
-            atualizarBarra(dur);
-            salvarProgresso();
+    // Atualizar barra em tempo real quando o vídeo é reproduzido
+    const observer = new MutationObserver(() => {
+        const video = document.getElementById('playerVideo');
+        if(video && video.dataset.titulo === item.titulo){
+            video.addEventListener('timeupdate', () => {
+                atualizarBarra(video.duration);
+            });
         }
     });
+    observer.observe(document.body, {childList: true, subtree: true});
 }
+
 
 
 
