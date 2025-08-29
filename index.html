@@ -441,32 +441,39 @@ if(progresso[item.titulo] && progresso[item.titulo] > 0){
     const progressoInner = document.createElement('div');
     progressoInner.style.height = '100%';
     progressoInner.style.backgroundColor = '#e50914';
-    progressoInner.style.width = '0%'; // começa em 0 até calcularmos
+    progressoInner.style.width = '0%';
+    progressoInner.dataset.titulo = item.titulo; // pra identificar depois
 
     progressoDiv.appendChild(progressoInner);
     itemDiv.appendChild(progressoDiv);
 
-    // Função para atualizar a barra
+    // atualiza a barra com a duração do item
     const atualizarBarra = (duracao) => {
-        const porcentagem = Math.min((progresso[item.titulo] / duracao) * 100, 100);
-        progressoInner.style.width = porcentagem + '%';
+        const pct = Math.min((progresso[item.titulo] / duracao) * 100, 100);
+        progressoInner.style.width = pct + '%';
     };
 
-    // Se tiver duração já definida no objeto
     if(item.duracao){
         atualizarBarra(item.duracao);
     } else if(item.link){
-        // Criar vídeo temporário para pegar a duração
         const tempVideo = document.createElement('video');
         tempVideo.src = item.link;
         tempVideo.preload = 'metadata';
         tempVideo.addEventListener('loadedmetadata', () => {
             atualizarBarra(tempVideo.duration);
         });
-    } else {
-        // fallback
-        progressoInner.style.width = '50%';
     }
+
+    // EVENTO: quando o vídeo for aberto, atualizar barra em tempo real
+    const video = document.getElementById('playerVideo'); // seu elemento de vídeo
+    video?.addEventListener('timeupdate', () => {
+        if(video.dataset.titulo === item.titulo){ // só atualiza a barra correta
+            progresso[item.titulo] = video.currentTime;
+            const dur = item.duracao || video.duration;
+            atualizarBarra(dur);
+            salvarProgresso();
+        }
+    });
 }
 
 
