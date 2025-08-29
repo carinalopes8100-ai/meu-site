@@ -453,15 +453,20 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
     addBtn.onclick=(e)=>{ e.stopPropagation(); adicionarMinhaLista(item.titulo); updateButton(); }
     updateButton(); itemDiv.appendChild(addBtn);
 
-    if(idFila === 'filaContinuar'){
-        const removeBtn = document.createElement('button');
-        removeBtn.className = 'remove-continuar-btn';
-        removeBtn.textContent = '✖';
-        removeBtn.title = 'Remover da fila Continuar Assistindo';
-        removeBtn.onclick = (e)=>{ e.stopPropagation(); delete progresso[item.titulo]; salvarProgresso(); mostrarSecao('inicio'); }
+if(idFila === 'filaContinuar'){
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-continuar-btn';
+    removeBtn.textContent = '✖';
+    removeBtn.title = 'Remover da fila Continuar Assistindo';
+    removeBtn.onclick = (e) => { 
+        e.stopPropagation(); 
+        delete progresso[item.titulo]; 
+        salvarProgresso(); 
+        mostrarSecao('inicio'); 
         mostrarToast(`"${item.titulo}" removido da fila Continuar Assistindo!`);
-        itemDiv.appendChild(removeBtn);
     }
+    itemDiv.appendChild(removeBtn);
+}
 
     fila.appendChild(itemDiv);
   });
