@@ -156,39 +156,6 @@ function mostrarToast(mensagem){
   setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
 
-<script>
-  let minhaLista = []; // inicializa a lista
-
-  function salvarLista() {
-    localStorage.setItem('minhaLista', JSON.stringify(minhaLista));
-  }
-
-  function mostrarToast(msg) {
-    alert(msg); // ou sua implementação de toast
-  }
-
-  function mostrarSecao(secao) {
-    console.log("Mudando para a seção:", secao); // se você tiver uma lógica de seções
-  }
-
-  function adicionarMinhaLista(titulo) {
-    const botao = document.querySelector('.banner-content .lista');
-
-    if (!minhaLista.includes(titulo)) {
-      minhaLista.push(titulo);
-      salvarLista();
-      botao.textContent = "Remover da Lista";
-      mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
-    } else {
-      minhaLista = minhaLista.filter(t => t !== titulo);
-      salvarLista();
-      botao.textContent = "+ Minha Lista";
-      mostrarToast(`"${titulo}" removido da Minha Lista!`);
-    }
-
-    mostrarSecao('inicio');
-  }
-</script>
   
 
 function adicionarMinhaLista(titulo){
@@ -199,6 +166,25 @@ function adicionarMinhaLista(titulo){
   }
   mostrarSecao('inicio');
 }
+
+function adicionarMinhaLista(titulo) {
+  const botao = document.querySelector('.banner-content .lista');
+
+  if (!minhaLista.includes(titulo)) {
+    minhaLista.push(titulo);
+    salvarLista(); // garante que a lista fique salva
+    botao.textContent = "Remover da Lista"; // atualiza o botão
+    mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
+  } else {
+    minhaLista = minhaLista.filter(t => t !== titulo);
+    salvarLista();
+    botao.textContent = "+ Minha Lista"; // atualiza o botão
+    mostrarToast(`"${titulo}" removido da Minha Lista!`);
+  }
+
+  mostrarSecao('inicio'); // se você quiser voltar à seção inicial
+}
+  
 
 
 function abrirVideo(item){
