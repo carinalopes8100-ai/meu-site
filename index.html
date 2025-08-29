@@ -432,11 +432,18 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
 if(progresso[item.titulo] && progresso[item.titulo] > 0){
   const duracao = item.duracao || 100;
   const porcentagem = (progresso[item.titulo] / duracao) * 100;
-  itemDiv.style.position = 'relative';
-  itemDiv.style.background = `
-    linear-gradient(to right, #e50914 ${porcentagem}%, rgba(255,255,255,0.3) ${porcentagem}%)
-  `;
+
+  const overlayBar = document.createElement('div');
+  overlayBar.style.position = 'absolute';
+  overlayBar.style.bottom = '0';
+  overlayBar.style.left = '0';
+  overlayBar.style.width = '100%';
+  overlayBar.style.height = '5px';
+  overlayBar.style.background = `linear-gradient(to right, #e50914 ${porcentagem}%, rgba(255,255,255,0.3) ${porcentagem}%)`;
+  itemDiv.style.position = 'relative'; // muito importante!
+  itemDiv.appendChild(overlayBar);
 }
+
 
     const overlay=document.createElement('div'); overlay.className='filme-hover-overlay';
     const btnPlay=document.createElement('button'); btnPlay.textContent='▶ Assistir';
