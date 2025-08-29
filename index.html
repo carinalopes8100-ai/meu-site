@@ -429,12 +429,14 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
     const itemDiv=document.createElement('div'); itemDiv.className='filme';
     const img=document.createElement('img'); img.src=item.img; img.alt=item.titulo; itemDiv.appendChild(img);
 
-    if(progresso[item.titulo] && progresso[item.titulo] > 0){
-      const progressoDiv = document.createElement('div');
-      progressoDiv.style.position = 'absolute'; progressoDiv.style.bottom='0'; progressoDiv.style.left='0'; progressoDiv.style.width='100%'; progressoDiv.style.height='5px'; progressoDiv.style.backgroundColor='rgba(255,255,255,0.3)';
-      const progressoInner = document.createElement('div'); progressoInner.style.height='100%'; progressoInner.style.backgroundColor='#e50914'; progressoInner.style.width=progresso[item.titulo]+'%';
-      progressoDiv.appendChild(progressoInner); itemDiv.appendChild(progressoDiv);
-    }
+if(progresso[item.titulo] && progresso[item.titulo] > 0){
+  const duracao = item.duracao || 100;
+  const porcentagem = (progresso[item.titulo] / duracao) * 100;
+  itemDiv.style.position = 'relative';
+  itemDiv.style.background = `
+    linear-gradient(to right, #e50914 ${porcentagem}%, rgba(255,255,255,0.3) ${porcentagem}%)
+  `;
+}
 
     const overlay=document.createElement('div'); overlay.className='filme-hover-overlay';
     const btnPlay=document.createElement('button'); btnPlay.textContent='▶ Assistir';
