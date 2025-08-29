@@ -526,19 +526,18 @@ function mostrarSecao(secao){
   else if(secao==='series'){ root.appendChild(criarFila('fila2',series,'serie')); } 
   else if(secao==='terror'){ root.appendChild(criarFila('fila3',filmesTerror,'filme')); } 
   else if(secao==='lista'){
-    const listaContainer = document.createElement('div'); listaContainer.className='fila-container'; listaContainer.id='listaContainer';
-    const tituloDiv = document.createElement('div'); tituloDiv.className='fila-titulo'; tituloDiv.textContent='Minha Lista'; listaContainer.appendChild(tituloDiv);
-    const filaDiv = document.createElement('div'); filaDiv.className='fila';
+    const root = document.getElementById('root');
+    root.innerHTML = ''; // limpa o conteúdo anterior
     const todosItens = [...filmes,...series,...filmesTerror];
-    minhaLista.forEach(titulo=>{
-      const item = todosItens.find(i=>i.titulo===titulo);
-      if(item){
-        const card = criarFila('card'+titulo,[item],'filme'); filaDiv.appendChild(card);
-      }
+    minhaLista.forEach(titulo => {
+        const item = todosItens.find(i => i.titulo === titulo);
+        if(item){
+            const card = criarFila('card'+titulo, [item], 'filme'); 
+            root.appendChild(card); // adiciona o container inteiro
+        }
     });
-    listaContainer.appendChild(filaDiv); root.appendChild(listaContainer);
-  }
 }
+
 
 function pesquisar(){
   const termo = document.getElementById('searchInput').value.toLowerCase().trim();
