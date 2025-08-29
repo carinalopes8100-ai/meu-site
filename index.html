@@ -430,7 +430,7 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
     const img=document.createElement('img'); img.src=item.img; img.alt=item.titulo; itemDiv.appendChild(img);
 
 if(progresso[item.titulo] && progresso[item.titulo] > 0){
-  const duracao = item.duracao || 100;
+  const duracao = item.duracao || 100; // duração total do vídeo em segundos
   const porcentagem = (progresso[item.titulo] / duracao) * 100;
 
   const overlayBar = document.createElement('div');
@@ -440,7 +440,8 @@ if(progresso[item.titulo] && progresso[item.titulo] > 0){
   overlayBar.style.width = '100%';
   overlayBar.style.height = '5px';
   overlayBar.style.background = `linear-gradient(to right, #e50914 ${porcentagem}%, rgba(255,255,255,0.3) ${porcentagem}%)`;
-  itemDiv.style.position = 'relative'; // muito importante!
+  
+  itemDiv.style.position = 'relative'; // importante para a barra ficar sobre a imagem
   itemDiv.appendChild(overlayBar);
 }
 
