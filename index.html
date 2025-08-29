@@ -482,12 +482,25 @@ function abrirModalTemporadas(serie){
 
 function abrirModalEpisodios(temporada, serieTitulo){
   document.getElementById('modalTitle').textContent=`Escolha o episódio - ${serieTitulo} (Temporada ${temporada.numero})`;
-  const list=document.getElementById('episodiosList'); list.innerHTML='';
-  temporada.episodios.forEach(ep=>{
-    const btn=document.createElement('button'); btn.className='episodio-btn'; btn.textContent=`Episódio ${ep.numero}`;
-    btn.onclick=()=>abrirVideo({titulo:serieTitulo+' - Ep '+ep.numero, link:ep.link}); list.appendChild(btn);
+  const list=document.getElementById('episodiosList'); 
+  list.innerHTML='';
+
+  temporada.episodios.forEach((ep, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'episodio-btn';
+
+    // Se for o último episódio, marca como "Final"
+    if (idx === temporada.episodios.length - 1) {
+      btn.textContent = `Episódio ${ep.numero} Final`;
+    } else {
+      btn.textContent = `Episódio ${ep.numero}`;
+    }
+
+    btn.onclick = () => abrirVideo({ titulo: serieTitulo + ' - Ep ' + ep.numero, link: ep.link });
+    list.appendChild(btn);
   });
 }
+
 
 function fecharModal(){ document.getElementById('modal').style.display='none'; }
 
