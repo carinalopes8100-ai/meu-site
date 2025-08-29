@@ -533,7 +533,7 @@ function mostrarSecao(secao){
     minhaLista.forEach(titulo=>{
       const item = todosItens.find(i=>i.titulo===titulo);
       if(item){
-        const card = criarFila('card'+titulo,[item],'filme'); filaDiv.appendChild(card.firstChild);
+        const card = criarFila('card'+titulo,[item],'filme'); filaDiv.appendChild(card);
       }
     });
     listaContainer.appendChild(filaDiv); root.appendChild(listaContainer);
