@@ -310,6 +310,26 @@ const series = [
   ]
 },
 
+      {
+    titulo: "Arcanjo Renegado",
+    img: "https://image.tmdb.org/t/p/original/htQ7JUhr477DjWapcDVQc9gRUQ.jpg",
+    trailer: "http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true",
+    temporadas: [
+      {
+        numero: 1,
+        episodios: [
+          { numero: 1, link: "http://localhost:8096/Videos/6f9b24bdd4d4e2954b5a732a2e1faa05/stream.mp4?Static=true" },
+          { numero: 2, link: "http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true" },
+          ...Array.from({ length: 8 }, (_, i) => ({ numero: i + 3, link: "#" }))
+        ]
+      },
+      {
+        numero: 2,
+        episodios: Array.from({ length: 10 }, (_, i) => ({ numero: i + 1, link: "#" }))
+      }
+    ]
+  },
+
 
   {
   "titulo": "Rabo De Peixe",
@@ -335,24 +355,27 @@ const series = [
 },
 
     {
-    titulo: "Arcanjo Renegado",
-    img: "https://image.tmdb.org/t/p/original/htQ7JUhr477DjWapcDVQc9gRUQ.jpg",
-    trailer: "http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true",
-    temporadas: [
-      {
-        numero: 1,
-        episodios: [
-          { numero: 1, link: "http://localhost:8096/Videos/6f9b24bdd4d4e2954b5a732a2e1faa05/stream.mp4?Static=true" },
-          { numero: 2, link: "http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true" },
-          ...Array.from({ length: 8 }, (_, i) => ({ numero: i + 3, link: "#" }))
-        ]
-      },
-      {
-        numero: 2,
-        episodios: Array.from({ length: 10 }, (_, i) => ({ numero: i + 1, link: "#" }))
-      }
-    ]
-  },
+  "titulo": "Ted A Série",
+  "img": "https://mistertorrent.org/wp-content/uploads/2024/08/Ted-A-Serie-1-Temporada-Torrent.webp",
+  "trailer": "http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true",
+  "temporadas": [
+    {
+      "numero": 1,
+      "episodios": [
+        { "numero": 1, "link": "http://localhost:8096/Videos/6f9b24bdd4d4e2954b5a732a2e1faa05/stream.mp4?Static=true" },
+        { "numero": 2, "link": "http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true" },
+        { "numero": 3, "link": "#" },
+        { "numero": 4, "link": "#" },
+        { "numero": 5, "link": "#" },
+        { "numero": 6, "link": "#" },
+        { "numero": 7, "link": "#" },
+        { "numero": 8, "link": "#" },
+        { "numero": 9, "link": "#" },
+        { "numero": 10, "link": "#" }
+      ]
+    }
+  ]
+},
   
   {
     titulo: "Morangos com Açúcar",
