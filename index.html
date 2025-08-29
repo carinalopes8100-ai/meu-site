@@ -489,9 +489,9 @@ function abrirModalEpisodios(temporada, serieTitulo){
     const btn = document.createElement('button');
     btn.className = 'episodio-btn';
 
-    // Se for o último episódio, marca como "Final"
+    // Se for o último episódio, mostra "Episódio Final X"
     if (idx === temporada.episodios.length - 1) {
-      btn.textContent = `Episódio ${ep.numero} Final`;
+      btn.textContent = `Episódio Final ${ep.numero}`;
     } else {
       btn.textContent = `Episódio ${ep.numero}`;
     }
@@ -500,6 +500,7 @@ function abrirModalEpisodios(temporada, serieTitulo){
     list.appendChild(btn);
   });
 }
+
 
 
 function fecharModal(){ document.getElementById('modal').style.display='none'; }
