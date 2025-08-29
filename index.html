@@ -14,6 +14,16 @@ nav { display:flex; gap:15px; margin-left: 15px; }
 nav div { cursor:pointer; transition:color .2s; }
 nav div:hover { color:#e50914; text-decoration:underline; }
 
+
+ /* Ajuste para telas pequenas (celular) */
+@media (max-width: 768px) {
+.botao-scroll {
+ width: 40px;
+ height: 40px;
+font-size: 18px;
+}
+ }
+
 /* Barra de pesquisa */
 #searchContainer { margin-left:auto; }
 #searchContainer input { padding:6px 12px; border-radius:4px; border:none; outline:none; font-size:14px; }
