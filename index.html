@@ -158,13 +158,10 @@ function mostrarToast(mensagem){
 
 function adicionarMinhaLista(titulo){
   if(!minhaLista.includes(titulo)){
-    minhaLista.push(titulo);
+    minhaLista.push(titulo); salvarLista(); mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
   } else {
-    minhaLista = minhaLista.filter(t => t!==titulo);
+    minhaLista = minhaLista.filter(t => t!==titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`);
   }
-  salvarLista();
-  console.log("Minha Lista Atual:", minhaLista);
-  mostrarToast(`"${titulo}" atualizado na Minha Lista!`);
   mostrarSecao('inicio');
 }
 
