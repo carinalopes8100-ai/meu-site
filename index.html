@@ -744,7 +744,7 @@ if(progresso[item.titulo] && progresso[item.titulo] > 0){
     const btnPlay=document.createElement('button'); btnPlay.textContent='▶ Assistir';
     btnPlay.onclick=(e)=>{
       e.stopPropagation();
-      const s = series.find(s=>s.titulo===item.titulo);
+      const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
       if(s){ abrirModalTemporadas(s); }
       else { abrirVideo(item); }
     };
