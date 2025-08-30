@@ -219,6 +219,20 @@ function abrirVideo(item){
   videoEl.style.width='80%';
   videoEl.style.height='80%';
 
+  
+  // Adiciona legendas se existirem
+  if(item.legendas){
+    item.legendas.forEach(l => {
+      const track = document.createElement('track');
+      track.kind = 'subtitles';
+      track.label = l.label;
+      track.srclang = l.lang;
+      track.src = l.src;
+      if(l.default) track.default = true;
+      videoEl.appendChild(track);
+    });
+  }
+
   if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
   let terminou = false;
   videoEl.onended = () => { terminou = true; delete progresso[item.titulo]; salvarProgresso(); mostrarSecao('inicio'); };
