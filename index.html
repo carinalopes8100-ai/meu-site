@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>EightyOne</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
+
+
+header { position: fixed; top:0; left:0; width:100%; height:60px; background:#141414; display:flex; align-items:center; justify-content:flex-start; padding:0 40px; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.5); }
+header h1 { color:#e50914; font-size:24px; cursor:pointer; }
+nav { display:flex; gap:15px; margin-left: 15px; }
+nav div { cursor:pointer; transition:color .2s; }
+nav div:hover { color:#e50914; text-decoration:underline; }
+
+
+/* Barra de pesquisa */
+#searchContainer { margin-left:auto; }
+#searchContainer input { padding:6px 12px; border-radius:4px; border:none; outline:none; font-size:14px; }
+#searchContainer button { padding:6px 12px; margin-left:5px; border:none; border-radius:4px; background:#e50914; color:#fff; cursor:pointer; font-weight:bold; transition:background .2s; }
+#searchContainer button:hover { background:#b20710; }
+
+.banner { position: relative; width:100%; height:70vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
+.banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
+.banner-content { position:relative; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:15px; }
+.banner h1 { font-size:48px; margin-bottom:10px; }
+.banner p { font-size:18px; margin-bottom:20px; }
+.banner-content button { width:160px; padding:12px 0; font-size:16px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; transition: background .2s; }
+.banner-content button.play { background:#fff; color:#000; }
+.banner-content button.play:hover { background:#ddd; }
+.banner-content button.lista { background:rgba(109,109,110,0.7); color:#fff; }
+.banner-content button.lista:hover { background:rgba(109,109,110,0.5); }
+
+#root { margin-top:80px; }
+
+.fila-container { margin:20px 50px; position:relative; }
+.fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
+.fila { display:flex; overflow-x:auto; gap:16px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
+.fila::-webkit-scrollbar { display:none; }
+.filme { width:180px; height:270px; border-radius:5px; overflow:hidden; cursor:pointer; position:relative; flex-shrink:0; transition:transform .3s; }
+.filme:hover { transform:scale(1.08); z-index:2; }
+.filme img { width:100%; height:100%; object-fit:cover; display:block; }
+
+.filme-hover-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; gap:10px; opacity:0; transition:opacity .3s; flex-direction:column; border-radius:5px; z-index:5; }
+.filme:hover .filme-hover-overlay { opacity:1; }
+.filme-hover-overlay button { width:100px; padding:8px 0; background:#e50914; border:none; color:#fff; font-weight:bold; cursor:pointer; border-radius:4px; transition: background .2s; }
+.filme-hover-overlay button:hover { background:#b20710; }
+
+.add-list-btn { position:absolute; bottom:5px; right:5px; width:30px; height:30px; border-radius:50%; border:none; background:#e50914; color:#fff; font-weight:bold; cursor:pointer; font-size:18px; z-index:6; transition: background .2s; opacity:0; }
+.filme:hover .add-list-btn { opacity:1; }
+
+.btn-scroll { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.6); border:none; color:#fff; font-size:30px; width:40px; height:80px; cursor:pointer; z-index:10; border-radius:4px; display:flex; align-items:center; justify-content:center; }
+.btn-scroll:hover { background:rgba(229,9,20,.8); }
+.btn-left { left:0; }
+.btn-right { right:0; }
+
+.modal { display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; }
+.modal-content { background:#222; padding:25px; border-radius:10px; max-width:500px; width:90%; text-align:center; }
+.modal h2 { margin-bottom:20px; }
+.episodio-btn, .temporada-btn { display:block; margin:10px 0; padding:12px; background:#e50914; border:none; border-radius:5px; color:#fff; cursor:pointer; font-size:16px; width:100%; transition:background .2s; }
+.episodio-btn:hover, .temporada-btn:hover { background:#b20710; }
+.close-btn { margin-top:15px; padding:10px 20px; background:#555; border:none; border-radius:5px; color:#fff; cursor:pointer; transition:background .2s; }
+.close-btn:hover { background:#333; }
+
+/* Scroll interno para temporadas/episódios sem mostrar a barra */
+#episodiosList {
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;  /* IE e Edge antigos */
+}
+#episodiosList::-webkit-scrollbar { /* Chrome, Safari, Edge */
+  display: none;
+}
+
+.toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 20000; }
+.toast { background: rgba(51, 51, 51, 0.95); color: #fff; padding: 12px 20px; border-radius: 5px; min-width: 220px; max-width: 300px; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.7); opacity: 0; transform: translateX(100%); animation: slideIn 0.5s forwards, fadeOut 0.5s forwards 3s; }
+.toast button { background: none; border: none; color: #e50914; font-weight: bold; cursor: pointer; margin-left: 10px; }
+@keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeOut { to { opacity: 0; transform: translateX(100%); } }
+
+.filme .remove-continuar-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 25px;
+  height: 25px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 7;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.filme:hover .remove-continuar-btn { opacity: 1; }
+</style>
+</head>
+<body>
+
+<header>
+<h1>EightyOne</h1>
+<nav>
+<div onclick="mostrarSecao('inicio')">Página Inicial</div>
+<div onclick="mostrarSecao('series')">Séries</div>
+<div onclick="mostrarSecao('filmes')">Filmes</div>
+<div onclick="mostrarSecao('terror')">Terror</div>
+<div onclick="mostrarSecao('lista')">A Minha Lista</div>
+</nav>
+<div id="searchContainer">
+  <input type="text" id="searchInput" placeholder="Pesquisar...">
+  <button onclick="pesquisar()">🔍︎</button>
+</div>
+</header>
+
+  
+
+
+
+<div class="banner">
+  <img id="bannerImage" src="https://images.justwatch.com/poster/334324389/s718/lilo-and-stitch-2025.jpg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;">
+  <video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay muted loop>
+    <source src="https://ia801003.us.archive.org/7/items/oficial-dublado/Lilo%20e%20Stitch%20%20Trailer%20Oficial%20Dublado.mp4" type="video/mp4">
+  </video>
+  <div class="banner-content">
+    <h1>Lilo & Stitch 2025</h1>
+    <p>Uma animação divertida e emocionante para toda a família.</p>
+    <button class="play" onclick="abrirVideo(filmes[0])">▶ Assistir</button>
+    <button class="lista" onclick="adicionarMinhaLista('Lilo & Stitch 2025')">+ Minha Lista</button>
+  </div>
+</div>
+
+<div id="root"></div>
+
+<div id="modal" class="modal">
+  <div class="modal-content" id="modalContent">
+    <h2 id="modalTitle">Escolha a temporada</h2>
+    <div id="episodiosList"></div>
+    <button class="close-btn" onclick="fecharModal()">Fechar</button>
+  </div>
+</div>
+
+<div id="toastContainer" class="toast-container"></div>
+
+<script>
+let minhaLista = [];
+let progresso = {};
+
+function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
+function carregarLista() { const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
+function salvarProgresso() { localStorage.setItem("progresso", JSON.stringify(progresso)); }
+function carregarProgresso() { const p = localStorage.getItem("progresso"); if(p) progresso = JSON.parse(p); }
+
+function mostrarToast(mensagem){
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div'); toast.className = 'toast'; toast.textContent = mensagem;
+  const btn = document.createElement('button'); btn.textContent = '✖'; btn.onclick = () => container.removeChild(toast);
+  toast.appendChild(btn); container.appendChild(toast);
+  setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
+}
+
+  
+
+function adicionarMinhaLista(titulo){
+  if(!minhaLista.includes(titulo)){
+    minhaLista.push(titulo); salvarLista(); mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
+  } else {
+    minhaLista = minhaLista.filter(t => t!==titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`);
+  }
+  mostrarSecao('inicio');
+}
+
+function adicionarMinhaLista(titulo) {
+  const botao = document.querySelector('.banner-content .lista');
+
+  if (!minhaLista.includes(titulo)) {
+    minhaLista.push(titulo);
+    salvarLista(); // garante que a lista fique salva
+    botao.textContent = "Remover da Lista"; // atualiza o botão
+    mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
+  } else {
+    minhaLista = minhaLista.filter(t => t !== titulo);
+    salvarLista();
+    botao.textContent = "+ Minha Lista"; // atualiza o botão
+    mostrarToast(`"${titulo}" removido da Minha Lista!`);
+  }
+
+  mostrarSecao('inicio'); // se você quiser voltar à seção inicial
+}
+
+// <<< AQUI: adicionar o código para oncanplaythrough >>>
+const bannerVideo = document.getElementById('bannerVideo');
+const bannerImage = document.getElementById('bannerImage');
+
+bannerVideo.oncanplaythrough = () => {
+  bannerImage.style.display = 'none';
+  bannerVideo.style.display = 'block';
+};
+
+
+  
+
+
+
+
+function abrirVideo(item){
+  const videoModal = document.createElement('div');
+  videoModal.style.position = 'fixed';
+  videoModal.style.top = '0';
+  videoModal.style.left = '0';
+  videoModal.style.width = '100%';
+  videoModal.style.height = '100%';
+  videoModal.style.background = 'rgba(0,0,0,0.9)';
+  videoModal.style.display = 'flex';
+  videoModal.style.justifyContent = 'center';
+  videoModal.style.alignItems = 'center';
+  videoModal.style.zIndex = '10000';
+  videoModal.style.flexDirection = 'column';
+
+  const videoEl = document.createElement('video');
+  videoEl.src = item.link;
+  videoEl.controls = true;
+  videoEl.style.width = '80%';
+  videoEl.style.height = '80%';
+  
+
+  // Adiciona legendas
+  if (item.legendas) {
+    item.legendas.forEach(l => {
+      const track = document.createElement('track');
+      track.kind = 'subtitles';
+      track.label = l.label;
+      track.srclang = l.lang;
+      track.src = l.src;
+      if(l.default) track.default = true;
+      videoEl.appendChild(track);
+    });
+  }
+
+  // Menu de legendas manual
+  let menu;
+  if(item.legendas && item.legendas.length > 0){
+    menu = document.createElement('select');
+    menu.style.marginTop = '10px';
+    const defaultOption = document.createElement('option');
+    defaultOption.textContent = 'Sem legendas';
+    defaultOption.value = -1;
+    menu.appendChild(defaultOption);
+
+    item.legendas.forEach((l, i) => {
+      const option = document.createElement('option');
+      option.value = i;
+      option.textContent = l.label;
+      menu.appendChild(option);
+      if(l.default) menu.value = i;
+    });
+
+menu.onchange = () => {
+  const tracks = videoEl.textTracks;
+  for(let i=0;i<tracks.length;i++){
+    tracks[i].mode='disabled';
+  }
+  if(menu.value >= 0){
+    tracks[menu.value].mode='showing';
+  }
+};
+
+
+    videoModal.appendChild(menu);
+  }
+
+  // Retoma o progresso
+  if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
+
+  let terminou = false;
+  videoEl.onended = () => { 
+    terminou = true; 
+    delete progresso[item.titulo]; 
+    salvarProgresso(); 
+    mostrarSecao('inicio'); 
+    videoModal.remove();
+  };
+
+  videoEl.ontimeupdate = () => { 
+    if(!terminou) progresso[item.titulo] = videoEl.currentTime; 
+  };
+
+  const fecharBtn = document.createElement('button');
+  fecharBtn.textContent = 'Fechar';
+  fecharBtn.style.position='absolute';
+  fecharBtn.style.top='20px';
+  fecharBtn.style.right='20px';
+  fecharBtn.style.padding='10px 20px';
+  fecharBtn.style.cursor='pointer';
+  fecharBtn.onclick = () => { 
+    if(!terminou) salvarProgresso(); 
+    mostrarSecao('inicio'); 
+    videoModal.remove(); 
+  };
+
+  videoModal.appendChild(videoEl);
+  videoModal.appendChild(fecharBtn);
+  document.body.appendChild(videoModal);
+
+  videoEl.addEventListener('loadedmetadata', () => {
+    const tracks = videoEl.textTracks;
+    for(let i=0; i<tracks.length; i++){
+      if(tracks[i].default) tracks[i].mode = 'showing';
+    }
+  });
+
+  videoEl.muted = true;
+  videoEl.play();
+}
+
+
+
+
+// ===== Dados =====
+const filmes = [
+  {titulo:"Lilo & Stitch 2025",img:"https://images.justwatch.com/poster/334324389/s718/lilo-and-stitch-2025.jpg",link:"http://localhost:8096/Videos/fd01e68f98ca97ffe2385321a8419563/stream.mp4?Static=true", trailer:"https://fv5-5.files.fm/thumb_video/uj9qwjaju5.mp4?v=1756556152&PHPSESSID=8731dce80e1edc741a910c606dd2da1d9b19e048"},
+  {titulo:"Gigantes de Aço",img:"https://mistertorrent.org/wp-content/uploads/2022/10/Gigantes-de-Aco-Torrent.jpg",link:"http://localhost:8096/Videos/fd01e68f98ca97ffe2385321a8419563/stream.mp4?Static=true", trailer:"https://ia801003.us.archive.org/7/items/oficial-dublado/Lilo%20e%20Stitch%20%20Trailer%20Oficial%20Dublado.mp4"},
+  {titulo:"O Discípulo",img:"https://imagens.publico.pt/imagens.aspx/1229973?tp=UH&db=IMAGENS&type=JPG&share=1&o=BarraFacebook_P3.png",link:"https://ia600508.us.archive.org/27/items/hd_20250829/O%20Disc%C3%ADpulo%20-%20Filme%20Oficial%20%28HD%29.mp4", trailer:"https://ia600508.us.archive.org/21/items/railer-oficial-hd/O%20Disc%C3%ADpulo%20-%20Trailer%20Oficial%20%28HD%29.mp4"},
+  {titulo:"Depois do Universo",img:"https://br.web.img2.acsta.net/pictures/22/10/27/23/27/5626842.jpg",link:"https://ia800908.us.archive.org/13/items/vxt_202508/Beyond.the.Universe.2022.PORTUGUESE.1080p.WEBRip.x264-VXT.mp4", trailer:"https://ia801003.us.archive.org/23/items/portugues_202508/Depois%20do%20Universo%20%28Teaser%29%20%20Trailer%20em%20Portugu%C3%AAs%20%20Netflix.mp4"},
+  {titulo:"Charm City Kings",img:"https://play-lh.googleusercontent.com/dey1zzkSzAx4KSClYAyRUIoPlx_2Mjwastchrvw0QoOsSzux--skPISgoQmVRuXFiAmTJwVPAfYTnKv8lvM",link:"https://ia600506.us.archive.org/23/items/5.1_20250829/Charm%20City%20Kings%202020%20Web-Dl%201080P%20Dual%205.1.mp4", trailer:"https://ia601007.us.archive.org/16/items/trailer-2_202508/Charm%20City%20Kings%20-%20Official%20Trailer%20%282%29.mp4"},
+  {titulo:"GTMAX",img:"https://image.tmdb.org/t/p/w500/bx92hl70NUhojjO3eV6LqKllj4L.jpg",link:"https://ia802907.us.archive.org/28/items/5.1_20250830/Gtmax.2024.1080P.Web-Dl.Dual.5.1.mp4", trailer:"https://ia601007.us.archive.org/16/items/trailer-2_202508/Charm%20City%20Kings%20-%20Official%20Trailer%20%282%29.mp4"},
+  {titulo:"Ted 1",img:"https://m.media-amazon.com/images/S/pv-target-images/6eaf3141f25909bcf43cc91efb86bf58d02b1129018856023364b101d4ef3bb4.jpg",link:"https://ia600506.us.archive.org/23/items/5.1_20250829/Charm%20City%20Kings%202020%20Web-Dl%201080P%20Dual%205.1.mp4", trailer:"https://ia601007.us.archive.org/16/items/trailer-2_202508/Charm%20City%20Kings%20-%20Official%20Trailer%20%282%29.mp4"},
+  {titulo:"Ted 2",img:"https://m.media-amazon.com/images/S/pv-target-images/1f1d11f3b6481b1d6c27f8fe749c7acd924d58da77f01973b21445136708b102.jpg",link:"https://ia600506.us.archive.org/23/items/5.1_20250829/Charm%20City%20Kings%202020%20Web-Dl%201080P%20Dual%205.1.mp4", trailer:"https://ia601007.us.archive.org/16/items/trailer-2_202508/Charm%20City%20Kings%20-%20Official%20Trailer%20%282%29.mp4"},
+
+  {
+    titulo: "Harry Potter e a Pedra Filosofal",
+    img: "https://play-lh.googleusercontent.com/N73eyqy1aTo_8M1sXK2ayUee-TRq6AAazXjyWSd2Ihh3dsX041OWlV-zBT7uz8KLhpbuEUV7ud6_AWWk0Tw",
+    link: "https://ia802907.us.archive.org/30/items/tv_20250829/Harry%20Potter%20E%20A%20Pedra%20Filosofal%202001%204K%202160P%20Dual%20Audio%20Encoder%20By%20Carlos%20Jos%C3%A9%20Www.Bludv.Tv.mp4",
+    trailer: "https://eightyone.cincopa.com/watch/A4HAcLOLOO68!AUMD4wOkgXrN",
+    legendas: [
+      {
+        label: "Português",
+        lang: "pt",
+        src: "https://raw.githubusercontent.com/carinalopes8100-ai/meu-site/refs/heads/main/legendas/%5BSubtitleTools.com%5D%20Harry.Potter.And.The.Sorcerers.Stone.2001.2160p.4K.BluRay.x265.10bit.AAC5.1-%5BYTS.MX%5D.vtt",
+        default: true
+      }
+    ]
+  },
+  {titulo:"Harry Potter e a Câmara Secreta",img:"https://play-lh.googleusercontent.com/m-sFZQ-QgG6_REbH9ByDYbM73SwygJcTg9idxm5_Tu4FSJYio2Xir1KGgusJ0wFYdi4SvM8PjtBJw14hdg",link:"https://ia801001.us.archive.org/32/items/tv-1_20250829/Harry%20Potter%20E%20A%20C%C3%A2mera%20Secreta%202002%204K%202160P%20Dual%20%C3%81udio%20Encoder%20By%20Carlos%20Jos%C3%A9%20Www.Bludv.Tv%281%29.mp4", trailer:"https://ia800508.us.archive.org/23/items/legendado/Harry%20Potter%20e%20a%20C%C3%A2mara%20Secreta%20%282002%29%20%20Trailer%20%5BLegendado%5D.mp4"},
+  {titulo:"Harry Potter e o Prisioneiro de Azkaban",img:"https://irs.www.warnerbros.com.br/keyart-jpeg/movies/media/browser/Harry_Potter_and_the_Prisoner_of_Azkaban_Keyart_0.jpg",link:"https://ia800900.us.archive.org/21/items/ca_20250829/Harry%20Potter%20E%20O%20Prisioneiro%20De%20Azkaban%202004%204K%202160P%20Dual%20%C3%81udio%20Encoder%20By%20Carlos%20Jos%C3%A9%20Www.Bludv.Tv%281%29.ia.mp4", trailer:"https://ia600903.us.archive.org/26/items/clipchamp_20250828/V%C3%ADdeo%20sem%20t%C3%ADtulo%20-%20Feito%20com%20Clipchamp.mp4"},
+  {titulo:"Harry Potter e o Cálice de Fogo",img:"https://play-lh.googleusercontent.com/1Gk5ev11EfLXmqixhR_MQK9zW9I3THky0xuL1LmQ3AQrIDYjmzXoqaRVrH-N7jEFhedMPVQRz9M8Bgq-FNs",link:"https://ia600906.us.archive.org/26/items/arlos/Harry%20Potter%20E%20O%20C%C3%A1lice%20De%20Fogo%202005%204K%202160P%20Dual%20%C3%81udio%205.1%20Encoder%20By%20Carlos%20Jos%C3%A9%20Www.Bludv.Tv%281%29.mp4", trailer:"https://ia601604.us.archive.org/31/items/calice-de-fogo-trailer-1-dublado-hd/Harry%20Potter%20e%20o%20C%C3%A1lice%20de%20Fogo%20-%20Trailer%201%20Dublado%20%28HD%29.mp4"},
+  {titulo:"Harry Potter e a Ordem da Fênix",img:"https://play-lh.googleusercontent.com/zlEErPHUZPst035lMmdpgzDHWrZJPX65f-c5DtcDWvdQmHJgXbOS85HjV3TqJ8pGVzWBu8bJIcW9bH6zL2cp",link:"#", trailer:"https://ia601604.us.archive.org/12/items/dublado-hd/Harry%20Potter%20e%20a%20Ordem%20da%20F%C3%AAnix%20-%20Trailer%201%20Dublado%20%28HD%29.mp4"},
+  {titulo:"Harry Potter e o Enigma do Príncipe",img:"https://play-lh.googleusercontent.com/denSMtoxFCMNsDIVDE1gc0VYLZcj3zTip2mrTzH9fXSSrLsBLXk1I4BjlFVlQ5i-dp4rLPRjg_D58jY6xLI",link:"#", trailer:"https://ia600908.us.archive.org/34/items/principe-trailer-dublado/Harry%20Potter%20e%20o%20Enigma%20do%20Pr%C3%ADncipe%20-%20Trailer%20Dublado.mp4"},
+  {titulo:"Harry Potter e as Relíquias da Morte – Parte 1",img:"https://play-lh.googleusercontent.com/dOuNBdEfnjwy20CHeqKLg1oWDJhzVNULswLae2u7IE7H5e6K2eyQdoxd1mgz951x0s2ihila9kkGqOcvIaQ",link:"#", trailer:"https://ia600902.us.archive.org/24/items/parte-1-trailer-dublado-hd/Harry%20Potter%20e%20as%20Rel%C3%ADquias%20da%20Morte%20Parte%201%20-%20Trailer%20%28dublado%29%20%5BHD%5D.mp4"},
+  {titulo:"Harry Potter e as Relíquias da Morte – Parte 2",img:"https://play-lh.googleusercontent.com/vlkb11OsIOVCAK_5JLp7qnyhPW3UlklRJokV0WCUKqPbsLgxi41lKXNKdbnpTjop816jDAgBn09UWtOpIsE",link:"#", trailer:"https://ia601008.us.archive.org/10/items/teaser-dublado-hd/Harry%20Potter%20e%20as%20Rel%C3%ADquias%20da%20Morte%20Parte%202%20-%20Trailer%20Teaser%20%28dublado%29%20%5BHD%5D.mp4"},
+];
+
+const series = [
+  {
+  "titulo": "WANDINHA",
+  "img": "https://mistertorrent.org/wp-content/uploads/2022/11/Wandinha-1-Temporada-Torrent.jpg",
+  "trailer": "http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true",
+  "temporadas": [
+    {
+      "numero": 1,
+      "episodios": [
+        { "numero": 1, "link": "http://localhost:8096/Videos/6f9b24bdd4d4e2954b5a732a2e1faa05/stream.mp4?Static=true" },
+        { "numero": 2, "link": "http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true" },
+        { "numero": 3, "link": "#" },
+        { "numero": 4, "link": "#" },
+        { "numero": 5, "link": "#" },
+        { "numero": 6, "link": "#" },
+        { "numero": 7, "link": "#" },
+        { "numero": 8, "link": "#" },
+        { "numero": 9, "link": "#" },
+        { "numero": 10, "link": "#" }
+      ]
+    }
+  ]
+},
+
+  
+  {
+  "titulo": "Senna",
+  "img": "https://br.web.img2.acsta.net/c_310_420/img/f8/2a/f82a38d04011f7ac6f39e6fe218738f4.jpg",
+  "trailer": "http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true",
+  "temporadas": [
+    {
+      "numero": 1,
+      "episodios": [
+        { "numero": 1, "link": "http://localhost:8096/Videos/6f9b24bdd4d4e2954b5a732a2e1faa05/stream.mp4?Static=true" },
+        { "numero": 2, "link": "http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true" },
+        { "numero": 3, "link": "#" },
+        { "numero": 4, "link": "#" },
+        { "numero": 5, "link": "#" },
+        { "numero": 6, "link": "#" },
+        { "numero": 7, "link": "#" },
+        { "numero": 8, "link": "#" },
+        { "numero": 9, "link": "#" },
+        { "numero": 10, "link": "#" }
+      ]
+    }
+  ]
+},
+
+    {
+  "titulo": "Sintonia",
+  "img": "https://images.justwatch.com/poster/326213596/s718/temporada-5.jpg",
+  "trailer": "http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true",
+  "temporadas": [
+    {
+      "numero": 1,
+      "episodios": [
+        { "numero": 1, "link": "http://localhost:8096/Videos/6f9b24bdd4d4e2954b5a732a2e1faa05/stream.mp4?Static=true" },
+        { "numero": 2, "link": "http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true" },
+        { "numero": 3, "link": "#" },
+        { "numero": 4, "link": "#" },
+        { "numero": 5, "link": "#" },
+        { "numero": 6, "link": "#" },
+        { "numero": 7, "link": "#" },
+        { "numero": 8, "link": "#" },
+        { "numero": 9, "link": "#" },
+        { "numero": 10, "link": "#" }
+      ]
+    }
+  ]
+},
+  
+  {
+  "titulo": "Impuros",
+  "img": "https://images.justwatch.com/poster/305867542/s718/impuros.jpg",
+  "trailer": "http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true",
+  "temporadas": [
+    {
+      "numero": 1,
+      "episodios": [
+        { "numero": 1, "link": "https://ia601006.us.archive.org/10/items/wtv_20250830/Impuros.S01e01.1080P.Dsnp.Web-Dl.Ddp5.1.H.264-Wtv.mp4" },
+        { "numero": 2, "link": "https://ia601604.us.archive.org/15/items/tvon_20250830/Impuros.S01e02.1080P.Dsnp.Web-Dl.Ddp5.1.H.264-Wtv.mp4" },
+        { "numero": 3, "link": "#" },
+        { "numero": 4, "link": "#" },
+        { "numero": 5, "link": "#" },
+        { "numero": 6, "link": "#" },
+        { "numero": 7, "link": "#" },
+        { "numero": 8, "link": "#" },
+        { "numero": 9, "link": "#" },
+        { "numero": 10, "link": "#" }
+      ]
+    }
+  ]
+},
+
+      {
+    titulo: "Arcanjo Renegado",
+    img: "https://image.tmdb.org/t/p/original/htQ7JUhr477DjWapcDVQc9gRUQ.jpg",
+    trailer: "http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true",
+    temporadas: [
+      {
+        numero: 1,
+        episodios: [
+          { numero: 1, link: "http://localhost:8096/Videos/6f9b24bdd4d4e2954b5a732a2e1faa05/stream.mp4?Static=true" },
+          { numero: 2, link: "http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true" },
+          ...Array.from({ length: 8 }, (_, i) => ({ numero: i + 3, link: "#" }))
+        ]
+      },
+      {
+        numero: 2,
+        episodios: Array.from({ length: 10 }, (_, i) => ({ numero: i + 1, link: "#" }))
+      }
+    ]
+  },
+
+
+  {
+  "titulo": "Rabo De Peixe",
+  "img": "https://images.justwatch.com/poster/305133801/s718/rabo-de-peixe.jpg",
+  "trailer": "http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true",
+  "temporadas": [
+    {
+      "numero": 1,
+      "episodios": [
+        { "numero": 1, "link": "http://localhost:8096/Videos/6f9b24bdd4d4e2954b5a732a2e1faa05/stream.mp4?Static=true" },
+        { "numero": 2, "link": "http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true" },
+        { "numero": 3, "link": "#" },
+        { "numero": 4, "link": "#" },
+        { "numero": 5, "link": "#" },
+        { "numero": 6, "link": "#" },
+        { "numero": 7, "link": "#" },
+        { "numero": 8, "link": "#" },
+        { "numero": 9, "link": "#" },
+        { "numero": 10, "link": "#" }
+      ]
+    }
+  ]
+},
+
+    {
+  "titulo": "Ted A Série",
+  "img": "https://mistertorrent.org/wp-content/uploads/2024/08/Ted-A-Serie-1-Temporada-Torrent.webp",
+  "trailer": "http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true",
+  "temporadas": [
+    {
+      "numero": 1,
+      "episodios": [
+        { "numero": 1, "link": "http://localhost:8096/Videos/6f9b24bdd4d4e2954b5a732a2e1faa05/stream.mp4?Static=true" },
+        { "numero": 2, "link": "http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true" },
+        { "numero": 3, "link": "#" },
+        { "numero": 4, "link": "#" },
+        { "numero": 5, "link": "#" },
+        { "numero": 6, "link": "#" },
+        { "numero": 7, "link": "#" },
+        { "numero": 8, "link": "#" },
+        { "numero": 9, "link": "#" },
+        { "numero": 10, "link": "#" }
+      ]
+    }
+  ]
+},
+  
+  {
+    titulo: "Morangos com Açúcar 2025",
+    img: "https://img.iol.pt/image/id/68626fb6d34e3f0bae9fef4f/240",
+    trailer: "http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true",
+    temporadas: [
+      {
+        numero: 1,
+        episodios: [
+          { numero: 1, link: "http://localhost:8096/Videos/6f9b24bdd4d4e2954b5a732a2e1faa05/stream.mp4?Static=true" },
+          { numero: 2, link: "http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true" },
+          ...Array.from({ length: 8 }, (_, i) => ({ numero: i + 3, link: "#" }))
+        ]
+      },
+      {
+        numero: 2,
+        episodios: Array.from({ length: 10 }, (_, i) => ({ numero: i + 1, link: "#" }))
+      }
+    ]
+  },
+
+  {
+    titulo: "Morangos com Açúcar",
+    img: "https://m.media-amazon.com/images/M/MV5BYzlhYzYyNzItZDMwYy00M2IwLWFmNWMtOTBkNTVkY2UxMzA1XkEyXkFqcGc@._V1_.jpg",
+    trailer: "http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true",
+    temporadas: [
+      {
+        numero: 1,
+        episodios: [
+          { numero: 1, link: "http://localhost:8096/Videos/6f9b24bdd4d4e2954b5a732a2e1faa05/stream.mp4?Static=true" },
+          { numero: 2, link: "http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true" },
+          ...Array.from({ length: 8 }, (_, i) => ({ numero: i + 3, link: "#" }))
+        ]
+      },
+      {
+        numero: 2,
+        episodios: Array.from({ length: 10 }, (_, i) => ({ numero: i + 1, link: "#" }))
+      }
+    ]
+  },
+  
+  {
+    titulo: "Lupin",
+    img: "https://www.papodecinema.com.br/wp-content/uploads/2021/01/20210106-lupin-papo-de-cinema-cartaz-teaser.webp",
+    trailer: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/0-Open.PT.%28Long.Version%29-scene.mp4",
+    temporadas: [
+      {
+        numero: 1,
+        episodios: [
+          { numero: 1, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/001.mp4" },
+          
+        ]
+      }
+    ]
+  }
+];
+
+const animes = [
+
+      {
+  "titulo": "Naruto Shippuden",
+  "img": "https://images.justwatch.com/poster/306057903/s718/naruto-shippuden.jpg",
+  "trailer": "http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true",
+  "temporadas": [
+    {
+      "numero": 1,
+      "episodios": [
+        { "numero": 1, "link": "https://rr1---sn-ovn-apnk.googlevideo.com/videoplayback?expire=1756535058&ei=kiiyaI3DM-mUrcUPupW02AE&ip=2a01:11:8920:6cc0:6db6:9c7b:586f:ee2c&id=cd38ca4b9230fc55&itag=18&source=blogger&xpc=Egho7Zf3LnoBAQ%3D%3D&met=1756506258,&mh=jO&mm=31&mn=sn-ovn-apnk&ms=au&mv=m&mvi=1&pcm2cms=yes&pl=44&rms=au,au&susc=bl&eaua=fvyvl0CUuXg&mime=video/mp4&vprv=1&rqh=1&dur=1201.400&lmt=1537739043887290&mt=1756505831&sparams=expire,ei,ip,id,itag,source,xpc,susc,eaua,mime,vprv,rqh,dur,lmt&sig=AJfQdSswRgIhAPbPpx_k8_ehRRYLgKbTUV_enRLA9UseiZxoS5znOyPcAiEAk3lp1n9RSJsy7Cf0L342LlHaWAMN1GHZ_rmmQU2nDyk%3D&lsparams=met,mh,mm,mn,ms,mv,mvi,pcm2cms,pl,rms&lsig=APaTxxMwRgIhAMoSTGhKIp9jaX8Yh1nBc_GlxyhZmsf3rcgEeptsWOuyAiEA3HJxxLMUeqSsTjN6M-WS7wDUYEtZollHLNXsKXbkMBQ%3D&cpn=_qJpnXD54YOa8E02&c=WEB_EMBEDDED_PLAYER&cver=1.20250820.23.00" },
+        { "numero": 2, "link": "http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true" },
+        { "numero": 3, "link": "#" },
+        { "numero": 4, "link": "#" },
+        { "numero": 5, "link": "#" },
+        { "numero": 6, "link": "#" },
+        { "numero": 7, "link": "#" },
+        { "numero": 8, "link": "#" },
+        { "numero": 9, "link": "#" },
+        { "numero": 10, "link": "#" }
+      ]
+    }
+  ]
+},
+
+  {
+    titulo: "Dragon Ball: O Clássico",
+    img: "https://br.web.img2.acsta.net/pictures/22/11/22/14/02/3642167.jpg",
+    trailer: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/0-Open.PT.%28Long.Version%29-scene.mp4",
+    temporadas: [
+      {
+        numero: 1,
+        episodios: [
+          { numero: 1, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/001.mp4" },
+          { numero: 2, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/002.mp4" },
+          { numero: 3, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/003.mp4" },
+          { numero: 4, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/004.mp4" },
+          { numero: 5, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/005.mp4" },
+          { numero: 6, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/006.mp4" },
+          { numero: 7, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/007.mp4" },
+          { numero: 8, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/008.mp4" },
+          { numero: 9, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/009.mp4" },
+          { numero: 10, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/010.mp4" },
+          { numero: 11, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/011.mp4" },
+          { numero: 12, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/012.mp4" },
+          { numero: 13, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/013.mp4" },
+          { numero: 14, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/014.mp4" },
+          { numero: 15, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/015.mp4" },
+          { numero: 16, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/016.mp4" },
+          { numero: 17, link: "https://dn721600.ca.archive.org/0/items/8_20240203_20240203_2244/017.mp4" },
+          { numero: 18, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/018.mp4" },
+          { numero: 19, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/019.mp4" },
+          { numero: 20, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/020.mp4" },
+          { numero: 21, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/021.mp4" },
+          { numero: 22, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/022.mp4" },
+          { numero: 23, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/023.mp4" },
+          { numero: 24, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/024.mp4" },
+          { numero: 25, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/025.mp4" },
+          { numero: 26, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/026.mp4" },
+          { numero: 27, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/027.mp4" },
+          { numero: 28, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/028.mp4" },
+          { numero: 29, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/029.mp4" },
+          { numero: 30, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/030.mp4" },
+          { numero: 31, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/031.mp4" },
+          { numero: 32, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/032.mp4" },
+          { numero: 33, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/033.mp4" },
+          { numero: 34, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/034.mp4" },
+          { numero: 35, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/035.mp4" },
+          { numero: 36, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/036.mp4" },
+          { numero: 37, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/037.mp4" },
+          { numero: 38, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/038.mp4" },
+          { numero: 39, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/039.mp4" },
+          { numero: 40, link: "https://dn721808.ca.archive.org/0/items/018_20240312_202403/040.mp4" },
+          { numero: 41, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/041.mp4" },
+          { numero: 42, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/042.mp4" },
+          { numero: 43, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/043.mp4" },
+          { numero: 44, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/044.mp4" },
+          { numero: 45, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/045.mp4" },
+          { numero: 46, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/046.mp4" },
+          { numero: 47, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/047.mp4" },
+          { numero: 48, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/048.mp4" },
+          { numero: 49, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/049.mp4" },
+          { numero: 50, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/050.mp4" },
+          { numero: 51, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/051.mp4" },
+          { numero: 52, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/052.mp4" },
+          { numero: 53, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/053.mp4" },
+          { numero: 54, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/053.mp4" },
+          { numero: 55, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/055.mp4" },
+          { numero: 56, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/056.mp4" },
+          { numero: 57, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/057.mp4" },
+          { numero: 58, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/058.mp4" },
+          { numero: 59, link: "https://ia600207.us.archive.org/0/items/042_20240312_202403/059.mp4" },
+          { numero: 60, link: "https://ia600309.us.archive.org/9/items/061_20240414_202404/060.mp4" },
+          { numero: 61, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/061.mp4" },
+          { numero: 62, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/062.mp4" },
+          { numero: 63, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/063.mp4" },
+          { numero: 64, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/064.mp4" },
+          { numero: 65, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/065.mp4" },
+          { numero: 66, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/066.mp4" },
+          { numero: 67, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/067.mp4" },
+          { numero: 68, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/068.mp4" },
+          { numero: 69, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/069.mp4" },
+          { numero: 70, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/070.mp4" },
+          { numero: 71, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/071.mp4" },
+          { numero: 72, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/072.mp4" },
+          { numero: 73, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/073.mp4" },
+          { numero: 74, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/074.mp4" },
+          { numero: 75, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/075.mp4" },
+          { numero: 76, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/076.mp4" },
+          { numero: 77, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/077.mp4" },
+          { numero: 78, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/078.mp4" },
+          { numero: 79, link: "https://dn720502.ca.archive.org/0/items/061_20240414_202404/079.mp4" },
+          { numero: 80, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/080.mp4" },
+          { numero: 81, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/081.mp4" },
+          { numero: 82, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/082.mp4" },
+          { numero: 83, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/083.mp4" },
+          { numero: 84, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/084.mp4" },
+          { numero: 85, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/085.mp4" },
+          { numero: 86, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/086.mp4" },
+          { numero: 87, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/087.mp4" },
+          { numero: 88, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/088.mp4" },
+          { numero: 89, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/089.mp4" },
+          { numero: 90, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/090.mp4" },
+          { numero: 91, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/091.mp4" },
+          { numero: 92, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/092.mp4" },
+          { numero: 93, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/093.mp4" },
+          { numero: 94, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/094.mp4" },
+          { numero: 95, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/095.mp4" },
+          { numero: 96, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/096.mp4" },
+          { numero: 97, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/097.mp4" },
+          { numero: 98, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/098.mp4" },
+          { numero: 99, link: "https://ia600303.us.archive.org/5/items/082_20240414_202404/099.mp4" },
+          { numero: 100, link: "https://ia800300.us.archive.org/31/items/123_20240415/100.mp4" },
+          { numero: 101, link: "https://ia800300.us.archive.org/31/items/123_20240415/101.mp4" },
+          { numero: 102, link: "https://ia800300.us.archive.org/31/items/123_20240415/102.mp4" },
+          { numero: 103, link: "https://ia800300.us.archive.org/31/items/123_20240415/103.mp4" },
+          { numero: 104, link: "https://ia800300.us.archive.org/31/items/123_20240415/104.mp4" },
+          { numero: 105, link: "https://ia800300.us.archive.org/31/items/123_20240415/105.mp4" },
+          { numero: 106, link: "https://ia800300.us.archive.org/31/items/123_20240415/106.mp4" },
+          { numero: 107, link: "https://ia800300.us.archive.org/31/items/123_20240415/107.mp4" },
+          { numero: 108, link: "https://ia800300.us.archive.org/31/items/123_20240415/108.mp4" },
+          { numero: 109, link: "https://ia800300.us.archive.org/31/items/123_20240415/109.mp4" },
+          { numero: 110, link: "https://ia800300.us.archive.org/31/items/123_20240415/110.mp4" },
+          { numero: 111, link: "https://ia800300.us.archive.org/31/items/123_20240415/111.mp4" },
+          { numero: 112, link: "https://ia800300.us.archive.org/31/items/123_20240415/112.mp4" },
+          { numero: 113, link: "https://ia800300.us.archive.org/31/items/123_20240415/113.mp4" },
+          { numero: 114, link: "https://ia800300.us.archive.org/31/items/123_20240415/114.mp4" },
+          { numero: 115, link: "https://ia800300.us.archive.org/31/items/123_20240415/115.mp4" },
+          { numero: 116, link: "https://ia800300.us.archive.org/31/items/123_20240415/116.mp4" },
+          { numero: 117, link: "https://ia800300.us.archive.org/31/items/123_20240415/117.mp4" },
+          { numero: 118, link: "https://ia800300.us.archive.org/31/items/123_20240415/118.mp4" },
+          { numero: 119, link: "https://ia800300.us.archive.org/31/items/123_20240415/119.mp4" },
+          { numero: 120, link: "https://ia800300.us.archive.org/31/items/123_20240415/120.mp4" },
+          { numero: 121, link: "https://ia800300.us.archive.org/31/items/123_20240415/121.mp4" },
+          { numero: 122, link: "https://ia800300.us.archive.org/31/items/123_20240415/122.mp4" },
+          { numero: 123, link: "https://ia800300.us.archive.org/31/items/123_20240415/123.mp4" },
+          { numero: 124, link: "https://ia800300.us.archive.org/31/items/123_20240415/124.mp4" },
+          { numero: 125, link: "https://ia800300.us.archive.org/31/items/123_20240415/125.mp4" },
+          { numero: 126, link: "https://ia800300.us.archive.org/31/items/123_20240415/126.mp4" },
+          { numero: 127, link: "https://ia800307.us.archive.org/34/items/142_20240501/127.mp4" },
+          { numero: 128, link: "https://ia800307.us.archive.org/34/items/142_20240501/128.mp4" },
+          { numero: 129, link: "https://ia800307.us.archive.org/34/items/142_20240501/129.mp4" },
+          { numero: 130, link: "https://ia800307.us.archive.org/34/items/142_20240501/130.mp4" },
+          { numero: 131, link: "https://ia800307.us.archive.org/34/items/142_20240501/131.mp4" },
+          { numero: 132, link: "https://ia800307.us.archive.org/34/items/142_20240501/132.mp4" },
+          { numero: 133, link: "https://ia800307.us.archive.org/34/items/142_20240501/133.mp4" },
+          { numero: 134, link: "https://ia800307.us.archive.org/34/items/142_20240501/134.mp4" },
+          { numero: 135, link: "https://ia800307.us.archive.org/34/items/142_20240501/135.mp4" },
+          { numero: 136, link: "https://ia800307.us.archive.org/34/items/142_20240501/136.mp4" },
+          { numero: 137, link: "https://ia800307.us.archive.org/34/items/142_20240501/137.mp4" },
+          { numero: 138, link: "https://ia800307.us.archive.org/34/items/142_20240501/138.mp4" },
+          { numero: 139, link: "https://ia800307.us.archive.org/34/items/142_20240501/139.mp4" },
+          { numero: 140, link: "https://ia800307.us.archive.org/34/items/142_20240501/140.mp4" },
+          { numero: 141, link: "https://ia800307.us.archive.org/34/items/142_20240501/141.mp4" },
+          { numero: 142, link: "https://ia800307.us.archive.org/34/items/142_20240501/142.mp4" },
+          { numero: 143, link: "https://ia800307.us.archive.org/34/items/142_20240501/143.mp4" },
+          { numero: 144, link: "https://ia800307.us.archive.org/34/items/142_20240501/144.mp4" },
+          { numero: 145, link: "https://ia800307.us.archive.org/34/items/142_20240501/145.mp4" },
+          { numero: 146, link: "https://ia800307.us.archive.org/34/items/142_20240501/146.mp4" },
+          { numero: 147, link: "https://ia800307.us.archive.org/34/items/142_20240501/147.mp4" },
+          { numero: 148, link: "https://ia800307.us.archive.org/34/items/142_20240501/148.mp4" },
+          { numero: 149, link: "https://ia800307.us.archive.org/34/items/142_20240501/149.mp4" },
+          { numero: 150, link: "https://ia800307.us.archive.org/34/items/142_20240501/150.mp4" },
+          { numero: 151, link: "https://ia800307.us.archive.org/34/items/142_20240501/151.mp4" },
+          { numero: 152, link: "https://ia800307.us.archive.org/34/items/142_20240501/152.mp4" },
+          { numero: 153, link: "https://ia600307.us.archive.org/34/items/142_20240501/153.mp4" },
+        ]
+      }
+    ]
+  }
+];
+  
+const filmesTerror = [
+  {titulo:"O Mal Mora Aqui",img:"https://m.media-amazon.com/images/M/MV5BMzc4NGE3ZWItNGU3Zi00ZGRkLWE0MWUtMjA5OGQyODUzNTliXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",link:"#",trailer:"#"},
+  {titulo:"Pesadelos Macabros",img:"https://m.media-amazon.com/images/M/MV5BZDVmMDJlNzAtMTk3Zi00NTE5LWFjNjktMmViZjIyZDUxNDdkXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",link:"#",trailer:"#"},
+  {titulo:"M3GAN",img:"https://images.justwatch.com/poster/302253576/s718/m3gan.jpg",link:"https://ia903208.us.archive.org/4/items/sf_20250829/M3gan.2022.1080P.X264.Full.Hd.Web-Dl.Dual.5.1-Sf.ia.mp4",trailer:"https://ia800900.us.archive.org/9/items/oficial-dublado_202508/M3GAN%20Trailer%202%20Oficial%20DUBLADO.mp4"},
+  {titulo:"M3GAN 2.0",img:"https://static0.colliderimages.com/wordpress/wp-content/uploads/sharedimages/2025/07/01892942_poster_w780-1.jpg",link:"https://ia601000.us.archive.org/8/items/dr-dual-5.1/M3gan%202.0%202025%20Web-Dl%202160P%20X265%20Dv%20Hdr%20Dual%205.1.mp4",trailer:"https://ia601001.us.archive.org/30/items/2025_20250829/M3GAN%202.0%20Trailer%20Dublado%20%282025%29.mp4"},
+  {titulo:"Eu Sei O Que Voçes Fizeram no Verão Passado",img:"https://bocadoinferno.com.br/wp-content/uploads/2015/06/Eu-Sei-o-Que-1997-5.jpg",link:"#",trailer:"#"},
+  {titulo:"Eu Ainda Sei o Que Voçes Fizeram no Verão Passado",img:"https://play-lh.googleusercontent.com/ccN3ncF1RhtaCSjhwfv7-WYK5I-ioW76YIyroUp64kNmasvVRufbCHp1kqfIr1DemNrsjT3KAsKRykankVs",link:"#",trailer:"#"},
+  {titulo:"Eu Sempre Vou Saber o Que Voçes Fizeram no Verão Passado",img:"https://images.justwatch.com/poster/208538323/s718/eu-sempre-vou-saber-o-que-voce-fizeram-no-verao-passado.jpg",link:"#",trailer:"#"},
+  {titulo:"Eu Sei O Que Voçes Fizeram no Verão Passado Série 2021",img:"https://images.justwatch.com/poster/253567177/s718/i-know-what-i-did-last-summer.jpg",link:"#",trailer:"#"},
+  {titulo:"Eu Sei O Que Voçes Fizeram no Verão Passado 2025",img:"https://images.justwatch.com/poster/331941141/s332/eu-sei-o-que-voces-fizeram-no-verao-passado-2025",link:"#",trailer:"#"},
+  {titulo:"Until Dawn",img:"https://www.sonypictures.com.br/sites/brazil/files/2025-05/sony_banner_Until%20Dawn_1400x2100_1.jpg",link:"#",trailer:"#"}
+];
+
+// ===== Funções de interface =====
+function criarFila(idFila, lista, tipo, tituloFila=null){
+  const container=document.createElement('div'); container.className='fila-container'; container.id=idFila;
+  const titulo=document.createElement('div'); titulo.className='fila-titulo'; titulo.textContent=tituloFila || (tipo==='filme'? (idFila==='fila3'?'Terror':'Filmes Populares'):'Séries Populares');
+  const btnLeft=document.createElement('button'); btnLeft.className='btn-scroll btn-left'; btnLeft.innerHTML='&#10094;';
+  const btnRight=document.createElement('button'); btnRight.className='btn-scroll btn-right'; btnRight.innerHTML='&#10095;';
+  const fila=document.createElement('div'); fila.className='fila'; fila.id=idFila+'-content';
+
+  lista.forEach(item=>{
+    const itemDiv=document.createElement('div'); itemDiv.className='filme';
+    const img=document.createElement('img'); img.src=item.img; img.alt=item.titulo; itemDiv.appendChild(img);
+
+if(progresso[item.titulo] && progresso[item.titulo] > 0){
+    const progressoDiv = document.createElement('div');
+    progressoDiv.style.position = 'absolute';
+    progressoDiv.style.bottom = '0';
+    progressoDiv.style.left = '0';
+    progressoDiv.style.width = '100%';
+    progressoDiv.style.height = '5px';
+    progressoDiv.style.backgroundColor = 'rgba(255,255,255,0.3)';
+
+    const progressoInner = document.createElement('div');
+    progressoInner.style.height = '100%';
+    progressoInner.style.backgroundColor = '#e50914';
+    progressoDiv.appendChild(progressoInner);
+    itemDiv.appendChild(progressoDiv);
+
+    const atualizarBarra = (duracao) => {
+        const pct = Math.min((progresso[item.titulo] / duracao) * 100, 100);
+        progressoInner.style.width = pct + '%';
+    };
+
+    // Se tiver duração definida
+    if(item.duracao){
+        atualizarBarra(item.duracao);
+    } else if(item.link){
+        const tempVideo = document.createElement('video');
+        tempVideo.src = item.link;
+        tempVideo.preload = 'metadata';
+        tempVideo.addEventListener('loadedmetadata', () => {
+            item.duracao = tempVideo.duration; // salva duração no item
+            atualizarBarra(tempVideo.duration);
+        });
+    }
+
+    // Atualizar barra em tempo real quando o vídeo é reproduzido
+    const observer = new MutationObserver(() => {
+        const video = document.getElementById('playerVideo');
+        if(video && video.dataset.titulo === item.titulo){
+            video.addEventListener('timeupdate', () => {
+                atualizarBarra(video.duration);
+            });
+        }
+    });
+    observer.observe(document.body, {childList: true, subtree: true});
+}
+
+
+
+    const overlay=document.createElement('div'); overlay.className='filme-hover-overlay';
+    const btnPlay=document.createElement('button'); btnPlay.textContent='▶ Assistir';
+    btnPlay.onclick=(e)=>{
+      e.stopPropagation();
+      const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
+      if(s){ abrirModalTemporadas(s); }
+      else { abrirVideo(item); }
+    };
+    const btnTrailer=document.createElement('button'); btnTrailer.textContent='▶ Trailer';
+    btnTrailer.onclick=(e)=>{ e.stopPropagation(); if(item.trailer) abrirVideo({titulo:item.titulo+' - Trailer', link:item.trailer}); };
+    overlay.appendChild(btnPlay); overlay.appendChild(btnTrailer); itemDiv.appendChild(overlay);
+
+    const addBtn = document.createElement('button'); addBtn.className = 'add-list-btn';
+    function updateButton() { if(minhaLista.includes(item.titulo)){ addBtn.textContent='✖'; addBtn.title='Remover da Minha Lista'; } else { addBtn.textContent='+'; addBtn.title='Adicionar à Minha Lista'; } }
+    addBtn.onclick=(e)=>{ e.stopPropagation(); adicionarMinhaLista(item.titulo); updateButton(); }
+    updateButton(); itemDiv.appendChild(addBtn);
+
+if(idFila === 'filaContinuar'){
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-continuar-btn';
+    removeBtn.textContent = '✖';
+    removeBtn.title = 'Remover da fila Continuar Assistindo';
+    removeBtn.onclick = (e) => { 
+        e.stopPropagation(); 
+        delete progresso[item.titulo]; 
+        salvarProgresso(); 
+        mostrarSecao('inicio'); 
+        mostrarToast(`"${item.titulo}" removido da fila Continuar a ver!`);
+    }
+    itemDiv.appendChild(removeBtn);
+}
+
+    fila.appendChild(itemDiv);
+  });
+
+
+  container.appendChild(titulo); container.appendChild(btnLeft); container.appendChild(fila); container.appendChild(btnRight);
+  btnLeft.addEventListener('click',()=>fila.scrollBy({left:-300,behavior:'smooth'}));
+  btnRight.addEventListener('click',()=>fila.scrollBy({left:300,behavior:'smooth'}));
+  return container;
+}
+
+function abrirModalTemporadas(serie){
+  document.getElementById('modalTitle').textContent=`Escolha a temporada de "${serie.titulo}"`;
+  const list=document.getElementById('episodiosList'); list.innerHTML='';
+  serie.temporadas.forEach(temp=>{
+    const btn=document.createElement('button'); btn.className='temporada-btn'; btn.textContent=`Temporada ${temp.numero}`;
+    btn.onclick=()=>abrirModalEpisodios(temp,serie.titulo); list.appendChild(btn);
+  });
+  document.getElementById('modal').style.display='flex';
+}
+
+function abrirModalEpisodios(temporada, serieTitulo){
+  document.getElementById('modalTitle').textContent=`Escolha o episódio - ${serieTitulo} (Temporada ${temporada.numero})`;
+  const list=document.getElementById('episodiosList'); 
+  list.innerHTML='';
+
+  temporada.episodios.forEach((ep, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'episodio-btn';
+
+    // Se for o último episódio, mostra "Episódio Final X"
+    if (idx === temporada.episodios.length - 1) {
+      btn.textContent = `Episódio Final ${ep.numero}`;
+    } else {
+      btn.textContent = `Episódio ${ep.numero}`;
+    }
+
+    btn.onclick = () => abrirVideo({ titulo: serieTitulo + ' - Ep ' + ep.numero, link: ep.link });
+    list.appendChild(btn);
+  });
+}
+
+
+
+function fecharModal(){ 
+    document.getElementById('modal').style.display='none'; 
+}
+
+function mostrarSecao(secao){
+    const root = document.getElementById('root');
+    root.innerHTML = ''; // limpa conteúdo anterior
+
+    // garante que todosItens inclua animes
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes];
+
+    if(secao === 'inicio'){
+        const continuar = todosItens.filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
+        if(continuar.length > 0){
+            root.appendChild(criarFila('filaContinuar', continuar, 'filme', 'Continuar a ver'));
+        }
+
+        if(minhaLista.length > 0){
+            const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
+            root.appendChild(criarFila('fila0', itensLista, 'filme', 'Minha Lista'));
+        }
+
+        root.appendChild(criarFila('fila1', filmes, 'filme'));
+        root.appendChild(criarFila('fila2', series, 'serie'));
+        root.appendChild(criarFila('fila3', filmesTerror, 'filme'));
+        root.appendChild(criarFila('filaAnimes', animes, 'serie', 'Séries de anime')); // NOVA FILA
+    }
+    else if(secao === 'filmes'){
+        root.appendChild(criarFila('fila1', filmes, 'filme'));
+    }
+    else if(secao === 'series'){
+        root.appendChild(criarFila('fila2', series, 'serie'));
+    }
+    else if(secao === 'terror'){
+        root.appendChild(criarFila('fila3', filmesTerror, 'filme'));
+    }
+    else if(secao === 'animes'){
+        root.appendChild(criarFila('filaAnimes', animes, 'serie', 'Séries de anime')); // NOVA SEÇÃO
+    }
+    else if(secao === 'lista'){
+        const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
+        if(itensLista.length > 0){
+            root.appendChild(criarFila('filaMinhaLista', itensLista, 'filme', 'Minha Lista'));
+        } else {
+            root.innerHTML = `<div style="margin:50px; font-size:18px;">Você não adicionou nenhum item à Minha Lista.</div>`;
+        }
+    }
+}
+
+function pesquisar(){
+    const termo = document.getElementById('searchInput').value.toLowerCase().trim();
+    const root = document.getElementById('root');
+    if (termo === "") {
+        mostrarSecao('inicio');
+        return;
+    }
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes];
+    const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
+    root.innerHTML='';
+    if(resultados.length>0){
+        root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+    } else {
+        root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+    }
+}
+
+// Carrega listas e progresso antes de mostrar a tela inicial
+carregarLista(); 
+carregarProgresso();
+mostrarSecao('inicio');
+
+// Banner
+window.addEventListener('load', ()=>{
+    const img = document.getElementById('bannerImage');
+    const video = document.getElementById('bannerVideo');
+    setTimeout(()=>{
+        img.style.display='none'; 
+        video.style.display='block'; 
+        video.play();
+    },2000);
+});
+
+// Pesquisa instantânea
+document.getElementById('searchInput').addEventListener('input', () => pesquisar());
+</script>
+</body>
+</html>
