@@ -214,7 +214,6 @@ function abrirVideo(item){
   videoModal.style.zIndex='10000';
 
   const videoEl = document.createElement('video');
-  videoEl.crossOrigin = "anonymous";
   videoEl.src = item.link;
   videoEl.controls = true;
   videoEl.style.width='80%';
