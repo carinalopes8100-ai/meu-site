@@ -832,18 +832,14 @@ function mostrarSecao(secao){
         root.appendChild(criarFila('filaAnimes', animes, 'serie', 'Animes Populares')); // NOVA SEÇÃO
     }
     else if(secao === 'lista'){
-        const todosItens = [...filmes, ...series, ...filmesTerror, ...animes];
         const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
-
         if(itensLista.length > 0){
-            const fila = criarFila('filaMinhaLista', itensLista, 'filme', 'Minha Lista');
-            root.appendChild(fila);
+            root.appendChild(criarFila('filaMinhaLista', itensLista, 'filme', 'Minha Lista'));
         } else {
             root.innerHTML = `<div style="margin:50px; font-size:18px;">Você não adicionou nenhum item à Minha Lista.</div>`;
         }
     }
 }
-
 
 function pesquisar(){
     const termo = document.getElementById('searchInput').value.toLowerCase().trim();
