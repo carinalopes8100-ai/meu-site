@@ -225,7 +225,26 @@ function abrirVideo(item){
   videoEl.controls = true;
   videoEl.style.width = '80%';
   videoEl.style.height = '80%';
-  
+
+  // Botões para trocar áudio
+if(item.audios && item.audios.length > 0){
+  item.audios.forEach(a => {
+    const btn = document.createElement('button');
+    btn.textContent = a.label;
+    btn.style.marginTop = '10px';
+    btn.onclick = () => trocarAudio(a.src, videoEl);
+    videoModal.appendChild(btn);
+  });
+}
+
+
+  function trocarAudio(novoSrc, videoEl){
+  const tempoAtual = videoEl.currentTime; // mantém o tempo atual
+  videoEl.src = novoSrc;
+  videoEl.load();
+  videoEl.currentTime = tempoAtual;
+  videoEl.play();
+}
 
   // Adiciona legendas
   if (item.legendas) {
