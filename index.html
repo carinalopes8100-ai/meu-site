@@ -206,7 +206,7 @@ bannerVideo.oncanplaythrough = () => {
 
 
 
- function abrirVideo(item){
+function abrirVideo(item){
   const videoModal = document.createElement('div');
   videoModal.style.position = 'fixed';
   videoModal.style.top = '0';
@@ -215,10 +215,10 @@ bannerVideo.oncanplaythrough = () => {
   videoModal.style.height = '100%';
   videoModal.style.background = 'rgba(0,0,0,0.9)';
   videoModal.style.display = 'flex';
+  videoModal.style.flexDirection = 'column';
   videoModal.style.justifyContent = 'center';
   videoModal.style.alignItems = 'center';
   videoModal.style.zIndex = '10000';
-  videoModal.style.flexDirection = 'column';
 
   const videoEl = document.createElement('video');
   videoEl.src = item.link;
@@ -228,7 +228,7 @@ bannerVideo.oncanplaythrough = () => {
   videoEl.setAttribute('crossorigin', 'anonymous');
 
   // Adiciona legendas
-  if (item.legendas) {
+  if(item.legendas){
     item.legendas.forEach(l => {
       const track = document.createElement('track');
       track.kind = 'subtitles';
@@ -240,14 +240,15 @@ bannerVideo.oncanplaythrough = () => {
     });
   }
 
-  // Menu de legendas manual
-  let menu;
+  videoModal.appendChild(videoEl);
+
+  // Menu de legendas
   if(item.legendas && item.legendas.length > 0){
-    menu = document.createElement('select');
+    const menu = document.createElement('select');
     menu.style.marginTop = '10px';
     const defaultOption = document.createElement('option');
-    defaultOption.textContent = 'Sem legendas';
     defaultOption.value = -1;
+    defaultOption.textContent = 'Sem legendas';
     menu.appendChild(defaultOption);
 
     item.legendas.forEach((l, i) => {
@@ -261,7 +262,7 @@ bannerVideo.oncanplaythrough = () => {
     menu.onchange = () => {
       const tracks = videoEl.textTracks;
       for(let i=0; i<tracks.length; i++){
-        tracks[i].mode = (i == menu.value) ? 'showing' : 'disabled';
+        tracks[i].mode = (i==menu.value) ? 'showing' : 'disabled';
       }
       if(menu.value == -1){
         for(let i=0; i<videoEl.textTracks.length; i++){
@@ -273,39 +274,20 @@ bannerVideo.oncanplaythrough = () => {
     videoModal.appendChild(menu);
   }
 
-  // Retoma o progresso
-  if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
-
-  let terminou = false;
-  videoEl.onended = () => { 
-    terminou = true; 
-    delete progresso[item.titulo]; 
-    salvarProgresso(); 
-    mostrarSecao('inicio'); 
-    videoModal.remove();
-  };
-
-  videoEl.ontimeupdate = () => { 
-    if(!terminou) progresso[item.titulo] = videoEl.currentTime; 
-  };
-
+  // Botão fechar
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
-  fecharBtn.style.position='absolute';
-  fecharBtn.style.top='20px';
-  fecharBtn.style.right='20px';
-  fecharBtn.style.padding='10px 20px';
-  fecharBtn.style.cursor='pointer';
-  fecharBtn.onclick = () => { 
-    if(!terminou) salvarProgresso(); 
-    mostrarSecao('inicio'); 
-    videoModal.remove(); 
+  fecharBtn.style.marginTop = '10px';
+  fecharBtn.style.padding = '10px 20px';
+  fecharBtn.style.cursor = 'pointer';
+  fecharBtn.onclick = () => {
+    videoModal.remove();
   };
-
-  videoModal.appendChild(videoEl);
   videoModal.appendChild(fecharBtn);
+
   document.body.appendChild(videoModal);
 
+  // Ativa legendas default após carregamento
   videoEl.addEventListener('loadedmetadata', () => {
     const tracks = videoEl.textTracks;
     for(let i=0; i<tracks.length; i++){
