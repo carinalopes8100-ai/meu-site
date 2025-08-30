@@ -828,7 +828,7 @@ function mostrarSecao(secao){
         root.appendChild(criarFila('fila1', filmes, 'filme'));
         root.appendChild(criarFila('fila2', series, 'serie'));
         root.appendChild(criarFila('fila3', filmesTerror, 'filme'));
-        root.appendChild(criarFila('filaAnimes', animes, 'serie', 'Animes Populares')); // NOVA FILA
+        root.appendChild(criarFila('filaAnimes', animes, 'serie', 'Séries de anime')); // NOVA FILA
     }
     else if(secao === 'filmes'){
         root.appendChild(criarFila('fila1', filmes, 'filme'));
@@ -840,7 +840,7 @@ function mostrarSecao(secao){
         root.appendChild(criarFila('fila3', filmesTerror, 'filme'));
     }
     else if(secao === 'animes'){
-        root.appendChild(criarFila('filaAnimes', animes, 'serie', 'Animes Populares')); // NOVA SEÇÃO
+        root.appendChild(criarFila('filaAnimes', animes, 'serie', 'Séries de anime')); // NOVA SEÇÃO
     }
     else if(secao === 'lista'){
         const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
