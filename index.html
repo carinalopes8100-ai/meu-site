@@ -804,13 +804,12 @@ function mostrarSecao(secao){
     root.innerHTML = ''; // limpa conteúdo anterior
 
     if(secao === 'inicio'){
-        const continuar = [...filmes,...series,...filmesTerror].filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
+        const continuar = todosItens.filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
         if(continuar.length > 0){
             root.appendChild(criarFila('filaContinuar', continuar, 'filme', 'Continuar a ver'));
         }
 
         if(minhaLista.length > 0){
-            const todosItens = [...filmes,...series,...filmesTerror];
             const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
             root.appendChild(criarFila('fila0', itensLista, 'filme', 'Minha Lista'));
         }
@@ -818,6 +817,7 @@ function mostrarSecao(secao){
         root.appendChild(criarFila('fila1', filmes, 'filme'));
         root.appendChild(criarFila('fila2', series, 'serie'));
         root.appendChild(criarFila('fila3', filmesTerror, 'filme'));
+        root.appendChild(criarFila('filaAnimes', animes, 'serie', 'Animes Populares')); // <-- NOVA FILA
     }
     else if(secao === 'filmes'){
         root.appendChild(criarFila('fila1', filmes, 'filme'));
@@ -828,8 +828,11 @@ function mostrarSecao(secao){
     else if(secao === 'terror'){
         root.appendChild(criarFila('fila3', filmesTerror, 'filme'));
     }
+    else if(secao === 'animes'){
+        root.appendChild(criarFila('filaAnimes', animes, 'serie', 'Animes Populares')); // NOVA SEÇÃO
+    }
     else if(secao === 'lista'){
-        const todosItens = [...filmes,...series,...filmesTerror];
+        const todosItens = [...filmes, ...series, ...filmesTerror, ...animes];
         const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
 
         if(itensLista.length > 0){
