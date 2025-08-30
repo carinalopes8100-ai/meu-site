@@ -258,17 +258,16 @@ function abrirVideo(item){
       if(l.default) menu.value = i;
     });
 
-    menu.onchange = () => {
-      const tracks = videoEl.textTracks;
-      for(let i=0; i<tracks.length; i++){
-        tracks[i].mode = (i == menu.value) ? 'showing' : 'disabled';
-      }
-      if(menu.value == -1){
-        for(let i=0; i<videoEl.textTracks.length; i++){
-          videoEl.textTracks[i].mode = 'disabled';
-        }
-      }
-    };
+menu.onchange = () => {
+  const tracks = videoEl.textTracks;
+  for(let i=0;i<tracks.length;i++){
+    tracks[i].mode='disabled';
+  }
+  if(menu.value >= 0){
+    tracks[menu.value].mode='showing';
+  }
+};
+
 
     videoModal.appendChild(menu);
   }
