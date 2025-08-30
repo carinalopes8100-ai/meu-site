@@ -204,41 +204,6 @@ bannerVideo.oncanplaythrough = () => {
   
 
 
-function abrirVideo(item){
-  // Cria o modal do vídeo
-  const videoModal = document.createElement('div');
-  videoModal.style.position = 'fixed';
-  videoModal.style.top = '0';
-  videoModal.style.left = '0';
-  videoModal.style.width = '100%';
-  videoModal.style.height = '100%';
-  videoModal.style.background = 'rgba(0,0,0,0.9)';
-  videoModal.style.display = 'flex';
-  videoModal.style.justifyContent = 'center';
-  videoModal.style.alignItems = 'center';
-  videoModal.style.zIndex = '10000';
-
-  // Cria o elemento de vídeo
-  const videoEl = document.createElement('video');
-  videoEl.src = item.link;
-  videoEl.controls = true;
-  videoEl.style.width = '80%';
-  videoEl.style.height = '80%';
-  // videoEl.setAttribute('crossorigin', 'anonymous');
-
-  // Adiciona legendas se existirem
-if (item.legendas) {
-  item.legendas.forEach(l => {
-    const track = document.createElement('track');
-    track.kind = 'subtitles';
-    track.label = l.label;
-    track.srclang = l.lang;
-    track.src = l.src;
-    if (l.default) track.default = true;
-    videoEl.appendChild(track);
-  });
-}
-
 
 
  function abrirVideo(item){
