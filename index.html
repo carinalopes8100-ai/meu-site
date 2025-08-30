@@ -116,6 +116,8 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 </div>
 </header>
 
+  
+
 
 
 <div class="banner">
@@ -188,6 +190,15 @@ function adicionarMinhaLista(titulo) {
 
   mostrarSecao('inicio'); // se você quiser voltar à seção inicial
 }
+
+// <<< AQUI: adicionar o código para oncanplaythrough >>>
+const bannerVideo = document.getElementById('bannerVideo');
+const bannerImage = document.getElementById('bannerImage');
+
+bannerVideo.oncanplaythrough = () => {
+  bannerImage.style.display = 'none';
+  bannerVideo.style.display = 'block';
+};
 
 
   
