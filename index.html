@@ -666,7 +666,7 @@ const filmesTerror = [
 // ===== Funções de interface =====
 function criarFila(idFila, lista, tipo, tituloFila=null){
   const container=document.createElement('div'); container.className='fila-container'; container.id=idFila;
-  const titulo=document.createElement('div'); titulo.className='fila-titulo'; titulo.textContent=tituloFila || (tipo==='filme'? (idFila==='fila3'?'Filmes de Terror':'Filmes Populares'):'Séries Populares');
+  const titulo=document.createElement('div'); titulo.className='fila-titulo'; titulo.textContent=tituloFila || (tipo==='filme'? (idFila==='fila3'?'anime':'Filmes de Terror':'Filmes Populares'):'Séries Populares');
   const btnLeft=document.createElement('button'); btnLeft.className='btn-scroll btn-left'; btnLeft.innerHTML='&#10094;';
   const btnRight=document.createElement('button'); btnRight.className='btn-scroll btn-right'; btnRight.innerHTML='&#10095;';
   const fila=document.createElement('div'); fila.className='fila'; fila.id=idFila+'-content';
@@ -818,6 +818,7 @@ function mostrarSecao(secao){
         root.appendChild(criarFila('fila1', filmes, 'filme'));
         root.appendChild(criarFila('fila2', series, 'serie'));
         root.appendChild(criarFila('fila3', filmesTerror, 'filme'));
+        root.appendChild(criarFila('fila4', anime, 'filme'));
     }
     else if(secao === 'filmes'){
         root.appendChild(criarFila('fila1', filmes, 'filme'));
@@ -826,6 +827,11 @@ function mostrarSecao(secao){
         root.appendChild(criarFila('fila2', series, 'serie'));
     }
     else if(secao === 'terror'){
+        root.appendChild(criarFila('fila3', filmesTerror, 'filme'));
+    }
+
+    }
+    else if(secao === 'anime'){
         root.appendChild(criarFila('fila3', filmesTerror, 'filme'));
     }
     else if(secao === 'lista'){
