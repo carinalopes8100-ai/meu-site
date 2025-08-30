@@ -227,22 +227,30 @@ function abrirVideo(item){
   // videoEl.setAttribute('crossorigin', 'anonymous');
 
   // Adiciona legendas se existirem
- if(item.legendas && item.legendas.length > 0){
+if (item.legendas && item.legendas.length > 0) {
   const tracks = videoEl.textTracks;
   const menu = document.createElement('select');
+  
   item.legendas.forEach((l, i) => {
     const option = document.createElement('option');
     option.value = i;
     option.textContent = l.label;
     menu.appendChild(option);
+
+    // Define a legenda padrão
+    if (l.default) tracks[i].mode = 'showing';
+    else tracks[i].mode = 'disabled';
   });
+
   menu.onchange = () => {
-    for(let i=0; i<tracks.length; i++){
-      tracks[i].mode = (i==menu.value) ? 'showing' : 'disabled';
+    for (let i = 0; i < tracks.length; i++) {
+      tracks[i].mode = (i == menu.value) ? 'showing' : 'disabled';
     }
   };
+
   videoModal.appendChild(menu);
 }
+
 
   // Retoma o progresso se houver
   if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
