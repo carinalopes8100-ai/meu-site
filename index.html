@@ -206,18 +206,28 @@ bannerVideo.oncanplaythrough = () => {
 
 
 
-function abrirVideo(item) {
+function abrirVideo(item){
+  // Cria o modal
   const videoModal = document.createElement('div');
-  videoModal.style = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;justify-content:center;align-items:center;z-index:10000;';
+  videoModal.style.position = 'fixed';
+  videoModal.style.top = '0';
+  videoModal.style.left = '0';
+  videoModal.style.width = '100%';
+  videoModal.style.height = '100%';
+  videoModal.style.background = 'rgba(0,0,0,0.9)';
+  videoModal.style.display = 'flex';
+  videoModal.style.justifyContent = 'center';
+  videoModal.style.alignItems = 'center';
+  videoModal.style.zIndex = '10000';
 
+  // Cria o vídeo
   const videoEl = document.createElement('video');
   videoEl.src = item.link;
   videoEl.controls = true;
   videoEl.style.width = '80%';
   videoEl.style.height = '80%';
-  videoEl.autoplay = true;
 
-  // Adiciona legendas
+  // Adiciona legendas (apenas append, sem manipulação manual)
   if(item.legendas){
     item.legendas.forEach(l => {
       const track = document.createElement('track');
@@ -230,10 +240,38 @@ function abrirVideo(item) {
     });
   }
 
+  // Retoma progresso se houver
+  if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
+
+  let terminou = false;
+
+  // Ao terminar
+  videoEl.onended = () => { 
+    terminou = true; 
+    delete progresso[item.titulo]; 
+    salvarProgresso(); 
+    mostrarSecao('inicio'); 
+    videoModal.remove();
+  };
+
+  // Atualiza progresso
+  videoEl.ontimeupdate = () => { 
+    if(!terminou) progresso[item.titulo] = videoEl.currentTime; 
+  };
+
+  // Botão fechar
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
-  fecharBtn.style = 'position:absolute;top:20px;right:20px;padding:10px 20px;cursor:pointer;';
-  fecharBtn.onclick = () => videoModal.remove();
+  fecharBtn.style.position='absolute';
+  fecharBtn.style.top='20px';
+  fecharBtn.style.right='20px';
+  fecharBtn.style.padding='10px 20px';
+  fecharBtn.style.cursor='pointer';
+  fecharBtn.onclick = () => { 
+    if(!terminou) salvarProgresso(); 
+    mostrarSecao('inicio'); 
+    videoModal.remove(); 
+  };
 
   videoModal.appendChild(videoEl);
   videoModal.appendChild(fecharBtn);
