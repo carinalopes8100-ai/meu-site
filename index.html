@@ -207,7 +207,6 @@ bannerVideo.oncanplaythrough = () => {
 
 
 function abrirVideo(item){
-  // Cria o modal do vídeo
   const videoModal = document.createElement('div');
   videoModal.style.position = 'fixed';
   videoModal.style.top = '0';
@@ -219,32 +218,65 @@ function abrirVideo(item){
   videoModal.style.justifyContent = 'center';
   videoModal.style.alignItems = 'center';
   videoModal.style.zIndex = '10000';
+  videoModal.style.flexDirection = 'column';
 
-  // Cria o elemento de vídeo
   const videoEl = document.createElement('video');
-  videoEl.src = item.link; // link do vídeo
+  videoEl.src = item.link;
   videoEl.controls = true;
   videoEl.style.width = '80%';
   videoEl.style.height = '80%';
-  
-  // **Aqui adiciona as legendas**
-  if(item.legendas){
+  videoEl.setAttribute('crossorigin', 'anonymous');
+
+  // Adiciona legendas
+  if (item.legendas) {
     item.legendas.forEach(l => {
       const track = document.createElement('track');
       track.kind = 'subtitles';
       track.label = l.label;
       track.srclang = l.lang;
-      track.src = l.src; // teu link do GitHub
+      track.src = l.src;
       if(l.default) track.default = true;
       videoEl.appendChild(track);
     });
+  }
+
+  // Menu de legendas manual
+  let menu;
+  if(item.legendas && item.legendas.length > 0){
+    menu = document.createElement('select');
+    menu.style.marginTop = '10px';
+    const defaultOption = document.createElement('option');
+    defaultOption.textContent = 'Sem legendas';
+    defaultOption.value = -1;
+    menu.appendChild(defaultOption);
+
+    item.legendas.forEach((l, i) => {
+      const option = document.createElement('option');
+      option.value = i;
+      option.textContent = l.label;
+      menu.appendChild(option);
+      if(l.default) menu.value = i;
+    });
+
+    menu.onchange = () => {
+      const tracks = videoEl.textTracks;
+      for(let i=0; i<tracks.length; i++){
+        tracks[i].mode = (i == menu.value) ? 'showing' : 'disabled';
+      }
+      if(menu.value == -1){
+        for(let i=0; i<videoEl.textTracks.length; i++){
+          videoEl.textTracks[i].mode = 'disabled';
+        }
+      }
+    };
+
+    videoModal.appendChild(menu);
   }
 
   // Retoma o progresso
   if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
 
   let terminou = false;
-
   videoEl.onended = () => { 
     terminou = true; 
     delete progresso[item.titulo]; 
@@ -274,13 +306,10 @@ function abrirVideo(item){
   videoModal.appendChild(fecharBtn);
   document.body.appendChild(videoModal);
 
-  // Mostra legendas padrão
   videoEl.addEventListener('loadedmetadata', () => {
     const tracks = videoEl.textTracks;
     for(let i=0; i<tracks.length; i++){
-      if(tracks[i].mode === 'disabled' && tracks[i].default){
-        tracks[i].mode = 'showing';
-      }
+      if(tracks[i].default) tracks[i].mode = 'showing';
     }
   });
 
