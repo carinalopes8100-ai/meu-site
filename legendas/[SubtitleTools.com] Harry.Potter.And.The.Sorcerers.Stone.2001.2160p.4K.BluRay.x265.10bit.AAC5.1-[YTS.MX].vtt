@@ -2,9 +2,14 @@
 
 STYLE
 ::cue {
-  background: rgba(0,0,0,0);
-  color: yellow;
-  font-size: 20px;
+  background: rgba(0,0,0,0);       /* totalmente transparente */
+  color: #FFFFFF;                  /* texto branco */
+  font-size: 22px;                 /* tamanho confortável */
+  font-weight: 600;                /* mais visível */
+  font-family: Arial, sans-serif;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7); /* sombra para destaque */
+  padding: 0.1em 0.4em;            /* espaçamento interno, opcional */
+  border-radius: 0px;              /* cantos arredondados, opcional */
 }
 
 00:01:22.042 --> 00:01:27.047
@@ -4444,4 +4449,5 @@ Não vou voltar à casa.
 
 02:23:22.887 --> 02:23:24.806
 Não propriamente.
+
 
