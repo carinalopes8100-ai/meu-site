@@ -207,7 +207,7 @@ bannerVideo.oncanplaythrough = () => {
 
 
 function abrirVideo(item){
-  // Cria o modal
+  // Cria o modal do vídeo
   const videoModal = document.createElement('div');
   videoModal.style.position = 'fixed';
   videoModal.style.top = '0';
@@ -220,32 +220,31 @@ function abrirVideo(item){
   videoModal.style.alignItems = 'center';
   videoModal.style.zIndex = '10000';
 
-  // Cria o vídeo
+  // Cria o elemento de vídeo
   const videoEl = document.createElement('video');
-  videoEl.src = item.link;
+  videoEl.src = item.link; // link do vídeo
   videoEl.controls = true;
   videoEl.style.width = '80%';
   videoEl.style.height = '80%';
-
-  // Adiciona legendas (apenas append, sem manipulação manual)
+  
+  // **Aqui adiciona as legendas**
   if(item.legendas){
     item.legendas.forEach(l => {
       const track = document.createElement('track');
       track.kind = 'subtitles';
       track.label = l.label;
       track.srclang = l.lang;
-      track.src = l.src;
+      track.src = l.src; // teu link do GitHub
       if(l.default) track.default = true;
       videoEl.appendChild(track);
     });
   }
 
-  // Retoma progresso se houver
+  // Retoma o progresso
   if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
 
   let terminou = false;
 
-  // Ao terminar
   videoEl.onended = () => { 
     terminou = true; 
     delete progresso[item.titulo]; 
@@ -254,12 +253,10 @@ function abrirVideo(item){
     videoModal.remove();
   };
 
-  // Atualiza progresso
   videoEl.ontimeupdate = () => { 
     if(!terminou) progresso[item.titulo] = videoEl.currentTime; 
   };
 
-  // Botão fechar
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
   fecharBtn.style.position='absolute';
@@ -277,8 +274,19 @@ function abrirVideo(item){
   videoModal.appendChild(fecharBtn);
   document.body.appendChild(videoModal);
 
+  // Mostra legendas padrão
+  videoEl.addEventListener('loadedmetadata', () => {
+    const tracks = videoEl.textTracks;
+    for(let i=0; i<tracks.length; i++){
+      if(tracks[i].mode === 'disabled' && tracks[i].default){
+        tracks[i].mode = 'showing';
+      }
+    }
+  });
+
   videoEl.play();
 }
+
 
 
 
