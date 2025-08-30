@@ -1,5 +1,12 @@
 ﻿WEBVTT
 
+STYLE
+::cue {
+  background: rgba(0,0,0,0);
+  color: yellow;
+  font-size: 20px;
+}
+
 00:01:22.042 --> 00:01:27.047
 Devia ter adivinhado que estava
 aqui, Professora McGonagall.
@@ -4437,3 +4444,4 @@ Não vou voltar à casa.
 
 02:23:22.887 --> 02:23:24.806
 Não propriamente.
+
