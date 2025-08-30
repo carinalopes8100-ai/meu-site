@@ -205,41 +205,60 @@ bannerVideo.oncanplaythrough = () => {
 
 
 function abrirVideo(item){
+  // Cria o modal do vídeo
   const videoModal = document.createElement('div');
-  videoModal.style.position='fixed';
-  videoModal.style.top='0'; videoModal.style.left='0';
-  videoModal.style.width='100%'; videoModal.style.height='100%';
-  videoModal.style.background='rgba(0,0,0,0.9)';
-  videoModal.style.display='flex'; videoModal.style.justifyContent='center'; videoModal.style.alignItems='center';
-  videoModal.style.zIndex='10000';
+  videoModal.style.position = 'fixed';
+  videoModal.style.top = '0';
+  videoModal.style.left = '0';
+  videoModal.style.width = '100%';
+  videoModal.style.height = '100%';
+  videoModal.style.background = 'rgba(0,0,0,0.9)';
+  videoModal.style.display = 'flex';
+  videoModal.style.justifyContent = 'center';
+  videoModal.style.alignItems = 'center';
+  videoModal.style.zIndex = '10000';
 
+  // Cria o elemento de vídeo
   const videoEl = document.createElement('video');
   videoEl.src = item.link;
   videoEl.controls = true;
-  videoEl.style.width='80%';
-  videoEl.style.height='80%';
+  videoEl.style.width = '80%';
+  videoEl.style.height = '80%';
+  videoEl.setAttribute('crossorigin', 'anonymous'); // ajuda com legendas externas
 
-  
   // Adiciona legendas se existirem
-if(item.legendas){
-  item.legendas.forEach(l => {
-    const track = document.createElement('track');
-    track.kind = 'subtitles';
-    track.label = l.label;
-    track.srclang = l.lang;
-    track.src = l.src;
-    track.default = l.default || false; // força default
-    videoEl.appendChild(track);
-  });
-}
+  if(item.legendas){
+    item.legendas.forEach(l => {
+      const track = document.createElement('track');
+      track.kind = 'subtitles';
+      track.label = l.label;
+      track.srclang = l.lang;
+      track.src = l.src;
+      if(l.default) track.default = true; // marca como padrão
+      videoEl.appendChild(track);
+    });
+  }
 
-
-
+  // Retoma o progresso se houver
   if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
-  let terminou = false;
-  videoEl.onended = () => { terminou = true; delete progresso[item.titulo]; salvarProgresso(); mostrarSecao('inicio'); };
-  videoEl.ontimeupdate = () => { if(!terminou) progresso[item.titulo] = videoEl.currentTime; };
 
+  let terminou = false;
+
+  // Ao terminar o vídeo
+  videoEl.onended = () => { 
+    terminou = true; 
+    delete progresso[item.titulo]; 
+    salvarProgresso(); 
+    mostrarSecao('inicio'); 
+    videoModal.remove();
+  };
+
+  // Atualiza o progresso em tempo real
+  videoEl.ontimeupdate = () => { 
+    if(!terminou) progresso[item.titulo] = videoEl.currentTime; 
+  };
+
+  // Botão de fechar
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
   fecharBtn.style.position='absolute';
@@ -247,13 +266,29 @@ if(item.legendas){
   fecharBtn.style.right='20px';
   fecharBtn.style.padding='10px 20px';
   fecharBtn.style.cursor='pointer';
-  fecharBtn.onclick = () => { if(!terminou) salvarProgresso(); mostrarSecao('inicio'); videoModal.remove(); };
+  fecharBtn.onclick = () => { 
+    if(!terminou) salvarProgresso(); 
+    mostrarSecao('inicio'); 
+    videoModal.remove(); 
+  };
 
   videoModal.appendChild(videoEl);
   videoModal.appendChild(fecharBtn);
   document.body.appendChild(videoModal);
+
+  // Força o navegador a carregar legendas antes de reproduzir
+  videoEl.addEventListener('loadedmetadata', () => {
+    const tracks = videoEl.textTracks;
+    for(let i=0; i<tracks.length; i++){
+      if(tracks[i].mode === 'disabled' && tracks[i].default){
+        tracks[i].mode = 'showing';
+      }
+    }
+  });
+
   videoEl.play();
 }
+
 
 // ===== Dados =====
 const filmes = [
