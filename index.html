@@ -233,14 +233,7 @@ function abrirVideo(item){
     });
   }
 
-  // Espera metadata para ativar legendas
-  videoEl.addEventListener('loadedmetadata', () => {
-    // Força atualizar menu de legendas
-    const tracks = videoEl.textTracks;
-    for(let i=0; i<tracks.length; i++){
-      tracks[i].mode = tracks[i].default ? 'showing' : 'hidden';
-    }
-  });
+
 
   if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
   let terminou = false;
