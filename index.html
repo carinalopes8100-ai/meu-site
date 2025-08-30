@@ -803,11 +803,16 @@ function abrirModalEpisodios(temporada, serieTitulo){
 
 
 
-function fecharModal(){ document.getElementById('modal').style.display='none'; }
+function fecharModal(){ 
+    document.getElementById('modal').style.display='none'; 
+}
 
 function mostrarSecao(secao){
     const root = document.getElementById('root');
     root.innerHTML = ''; // limpa conteúdo anterior
+
+    // garante que todosItens inclua animes
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes];
 
     if(secao === 'inicio'){
         const continuar = todosItens.filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
@@ -823,7 +828,7 @@ function mostrarSecao(secao){
         root.appendChild(criarFila('fila1', filmes, 'filme'));
         root.appendChild(criarFila('fila2', series, 'serie'));
         root.appendChild(criarFila('fila3', filmesTerror, 'filme'));
-        root.appendChild(criarFila('filaAnimes', animes, 'serie', 'Animes Populares')); // <-- NOVA FILA
+        root.appendChild(criarFila('filaAnimes', animes, 'serie', 'Animes Populares')); // NOVA FILA
     }
     else if(secao === 'filmes'){
         root.appendChild(criarFila('fila1', filmes, 'filme'));
@@ -864,10 +869,12 @@ function pesquisar(){
     }
 }
 
+// Carrega listas e progresso antes de mostrar a tela inicial
 carregarLista(); 
 carregarProgresso();
 mostrarSecao('inicio');
 
+// Banner
 window.addEventListener('load', ()=>{
     const img = document.getElementById('bannerImage');
     const video = document.getElementById('bannerVideo');
@@ -878,7 +885,7 @@ window.addEventListener('load', ()=>{
     },2000);
 });
 
-// ===== Pesquisa instantânea =====
+// Pesquisa instantânea
 document.getElementById('searchInput').addEventListener('input', () => pesquisar());
 </script>
 </body>
