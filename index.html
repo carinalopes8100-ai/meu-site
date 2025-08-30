@@ -221,17 +221,17 @@ function abrirVideo(item){
 
   
   // Adiciona legendas se existirem
-  if(item.legendas){
-    item.legendas.forEach(l => {
-      const track = document.createElement('track');
-      track.kind = 'subtitles';
-      track.label = l.label;
-      track.srclang = l.lang;
-      track.src = l.src;
-      if(l.default) track.default = true;
-      videoEl.appendChild(track);
-    });
-  }
+if(item.legendas){
+  item.legendas.forEach(l => {
+    const track = document.createElement('track');
+    track.kind = 'subtitles';
+    track.label = l.label;
+    track.srclang = l.lang;
+    track.src = l.src;
+    track.default = l.default || false; // força default
+    videoEl.appendChild(track);
+  });
+}
 
 
 
