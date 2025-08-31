@@ -1,278 +1,79 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <title>EightyOne</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  <!-- Adiciona o CSS do Plyr -->
-  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
-  <style>
-    /* --- Aqui entra TODO o seu CSS original --- */
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
-
-    /* Header */
-    header { position: fixed; top:0; left:0; width:100%; height:60px; background:#141414; display:flex; align-items:center; justify-content:flex-start; padding:0 40px; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.5); }
-    header h1 { color:#e50914; font-size:24px; cursor:pointer; }
-    nav { display:flex; gap:15px; margin-left: 15px; }
-    nav div { cursor:pointer; transition:color .2s; }
-    nav div:hover { color:#e50914; text-decoration:underline; }
-
-    /* Barra de pesquisa */
-    #searchContainer { margin-left:auto; }
-    #searchContainer input { padding:6px 12px; border-radius:4px; border:none; outline:none; font-size:14px; }
-    #searchContainer button { padding:6px 12px; margin-left:5px; border:none; border-radius:4px; background:#e50914; color:#fff; cursor:pointer; font-weight:bold; transition:background .2s; }
-    #searchContainer button:hover { background:#b20710; }
-
-    /* Banner */
-    .banner { position: relative; width:100%; height:70vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
-    .banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
-    .banner-content { position:relative; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:15px; }
-    .banner h1 { font-size:48px; margin-bottom:10px; }
-    .banner p { font-size:18px; margin-bottom:20px; }
-    .banner-content button { width:160px; padding:12px 0; font-size:16px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; transition: background .2s; }
-    .banner-content button.play { background:#fff; color:#000; }
-    .banner-content button.play:hover { background:#ddd; }
-    .banner-content button.lista { background:rgba(109,109,110,0.7); color:#fff; }
-    .banner-content button.lista:hover { background:rgba(109,109,110,0.5); }
-
-    #root { margin-top:80px; }
-
-    /* Fila de filmes */
-    .fila-container { margin:20px 50px; position:relative; }
-    .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
-    .fila { display:flex; overflow-x:auto; gap:16px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
-    .fila::-webkit-scrollbar { display:none; }
-    .filme { width:180px; height:270px; border-radius:5px; overflow:hidden; cursor:pointer; position:relative; flex-shrink:0; transition:transform .3s; }
-    .filme:hover { transform:scale(1.08); z-index:2; }
-    .filme img { width:100%; height:100%; object-fit:cover; display:block; }
-
-    /* Overlay ao passar mouse */
-    .filme-hover-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; gap:10px; opacity:0; transition:opacity .3s; flex-direction:column; border-radius:5px; z-index:5; }
-    .filme:hover .filme-hover-overlay { opacity:1; }
-    .filme-hover-overlay button { width:100px; padding:8px 0; background:#e50914; border:none; color:#fff; font-weight:bold; cursor:pointer; border-radius:4px; transition: background .2s; }
-    .filme-hover-overlay button:hover { background:#b20710; }
-
-    /* Botão adicionar à lista */
-    .add-list-btn { position:absolute; bottom:5px; right:5px; width:30px; height:30px; border-radius:50%; border:none; background:#e50914; color:#fff; font-weight:bold; cursor:pointer; font-size:18px; z-index:6; transition: background .2s; opacity:0; }
-    .filme:hover .add-list-btn { opacity:1; }
-
-    /* Botões scroll */
-    .btn-scroll { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.6); border:none; color:#fff; font-size:30px; width:40px; height:80px; cursor:pointer; z-index:10; border-radius:4px; display:flex; align-items:center; justify-content:center; }
-    .btn-scroll:hover { background:rgba(229,9,20,.8); }
-    .btn-left { left:0; }
-    .btn-right { right:0; }
-
-    /* Modal estilos */
-    .modal { display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; }
-    .modal-content { background:#222; padding:25px; border-radius:10px; max-width:500px; width:90%; text-align:center; }
-    .modal h2 { margin-bottom:20px; }
-    .episodio-btn, .temporada-btn { display:block; margin:10px 0; padding:12px; background:#e50914; border:none; border-radius:5px; color:#fff; cursor:pointer; font-size:16px; width:100%; transition:background .2s; }
-    .episodio-btn:hover, .temporada-btn:hover { background:#b20710; }
-    .close-btn { margin-top:15px; padding:10px 20px; background:#555; border:none; border-radius:5px; color:#fff; cursor:pointer; transition:background .2s; }
-    .close-btn:hover { background:#333; }
-
-    .audio-btn { padding: 10px 20px; border-radius:5px; border:none; background-color: rgba(0,0,0,0.7); color:#fff; font-size:14px; font-weight:bold; cursor:pointer; transition: all 0.3s ease; display:inline-flex; justify-content:center; align-items:center; margin:5px; }
-    .audio-btn:hover { background-color:#e50914; transform: scale(1.1); }
-
-    /* Episódio scrollbar invisível */
-    #episodiosList { max-height:400px; overflow-y:auto; scrollbar-width:none; -ms-overflow-style:none; }
-    #episodiosList::-webkit-scrollbar { display:none; }
-
-    /* Toasts */
-    .toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 20000; }
-    .toast { background: rgba(51,51,51,0.95); color:#fff; padding:12px 20px; border-radius:5px; min-width:220px; max-width:300px; font-size:14px; font-weight:bold; display:flex; align-items:center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.7); opacity:0; transform: translateX(100%); animation: slideIn 0.5s forwards, fadeOut 0.5s forwards 3s; }
-    .toast button { background:none; border:none; color:#e50914; font-weight:bold; cursor:pointer; margin-left:10px; }
-    @keyframes slideIn { to { opacity:1; transform:translateX(0); } }
-    @keyframes fadeOut { to { opacity:0; transform:translateX(100%); } }
-    .filme .remove-continuar-btn { position:absolute; top:5px; right:5px; width:25px; height:25px; background-color: black; color: white; border: none; border-radius:50%; cursor:pointer; z-index:7; opacity:0; transition:opacity 0.3s; }
-    .filme:hover .remove-continuar-btn { opacity:1; }
-    /* --- fim do seu CSS original --- */
-  </style>
+<meta charset="UTF-8">
+<title>EightyOne - Plyr</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+<style>
+  body { margin:0; font-family:'Roboto',sans-serif; background:#141414; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:100vh; }
+  header { width:100%; background:#141414; padding:10px 20px; display:flex; align-items:center; justify-content:space-between; }
+  header h1 { color:#e50914; cursor:pointer; }
+  #videoContainer { margin-top:20px; width:90%; max-width:900px; }
+  .audio-btn { margin:5px; padding:8px 12px; background:#e50914; border:none; border-radius:4px; color:#fff; cursor:pointer; }
+</style>
 </head>
 <body>
 
-  <!-- Aqui vem TODO o seu HTML original (header, banner, nav, root, modal, toast container, etc.) -->
-  <!-- Copiei integralmente seu layout, conforme enviado... -->
+<header>
+  <h1>EightyOne</h1>
+</header>
 
-  <header>
-    <h1>EightyOne</h1>
-    <nav>
-      <div onclick="mostrarSecao('inicio')">Página Inicial</div>
-      <div onclick="mostrarSecao('series')">Séries</div>
-      <div onclick="mostrarSecao('filmes')">Filmes</div>
-      <div onclick="mostrarSecao('terror')">Terror</div>
-      <div onclick="mostrarSecao('lista')">A Minha Lista</div>
-    </nav>
-    <div id="searchContainer">
-      <input type="text" id="searchInput" placeholder="Pesquisar...">
-      <button onclick="pesquisar()">🔍︎</button>
-    </div>
-  </header>
+<div id="videoContainer">
+  <video id="plyrVideo" playsinline controls crossorigin="anonymous"></video>
+  <div id="audioButtons"></div>
+</div>
 
-  <div class="banner">
-    <img id="bannerImage" src="https://images.justwatch.com/poster/334324389/s718/lilo-and-stitch-2025.jpg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;">
-    <video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay muted loop>
-      <source src="https://ia801003.us.archive.org/7/items/oficial-dublado/Lilo%20e%20Stitch%20%20Trailer%20Oficial%20Dublado.mp4" type="video/mp4">
-    </video>
-    <div class="banner-content">
-      <h1>Lilo & Stitch 2025</h1>
-      <p>Uma animação divertida e emocionante para toda a família.</p>
-      <button class="play" onclick="abrirVideo(filmes[0])">▶ Assistir</button>
-      <button class="lista" onclick="adicionarMinhaLista('Lilo & Stitch 2025')">+ Minha Lista</button>
-    </div>
-  </div>
+<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+<script>
+const player = new Plyr('#plyrVideo', {
+  captions: { active: true, update: true, language: 'pt' },
+  settings: ['captions','quality','speed']
+});
 
-  <div id="root"></div>
-  <div id="modal" class="modal">
-    <div class="modal-content" id="modalContent">
-      <h2 id="modalTitle">Escolha a temporada</h2>
-      <div id="episodiosList"></div>
-      <button class="close-btn" onclick="fecharModal()">Fechar</button>
-    </div>
-  </div>
-  <div id="toastContainer" class="toast-container"></div>
+// Dados do vídeo
+const videoItem = {
+  titulo: "Lilo & Stitch Trailer",
+  link: "https://ia801003.us.archive.org/7/items/oficial-dublado/Lilo%20e%20Stitch%20%20Trailer%20Oficial%20Dublado.mp4",
+  audios: [
+    { label: "Português", src: "https://ia801003.us.archive.org/7/items/oficial-dublado/Lilo%20e%20Stitch%20%20Trailer%20Oficial%20Dublado.mp4" },
+    { label: "English", src: "https://archive.org/download/Lilo_Stitch_Trailer_Eng/Lilo_Stitch_Trailer_Eng.mp4" }
+  ],
+  legendas: [
+    { label:"Português", kind:"subtitles", srclang:"pt", src:"https://gist.githubusercontent.com/anonymous/0f8f1f1f3b6c1cd3f0e3/raw/5f2d9ed7f8c2c2c43c1c5a4f0b8f2c6c59d1.vtt", default:true }
+  ]
+};
 
-  <!-- Plyr Script -->
-  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+// Carregar fonte inicial
+function loadSource(src){
+  player.source = {
+    type: 'video',
+    title: videoItem.titulo,
+    sources: [{ src, type: 'video/mp4' }],
+    tracks: videoItem.legendas
+  };
+}
 
-  <script>
-    // Aqui vai TODO seu script original, com minhas poucas adaptações apenas para usar Plyr no abrirVideo()
-    let minhaLista = [];
-    let progresso = {};
+// Inicial
+loadSource(videoItem.link);
 
-    function salvarLista(){ localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
-    function carregarLista(){ const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
-    function salvarProgresso(){ localStorage.setItem("progresso", JSON.stringify(progresso)); }
-    function carregarProgresso(){ const p = localStorage.getItem("progresso"); if(p) progresso = JSON.parse(p); }
-
-    function mostrarToast(mensagem){
-      const container = document.getElementById('toastContainer');
-      const toast = document.createElement('div'); toast.className='toast'; toast.textContent=mensagem;
-      const btn = document.createElement('button'); btn.textContent='✖'; btn.onclick=()=>container.removeChild(toast);
-      toast.appendChild(btn); container.appendChild(toast);
-      setTimeout(()=>{ if(container.contains(toast)) container.removeChild(toast); },4000);
-    }
-
-    function adicionarMinhaLista(titulo){
-      const botao = document.querySelector('.banner-content .lista');
-      if(!minhaLista.includes(titulo)){
-        minhaLista.push(titulo);
-        salvarLista();
-        botao.textContent="Remover da Lista";
-        mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
-      } else {
-        minhaLista = minhaLista.filter(t=>t!==titulo);
-        salvarLista();
-        botao.textContent="+ Minha Lista";
-        mostrarToast(`"${titulo}" removido da Minha Lista!`);
-      }
-      mostrarSecao('inicio');
-    }
-
-    const bannerVideo = document.getElementById('bannerVideo');
-    const bannerImage = document.getElementById('bannerImage');
-    bannerVideo.oncanplaythrough = () => {
-      bannerImage.style.display='none';
-      bannerVideo.style.display='block';
-    };
-
-    function abrirVideo(item){
-      // Cria modal de vídeo
-      const videoModal = document.createElement('div');
-      Object.assign(videoModal.style, {
-        position:'fixed', top:'0', left:'0', width:'100%', height:'100%',
-        background:'rgba(0,0,0,0.9)', display:'flex', flexDirection:'column',
-        alignItems:'center', justifyContent:'center', zIndex:'10000'
-      });
-
-      const videoEl = document.createElement('video');
-      videoEl.setAttribute('playsinline','');
-      videoEl.setAttribute('controls','');
-      videoEl.setAttribute('crossorigin','anonymous');
-      videoEl.style.width = '80%';
-      videoEl.style.maxWidth = '1000px';
-      videoModal.appendChild(videoEl);
-
-      const audioContainer = document.createElement('div');
-      audioContainer.style.display='flex';
-      audioContainer.style.gap='10px';
-      audioContainer.style.marginTop='10px';
-      videoModal.appendChild(audioContainer);
-
-      document.body.appendChild(videoModal);
-
-      const player = new Plyr(videoEl, {
-        captions:{ active:true, update:true },
-        settings:['captions','quality','speed']
-      });
-
-      function loadSource(src){
-        player.source = {
-          type:'video',
-          title:item.titulo,
-          sources:[ { src, type:'video/mp4' } ],
-          tracks:(item.legendas||[]).map(l=>({
-            kind:'subtitles', label:l.label, srclang:l.lang, src:l.src, default:!!l.default
-          }))
-        };
-      }
-
-      loadSource(item.link);
-
-      if(item.audios){
-        item.audios.forEach(a=>{
-          const btn = document.createElement('button');
-          btn.className='audio-btn';
-          btn.textContent = a.label;
-          btn.onclick = () => {
-            const currentTime = player.currentTime;
-            const wasPlaying = !player.paused;
-            loadSource(a.src);
-            player.once('loadedmetadata', ()=>{
-              player.currentTime = currentTime;
-              if(wasPlaying) player.play();
-            });
-          };
-          audioContainer.appendChild(btn);
-        });
-      }
-
-      const fecharBtn = document.createElement('button');
-      fecharBtn.textContent = 'Fechar';
-      Object.assign(fecharBtn.style, {
-        marginTop:'10px', padding:'8px 16px', background:'#555',
-        color:'#fff', border:'none', cursor:'pointer', borderRadius:'4px'
-      });
-      fecharBtn.onclick = () => {
-        player.destroy();
-        salvarProgresso();
-        videoModal.remove();
-        mostrarSecao('inicio');
-      };
-      videoModal.appendChild(fecharBtn);
-
-      if(progresso[item.titulo]){
-        player.once('loadedmetadata', ()=>{
-          player.currentTime = progresso[item.titulo];
-        });
-      }
-
-      player.on('timeupdate', ()=>{
-        progresso[item.titulo] = player.currentTime;
-        salvarProgresso();
-      });
-
-      player.on('ended', ()=>{
-        delete progresso[item.titulo];
-        salvarProgresso();
-        videoModal.remove();
-        mostrarSecao('inicio');
-      });
-
-      player.play();
-    }
-
+// Botões de áudio
+const audioContainer = document.getElementById('audioButtons');
+videoItem.audios.forEach(a => {
+  const btn = document.createElement('button');
+  btn.className = 'audio-btn';
+  btn.textContent = a.label;
+  btn.onclick = () => {
+    const currentTime = player.currentTime;
+    const wasPlaying = !player.paused;
+    loadSource(a.src);
+    player.once('loadedmetadata', () => {
+      player.currentTime = currentTime;
+      if(wasPlaying) player.play();
+    });
+  };
+  audioContainer.appendChild(btn);
+});
 
 
 
