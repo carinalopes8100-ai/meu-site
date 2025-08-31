@@ -283,22 +283,7 @@ if(item.audios && item.audios.length > 0){
 });
 
   // Menu de legendas manual
-  let menu;
-  if(item.legendas && item.legendas.length > 0){
-    menu = document.createElement('select');
-    menu.style.marginTop = '10px';
-    const defaultOption = document.createElement('option');
-    defaultOption.textContent = 'Sem legendas';
-    defaultOption.value = -1;
-    menu.appendChild(defaultOption);
 
-    item.legendas.forEach((l, i) => {
-      const option = document.createElement('option');
-      option.value = i;
-      option.textContent = l.label;
-      menu.appendChild(option);
-      if(l.default) menu.value = i;
-    });
 
 menu.onchange = () => {
   const tracks = videoEl.textTracks;
