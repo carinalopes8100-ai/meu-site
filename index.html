@@ -249,29 +249,6 @@ function abrirVideo(item){
   videoEl.style.width = '80%';
   videoEl.style.height = '80%';
 
-  // Remove tracks antigas
-while(videoEl.firstChild) videoEl.removeChild(videoEl.firstChild);
-
-// Não cria track, só usa o seu legendasContainer
-
-
-  // --- AQUI: criar container de legendas no topo ---
-const legendasContainer = document.createElement('div');
-legendasContainer.id = 'legendasContainer';
-legendasContainer.style.position = 'absolute';
-legendasContainer.style.top = '5%'; // altura da legenda
-legendasContainer.style.left = '50%';
-legendasContainer.style.transform = 'translateX(-50%)';
-legendasContainer.style.width = '80%';
-legendasContainer.style.textAlign = 'center';
-legendasContainer.style.color = '#fff';
-legendasContainer.style.fontSize = '1.5em';
-legendasContainer.style.background = 'rgba(0,0,0,0.5)';
-legendasContainer.style.padding = '0.2em 0.5em';
-legendasContainer.style.borderRadius = '0.2em';
-legendasContainer.style.pointerEvents = 'none'; 
-videoModal.appendChild(legendasContainer);
-
 // Cria o container para os botões de áudio
 const audioContainer = document.createElement('div');
 audioContainer.style.display = 'flex';           // botões lado a lado
@@ -316,31 +293,6 @@ videoModal.appendChild(audioContainer);
     });
   }
 
-videoEl.ontimeupdate = () => {
-  if(item.legendas && item.legendas.length > 0){
-    let activeText = '';
-
-    const tracks = videoEl.textTracks;
-    for(let i = 0; i < tracks.length; i++){
-      const track = tracks[i];
-      if(track.cues && track.cues.length > 0){
-        for(let j = 0; j < track.cues.length; j++){
-          const cue = track.cues[j];
-          if(videoEl.currentTime >= cue.startTime && videoEl.currentTime <= cue.endTime){
-            activeText = cue.text;
-            break;  // já achou a legenda ativa, sai do loop interno
-          }
-        }
-      }
-      if(activeText) break; // se achou legenda ativa, sai do loop externo
-    }
-
-    legendasContainer.textContent = activeText; // limpa e atualiza
-  }
-
-  if(!terminou) progresso[item.titulo] = videoEl.currentTime;
-};
-
 
   
 
@@ -356,7 +308,10 @@ videoEl.ontimeupdate = () => {
     videoModal.remove();
   };
 
-  
+  videoEl.ontimeupdate = () => { 
+    if(!terminou) progresso[item.titulo] = videoEl.currentTime; 
+  };
+
   // Botão de fechar
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
@@ -376,16 +331,17 @@ videoEl.ontimeupdate = () => {
   document.body.appendChild(videoModal);
 
 
-  videoEl.addEventListener('loadedmetadata', () => {
+ videoEl.addEventListener('loadedmetadata', () => {
   const tracks = videoEl.textTracks;
-  for (let i = 0; i < tracks.length; i++) {
-    tracks[i].mode = 'hidden'; // Mantém todas ocultas
+  for(let i=0; i<tracks.length; i++){
+    tracks[i].mode = 'hidden'; // nunca mostrar automaticamente
   }
 });
 
   videoEl.muted = false;
   videoEl.play();
 }
+
 
 
 
