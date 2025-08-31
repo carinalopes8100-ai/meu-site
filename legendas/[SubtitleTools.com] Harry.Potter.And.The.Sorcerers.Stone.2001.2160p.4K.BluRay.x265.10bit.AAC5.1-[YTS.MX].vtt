@@ -2,6 +2,8 @@ WEBVTT
 
 STYLE
 ::cue {
+  white-space: normal;  /* padrão, permite quebra natural */
+  max-width: 90%;       /* não deixa ultrapassar a tela */
   background: rgba(0, 0, 0, 0.5);
   color: #FFFFFF;
   font-size: 34px;
@@ -4453,6 +4455,7 @@ Não vou voltar à casa.
 
 02:23:22.887 --> 02:23:24.806
 Não propriamente.
+
 
 
 
