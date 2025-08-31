@@ -2,78 +2,346 @@
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
-<title>EightyOne - Plyr</title>
+<title>EightyOne</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 <style>
-  body { margin:0; font-family:'Roboto',sans-serif; background:#141414; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:100vh; }
-  header { width:100%; background:#141414; padding:10px 20px; display:flex; align-items:center; justify-content:space-between; }
-  header h1 { color:#e50914; cursor:pointer; }
-  #videoContainer { margin-top:20px; width:90%; max-width:900px; }
-  .audio-btn { margin:5px; padding:8px 12px; background:#e50914; border:none; border-radius:4px; color:#fff; cursor:pointer; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
+
+
+header { position: fixed; top:0; left:0; width:100%; height:60px; background:#141414; display:flex; align-items:center; justify-content:flex-start; padding:0 40px; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.5); }
+header h1 { color:#e50914; font-size:24px; cursor:pointer; }
+nav { display:flex; gap:15px; margin-left: 15px; }
+nav div { cursor:pointer; transition:color .2s; }
+nav div:hover { color:#e50914; text-decoration:underline; }
+
+
+/* Barra de pesquisa */
+#searchContainer { margin-left:auto; }
+#searchContainer input { padding:6px 12px; border-radius:4px; border:none; outline:none; font-size:14px; }
+#searchContainer button { padding:6px 12px; margin-left:5px; border:none; border-radius:4px; background:#e50914; color:#fff; cursor:pointer; font-weight:bold; transition:background .2s; }
+#searchContainer button:hover { background:#b20710; }
+
+.banner { position: relative; width:100%; height:70vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
+.banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
+.banner-content { position:relative; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:15px; }
+.banner h1 { font-size:48px; margin-bottom:10px; }
+.banner p { font-size:18px; margin-bottom:20px; }
+.banner-content button { width:160px; padding:12px 0; font-size:16px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; transition: background .2s; }
+.banner-content button.play { background:#fff; color:#000; }
+.banner-content button.play:hover { background:#ddd; }
+.banner-content button.lista { background:rgba(109,109,110,0.7); color:#fff; }
+.banner-content button.lista:hover { background:rgba(109,109,110,0.5); }
+
+#root { margin-top:80px; }
+
+.fila-container { margin:20px 50px; position:relative; }
+.fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
+.fila { display:flex; overflow-x:auto; gap:16px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
+.fila::-webkit-scrollbar { display:none; }
+.filme { width:180px; height:270px; border-radius:5px; overflow:hidden; cursor:pointer; position:relative; flex-shrink:0; transition:transform .3s; }
+.filme:hover { transform:scale(1.08); z-index:2; }
+.filme img { width:100%; height:100%; object-fit:cover; display:block; }
+
+.filme-hover-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; gap:10px; opacity:0; transition:opacity .3s; flex-direction:column; border-radius:5px; z-index:5; }
+.filme:hover .filme-hover-overlay { opacity:1; }
+.filme-hover-overlay button { width:100px; padding:8px 0; background:#e50914; border:none; color:#fff; font-weight:bold; cursor:pointer; border-radius:4px; transition: background .2s; }
+.filme-hover-overlay button:hover { background:#b20710; }
+
+.add-list-btn { position:absolute; bottom:5px; right:5px; width:30px; height:30px; border-radius:50%; border:none; background:#e50914; color:#fff; font-weight:bold; cursor:pointer; font-size:18px; z-index:6; transition: background .2s; opacity:0; }
+.filme:hover .add-list-btn { opacity:1; }
+
+.btn-scroll { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.6); border:none; color:#fff; font-size:30px; width:40px; height:80px; cursor:pointer; z-index:10; border-radius:4px; display:flex; align-items:center; justify-content:center; }
+.btn-scroll:hover { background:rgba(229,9,20,.8); }
+.btn-left { left:0; }
+.btn-right { right:0; }
+
+.modal { display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; }
+.modal-content { background:#222; padding:25px; border-radius:10px; max-width:500px; width:90%; text-align:center; }
+.modal h2 { margin-bottom:20px; }
+.episodio-btn, .temporada-btn { display:block; margin:10px 0; padding:12px; background:#e50914; border:none; border-radius:5px; color:#fff; cursor:pointer; font-size:16px; width:100%; transition:background .2s; }
+.episodio-btn:hover, .temporada-btn:hover { background:#b20710; }
+.close-btn { margin-top:15px; padding:10px 20px; background:#555; border:none; border-radius:5px; color:#fff; cursor:pointer; transition:background .2s; }
+.close-btn:hover { background:#333; }
+
+  
+.audio-btn {
+  padding: 10px 20px; /* controla tamanho do botão */
+  border-radius: 5px; /* cantos arredondados */
+  border: none;
+  background-color: rgba(0,0,0,0.7);
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex; /* ficam ao lado se o container permitir */
+  justify-content: center;
+  align-items: center;
+  margin: 5px; /* espaçamento entre botões */
+}
+
+.audio-btn:hover {
+  background-color: #e50914;
+  transform: scale(1.1);
+}
+  
+
+/* Scroll interno para temporadas/episódios sem mostrar a barra */
+#episodiosList {
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;  /* IE e Edge antigos */
+}
+#episodiosList::-webkit-scrollbar { /* Chrome, Safari, Edge */
+  display: none;
+}
+
+.toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 20000; }
+.toast { background: rgba(51, 51, 51, 0.95); color: #fff; padding: 12px 20px; border-radius: 5px; min-width: 220px; max-width: 300px; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.7); opacity: 0; transform: translateX(100%); animation: slideIn 0.5s forwards, fadeOut 0.5s forwards 3s; }
+.toast button { background: none; border: none; color: #e50914; font-weight: bold; cursor: pointer; margin-left: 10px; }
+@keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeOut { to { opacity: 0; transform: translateX(100%); } }
+
+.filme .remove-continuar-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 25px;
+  height: 25px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 7;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.filme:hover .remove-continuar-btn { opacity: 1; }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>EightyOne</h1>
+<h1>EightyOne</h1>
+<nav>
+<div onclick="mostrarSecao('inicio')">Página Inicial</div>
+<div onclick="mostrarSecao('series')">Séries</div>
+<div onclick="mostrarSecao('filmes')">Filmes</div>
+<div onclick="mostrarSecao('terror')">Terror</div>
+<div onclick="mostrarSecao('lista')">A Minha Lista</div>
+</nav>
+<div id="searchContainer">
+  <input type="text" id="searchInput" placeholder="Pesquisar...">
+  <button onclick="pesquisar()">🔍︎</button>
+</div>
 </header>
 
-<div id="videoContainer">
-  <video id="plyrVideo" playsinline controls crossorigin="anonymous"></video>
-  <div id="audioButtons"></div>
+  
+
+
+
+<div class="banner">
+  <img id="bannerImage" src="https://images.justwatch.com/poster/334324389/s718/lilo-and-stitch-2025.jpg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;">
+  <video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay muted loop>
+    <source src="https://ia801003.us.archive.org/7/items/oficial-dublado/Lilo%20e%20Stitch%20%20Trailer%20Oficial%20Dublado.mp4" type="video/mp4">
+  </video>
+  <div class="banner-content">
+    <h1>Lilo & Stitch 2025</h1>
+    <p>Uma animação divertida e emocionante para toda a família.</p>
+    <button class="play" onclick="abrirVideo(filmes[0])">▶ Assistir</button>
+    <button class="lista" onclick="adicionarMinhaLista('Lilo & Stitch 2025')">+ Minha Lista</button>
+  </div>
 </div>
 
-<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+<div id="root"></div>
+
+<div id="modal" class="modal">
+  <div class="modal-content" id="modalContent">
+    <h2 id="modalTitle">Escolha a temporada</h2>
+    <div id="episodiosList"></div>
+    <button class="close-btn" onclick="fecharModal()">Fechar</button>
+  </div>
+</div>
+
+<div id="toastContainer" class="toast-container"></div>
+
 <script>
-const player = new Plyr('#plyrVideo', {
-  captions: { active: true, update: true, language: 'pt' },
-  settings: ['captions','quality','speed']
-});
+let minhaLista = [];
+let progresso = {};
 
-// Dados do vídeo
-const videoItem = {
-  titulo: "Lilo & Stitch Trailer",
-  link: "https://ia801003.us.archive.org/7/items/oficial-dublado/Lilo%20e%20Stitch%20%20Trailer%20Oficial%20Dublado.mp4",
-  audios: [
-    { label: "Português", src: "https://ia801003.us.archive.org/7/items/oficial-dublado/Lilo%20e%20Stitch%20%20Trailer%20Oficial%20Dublado.mp4" },
-    { label: "English", src: "https://archive.org/download/Lilo_Stitch_Trailer_Eng/Lilo_Stitch_Trailer_Eng.mp4" }
-  ],
-  legendas: [
-    { label:"Português", kind:"subtitles", srclang:"pt", src:"https://gist.githubusercontent.com/anonymous/0f8f1f1f3b6c1cd3f0e3/raw/5f2d9ed7f8c2c2c43c1c5a4f0b8f2c6c59d1.vtt", default:true }
-  ]
-};
+function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
+function carregarLista() { const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
+function salvarProgresso() { localStorage.setItem("progresso", JSON.stringify(progresso)); }
+function carregarProgresso() { const p = localStorage.getItem("progresso"); if(p) progresso = JSON.parse(p); }
 
-// Carregar fonte inicial
-function loadSource(src){
-  player.source = {
-    type: 'video',
-    title: videoItem.titulo,
-    sources: [{ src, type: 'video/mp4' }],
-    tracks: videoItem.legendas
-  };
+function mostrarToast(mensagem){
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div'); toast.className = 'toast'; toast.textContent = mensagem;
+  const btn = document.createElement('button'); btn.textContent = '✖'; btn.onclick = () => container.removeChild(toast);
+  toast.appendChild(btn); container.appendChild(toast);
+  setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
 
-// Inicial
-loadSource(videoItem.link);
+  
 
-// Botões de áudio
-const audioContainer = document.getElementById('audioButtons');
-videoItem.audios.forEach(a => {
-  const btn = document.createElement('button');
-  btn.className = 'audio-btn';
-  btn.textContent = a.label;
-  btn.onclick = () => {
-    const currentTime = player.currentTime;
-    const wasPlaying = !player.paused;
-    loadSource(a.src);
-    player.once('loadedmetadata', () => {
-      player.currentTime = currentTime;
-      if(wasPlaying) player.play();
+function adicionarMinhaLista(titulo){
+  if(!minhaLista.includes(titulo)){
+    minhaLista.push(titulo); salvarLista(); mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
+  } else {
+    minhaLista = minhaLista.filter(t => t!==titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`);
+  }
+  mostrarSecao('inicio');
+}
+
+function adicionarMinhaLista(titulo) {
+  const botao = document.querySelector('.banner-content .lista');
+
+  if (!minhaLista.includes(titulo)) {
+    minhaLista.push(titulo);
+    salvarLista(); // garante que a lista fique salva
+    botao.textContent = "Remover da Lista"; // atualiza o botão
+    mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
+  } else {
+    minhaLista = minhaLista.filter(t => t !== titulo);
+    salvarLista();
+    botao.textContent = "+ Minha Lista"; // atualiza o botão
+    mostrarToast(`"${titulo}" removido da Minha Lista!`);
+  }
+
+  mostrarSecao('inicio'); // se você quiser voltar à seção inicial
+}
+
+// <<< AQUI: adicionar o código para oncanplaythrough >>>
+const bannerVideo = document.getElementById('bannerVideo');
+const bannerImage = document.getElementById('bannerImage');
+
+bannerVideo.oncanplaythrough = () => {
+  bannerImage.style.display = 'none';
+  bannerVideo.style.display = 'block';
+};
+
+
+  
+
+
+
+
+function abrirVideo(item){
+  const videoModal = document.createElement('div');
+  videoModal.style.position = 'fixed';
+  videoModal.style.top = '0';
+  videoModal.style.left = '0';
+  videoModal.style.width = '100%';
+  videoModal.style.height = '100%';
+  videoModal.style.background = 'rgba(0,0,0,0.9)';
+  videoModal.style.display = 'flex';
+  videoModal.style.justifyContent = 'center';
+  videoModal.style.alignItems = 'center';
+  videoModal.style.zIndex = '10000';
+  videoModal.style.flexDirection = 'column';
+
+  const videoEl = document.createElement('video');
+  videoEl.src = item.link;
+  videoEl.controls = true;
+  videoEl.style.width = '80%';
+  videoEl.style.height = '80%';
+
+// Cria o container para os botões de áudio
+const audioContainer = document.createElement('div');
+audioContainer.style.display = 'flex';           // botões lado a lado
+audioContainer.style.gap = '10px';               // espaçamento entre os botões
+audioContainer.style.marginTop = '10px';         // distância do vídeo
+audioContainer.style.justifyContent = 'center';  // centraliza horizontalmente
+audioContainer.style.flexWrap = 'wrap';          // evita quebrar caso muitos botões
+
+// Adiciona os botões de áudio dentro do container
+if(item.audios && item.audios.length > 0){
+  item.audios.forEach(a => {
+    const btn = document.createElement('button');
+    btn.textContent = a.label;
+    btn.className = 'audio-btn';
+    btn.onclick = () => trocarAudio(a.src, videoEl);
+    audioContainer.appendChild(btn);
+  });
+}
+
+// Adiciona o container ao modal, DEPOIS do vídeo
+videoModal.appendChild(videoEl);
+videoModal.appendChild(audioContainer);
+  function trocarAudio(novoSrc, videoEl){
+    const tempoAtual = videoEl.currentTime;
+    videoEl.src = novoSrc;
+    videoEl.load();
+    videoEl.currentTime = tempoAtual;
+    videoEl.play();
+  }
+
+  // Adiciona legendas, mas mantém o botão CC oculto
+  if(item.legendas) {
+    item.legendas.forEach(l => {
+      const track = document.createElement('track');
+      track.kind = 'subtitles';
+      track.label = l.label;
+      track.srclang = l.lang;
+      track.src = l.src;
+      track.default = l.default || false;
+      videoEl.appendChild(track);
+      track.mode = 'hidden'; // impede botão CC
     });
+  }
+
+
+  
+
+  // Retomar progresso
+  if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
+
+  let terminou = false;
+  videoEl.onended = () => { 
+    terminou = true; 
+    delete progresso[item.titulo]; 
+    salvarProgresso(); 
+    mostrarSecao('inicio'); 
+    videoModal.remove();
   };
-  audioContainer.appendChild(btn);
-});
+
+  videoEl.ontimeupdate = () => { 
+    if(!terminou) progresso[item.titulo] = videoEl.currentTime; 
+  };
+
+  // Botão de fechar
+  const fecharBtn = document.createElement('button');
+  fecharBtn.textContent = 'Fechar';
+  fecharBtn.style.position='absolute';
+  fecharBtn.style.top='20px';
+  fecharBtn.style.right='20px';
+  fecharBtn.style.padding='10px 20px';
+  fecharBtn.style.cursor='pointer';
+  fecharBtn.onclick = () => { 
+    if(!terminou) salvarProgresso(); 
+    mostrarSecao('inicio'); 
+    videoModal.remove(); 
+  };
+
+ videoModal.appendChild(videoEl);
+  videoModal.appendChild(fecharBtn);
+  document.body.appendChild(videoModal);
+
+
+  videoEl.addEventListener('loadedmetadata', () => {
+    const tracks = videoEl.textTracks;
+    for(let i=0; i<tracks.length; i++){
+      if(tracks[i].default) tracks[i].mode = 'showing';
+    }
+  });
+
+  videoEl.muted = false;
+  videoEl.play();
+}
+
 
 
 
@@ -82,7 +350,6 @@ videoItem.audios.forEach(a => {
 const filmes = [
   {titulo:"Lilo & Stitch 2025",img:"https://images.justwatch.com/poster/334324389/s718/lilo-and-stitch-2025.jpg",link:"http://localhost:8096/Videos/fd01e68f98ca97ffe2385321a8419563/stream.mp4?Static=true", trailer:"https://fv5-5.files.fm/thumb_video/uj9qwjaju5.mp4?v=1756556152&PHPSESSID=8731dce80e1edc741a910c606dd2da1d9b19e048"},
   {titulo:"Gigantes de Aço",img:"https://mistertorrent.org/wp-content/uploads/2022/10/Gigantes-de-Aco-Torrent.jpg",link:"http://localhost:8096/Videos/fd01e68f98ca97ffe2385321a8419563/stream.mp4?Static=true", trailer:"https://ia801003.us.archive.org/7/items/oficial-dublado/Lilo%20e%20Stitch%20%20Trailer%20Oficial%20Dublado.mp4"},
-    {titulo:"Lilo & Stitch 2025",img:"https://images.justwatch.com/poster/334324389/s718/lilo-and-stitch-2025.jpg",link:"https://ia801003.us.archive.org/7/items/oficial-dublado/Lilo%20e%20Stitch%20%20Trailer%20Oficial%20Dublado.mp4", audios:[], legendas:[]},
   {titulo:"O Discípulo",img:"https://imagens.publico.pt/imagens.aspx/1229973?tp=UH&db=IMAGENS&type=JPG&share=1&o=BarraFacebook_P3.png",link:"https://ia600508.us.archive.org/27/items/hd_20250829/O%20Disc%C3%ADpulo%20-%20Filme%20Oficial%20%28HD%29.mp4", trailer:"https://ia600508.us.archive.org/21/items/railer-oficial-hd/O%20Disc%C3%ADpulo%20-%20Trailer%20Oficial%20%28HD%29.mp4"},
   {titulo:"Depois do Universo",img:"https://br.web.img2.acsta.net/pictures/22/10/27/23/27/5626842.jpg",link:"https://ia800908.us.archive.org/13/items/vxt_202508/Beyond.the.Universe.2022.PORTUGUESE.1080p.WEBRip.x264-VXT.mp4", trailer:"https://ia801003.us.archive.org/23/items/portugues_202508/Depois%20do%20Universo%20%28Teaser%29%20%20Trailer%20em%20Portugu%C3%AAs%20%20Netflix.mp4"},
   {titulo:"Charm City Kings",img:"https://play-lh.googleusercontent.com/dey1zzkSzAx4KSClYAyRUIoPlx_2Mjwastchrvw0QoOsSzux--skPISgoQmVRuXFiAmTJwVPAfYTnKv8lvM",link:"https://ia600506.us.archive.org/23/items/5.1_20250829/Charm%20City%20Kings%202020%20Web-Dl%201080P%20Dual%205.1.mp4", trailer:"https://ia601007.us.archive.org/16/items/trailer-2_202508/Charm%20City%20Kings%20-%20Official%20Trailer%20%282%29.mp4"},
@@ -93,17 +360,11 @@ const filmes = [
 {
   titulo: "Harry Potter e a Pedra Filosofal",
   img: "https://play-lh.googleusercontent.com/N73eyqy1aTo_8M1sXK2ayUee-TRq6AAazXjyWSd2Ihh3dsX041OWlV-zBT7uz8KLhpbuEUV7ud6_AWWk0Tw",
-  link: "https://ia802907.us.archive.org/30/items/tv_20250829/Harry%20Potter%20E%20A%20Pedra%20Filosofal%202001%204K%202160P%20Dual%20Audio%20Encoder%20By%20Carlos%20Jos%C3%A9%20Www.Bludv.Tv.mp4",
+  link: "https://ia802907.us.archive.org/30/items/tv_20250829/Harry%20Potter%20E%20A%20Pedra%20Filosofal%202001%204K%202160P%20Dual%20Audio%20Encoder%20By%20Carlos%20Jos%C3%A9%20Www.Bludv.Tv.mp4", // este é o padrão inicial
   trailer: "https://eightyone.cincopa.com/watch/A4HAcLOLOO68!AUMD4wOkgXrN",
   audios: [
-    {
-      label: "Português",
-      src: "https://archive.org/download/harry-potter-audio-portugues/HarryPotter_AudioPortugues.aac"
-    },
-    {
-      label: "English",
-      src: "https://archive.org/download/potter-en/HarryPotter_EN.dts"
-    }
+    { label: "Português", src: "https://archive.org/download/harry-potter-audio-portugues/HarryPotter_AudioPortugues.aac" },
+    { label: "English", src: "https://archive.org/download/potter-en/HarryPotter_EN.dts" }
   ],
   legendas: [
     {
@@ -114,7 +375,6 @@ const filmes = [
     }
   ]
 },
-
 
   {titulo:"Harry Potter e a Câmara Secreta",img:"https://play-lh.googleusercontent.com/m-sFZQ-QgG6_REbH9ByDYbM73SwygJcTg9idxm5_Tu4FSJYio2Xir1KGgusJ0wFYdi4SvM8PjtBJw14hdg",link:"https://ia801001.us.archive.org/32/items/tv-1_20250829/Harry%20Potter%20E%20A%20C%C3%A2mera%20Secreta%202002%204K%202160P%20Dual%20%C3%81udio%20Encoder%20By%20Carlos%20Jos%C3%A9%20Www.Bludv.Tv%281%29.mp4", trailer:"https://ia800508.us.archive.org/23/items/legendado/Harry%20Potter%20e%20a%20C%C3%A2mara%20Secreta%20%282002%29%20%20Trailer%20%5BLegendado%5D.mp4"},
   {titulo:"Harry Potter e o Prisioneiro de Azkaban",img:"https://irs.www.warnerbros.com.br/keyart-jpeg/movies/media/browser/Harry_Potter_and_the_Prisoner_of_Azkaban_Keyart_0.jpg",link:"https://ia800900.us.archive.org/21/items/ca_20250829/Harry%20Potter%20E%20O%20Prisioneiro%20De%20Azkaban%202004%204K%202160P%20Dual%20%C3%81udio%20Encoder%20By%20Carlos%20Jos%C3%A9%20Www.Bludv.Tv%281%29.ia.mp4", trailer:"https://ia600903.us.archive.org/26/items/clipchamp_20250828/V%C3%ADdeo%20sem%20t%C3%ADtulo%20-%20Feito%20com%20Clipchamp.mp4"},
