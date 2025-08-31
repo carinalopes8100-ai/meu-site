@@ -283,22 +283,6 @@ function abrirVideo(item){
     });
   }
 
-  // Menu manual de legendas
-  if(item.legendas && item.legendas.length > 0){
-    const menu = document.createElement('select');
-    menu.style.marginTop = '10px';
-    const defaultOption = document.createElement('option');
-    defaultOption.textContent = 'N';
-    defaultOption.value = -1;
-    menu.appendChild(defaultOption);
-
-    item.legendas.forEach((l, i) => {
-      const option = document.createElement('option');
-      option.value = i;
-      option.textContent = l.label;
-      menu.appendChild(option);
-      if(l.default) menu.value = i;
-    });
 
     menu.onchange = () => {
       const tracks = videoEl.textTracks;
