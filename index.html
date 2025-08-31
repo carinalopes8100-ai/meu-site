@@ -170,59 +170,94 @@ function abrirVideo(item){
   const antigo = document.getElementById('videoModalPlyr');
   if(antigo) antigo.remove();
 
+  // Container do modal
   const videoModal = document.createElement('div');
   videoModal.id = 'videoModalPlyr';
-  Object.assign(videoModal.style, {position:'fixed', top:'0', left:'0', width:'100%', height:'100%', background:'rgba(0,0,0,0.9)', display:'flex', justifyContent:'center', alignItems:'center', zIndex:'10000', flexDirection:'column'});
+  Object.assign(videoModal.style, {
+    position:'fixed',
+    top:'0',
+    left:'0',
+    width:'100%',
+    height:'100%',
+    background:'rgba(0,0,0,0.9)',
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    zIndex:'10000',
+    flexDirection:'column'
+  });
 
+  // Elemento de vídeo
   const videoEl = document.createElement('video');
-  videoEl.setAttribute('playsinline',''); videoEl.setAttribute('controls','');
-  videoEl.style.width='80%'; videoEl.style.height='80%';
+  videoEl.setAttribute('playsinline','');
+  videoEl.setAttribute('controls','');
+  videoEl.style.maxWidth = '90%';
+  videoEl.style.maxHeight = '90%';
+  videoEl.style.width = 'auto';
+  videoEl.style.height = 'auto';
+  videoEl.style.objectFit = 'contain';
+  videoEl.style.background = 'black';
 
-  const source = document.createElement('source'); source.src=item.link; source.type='video/mp4'; videoEl.appendChild(source);
+  const source = document.createElement('source');
+  source.src = item.link;
+  source.type = 'video/mp4';
+  videoEl.appendChild(source);
 
   // Legendas
   if(item.legendas){
     item.legendas.forEach(l=>{
-      const track=document.createElement('track');
-      track.kind='subtitles'; track.label=l.label; track.srclang=l.lang; track.src=l.src; track.default=l.default||false;
+      const track = document.createElement('track');
+      track.kind='subtitles';
+      track.label=l.label;
+      track.srclang=l.lang;
+      track.src=l.src;
+      track.default=l.default||false;
       videoEl.appendChild(track);
     });
   }
 
   // Botões de áudio
-  const audioContainer=document.createElement('div');
-  Object.assign(audioContainer.style,{display:'flex', gap:'10px', marginTop:'10px', justifyContent:'center', flexWrap:'wrap'});
+  const audioContainer = document.createElement('div');
+  Object.assign(audioContainer.style, {display:'flex', gap:'10px', marginTop:'10px', justifyContent:'center', flexWrap:'wrap'});
   if(item.audios){
     item.audios.forEach(a=>{
-      const btn=document.createElement('button');
-      btn.className='audio-btn'; btn.textContent=a.label;
-      btn.onclick=()=>{ 
-        const tempoAtual=player.currentTime;
-        player.source={type:'video', sources:[{src:a.src, type:'video/mp4'}], poster:item.img, tracks:item.legendas||[]};
-        player.currentTime=tempoAtual; player.play();
+      const btn = document.createElement('button');
+      btn.className = 'audio-btn';
+      btn.textContent = a.label;
+      btn.onclick = () => {
+        const tempoAtual = player.currentTime;
+        player.source = {
+          type: 'video',
+          sources: [{src: a.src, type: 'video/mp4'}],
+          poster: item.img,
+          tracks: item.legendas||[]
+        };
+        player.currentTime = tempoAtual;
+        player.play();
       };
       audioContainer.appendChild(btn);
     });
   }
 
+  // Botão fechar
+  const fecharBtn = document.createElement('button');
+  fecharBtn.textContent = 'Fechar';
+  Object.assign(fecharBtn.style,{position:'absolute', top:'20px', right:'20px', padding:'10px 20px', cursor:'pointer'});
+  fecharBtn.onclick = () => videoModal.remove();
+
   videoModal.appendChild(videoEl);
   videoModal.appendChild(audioContainer);
-
-  const fecharBtn=document.createElement('button'); fecharBtn.textContent='Fechar';
-  Object.assign(fecharBtn.style,{position:'absolute', top:'20px', right:'20px', padding:'10px 20px', cursor:'pointer'});
-  fecharBtn.onclick=()=>videoModal.remove();
   videoModal.appendChild(fecharBtn);
-
   document.body.appendChild(videoModal);
 
-  // Plyr init
+  // Inicializar Plyr
   const player = new Plyr(videoEl, { captions:{ active:true, update:true, language:'pt' } });
 
-  if(progresso[item.titulo]) player.currentTime=progresso[item.titulo];
+  if(progresso[item.titulo]) player.currentTime = progresso[item.titulo];
 
   let terminou=false;
-  player.on('ended',()=>{ terminou=true; delete progresso[item.titulo]; salvarProgresso(); videoModal.remove(); });
-  player.on('timeupdate',()=>{ if(!terminou) progresso[item.titulo]=player.currentTime; });
+  player.on('ended', ()=>{ terminou=true; delete progresso[item.titulo]; salvarProgresso(); videoModal.remove(); });
+  player.on('timeupdate', ()=>{ if(!terminou) progresso[item.titulo] = player.currentTime; });
 
   player.play();
 }
