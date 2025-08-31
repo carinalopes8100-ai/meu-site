@@ -1,17 +1,17 @@
-WEBVTT
-
 STYLE
 ::cue {
-  background: rgba(0, 0, 0, 0.6);    /* fundo semi-transparente mais escuro */
-  color: #FFFFFF;                     /* texto branco */
-  font-size: 32px;                    /* grande e legível */
-  font-weight: 700;                   /* mais visível */
-  font-family: 'Arial', sans-serif;  /* fonte limpa */
-  text-shadow: 4px 4px 8px rgba(0,0,0,0.8); /* sombra suave e elegante */
-  padding: 0.3em 0.6em;               /* espaçamento interno maior */
-  border-radius: 8px;                 /* cantos arredondados */
-  line-height: 1.5;                   /* espaçamento entre linhas */
-  text-align: center;                 /* centraliza o texto */
+  background: rgba(0, 0, 0, 0.5);
+  color: #FFFFFF;
+  font-size: 34px;
+  font-weight: 700;
+  font-family: 'Arial', sans-serif;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.9), -2px -2px 4px rgba(0,0,0,0.9);
+  padding: 0.4em 0.8em;
+  border-radius: 8px;
+  line-height: 1.5;
+  text-align: center;
+
+  line: 80%;   /* altera a altura da legenda na tela (0% topo, 100% base) */
 }
 
 00:01:22.042 --> 00:01:27.047
@@ -4451,6 +4451,7 @@ Não vou voltar à casa.
 
 02:23:22.887 --> 02:23:24.806
 Não propriamente.
+
 
 
 
