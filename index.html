@@ -4,17 +4,17 @@
 <meta charset="UTF-8">
 <title>EightyOne</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
 
-
+/* Header */
 header { position: fixed; top:0; left:0; width:100%; height:60px; background:#141414; display:flex; align-items:center; justify-content:flex-start; padding:0 40px; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.5); }
 header h1 { color:#e50914; font-size:24px; cursor:pointer; }
 nav { display:flex; gap:15px; margin-left: 15px; }
 nav div { cursor:pointer; transition:color .2s; }
 nav div:hover { color:#e50914; text-decoration:underline; }
-
 
 /* Barra de pesquisa */
 #searchContainer { margin-left:auto; }
@@ -22,6 +22,7 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 #searchContainer button { padding:6px 12px; margin-left:5px; border:none; border-radius:4px; background:#e50914; color:#fff; cursor:pointer; font-weight:bold; transition:background .2s; }
 #searchContainer button:hover { background:#b20710; }
 
+/* Banner */
 .banner { position: relative; width:100%; height:70vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
 .banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
 .banner-content { position:relative; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:15px; }
@@ -35,6 +36,7 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 #root { margin-top:80px; }
 
+/* Fila de filmes */
 .fila-container { margin:20px 50px; position:relative; }
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
 .fila { display:flex; overflow-x:auto; gap:16px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
@@ -43,19 +45,23 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .filme:hover { transform:scale(1.08); z-index:2; }
 .filme img { width:100%; height:100%; object-fit:cover; display:block; }
 
+/* Overlay ao passar mouse */
 .filme-hover-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; gap:10px; opacity:0; transition:opacity .3s; flex-direction:column; border-radius:5px; z-index:5; }
 .filme:hover .filme-hover-overlay { opacity:1; }
 .filme-hover-overlay button { width:100px; padding:8px 0; background:#e50914; border:none; color:#fff; font-weight:bold; cursor:pointer; border-radius:4px; transition: background .2s; }
 .filme-hover-overlay button:hover { background:#b20710; }
 
+/* Botão adicionar à lista */
 .add-list-btn { position:absolute; bottom:5px; right:5px; width:30px; height:30px; border-radius:50%; border:none; background:#e50914; color:#fff; font-weight:bold; cursor:pointer; font-size:18px; z-index:6; transition: background .2s; opacity:0; }
 .filme:hover .add-list-btn { opacity:1; }
 
+/* Botões scroll */
 .btn-scroll { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.6); border:none; color:#fff; font-size:30px; width:40px; height:80px; cursor:pointer; z-index:10; border-radius:4px; display:flex; align-items:center; justify-content:center; }
 .btn-scroll:hover { background:rgba(229,9,20,.8); }
 .btn-left { left:0; }
 .btn-right { right:0; }
 
+/* Modal */
 .modal { display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; }
 .modal-content { background:#222; padding:25px; border-radius:10px; max-width:500px; width:90%; text-align:center; }
 .modal h2 { margin-bottom:20px; }
@@ -64,62 +70,20 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .close-btn { margin-top:15px; padding:10px 20px; background:#555; border:none; border-radius:5px; color:#fff; cursor:pointer; transition:background .2s; }
 .close-btn:hover { background:#333; }
 
-  
-.audio-btn {
-  padding: 10px 20px; /* controla tamanho do botão */
-  border-radius: 5px; /* cantos arredondados */
-  border: none;
-  background-color: rgba(0,0,0,0.7);
-  color: #fff;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: inline-flex; /* ficam ao lado se o container permitir */
-  justify-content: center;
-  align-items: center;
-  margin: 5px; /* espaçamento entre botões */
-}
+/* Botões de áudio */
+.audio-btn { padding: 10px 20px; border-radius:5px; border:none; background-color: rgba(0,0,0,0.7); color:#fff; font-size:14px; font-weight:bold; cursor:pointer; transition: all 0.3s ease; display:inline-flex; justify-content:center; align-items:center; margin:5px; }
+.audio-btn:hover { background-color:#e50914; transform: scale(1.1); }
 
-.audio-btn:hover {
-  background-color: #e50914;
-  transform: scale(1.1);
-}
-  
+/* Scroll interno para episódios/temporadas */
+#episodiosList { max-height:400px; overflow-y:auto; scrollbar-width:none; -ms-overflow-style:none; }
+#episodiosList::-webkit-scrollbar { display:none; }
 
-/* Scroll interno para temporadas/episódios sem mostrar a barra */
-#episodiosList {
-  max-height: 400px;
-  overflow-y: auto;
-  scrollbar-width: none;     /* Firefox */
-  -ms-overflow-style: none;  /* IE e Edge antigos */
-}
-#episodiosList::-webkit-scrollbar { /* Chrome, Safari, Edge */
-  display: none;
-}
-
+/* Toasts */
 .toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 20000; }
-.toast { background: rgba(51, 51, 51, 0.95); color: #fff; padding: 12px 20px; border-radius: 5px; min-width: 220px; max-width: 300px; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.7); opacity: 0; transform: translateX(100%); animation: slideIn 0.5s forwards, fadeOut 0.5s forwards 3s; }
-.toast button { background: none; border: none; color: #e50914; font-weight: bold; cursor: pointer; margin-left: 10px; }
-@keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
-@keyframes fadeOut { to { opacity: 0; transform: translateX(100%); } }
-
-.filme .remove-continuar-btn {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 25px;
-  height: 25px;
-  background-color: black;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 7;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.filme:hover .remove-continuar-btn { opacity: 1; }
+.toast { background: rgba(51,51,51,0.95); color:#fff; padding:12px 20px; border-radius:5px; min-width:220px; max-width:300px; font-size:14px; font-weight:bold; display:flex; align-items:center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.7); opacity:0; transform: translateX(100%); animation: slideIn 0.5s forwards, fadeOut 0.5s forwards 3s; }
+.toast button { background:none; border:none; color:#e50914; font-weight:bold; cursor:pointer; margin-left:10px; }
+@keyframes slideIn { to { opacity:1; transform:translateX(0); } }
+@keyframes fadeOut { to { opacity:0; transform:translateX(100%); } }
 </style>
 </head>
 <body>
@@ -139,10 +103,6 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 </div>
 </header>
 
-  
-
-
-
 <div class="banner">
   <img id="bannerImage" src="https://images.justwatch.com/poster/334324389/s718/lilo-and-stitch-2025.jpg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;">
   <video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay muted loop>
@@ -157,7 +117,6 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 </div>
 
 <div id="root"></div>
-
 <div id="modal" class="modal">
   <div class="modal-content" id="modalContent">
     <h2 id="modalTitle">Escolha a temporada</h2>
@@ -168,180 +127,105 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 <div id="toastContainer" class="toast-container"></div>
 
+<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
 <script>
 let minhaLista = [];
-let progresso = {};
-
-function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
-function carregarLista() { const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
-function salvarProgresso() { localStorage.setItem("progresso", JSON.stringify(progresso)); }
-function carregarProgresso() { const p = localStorage.getItem("progresso"); if(p) progresso = JSON.parse(p); }
+let progresso = [];
+function salvarLista(){ localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
+function carregarLista(){ const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista=JSON.parse(lista); }
+function salvarProgresso(){ localStorage.setItem("progresso", JSON.stringify(progresso)); }
+function carregarProgresso(){ const p = localStorage.getItem("progresso"); if(p) progresso=JSON.parse(p); }
 
 function mostrarToast(mensagem){
   const container = document.getElementById('toastContainer');
-  const toast = document.createElement('div'); toast.className = 'toast'; toast.textContent = mensagem;
-  const btn = document.createElement('button'); btn.textContent = '✖'; btn.onclick = () => container.removeChild(toast);
+  const toast = document.createElement('div'); toast.className='toast'; toast.textContent=mensagem;
+  const btn = document.createElement('button'); btn.textContent='✖'; btn.onclick=()=>container.removeChild(toast);
   toast.appendChild(btn); container.appendChild(toast);
-  setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
+  setTimeout(()=>{ if(container.contains(toast)) container.removeChild(toast); },4000);
 }
 
-  
-
 function adicionarMinhaLista(titulo){
+  const botao = document.querySelector('.banner-content .lista');
   if(!minhaLista.includes(titulo)){
-    minhaLista.push(titulo); salvarLista(); mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
+    minhaLista.push(titulo);
+    salvarLista();
+    botao.textContent="Remover da Lista";
+    mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
   } else {
-    minhaLista = minhaLista.filter(t => t!==titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`);
+    minhaLista = minhaLista.filter(t=>t!==titulo);
+    salvarLista();
+    botao.textContent="+ Minha Lista";
+    mostrarToast(`"${titulo}" removido da Minha Lista!`);
   }
   mostrarSecao('inicio');
 }
 
-function adicionarMinhaLista(titulo) {
-  const botao = document.querySelector('.banner-content .lista');
-
-  if (!minhaLista.includes(titulo)) {
-    minhaLista.push(titulo);
-    salvarLista(); // garante que a lista fique salva
-    botao.textContent = "Remover da Lista"; // atualiza o botão
-    mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
-  } else {
-    minhaLista = minhaLista.filter(t => t !== titulo);
-    salvarLista();
-    botao.textContent = "+ Minha Lista"; // atualiza o botão
-    mostrarToast(`"${titulo}" removido da Minha Lista!`);
-  }
-
-  mostrarSecao('inicio'); // se você quiser voltar à seção inicial
-}
-
-// <<< AQUI: adicionar o código para oncanplaythrough >>>
+// Banner video
 const bannerVideo = document.getElementById('bannerVideo');
 const bannerImage = document.getElementById('bannerImage');
+bannerVideo.oncanplaythrough = () => { bannerImage.style.display='none'; bannerVideo.style.display='block'; };
 
-bannerVideo.oncanplaythrough = () => {
-  bannerImage.style.display = 'none';
-  bannerVideo.style.display = 'block';
-};
-
-
-  
-
-
-
-
+// Plyr player
 function abrirVideo(item){
+  const antigo = document.getElementById('videoModalPlyr');
+  if(antigo) antigo.remove();
+
   const videoModal = document.createElement('div');
-  videoModal.style.position = 'fixed';
-  videoModal.style.top = '0';
-  videoModal.style.left = '0';
-  videoModal.style.width = '100%';
-  videoModal.style.height = '100%';
-  videoModal.style.background = 'rgba(0,0,0,0.9)';
-  videoModal.style.display = 'flex';
-  videoModal.style.justifyContent = 'center';
-  videoModal.style.alignItems = 'center';
-  videoModal.style.zIndex = '10000';
-  videoModal.style.flexDirection = 'column';
+  videoModal.id = 'videoModalPlyr';
+  Object.assign(videoModal.style, {position:'fixed', top:'0', left:'0', width:'100%', height:'100%', background:'rgba(0,0,0,0.9)', display:'flex', justifyContent:'center', alignItems:'center', zIndex:'10000', flexDirection:'column'});
 
   const videoEl = document.createElement('video');
-  videoEl.src = item.link;
-  videoEl.controls = true;
-  videoEl.style.width = '80%';
-  videoEl.style.height = '80%';
+  videoEl.setAttribute('playsinline',''); videoEl.setAttribute('controls','');
+  videoEl.style.width='80%'; videoEl.style.height='80%';
 
-// Cria o container para os botões de áudio
-const audioContainer = document.createElement('div');
-audioContainer.style.display = 'flex';           // botões lado a lado
-audioContainer.style.gap = '10px';               // espaçamento entre os botões
-audioContainer.style.marginTop = '10px';         // distância do vídeo
-audioContainer.style.justifyContent = 'center';  // centraliza horizontalmente
-audioContainer.style.flexWrap = 'wrap';          // evita quebrar caso muitos botões
+  const source = document.createElement('source'); source.src=item.link; source.type='video/mp4'; videoEl.appendChild(source);
 
-// Adiciona os botões de áudio dentro do container
-if(item.audios && item.audios.length > 0){
-  item.audios.forEach(a => {
-    const btn = document.createElement('button');
-    btn.textContent = a.label;
-    btn.className = 'audio-btn';
-    btn.onclick = () => trocarAudio(a.src, videoEl);
-    audioContainer.appendChild(btn);
-  });
-}
-
-// Adiciona o container ao modal, DEPOIS do vídeo
-videoModal.appendChild(videoEl);
-videoModal.appendChild(audioContainer);
-  function trocarAudio(novoSrc, videoEl){
-    const tempoAtual = videoEl.currentTime;
-    videoEl.src = novoSrc;
-    videoEl.load();
-    videoEl.currentTime = tempoAtual;
-    videoEl.play();
-  }
-
-  // Adiciona legendas, mas mantém o botão CC oculto
-  if(item.legendas) {
-    item.legendas.forEach(l => {
-      const track = document.createElement('track');
-      track.kind = 'subtitles';
-      track.label = l.label;
-      track.srclang = l.lang;
-      track.src = l.src;
-      track.default = l.default || false;
+  // Legendas
+  if(item.legendas){
+    item.legendas.forEach(l=>{
+      const track=document.createElement('track');
+      track.kind='subtitles'; track.label=l.label; track.srclang=l.lang; track.src=l.src; track.default=l.default||false;
       videoEl.appendChild(track);
-      track.mode = 'hidden'; // impede botão CC
     });
   }
 
+  // Botões de áudio
+  const audioContainer=document.createElement('div');
+  Object.assign(audioContainer.style,{display:'flex', gap:'10px', marginTop:'10px', justifyContent:'center', flexWrap:'wrap'});
+  if(item.audios){
+    item.audios.forEach(a=>{
+      const btn=document.createElement('button');
+      btn.className='audio-btn'; btn.textContent=a.label;
+      btn.onclick=()=>{ 
+        const tempoAtual=player.currentTime;
+        player.source={type:'video', sources:[{src:a.src, type:'video/mp4'}], poster:item.img, tracks:item.legendas||[]};
+        player.currentTime=tempoAtual; player.play();
+      };
+      audioContainer.appendChild(btn);
+    });
+  }
 
-  
+  videoModal.appendChild(videoEl);
+  videoModal.appendChild(audioContainer);
 
-  // Retomar progresso
-  if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
-
-  let terminou = false;
-  videoEl.onended = () => { 
-    terminou = true; 
-    delete progresso[item.titulo]; 
-    salvarProgresso(); 
-    mostrarSecao('inicio'); 
-    videoModal.remove();
-  };
-
-  videoEl.ontimeupdate = () => { 
-    if(!terminou) progresso[item.titulo] = videoEl.currentTime; 
-  };
-
-  // Botão de fechar
-  const fecharBtn = document.createElement('button');
-  fecharBtn.textContent = 'Fechar';
-  fecharBtn.style.position='absolute';
-  fecharBtn.style.top='20px';
-  fecharBtn.style.right='20px';
-  fecharBtn.style.padding='10px 20px';
-  fecharBtn.style.cursor='pointer';
-  fecharBtn.onclick = () => { 
-    if(!terminou) salvarProgresso(); 
-    mostrarSecao('inicio'); 
-    videoModal.remove(); 
-  };
-
- videoModal.appendChild(videoEl);
+  const fecharBtn=document.createElement('button'); fecharBtn.textContent='Fechar';
+  Object.assign(fecharBtn.style,{position:'absolute', top:'20px', right:'20px', padding:'10px 20px', cursor:'pointer'});
+  fecharBtn.onclick=()=>videoModal.remove();
   videoModal.appendChild(fecharBtn);
+
   document.body.appendChild(videoModal);
 
+  // Plyr init
+  const player = new Plyr(videoEl, { captions:{ active:true, update:true, language:'pt' } });
 
-  videoEl.addEventListener('loadedmetadata', () => {
-    const tracks = videoEl.textTracks;
-    for(let i=0; i<tracks.length; i++){
-      if(tracks[i].default) tracks[i].mode = 'showing';
-    }
-  });
+  if(progresso[item.titulo]) player.currentTime=progresso[item.titulo];
 
-  videoEl.muted = false;
-  videoEl.play();
+  let terminou=false;
+  player.on('ended',()=>{ terminou=true; delete progresso[item.titulo]; salvarProgresso(); videoModal.remove(); });
+  player.on('timeupdate',()=>{ if(!terminou) progresso[item.titulo]=player.currentTime; });
+
+  player.play();
 }
-
 
 
 
