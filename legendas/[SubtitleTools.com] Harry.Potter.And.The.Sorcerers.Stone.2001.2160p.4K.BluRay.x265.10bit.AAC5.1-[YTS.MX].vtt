@@ -2,14 +2,18 @@ WEBVTT
 
 STYLE
 ::cue {
-  background-image: linear-gradient(to bottom, dimgray, lightgray);
-  color: green;
-  line:70%;
-  position: 70%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  color: #FFFFFF; /* branco elegante */
+  background-color: rgba(0, 0, 0, 0.5); /* fundo semi-transparente */
+  font-size: 1.5c; /* tamanho legível, relativo à tela */
+  font-weight: 400; /* leve e elegante */
+  text-align: center; /* centralizado */
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7); /* sombra suave para destaque */
+  line: 85%; /* posicionamento vertical próximo da parte inferior */
+  position: 50%; /* central horizontalmente */
+  padding: 0.2c 0.5c; /* espaço interno do fundo */
+  border-radius: 0.2c; /* cantos arredondados */
 }
+
 
 00:01:22.042 --> 00:01:27.047
 Devia ter adivinhado que estava
@@ -4448,6 +4452,7 @@ Não vou voltar à casa.
 
 02:23:22.887 --> 02:23:24.806
 Não propriamente.
+
 
 
 
