@@ -272,69 +272,51 @@ function abrirVideo(item){
   videoModal.style.zIndex = '10000';
   videoModal.style.flexDirection = 'column';
 
+  // Video
   const videoEl = document.createElement('video');
   videoEl.src = item.link;
   videoEl.controls = true;
   videoEl.style.width = '80%';
   videoEl.style.height = '80%';
-
   videoModal.appendChild(videoEl);
 
-// Container de legendas
-const captionsEl = document.createElement('div');
-captionsEl.className = 'custom-captions';
-captionsEl.id = 'captions';
-videoModal.appendChild(captionsEl);
+  // Container de legendas
+  const captionsEl = document.createElement('div');
+  captionsEl.className = 'custom-captions';
+  videoModal.appendChild(captionsEl);
 
-// Depois adiciona o audioContainer
-videoModal.appendChild(audioContainer);
+  // Container de botões de áudio
+  const audioContainer = document.createElement('div');
+  audioContainer.style.display = 'flex';
+  audioContainer.style.gap = '10px';
+  audioContainer.style.marginTop = '10px';
+  audioContainer.style.justifyContent = 'center';
+  audioContainer.style.flexWrap = 'wrap';
+  videoModal.appendChild(audioContainer);
 
-// Cria o container para os botões de áudio
-const audioContainer = document.createElement('div');
-audioContainer.style.display = 'flex';           // botões lado a lado
-audioContainer.style.gap = '10px';               // espaçamento entre os botões
-audioContainer.style.marginTop = '10px';         // distância do vídeo
-audioContainer.style.justifyContent = 'center';  // centraliza horizontalmente
-audioContainer.style.flexWrap = 'wrap';          // evita quebrar caso muitos botões
-
-// Adiciona os botões de áudio dentro do container
-if(item.audios && item.audios.length > 0){
-  item.audios.forEach(a => {
-    const btn = document.createElement('button');
-    btn.textContent = a.label;
-    btn.className = 'audio-btn';
-    btn.onclick = () => trocarAudio(a.src, videoEl);
-    audioContainer.appendChild(btn);
-  });
-}
-
-// Adiciona o container ao modal, DEPOIS do vídeo
-videoModal.appendChild(videoEl);
-videoModal.appendChild(audioContainer);
-  function trocarAudio(novoSrc, videoEl){
-    const tempoAtual = videoEl.currentTime;
-    videoEl.src = novoSrc;
-    videoEl.load();
-    videoEl.currentTime = tempoAtual;
-    videoEl.play();
-  }
-
-  // Adiciona legendas, mas mantém o botão CC oculto
-  if(item.legendas) {
-    item.legendas.forEach(l => {
-      const track = document.createElement('track');
-      track.kind = 'subtitles';
-      track.label = l.label;
-      track.srclang = l.lang;
-      track.src = l.src;
-      track.default = l.default || false;
-      videoEl.appendChild(track);
-      track.mode = 'hidden'; // impede botão CC
+  if(item.audios && item.audios.length > 0){
+    item.audios.forEach(a => {
+      const btn = document.createElement('button');
+      btn.textContent = a.label;
+      btn.className = 'audio-btn';
+      btn.onclick = () => {
+        const tempoAtual = videoEl.currentTime;
+        videoEl.src = a.src;
+        videoEl.load();
+        videoEl.currentTime = tempoAtual;
+        videoEl.play();
+      };
+      audioContainer.appendChild(btn);
     });
   }
 
-
-  
+  // Legendas customizadas
+  const subtitleData = item.subtitles || []; // array {start, end, text}
+  videoEl.addEventListener('timeupdate', () => {
+    const currentTime = videoEl.currentTime;
+    const currentSubtitle = subtitleData.find(s => currentTime >= s.start && currentTime <= s.end);
+    captionsEl.textContent = currentSubtitle ? currentSubtitle.text : '';
+  });
 
   // Retomar progresso
   if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
@@ -365,19 +347,9 @@ videoModal.appendChild(audioContainer);
     mostrarSecao('inicio'); 
     videoModal.remove(); 
   };
-
- videoModal.appendChild(videoEl);
   videoModal.appendChild(fecharBtn);
+
   document.body.appendChild(videoModal);
-
-
- videoEl.addEventListener('loadedmetadata', () => {
-    const tracks = videoEl.textTracks;
-    for(let i = 0; i < tracks.length; i++) {
-        tracks[i].mode = 'hidden'; // todas começam ocultas
-    }
-});
-
 
   videoEl.muted = false;
   videoEl.play();
