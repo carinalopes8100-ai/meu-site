@@ -165,7 +165,7 @@ const bannerVideo = document.getElementById('bannerVideo');
 const bannerImage = document.getElementById('bannerImage');
 bannerVideo.oncanplaythrough = () => { bannerImage.style.display='none'; bannerVideo.style.display='block'; };
 
-function abrirVideo(item) {
+function abrirVideo(item){
   const videoModal = document.createElement('div');
   videoModal.style.position = 'fixed';
   videoModal.style.top = '0';
@@ -179,21 +179,16 @@ function abrirVideo(item) {
   videoModal.style.zIndex = '10000';
   videoModal.style.flexDirection = 'column';
 
-  // Cria o vídeo
   const videoEl = document.createElement('video');
   videoEl.src = item.link;
   videoEl.controls = true;
-  videoEl.style.width = '80%';
-  videoEl.style.height = '80%';
-  videoEl.setAttribute('crossorigin', 'anonymous'); // necessário para Plyr legendas externas
+  videoEl.style.maxWidth = '90%';
+  videoEl.style.maxHeight = '80%';
+  videoEl.style.objectFit = 'contain'; // garante que fique centralizado e sem distorção
+  videoEl.style.background = 'black';
+  videoEl.autoplay = true;
 
-  // Inicializa Plyr
-  const player = new Plyr(videoEl, {
-    controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen', 'captions'],
-    autoplay: true
-  });
-
-  // Container de botões de áudio
+  // Container para botões de áudio
   const audioContainer = document.createElement('div');
   audioContainer.style.display = 'flex';
   audioContainer.style.gap = '10px';
@@ -207,15 +202,11 @@ function abrirVideo(item) {
       btn.textContent = a.label;
       btn.className = 'audio-btn';
       btn.onclick = () => {
-        const tempoAtual = player.currentTime;
-        player.source = {
-          type: 'video',
-          sources: [{ src: a.src, type: 'audio/mp4' }]
-        };
-        player.once('loadedmetadata', () => {
-          player.currentTime = tempoAtual;
-          player.play();
-        });
+        const tempoAtual = videoEl.currentTime;
+        videoEl.src = a.src;
+        videoEl.load();
+        videoEl.currentTime = tempoAtual;
+        videoEl.play();
       };
       audioContainer.appendChild(btn);
     });
@@ -224,55 +215,63 @@ function abrirVideo(item) {
   videoModal.appendChild(videoEl);
   videoModal.appendChild(audioContainer);
 
-  // Adiciona legendas
-  if(item.legendas){
+  // Adicionar legendas
+  if(item.legendas) {
     item.legendas.forEach(l => {
       const track = document.createElement('track');
       track.kind = 'subtitles';
       track.label = l.label;
       track.srclang = l.lang;
       track.src = l.src;
-      if(l.default) track.default = true;
+      track.default = l.default || false;
       videoEl.appendChild(track);
+      track.mode = 'hidden';
     });
   }
 
   // Retomar progresso
-  if(progresso[item.titulo]) player.currentTime = progresso[item.titulo];
+  if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
 
   let terminou = false;
-  player.on('ended', () => {
-    terminou = true;
-    delete progresso[item.titulo];
-    salvarProgresso();
-    mostrarSecao('inicio');
+  videoEl.onended = () => { 
+    terminou = true; 
+    delete progresso[item.titulo]; 
+    salvarProgresso(); 
+    mostrarSecao('inicio'); 
     videoModal.remove();
-  });
+  };
 
-  player.on('timeupdate', () => {
-    if(!terminou) progresso[item.titulo] = player.currentTime;
-  });
+  videoEl.ontimeupdate = () => { 
+    if(!terminou) progresso[item.titulo] = videoEl.currentTime; 
+  };
 
   // Botão de fechar
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
-  fecharBtn.style.position = 'absolute';
-  fecharBtn.style.top = '20px';
-  fecharBtn.style.right = '20px';
-  fecharBtn.style.padding = '10px 20px';
-  fecharBtn.style.cursor = 'pointer';
-  fecharBtn.onclick = () => {
-    if(!terminou) salvarProgresso();
-    mostrarSecao('inicio');
-    videoModal.remove();
+  fecharBtn.style.position='absolute';
+  fecharBtn.style.top='20px';
+  fecharBtn.style.right='20px';
+  fecharBtn.style.padding='10px 20px';
+  fecharBtn.style.cursor='pointer';
+  fecharBtn.onclick = () => { 
+    if(!terminou) salvarProgresso(); 
+    mostrarSecao('inicio'); 
+    videoModal.remove(); 
   };
 
   videoModal.appendChild(fecharBtn);
   document.body.appendChild(videoModal);
 
-  player.play();
+  // Mostrar legendas padrão
+  videoEl.addEventListener('loadedmetadata', () => {
+    const tracks = videoEl.textTracks;
+    for(let i=0; i<tracks.length; i++){
+      if(tracks[i].default) tracks[i].mode = 'showing';
+    }
+  });
 
-  // Aqui pode continuar o resto do código do modal...
+  videoEl.muted = false;
+  videoEl.play();
 }
 
 
