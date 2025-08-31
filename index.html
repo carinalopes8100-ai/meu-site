@@ -278,6 +278,17 @@ function abrirVideo(item){
   videoEl.style.width = '80%';
   videoEl.style.height = '80%';
 
+  videoModal.appendChild(videoEl);
+
+// Container de legendas
+const captionsEl = document.createElement('div');
+captionsEl.className = 'custom-captions';
+captionsEl.id = 'captions';
+videoModal.appendChild(captionsEl);
+
+// Depois adiciona o audioContainer
+videoModal.appendChild(audioContainer);
+
 // Cria o container para os botões de áudio
 const audioContainer = document.createElement('div');
 audioContainer.style.display = 'flex';           // botões lado a lado
