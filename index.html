@@ -311,27 +311,30 @@ videoModal.appendChild(audioContainer);
   }
 
 videoEl.ontimeupdate = () => {
-  // Atualiza legendas no topo
   if(item.legendas && item.legendas.length > 0){
     let activeText = '';
+
     const tracks = videoEl.textTracks;
-    for (let i = 0; i < tracks.length; i++) {
+    for(let i = 0; i < tracks.length; i++){
       const track = tracks[i];
-      for (let j = 0; j < track.cues.length; j++) {
-        const cue = track.cues[j];
-        if(videoEl.currentTime >= cue.startTime && videoEl.currentTime <= cue.endTime){
-          activeText = cue.text;
-          break;
+      if(track.cues && track.cues.length > 0){
+        for(let j = 0; j < track.cues.length; j++){
+          const cue = track.cues[j];
+          if(videoEl.currentTime >= cue.startTime && videoEl.currentTime <= cue.endTime){
+            activeText = cue.text;
+            break;  // já achou a legenda ativa, sai do loop interno
+          }
         }
       }
-      if(activeText) break;
+      if(activeText) break; // se achou legenda ativa, sai do loop externo
     }
-    legendasContainer.textContent = activeText;
+
+    legendasContainer.textContent = activeText; // limpa e atualiza
   }
 
-  // Salva progresso
   if(!terminou) progresso[item.titulo] = videoEl.currentTime;
 };
+
 
   
 
