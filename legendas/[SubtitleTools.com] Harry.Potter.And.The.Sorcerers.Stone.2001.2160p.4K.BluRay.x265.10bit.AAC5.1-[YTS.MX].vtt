@@ -2,17 +2,18 @@ WEBVTT
 
 STYLE
 ::cue {
-  color: #FFFFFF; /* branco elegante */
-  background-color: rgba(0, 0, 0, 0.5); /* fundo semi-transparente */
-  font-size: 1.5c; /* tamanho legível */
-  font-weight: 400; /* leve e elegante */
-  text-align: center; /* centralizado */
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.7); /* sombra suave */
-  line: 75%; /* mais alto que antes */
-  position: 50%; /* central horizontalmente */
-  padding: 0.2c 0.5c; /* espaço interno */
-  border-radius: 0.2c; /* cantos arredondados */
+  color: #FFFFFF;
+  background-color: rgba(0, 0, 0, 0.5);
+  font-size: 1.5c;
+  font-weight: 400;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+  line: -2; /* sobe 2 linhas acima do padrão inferior */
+  position: 50%;
+  padding: 0.2c 0.5c;
+  border-radius: 0.2c;
 }
+
 
 
 
@@ -4453,6 +4454,7 @@ Não vou voltar à casa.
 
 02:23:22.887 --> 02:23:24.806
 Não propriamente.
+
 
 
 
