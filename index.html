@@ -158,37 +158,58 @@ function abrirVideo(item){
 
   if(player) player.destroy();
 
-  player=new Plyr(playerEl,{ captions:{ active:true, update:true, language:'pt' } });
+  // Coloca a fonte diretamente no elemento
+  playerEl.innerHTML = '';
+  const source = document.createElement('source');
+  source.src = item.link;
+  source.type = 'video/mp4';
+  playerEl.appendChild(source);
 
-  player.source={
-    type:'video',
-    sources:[{ src:item.link, type:'video/mp4' }],
-    tracks:item.legendas ? item.legendas.map(l=>({ kind:'subtitles', label:l.label, srclang:l.lang, src:l.src, default:l.default||false })) : []
-  };
+  // Inicializa Plyr
+  player = new Plyr(playerEl, {
+    captions: { active: true, update: true, language: 'pt' }
+  });
 
+  // Adiciona legendas
+  if(item.legendas){
+    item.legendas.forEach(l=>{
+      const track = document.createElement('track');
+      track.kind = 'subtitles';
+      track.label = l.label;
+      track.srclang = l.lang;
+      track.src = l.src;
+      track.default = l.default || false;
+      playerEl.appendChild(track);
+    });
+  }
+
+  // Botões de áudio
   if(item.audios && item.audios.length>0){
     item.audios.forEach(a=>{
-      const btn=document.createElement('button'); btn.textContent=a.label; btn.className='audio-btn';
-      btn.onclick=()=>{
-        const tempo=player.currentTime;
-        player.source={
-          type:'video',
-          sources:[{ src:a.src, type:'video/mp4' }],
-          tracks:item.legendas ? item.legendas.map(l=>({ kind:'subtitles', label:l.label, srclang:l.lang, src:l.src, default:l.default||false })) : []
+      const btn=document.createElement('button');
+      btn.textContent = a.label;
+      btn.className = 'audio-btn';
+      btn.onclick = () => {
+        const tempoAtual = player.currentTime;
+        player.source = {
+          type: 'video',
+          sources: [{ src: a.src, type: 'video/mp4' }],
+          tracks: item.legendas ? item.legendas.map(l=>({ kind:'subtitles', label:l.label, srclang:l.lang, src:l.src, default:l.default||false })) : []
         };
-        player.currentTime=tempo; player.play();
+        player.currentTime = tempoAtual;
+        player.play();
       };
       audioContainer.appendChild(btn);
     });
   }
 
-  if(progresso[item.titulo]) player.currentTime=progresso[item.titulo];
+  if(progresso[item.titulo]) player.currentTime = progresso[item.titulo];
 
   player.on('timeupdate',()=>{ progresso[item.titulo]=player.currentTime; });
   player.on('ended',()=>{ delete progresso[item.titulo]; fecharModal(); });
 
-  modal.style.display='flex';
-  player.play();
+  modal.style.display = 'flex';
+  player.once('ready', ()=>player.play());
 }
 
 function fecharModal(){
