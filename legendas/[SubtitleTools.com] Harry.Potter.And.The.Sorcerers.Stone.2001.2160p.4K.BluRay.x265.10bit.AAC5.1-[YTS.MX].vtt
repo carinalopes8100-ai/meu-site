@@ -4,15 +4,16 @@ STYLE
 ::cue {
   color: #FFFFFF; /* branco elegante */
   background-color: rgba(0, 0, 0, 0.5); /* fundo semi-transparente */
-  font-size: 1.5c; /* tamanho legível, relativo à tela */
+  font-size: 1.5c; /* tamanho legível */
   font-weight: 400; /* leve e elegante */
   text-align: center; /* centralizado */
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.7); /* sombra suave para destaque */
-  line: 85%; /* posicionamento vertical próximo da parte inferior */
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7); /* sombra suave */
+  line: 75%; /* mais alto que antes */
   position: 50%; /* central horizontalmente */
-  padding: 0.2c 0.5c; /* espaço interno do fundo */
+  padding: 0.2c 0.5c; /* espaço interno */
   border-radius: 0.2c; /* cantos arredondados */
 }
+
 
 
 00:01:22.042 --> 00:01:27.047
@@ -4452,6 +4453,7 @@ Não vou voltar à casa.
 
 02:23:22.887 --> 02:23:24.806
 Não propriamente.
+
 
 
 
