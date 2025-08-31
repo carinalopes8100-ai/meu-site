@@ -230,13 +230,7 @@ bannerVideo.oncanplaythrough = () => {
 
 
 function abrirVideo(item){
-  // Remove modal antigo se existir
-  const antigo = document.getElementById('videoModalPlyr');
-  if(antigo) antigo.remove();
-
-  // Cria o container do modal
   const videoModal = document.createElement('div');
-  videoModal.id = 'videoModalPlyr';
   videoModal.style.position = 'fixed';
   videoModal.style.top = '0';
   videoModal.style.left = '0';
@@ -249,22 +243,44 @@ function abrirVideo(item){
   videoModal.style.zIndex = '10000';
   videoModal.style.flexDirection = 'column';
 
-  // Cria o elemento de vídeo Plyr
   const videoEl = document.createElement('video');
-  videoEl.id = 'playerPlyr';
-  videoEl.setAttribute('playsinline','');
-  videoEl.setAttribute('controls','');
+  videoEl.src = item.link;
+  videoEl.controls = true;
   videoEl.style.width = '80%';
   videoEl.style.height = '80%';
 
-  // Fonte principal do vídeo
-  const source = document.createElement('source');
-  source.src = item.link;
-  source.type = 'video/mp4';
-  videoEl.appendChild(source);
+// Cria o container para os botões de áudio
+const audioContainer = document.createElement('div');
+audioContainer.style.display = 'flex';           // botões lado a lado
+audioContainer.style.gap = '10px';               // espaçamento entre os botões
+audioContainer.style.marginTop = '10px';         // distância do vídeo
+audioContainer.style.justifyContent = 'center';  // centraliza horizontalmente
+audioContainer.style.flexWrap = 'wrap';          // evita quebrar caso muitos botões
 
-  // Adiciona legendas
-  if(item.legendas){
+// Adiciona os botões de áudio dentro do container
+if(item.audios && item.audios.length > 0){
+  item.audios.forEach(a => {
+    const btn = document.createElement('button');
+    btn.textContent = a.label;
+    btn.className = 'audio-btn';
+    btn.onclick = () => trocarAudio(a.src, videoEl);
+    audioContainer.appendChild(btn);
+  });
+}
+
+// Adiciona o container ao modal, DEPOIS do vídeo
+videoModal.appendChild(videoEl);
+videoModal.appendChild(audioContainer);
+  function trocarAudio(novoSrc, videoEl){
+    const tempoAtual = videoEl.currentTime;
+    videoEl.src = novoSrc;
+    videoEl.load();
+    videoEl.currentTime = tempoAtual;
+    videoEl.play();
+  }
+
+  // Adiciona legendas, mas mantém o botão CC oculto
+  if(item.legendas) {
     item.legendas.forEach(l => {
       const track = document.createElement('track');
       track.kind = 'subtitles';
@@ -273,37 +289,28 @@ function abrirVideo(item){
       track.src = l.src;
       track.default = l.default || false;
       videoEl.appendChild(track);
+      track.mode = 'hidden'; // impede botão CC
     });
   }
 
-  // Adiciona botões de áudio no container Plyr
-  // Plyr requer múltiplas faixas de áudio no mesmo arquivo, mas podemos usar workaround
-  const audioContainer = document.createElement('div');
-  audioContainer.style.display = 'flex';
-  audioContainer.style.gap = '10px';
-  audioContainer.style.marginTop = '10px';
-  audioContainer.style.justifyContent = 'center';
-  audioContainer.style.flexWrap = 'wrap';
 
-  if(item.audios && item.audios.length > 0){
-    item.audios.forEach(a => {
-      const btn = document.createElement('button');
-      btn.textContent = a.label;
-      btn.className = 'audio-btn';
-      btn.onclick = () => {
-        const tempoAtual = player.currentTime;
-        player.source = {
-          type: 'video',
-          sources: [{ src: a.src, type: 'audio/mp4' }],
-          poster: item.img,
-          tracks: item.legendas || []
-        };
-        player.currentTime = tempoAtual;
-        player.play();
-      };
-      audioContainer.appendChild(btn);
-    });
-  }
+  
+
+  // Retomar progresso
+  if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
+
+  let terminou = false;
+  videoEl.onended = () => { 
+    terminou = true; 
+    delete progresso[item.titulo]; 
+    salvarProgresso(); 
+    mostrarSecao('inicio'); 
+    videoModal.remove();
+  };
+
+  videoEl.ontimeupdate = () => { 
+    if(!terminou) progresso[item.titulo] = videoEl.currentTime; 
+  };
 
   // Botão de fechar
   const fecharBtn = document.createElement('button');
@@ -313,22 +320,28 @@ function abrirVideo(item){
   fecharBtn.style.right='20px';
   fecharBtn.style.padding='10px 20px';
   fecharBtn.style.cursor='pointer';
-  fecharBtn.onclick = () => videoModal.remove();
+  fecharBtn.onclick = () => { 
+    if(!terminou) salvarProgresso(); 
+    mostrarSecao('inicio'); 
+    videoModal.remove(); 
+  };
 
-  videoModal.appendChild(videoEl);
-  videoModal.appendChild(audioContainer);
+ videoModal.appendChild(videoEl);
   videoModal.appendChild(fecharBtn);
   document.body.appendChild(videoModal);
 
-  // Inicializa Plyr
-  const player = new Plyr(videoEl, { captions: { active: true, update: true, language: 'pt' } });
 
-  // Retomar progresso
-  if(progresso[item.titulo]) player.currentTime = progresso[item.titulo];
+  videoEl.addEventListener('loadedmetadata', () => {
+    const tracks = videoEl.textTracks;
+    for(let i=0; i<tracks.length; i++){
+      if(tracks[i].default) tracks[i].mode = 'showing';
+    }
+  });
 
-  let terminou = false;
-  player.on('ended', () => { terminou = true; delete progresso[item.titulo]; salvarProgresso(); videoModal.remove(); });
-  player.on('timeupdate', () => { if(!terminou) progresso[item.t
+  videoEl.muted = false;
+  videoEl.play();
+}
+
 
 
 
