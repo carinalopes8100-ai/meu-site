@@ -261,7 +261,7 @@ audioContainer.style.flexWrap = 'wrap';          // evita quebrar caso muitos bo
 if(item.audios && item.audios.length > 0){
   item.audios.forEach(a => {
     const btn = document.createElement('button');
-    btn.textContent = a.label.substring(0,2).toUpperCase();
+    btn.textContent = a.label;
     btn.className = 'audio-btn';
     btn.onclick = () => trocarAudio(a.src, videoEl);
     audioContainer.appendChild(btn);
