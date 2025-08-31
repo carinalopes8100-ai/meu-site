@@ -8,11 +8,12 @@ STYLE
   font-weight: 400;
   text-align: center;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-  line: -6; /* sobe mais acima do padrão inferior */
-  position: 50%;
+  line: 25%; /* legenda mais alta na tela */
+  position: 50%; /* central horizontalmente */
   padding: 0.2c 0.5c;
   border-radius: 0.2c;
 }
+
 
 
 
@@ -4454,6 +4455,7 @@ Não vou voltar à casa.
 
 02:23:22.887 --> 02:23:24.806
 Não propriamente.
+
 
 
 
