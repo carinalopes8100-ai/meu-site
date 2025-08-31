@@ -271,16 +271,16 @@ if(item.audios && item.audios.length > 0){
 
   // Adiciona legendas
   if (item.legendas) {
- item.legendas.forEach(l => {
-  const track = document.createElement('track');
-  track.kind = 'subtitles';
-  track.label = l.label;
-  track.srclang = l.lang;
-  track.src = l.src;
-  track.default = l.default || false;
-  videoEl.appendChild(track);
-  track.mode = 'hidden'; // impede que o navegador mostre o botão CC
-});
+    item.legendas.forEach(l => {
+      const track = document.createElement('track');
+      track.kind = 'subtitles';
+      track.label = l.label;
+      track.srclang = l.lang;
+      track.src = l.src;
+      if(l.default) track.default = true;
+      videoEl.appendChild(track);
+    });
+  }
 
   // Menu de legendas manual
 
