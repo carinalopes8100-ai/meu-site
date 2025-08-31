@@ -2,7 +2,7 @@ WEBVTT
 
 STYLE
 ::cue {
-  background: rgba(0, 0, 0, 0.3);  /* fundo levemente transparente */
+  background: rgba(0, 0, 0, 0.0);  /* fundo levemente transparente */
   color: #FFFFFF;                  /* texto branco */
   font-size: 32px;                 /* fonte grande */
   font-weight: 600;                /* destaque */
@@ -4454,6 +4454,7 @@ Não vou voltar à casa.
 
 02:23:22.887 --> 02:23:24.806
 Não propriamente.
+
 
 
 
