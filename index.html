@@ -250,27 +250,28 @@ function abrirVideo(item){
   videoEl.style.width = '80%';
   videoEl.style.height = '80%';
 
-// Container para os botões de áudio
+// Cria o container para os botões de áudio
 const audioContainer = document.createElement('div');
-audioContainer.style.display = 'flex';           // coloca lado a lado
-audioContainer.style.gap = '10px';               // espaço entre os botões
+audioContainer.style.display = 'flex';           // botões lado a lado
+audioContainer.style.gap = '10px';               // espaçamento entre os botões
 audioContainer.style.marginTop = '10px';         // distância do vídeo
 audioContainer.style.justifyContent = 'center';  // centraliza horizontalmente
-  
-  // Adiciona os botões de troca de áudio
-  if(item.audios && item.audios.length > 0){
-    item.audios.forEach(a => {
-      const btn = document.createElement('button');
-      btn.textContent = a.label.substring(0,2).toUpperCase(); 
-      btn.className = 'audio-btn';
-      btn.onclick = () => trocarAudio(a.src, videoEl);
-      videoModal.appendChild(btn);
-    });
-  }
+audioContainer.style.flexWrap = 'wrap';          // evita quebrar caso muitos botões
 
-  // Adiciona o container ao modal
+// Adiciona os botões de áudio dentro do container
+if(item.audios && item.audios.length > 0){
+  item.audios.forEach(a => {
+    const btn = document.createElement('button');
+    btn.textContent = a.label.substring(0,2).toUpperCase();
+    btn.className = 'audio-btn';
+    btn.onclick = () => trocarAudio(a.src, videoEl);
+    audioContainer.appendChild(btn);
+  });
+}
+
+// Adiciona o container ao modal, DEPOIS do vídeo
+videoModal.appendChild(videoEl);
 videoModal.appendChild(audioContainer);
-
   function trocarAudio(novoSrc, videoEl){
     const tempoAtual = videoEl.currentTime;
     videoEl.src = novoSrc;
