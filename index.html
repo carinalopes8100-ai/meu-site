@@ -150,72 +150,64 @@ bannerVideo.oncanplaythrough=()=>{ bannerImage.style.display='none'; bannerVideo
 
 let player;
 
-function abrirVideo(item){
-  const modal=document.getElementById('videoModal');
-  const playerEl=document.getElementById('player');
-  const audioContainer=document.getElementById('audioButtons');
-  audioContainer.innerHTML='';
-
-  if(player) player.destroy();
-
-  // Coloca a fonte diretamente no elemento
-  playerEl.innerHTML = '';
-  const source = document.createElement('source');
-  source.src = item.link;
-  source.type = 'video/mp4';
-  playerEl.appendChild(source);
-
-  // Inicializa Plyr
-  player = new Plyr(playerEl, {
+<div id="videoModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000; flex-direction:column;">
+  <video id="player" playsinline controls crossorigin style="max-width:90%; max-height:80%; background:black;"></video>
+  <div id="audioButtons" style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; justify-content:center;"></div>
+  <button onclick="fecharModal()" style="position:absolute; top:20px; right:20px; padding:10px 20px; cursor:pointer;">Fechar</button>
+</div>
+<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+<script>
+let player = new Plyr('#player', {
     captions: { active: true, update: true, language: 'pt' }
-  });
+});
 
-  // Adiciona legendas
-  if(item.legendas){
-    item.legendas.forEach(l=>{
-      const track = document.createElement('track');
-      track.kind = 'subtitles';
-      track.label = l.label;
-      track.srclang = l.lang;
-      track.src = l.src;
-      track.default = l.default || false;
-      playerEl.appendChild(track);
-    });
-  }
+function abrirVideo(item){
+    const modal = document.getElementById('videoModal');
+    const audioContainer = document.getElementById('audioButtons');
+    audioContainer.innerHTML = '';
 
-  // Botões de áudio
-  if(item.audios && item.audios.length>0){
-    item.audios.forEach(a=>{
-      const btn=document.createElement('button');
-      btn.textContent = a.label;
-      btn.className = 'audio-btn';
-      btn.onclick = () => {
-        const tempoAtual = player.currentTime;
-        player.source = {
-          type: 'video',
-          sources: [{ src: a.src, type: 'video/mp4' }],
-          tracks: item.legendas ? item.legendas.map(l=>({ kind:'subtitles', label:l.label, srclang:l.lang, src:l.src, default:l.default||false })) : []
-        };
-        player.currentTime = tempoAtual;
-        player.play();
-      };
-      audioContainer.appendChild(btn);
-    });
-  }
+    // Troca a fonte do Plyr
+    player.source = {
+        type: 'video',
+        sources: [{ src: item.link, type: 'video/mp4' }],
+        tracks: item.legendas ? item.legendas.map(l=>({
+            kind: 'subtitles', label: l.label, srclang: l.lang, src: l.src, default: l.default || false
+        })) : []
+    };
 
-  if(progresso[item.titulo]) player.currentTime = progresso[item.titulo];
+    // Botões de áudio
+    if(item.audios && item.audios.length > 0){
+        item.audios.forEach(a=>{
+            const btn = document.createElement('button');
+            btn.className = 'audio-btn';
+            btn.textContent = a.label;
+            btn.onclick = () => {
+                const tempoAtual = player.currentTime;
+                player.source = {
+                    type: 'video',
+                    sources: [{ src: a.src, type: 'video/mp4' }],
+                    tracks: item.legendas ? item.legendas.map(l=>({ kind:'subtitles', label:l.label, srclang:l.lang, src:l.src, default:l.default||false })) : []
+                };
+                player.currentTime = tempoAtual;
+                player.play();
+            };
+            audioContainer.appendChild(btn);
+        });
+    }
 
-  player.on('timeupdate',()=>{ progresso[item.titulo]=player.currentTime; });
-  player.on('ended',()=>{ delete progresso[item.titulo]; fecharModal(); });
+    if(progresso[item.titulo]) player.currentTime = progresso[item.titulo];
 
-  modal.style.display = 'flex';
-  player.once('ready', ()=>player.play());
+    player.on('timeupdate', ()=>{ progresso[item.titulo] = player.currentTime; });
+    player.on('ended', ()=>{ delete progresso[item.titulo]; fecharModal(); });
+
+    modal.style.display = 'flex';
+    player.play();
 }
 
 function fecharModal(){
-  const modal=document.getElementById('videoModal');
-  if(player) player.pause();
-  modal.style.display='none';
+    const modal = document.getElementById('videoModal');
+    modal.style.display = 'none';
+    player.stop();
 }
 
 
