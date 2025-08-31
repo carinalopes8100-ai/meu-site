@@ -4,19 +4,15 @@ STYLE
 ::cue {
   color: #FFFFFF;
   background-color: rgba(0, 0, 0, 0.5);
-  font-size: 1.5c;
+  font-size: 1.5c; /* ou 1.5em */
   font-weight: 400;
   text-align: center;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-  line: 5%; /* tenta subir mais possível */
-  position: 50%;
+  line: 10%;           /* posição vertical da legenda (5% é bem próxima do topo) */
+  line-align: start;    /* start, center ou end */
   padding: 0.2c 0.5c;
   border-radius: 0.2c;
 }
-
-
-
-
 
 00:01:22.042 --> 00:01:27.047
 Devia ter adivinhado que estava
@@ -4455,6 +4451,7 @@ Não vou voltar à casa.
 
 02:23:22.887 --> 02:23:24.806
 Não propriamente.
+
 
 
 
