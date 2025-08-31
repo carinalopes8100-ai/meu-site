@@ -284,18 +284,7 @@ function abrirVideo(item){
   }
 
 
-    menu.onchange = () => {
-      const tracks = videoEl.textTracks;
-      for(let i=0; i<tracks.length; i++){
-        tracks[i].mode = 'disabled';
-      }
-      if(menu.value >= 0){
-        videoEl.textTracks[menu.value].mode = 'showing';
-      }
-    };
-
-    videoModal.appendChild(menu);
-  }
+  
 
   // Retomar progresso
   if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
