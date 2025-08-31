@@ -250,6 +250,13 @@ function abrirVideo(item){
   videoEl.style.width = '80%';
   videoEl.style.height = '80%';
 
+// Container para os botões de áudio
+const audioContainer = document.createElement('div');
+audioContainer.style.display = 'flex';           // coloca lado a lado
+audioContainer.style.gap = '10px';               // espaço entre os botões
+audioContainer.style.marginTop = '10px';         // distância do vídeo
+audioContainer.style.justifyContent = 'center';  // centraliza horizontalmente
+  
   // Adiciona os botões de troca de áudio
   if(item.audios && item.audios.length > 0){
     item.audios.forEach(a => {
@@ -260,6 +267,9 @@ function abrirVideo(item){
       videoModal.appendChild(btn);
     });
   }
+
+  // Adiciona o container ao modal
+videoModal.appendChild(audioContainer);
 
   function trocarAudio(novoSrc, videoEl){
     const tempoAtual = videoEl.currentTime;
