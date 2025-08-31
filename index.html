@@ -226,12 +226,11 @@ function abrirVideo(item){
   videoEl.style.width = '80%';
   videoEl.style.height = '80%';
 
-  // Botões para trocar áudio
 if(item.audios && item.audios.length > 0){
   item.audios.forEach(a => {
     const btn = document.createElement('button');
-    btn.textContent = a.label;
-    btn.style.marginTop = '10px';
+    btn.textContent = a.label.substring(0,2).toUpperCase(); // só "PT" ou "EN" se quiser compacto
+    btn.className = 'audio-btn'; // aplica o estilo
     btn.onclick = () => trocarAudio(a.src, videoEl);
     videoModal.appendChild(btn);
   });
