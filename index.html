@@ -326,9 +326,10 @@ videoModal.appendChild(audioContainer);
     videoModal.remove(); 
   };
 
-  videoModal.appendChild(videoEl);
-  videoModal.appendChild(audioContainer);
+ videoModal.appendChild(videoEl);
   videoModal.appendChild(fecharBtn);
+  document.body.appendChild(videoModal);
+
 
   videoEl.addEventListener('loadedmetadata', () => {
     const tracks = videoEl.textTracks;
