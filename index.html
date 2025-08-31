@@ -332,11 +332,11 @@ videoModal.appendChild(audioContainer);
 
 
   videoEl.addEventListener('loadedmetadata', () => {
-    const tracks = videoEl.textTracks;
-    for(let i=0; i<tracks.length; i++){
-      if(tracks[i].default) tracks[i].mode = 'showing';
-    }
-  });
+  const tracks = videoEl.textTracks;
+  for (let i = 0; i < tracks.length; i++) {
+    tracks[i].mode = 'hidden'; // Mantém todas ocultas
+  }
+});
 
   videoEl.muted = false;
   videoEl.play();
