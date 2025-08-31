@@ -249,6 +249,12 @@ function abrirVideo(item){
   videoEl.style.width = '80%';
   videoEl.style.height = '80%';
 
+  // Remove tracks antigas
+while(videoEl.firstChild) videoEl.removeChild(videoEl.firstChild);
+
+// Não cria track, só usa o seu legendasContainer
+
+
   // --- AQUI: criar container de legendas no topo ---
 const legendasContainer = document.createElement('div');
 legendasContainer.id = 'legendasContainer';
