@@ -250,42 +250,42 @@ function abrirVideo(item){
   videoEl.style.width = '80%';
   videoEl.style.height = '80%';
 
-if(item.audios && item.audios.length > 0){
-  item.audios.forEach(a => {
-    const btn = document.createElement('button');
-    btn.textContent = a.label.substring(0,2).toUpperCase(); // só "PT" ou "EN" se quiser compacto
-    btn.className = 'audio-btn'; // aplica o estilo
-    btn.onclick = () => trocarAudio(a.src, videoEl);
-    videoModal.appendChild(btn);
-  });
-}
-
+  // Adiciona os botões de troca de áudio
+  if(item.audios && item.audios.length > 0){
+    item.audios.forEach(a => {
+      const btn = document.createElement('button');
+      btn.textContent = a.label.substring(0,2).toUpperCase(); 
+      btn.className = 'audio-btn';
+      btn.onclick = () => trocarAudio(a.src, videoEl);
+      videoModal.appendChild(btn);
+    });
+  }
 
   function trocarAudio(novoSrc, videoEl){
-  const tempoAtual = videoEl.currentTime; // mantém o tempo atual
-  videoEl.src = novoSrc;
-  videoEl.load();
-  videoEl.currentTime = tempoAtual;
-  videoEl.play();
-}
+    const tempoAtual = videoEl.currentTime;
+    videoEl.src = novoSrc;
+    videoEl.load();
+    videoEl.currentTime = tempoAtual;
+    videoEl.play();
+  }
 
-  // Adiciona legendas
-  if (item.legendas) {
+  // Adiciona legendas, mas mantém o botão CC oculto
+  if(item.legendas) {
     item.legendas.forEach(l => {
       const track = document.createElement('track');
       track.kind = 'subtitles';
       track.label = l.label;
       track.srclang = l.lang;
       track.src = l.src;
-      if(l.default) track.default = true;
+      track.default = l.default || false;
       videoEl.appendChild(track);
+      track.mode = 'hidden'; // impede botão CC
     });
   }
 
-    // Menu de legendas manual
-  let menu;
+  // Menu manual de legendas
   if(item.legendas && item.legendas.length > 0){
-    menu = document.createElement('select');
+    const menu = document.createElement('select');
     menu.style.marginTop = '10px';
     const defaultOption = document.createElement('option');
     defaultOption.textContent = 'Sem legendas';
@@ -300,24 +300,20 @@ if(item.audios && item.audios.length > 0){
       if(l.default) menu.value = i;
     });
 
-
-
-
-menu.onchange = () => {
-  const tracks = videoEl.textTracks;
-  for(let i=0;i<tracks.length;i++){
-    tracks[i].mode='disabled';
-  }
-  if(menu.value >= 0){
-    tracks[menu.value].mode='showing';
-  }
-};
-
+    menu.onchange = () => {
+      const tracks = videoEl.textTracks;
+      for(let i=0; i<tracks.length; i++){
+        tracks[i].mode = 'disabled';
+      }
+      if(menu.value >= 0){
+        videoEl.textTracks[menu.value].mode = 'showing';
+      }
+    };
 
     videoModal.appendChild(menu);
   }
 
-  // Retoma o progresso
+  // Retomar progresso
   if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
 
   let terminou = false;
@@ -333,6 +329,7 @@ menu.onchange = () => {
     if(!terminou) progresso[item.titulo] = videoEl.currentTime; 
   };
 
+  // Botão de fechar
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
   fecharBtn.style.position='absolute';
@@ -360,6 +357,7 @@ menu.onchange = () => {
   videoEl.muted = true;
   videoEl.play();
 }
+
 
 
 
