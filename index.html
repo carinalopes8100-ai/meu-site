@@ -1053,6 +1053,22 @@ window.addEventListener('load', ()=>{
     },2000);
 });
 
+  const video = document.getElementById('video');
+const captions = document.getElementById('captions');
+
+// Exemplo de legendas
+const subtitleData = [
+  { start: 0, end: 5, text: "Olá, bem-vindo ao vídeo!" },
+  { start: 5, end: 10, text: "Agora as legendas estão no meio da tela." },
+  { start: 10, end: 15, text: "Estilo elegante tipo Prime Video." }
+];
+
+video.addEventListener('timeupdate', () => {
+  const currentTime = video.currentTime;
+  const currentSubtitle = subtitleData.find(s => currentTime >= s.start && currentTime <= s.end);
+  captions.textContent = currentSubtitle ? currentSubtitle.text : '';
+});
+
 // Pesquisa instantânea
 document.getElementById('searchInput').addEventListener('input', () => pesquisar());
 </script>
