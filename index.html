@@ -167,11 +167,11 @@ bannerVideo.oncanplaythrough = () => { bannerImage.style.display='none'; bannerV
 
 // Plyr player
 function abrirVideo(item) {
-  // Remove qualquer player anterior
+  // Remove player antigo, se existir
   const antigo = document.getElementById('videoModalPlyr');
   if (antigo) antigo.remove();
 
-  // Modal
+  // Cria modal do player
   const videoModal = document.createElement('div');
   videoModal.id = 'videoModalPlyr';
   Object.assign(videoModal.style, {
@@ -196,7 +196,7 @@ function abrirVideo(item) {
   videoEl.style.objectFit = 'contain';
   videoEl.style.background = 'black';
 
-  // Fonte inicial
+  // Fonte padrão (primeiro áudio)
   const source = document.createElement('source');
   source.src = item.link;
   source.type = 'video/mp4';
@@ -216,6 +216,37 @@ function abrirVideo(item) {
   }
 
   videoModal.appendChild(videoEl);
+  document.body.appendChild(videoModal);
+
+  // Inicializa Plyr depois que o vídeo for adicionado ao DOM
+  const player = new Plyr(videoEl, {
+    captions: { active: true, update: true, language: 'pt' },
+    settings: ['captions', 'quality', 'speed'],
+  });
+
+  // Progresso do vídeo
+  if (progresso[item.titulo]) {
+    player.once('loadedmetadata', () => {
+      player.currentTime = progresso[item.titulo];
+    });
+  }
+
+  let terminou = false;
+  player.on('ended', () => {
+    terminou = true;
+    delete progresso[item.titulo];
+    salvarProgresso();
+    videoModal.remove();
+  });
+
+  player.on('timeupdate', () => {
+    if (!terminou) {
+      progresso[item.titulo] = player.currentTime;
+      salvarProgresso();
+    }
+  });
+
+  player.play();
 
   // Botão Fechar
   const fecharBtn = document.createElement('button');
@@ -229,12 +260,12 @@ function abrirVideo(item) {
     zIndex: '10001'
   });
   fecharBtn.onclick = () => {
-    videoModal.remove();
     player.destroy();
+    videoModal.remove();
   };
   videoModal.appendChild(fecharBtn);
 
-  // Container de botões de áudio
+  // Botões de troca de áudio
   if (item.audios && item.audios.length > 0) {
     const audioContainer = document.createElement('div');
     Object.assign(audioContainer.style, {
@@ -258,15 +289,21 @@ function abrirVideo(item) {
         const currentTime = player.currentTime;
         const wasPlaying = !player.paused;
 
-        // Substitui o vídeo atual
+        // Troca a fonte de vídeo
         player.source = {
           type: 'video',
           title: item.titulo,
           sources: [{ src: audio.src, type: 'video/mp4' }],
-          tracks: item.legendas || [],
+          tracks: item.legendas?.map(l => ({
+            kind: 'subtitles',
+            label: l.label,
+            srclang: l.lang,
+            src: l.src,
+            default: !!l.default
+          })) || []
         };
 
-        // Espera o Plyr carregar para retomar o tempo e a reprodução
+        // Aguarda carregar e continua
         player.once('loadedmetadata', () => {
           player.currentTime = currentTime;
           if (wasPlaying) player.play();
@@ -277,37 +314,8 @@ function abrirVideo(item) {
 
     videoModal.appendChild(audioContainer);
   }
-
-  // Adiciona o modal à página
-  document.body.appendChild(videoModal);
-
-  // Inicializa Plyr
-  const player = new Plyr(videoEl, {
-    captions: { active: true, update: true, language: 'pt' },
-    settings: ['captions', 'quality', 'speed'],
-  });
-
-  if (progresso[item.titulo]) {
-    player.currentTime = progresso[item.titulo];
-  }
-
-  let terminou = false;
-  player.on('ended', () => {
-    terminou = true;
-    delete progresso[item.titulo];
-    salvarProgresso();
-    videoModal.remove();
-  });
-
-  player.on('timeupdate', () => {
-    if (!terminou) {
-      progresso[item.titulo] = player.currentTime;
-      salvarProgresso();
-    }
-  });
-
-  player.play();
 }
+
 
 
 
