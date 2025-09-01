@@ -1839,22 +1839,56 @@ if(progresso[item.titulo] && progresso[item.titulo] > 0){
 
 
 
-    const overlay=document.createElement('div'); overlay.className='filme-hover-overlay';
-    const btnPlay=document.createElement('button'); btnPlay.textContent='▶ Assistir';
-    btnPlay.onclick=(e)=>{
-      e.stopPropagation();
-      const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
-      if(s){ abrirModalTemporadas(s); }
-      else { abrirVideo(item); }
-    };
-    const btnTrailer=document.createElement('button'); btnTrailer.textContent='▶ Trailer';
-    btnTrailer.onclick=(e)=>{ e.stopPropagation(); if(item.trailer) abrirVideo({titulo:item.titulo+' - Trailer', link:item.trailer}); };
-    overlay.appendChild(btnPlay); overlay.appendChild(btnTrailer); itemDiv.appendChild(overlay);
+   const overlay = document.createElement('div'); 
+overlay.className = 'filme-hover-overlay';
 
-    const addBtn = document.createElement('button'); addBtn.className = 'add-list-btn';
-    function updateButton() { if(minhaLista.includes(item.titulo)){ addBtn.textContent='✖'; addBtn.title='Remover da Minha Lista'; } else { addBtn.textContent='+'; addBtn.title='Adicionar à Minha Lista'; } }
-    addBtn.onclick=(e)=>{ e.stopPropagation(); adicionarMinhaLista(item.titulo); updateButton(); }
-    updateButton(); itemDiv.appendChild(addBtn);
+const btnPlay = document.createElement('button'); 
+btnPlay.textContent = '▶ Assistir';
+btnPlay.onclick = (e) => {
+  e.stopPropagation();
+  const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
+  if(s){ abrirModalTemporadas(s); }
+  else { abrirVideo(item); }
+};
+overlay.appendChild(btnPlay);
+
+// Botão direito customizado
+const btnDireito = document.createElement('button');
+if(item.titulo === 'Morangos com Açúcar'){
+    btnDireito.textContent = '▶ Verão';
+    btnDireito.onclick = (e) => {
+        e.stopPropagation();
+        abrirVideo({ titulo: item.titulo + ' - Verão', link: item.verao }); // item.verao precisa existir no objeto
+    };
+} else {
+    btnDireito.textContent = '▶ Trailer';
+    btnDireito.onclick = (e) => {
+        e.stopPropagation();
+        if(item.trailer) abrirVideo({ titulo: item.titulo + ' - Trailer', link: item.trailer });
+    };
+}
+overlay.appendChild(btnDireito);
+
+itemDiv.appendChild(overlay);
+
+const addBtn = document.createElement('button'); 
+addBtn.className = 'add-list-btn';
+function updateButton() { 
+    if(minhaLista.includes(item.titulo)){
+        addBtn.textContent='✖'; 
+        addBtn.title='Remover da Minha Lista'; 
+    } else { 
+        addBtn.textContent='+'; 
+        addBtn.title='Adicionar à Minha Lista'; 
+    } 
+}
+addBtn.onclick = (e) => { 
+    e.stopPropagation(); 
+    adicionarMinhaLista(item.titulo); 
+    updateButton(); 
+}
+updateButton(); 
+itemDiv.appendChild(addBtn);
 
 if(idFila === 'filaContinuar'){
     const removeBtn = document.createElement('button');
@@ -1868,6 +1902,9 @@ if(idFila === 'filaContinuar'){
         mostrarSecao('inicio'); 
         mostrarToast(`"${item.titulo}" removido da fila Continuar a ver!`);
     }
+    itemDiv.appendChild(removeBtn);
+}
+
     itemDiv.appendChild(removeBtn);
 }
 
