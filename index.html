@@ -246,79 +246,34 @@ function abrirVideo(item){
   videoModal.style.display = 'flex';
   videoModal.style.justifyContent = 'center';
   videoModal.style.alignItems = 'center';
-  videoModal.style.zIndex = '10000';
   videoModal.style.flexDirection = 'column';
+  videoModal.style.zIndex = '10000';
 
   const videoEl = document.createElement('video');
   videoEl.src = item.link;
   videoEl.controls = true;
+  videoEl.preload = 'auto';
   videoEl.style.width = '80%';
   videoEl.style.height = '80%';
 
-// Cria o container para os botões de áudio
-const audioContainer = document.createElement('div');
-audioContainer.style.display = 'flex';           // botões lado a lado
-audioContainer.style.gap = '10px';               // espaçamento entre os botões
-audioContainer.style.marginTop = '10px';         // distância do vídeo
-audioContainer.style.justifyContent = 'center';  // centraliza horizontalmente
-audioContainer.style.flexWrap = 'wrap';          // evita quebrar caso muitos botões
+  // loader
+  const loader = document.createElement('div');
+  loader.textContent = 'Carregando...';
+  loader.style.color = '#fff';
+  loader.style.fontSize = '18px';
+  loader.style.marginBottom = '10px';
+  videoModal.appendChild(loader);
 
-// Adiciona os botões de áudio dentro do container
-if(item.audios && item.audios.length > 0){
-  item.audios.forEach(a => {
-    const btn = document.createElement('button');
-    btn.textContent = a.label;
-    btn.className = 'audio-btn';
-    btn.onclick = () => trocarAudio(a.src, videoEl);
-    audioContainer.appendChild(btn);
-  });
-}
+  // adiciona o vídeo ao modal
+  videoModal.appendChild(videoEl);
 
-// Adiciona o container ao modal, DEPOIS do vídeo
-videoModal.appendChild(videoEl);
-videoModal.appendChild(audioContainer);
-  function trocarAudio(novoSrc, videoEl){
-    const tempoAtual = videoEl.currentTime;
-    videoEl.src = novoSrc;
-    videoEl.load();
-    videoEl.currentTime = tempoAtual;
+  // toca apenas quando estiver pronto
+  videoEl.oncanplaythrough = () => {
+    loader.remove();
     videoEl.play();
-  }
-
-  // Adiciona legendas, mas mantém o botão CC oculto
-  if(item.legendas) {
-    item.legendas.forEach(l => {
-      const track = document.createElement('track');
-      track.kind = 'subtitles';
-      track.label = l.label;
-      track.srclang = l.lang;
-      track.src = l.src;
-      track.default = l.default || false;
-      videoEl.appendChild(track);
-      track.mode = 'hidden'; // impede botão CC
-    });
-  }
-
-
-  
-
-  // Retomar progresso
-  if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
-
-  let terminou = false;
-  videoEl.onended = () => { 
-    terminou = true; 
-    delete progresso[item.titulo]; 
-    salvarProgresso(); 
-    mostrarSecao('inicio'); 
-    videoModal.remove();
   };
 
-  videoEl.ontimeupdate = () => { 
-    if(!terminou) progresso[item.titulo] = videoEl.currentTime; 
-  };
-
-  // Botão de fechar
+  // botão fechar
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
   fecharBtn.style.position='absolute';
@@ -326,26 +281,12 @@ videoModal.appendChild(audioContainer);
   fecharBtn.style.right='20px';
   fecharBtn.style.padding='10px 20px';
   fecharBtn.style.cursor='pointer';
-  fecharBtn.onclick = () => { 
-    if(!terminou) salvarProgresso(); 
-    mostrarSecao('inicio'); 
-    videoModal.remove(); 
+  fecharBtn.onclick = () => {
+    videoModal.remove();
   };
 
- videoModal.appendChild(videoEl);
   videoModal.appendChild(fecharBtn);
   document.body.appendChild(videoModal);
-
-
- videoEl.addEventListener('loadedmetadata', () => {
-  const tracks = videoEl.textTracks;
-  for(let i=0; i<tracks.length; i++){
-    tracks[i].mode = 'hidden'; // nunca mostrar automaticamente
-  }
-});
-
-  videoEl.muted = false;
-  videoEl.play();
 }
 
 
