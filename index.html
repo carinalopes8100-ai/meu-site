@@ -1846,24 +1846,28 @@ if(progresso[item.titulo] && progresso[item.titulo] > 0){
 
 
 
-   const overlay = document.createElement('div'); 
+const overlay = document.createElement('div'); 
 overlay.className = 'filme-hover-overlay';
 
+// Botão Assistir (temporadas normais)
 const btnPlay = document.createElement('button'); 
 btnPlay.textContent = '▶ Assistir';
 btnPlay.onclick = (e) => {
   e.stopPropagation();
   const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
-  if(s){ abrirModalTemporadas(s); }
-  else { abrirVideo(item); }
+  if(s){ 
+      abrirModalTemporadas({ ...s, temporadas: s.temporadas }); // só temporadas normais
+  } else { 
+      abrirVideo(item); 
+  }
 };
 overlay.appendChild(btnPlay);
 
-// Botão direito customizado
-const btnVerão = document.createElement('button');
+// Botão Verão ou Trailer
+const btnDireito = document.createElement('button');
 if(item.titulo === 'Morangos com Açúcar'){
-    btnVerão.textContent = '▶ Verão';
-    btnVerão.onclick = (e) => {
+    btnDireito.textContent = '▶ Verão';
+    btnDireito.onclick = (e) => {
         e.stopPropagation();
         abrirModalTemporadas({ ...item, temporadas: item.verao }); // só temporada de verão
     };
