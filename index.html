@@ -276,7 +276,10 @@ function abrirVideo(item) {
  // Botão de fechar
 const fecharBtn = document.createElement('button');
 fecharBtn.textContent = 'Fechar';
-fecharBtn.className = 'audio-btn'; // usa o mesmo estilo dos botões de áudio
+fecharBtn.className = 'audio-btn'; // mesmo estilo dos botões de áudio
+fecharBtn.style.position = 'absolute';
+fecharBtn.style.top = '20px';
+fecharBtn.style.right = '20px';
 fecharBtn.onclick = () => {
   if (!terminou) salvarProgresso();
   videoModal.remove();
