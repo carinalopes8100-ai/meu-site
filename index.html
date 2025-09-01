@@ -1541,12 +1541,32 @@ const series = [
 
 {
   titulo: "Morangos com Açúcar",
-  img: "...",
-  temporadas: [ 
-    /* temporadas normais */ 
+  img: "https://m.media-amazon.com/images/M/MV5BYzlhYzYyNzItZDMwYy00M2IwLWFmNWMtOTBkNTVkY2UxMzA1XkEyXkFqcGc@._V1_.jpg",
+  temporadas: [
+    {
+      numero: 1,
+      episodios: [
+        { numero: 1, link: "http://localhost:8096/Videos/6f9b24bdd4d4e2954b5a732a2e1faa05/stream.mp4?Static=true" },
+        { numero: 2, link: "http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true" }
+      ]
+    },
+    {
+      numero: 2,
+      episodios: Array.from({ length: 10 }, (_, i) => ({ numero: i + 1, link: "#" }))
+    }
   ],
-  verao: [ 
-    /* temporadas de verão */ 
+  verao: [
+    {
+      numero: "Verão 1",
+      episodios: [
+        { numero: 1, link: "http://localhost:8096/Videos/verao1ep1.mp4?Static=true" },
+        { numero: 2, link: "http://localhost:8096/Videos/verao1ep2.mp4?Static=true" }
+      ]
+    },
+    {
+      numero: "Verão 2",
+      episodios: Array.from({ length: 5 }, (_, i) => ({ numero: i + 1, link: "#" }))
+    }
   ]
 },
   
