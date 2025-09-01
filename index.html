@@ -198,6 +198,7 @@ function mostrarToast(mensagem){
   setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
 
+
   
 
 function adicionarMinhaLista(titulo){
@@ -321,6 +322,40 @@ if (item.audios && item.audios.length > 0) {
     audioContainer.appendChild(btn);
   });
 }
+
+  // Botões de ação específicos do vídeo
+const videoBtnsContainer = document.createElement('div');
+videoBtnsContainer.style.position = 'absolute';
+videoBtnsContainer.style.bottom = '30px';
+videoBtnsContainer.style.left = '50%';
+videoBtnsContainer.style.transform = 'translateX(-50%)';
+videoBtnsContainer.style.display = 'flex';
+videoBtnsContainer.style.gap = '10px';
+videoBtnsContainer.style.zIndex = '10001';
+videoModal.appendChild(videoBtnsContainer);
+
+// Botão Assistir (sempre)
+const assistirBtn = document.createElement('button');
+assistirBtn.textContent = '▶ Assistir';
+assistirBtn.className = 'audio-btn';
+assistirBtn.onclick = () => videoEl.play(); // ou abrirVideo(item)
+videoBtnsContainer.appendChild(assistirBtn);
+
+// Botão condicional
+if(item.titulo === 'Morangos com Açúcar') {
+    const veraoBtn = document.createElement('button');
+    veraoBtn.textContent = '▶ Verão';
+    veraoBtn.className = 'audio-btn';
+    veraoBtn.onclick = () => abrirVideo(item.versaoVerao); // link da versão verão
+    videoBtnsContainer.appendChild(veraoBtn);
+} else if(item.trailer) {
+    const trailerBtn = document.createElement('button');
+    trailerBtn.textContent = '▶ Trailer';
+    trailerBtn.className = 'audio-btn';
+    trailerBtn.onclick = () => abrirVideo(item.trailer);
+    videoBtnsContainer.appendChild(trailerBtn);
+}
+
 
   // Legendas
   if (item.legendas) {
