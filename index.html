@@ -257,12 +257,12 @@ function abrirVideo(item) {
   `;
 
   // Loader
-  const loader = document.createElement('div');
+   const loader = document.createElement('div');
   loader.textContent = 'Carregando...';
   loader.style.color = '#fff';
   loader.style.fontSize = '18px';
-  loader.style.marginBottom = '10px';
-  videoModal.appendChild(loader);
+  loader.style.marginTop = '10px';
+  loader.style.textAlign = 'center';
 
   // Vídeo
   const videoEl = document.createElement('video');
@@ -290,23 +290,26 @@ videoModal.appendChild(fecharBtn);
   };
 
   // Áudios alternativos
-  if (item.audios) {
-    const audioContainer = document.createElement('div');
-    audioContainer.style.cssText = 'display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; justify-content:center;';
+  const audioContainer = document.createElement('div');
+  audioContainer.style.display = 'flex';
+  audioContainer.style.gap = '10px';
+  audioContainer.style.flexWrap = 'wrap';
+  audioContainer.style.marginBottom = '10px'; // espaçamento do vídeo
+
+  if (item.audios && item.audios.length > 0) {
     item.audios.forEach(a => {
       const btn = document.createElement('button');
       btn.textContent = a.label;
       btn.className = 'audio-btn';
       btn.onclick = () => {
-        const tempo = videoEl.currentTime;
+        const tempoAtual = videoEl.currentTime;
         videoEl.src = a.src;
         videoEl.load();
-        videoEl.currentTime = tempo;
+        videoEl.currentTime = tempoAtual;
         videoEl.play();
       };
       audioContainer.appendChild(btn);
     });
-    videoModal.appendChild(audioContainer);
   }
 
   // Legendas
