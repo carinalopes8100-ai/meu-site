@@ -298,8 +298,9 @@ videoModal.appendChild(offlineBtn);
 
 offlineBtn.onclick = async () => {
   try {
+    const proxy = "https://cors-anywhere.herokuapp.com/"; // CORS proxy
     const db = await openDB();
-    const res = await fetch(item.link);
+    const res = await fetch(proxy + item.link); // usa proxy
     const blob = await res.blob();
     const tx = db.transaction("videos", "readwrite");
     tx.objectStore("videos").put(blob, item.titulo);
@@ -310,6 +311,7 @@ offlineBtn.onclick = async () => {
     mostrarToast("Erro ao salvar vídeo offline.");
   }
 };
+
 
 
   // Vídeo
