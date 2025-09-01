@@ -285,9 +285,15 @@ videoModal.appendChild(fecharBtn);
 
   let terminou = false;
   fecharBtn.onclick = () => {
-    if (!terminou) salvarProgresso();
-    videoModal.remove();
-  };
+  if (!terminou) salvarProgresso();
+  
+  // Para o vídeo imediatamente
+  videoEl.pause();       // pausa a reprodução
+  videoEl.src = '';      // limpa o src para interromper o carregamento
+  videoEl.load();        // força atualização, limpa buffers
+
+  videoModal.remove();   // remove o modal
+};
 
   // Áudios alternativos
 const audioContainer = document.createElement('div');
