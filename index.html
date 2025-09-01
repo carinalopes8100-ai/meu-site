@@ -299,14 +299,29 @@ videoModal.appendChild(audioContainer);
   // Retomar progresso
   if(progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
 
-  let terminou = false;
-  videoEl.onended = () => { 
-    terminou = true; 
-    delete progresso[item.titulo]; 
-    salvarProgresso(); 
-    mostrarSecao('inicio'); 
-    videoModal.remove();
-  };
+ let terminou = false;
+
+videoEl.onended = () => { 
+  terminou = true; 
+  delete progresso[item.titulo]; 
+  salvarProgresso();
+
+  // Tenta ir para o próximo episódio se existir
+  if(item.serie && item.serie.episodios){
+    const epIndex = item.serie.episodios.findIndex(ep => ep.titulo === item.titulo);
+    const proximoEp = item.serie.episodios[epIndex + 1];
+    if(proximoEp){
+      videoModal.remove();           // remove o modal atual
+      abrirVideo(proximoEp);         // toca o próximo episódio automaticamente
+      return;                        // sai da função
+    }
+  }
+
+  // Se não houver próximo episódio, volta para a página inicial
+  mostrarSecao('inicio'); 
+  videoModal.remove();
+};
+
 
   videoEl.ontimeupdate = () => { 
     if(!terminou) progresso[item.titulo] = videoEl.currentTime; 
