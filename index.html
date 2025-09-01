@@ -291,14 +291,10 @@ videoModal.appendChild(fecharBtn);
 
   // Áudios alternativos
 const audioContainer = document.createElement('div');
-audioContainer.style.position = 'absolute';
-audioContainer.style.top = '20px';
-audioContainer.style.left = '50%';
-audioContainer.style.transform = 'translateX(-50%)';
 audioContainer.style.display = 'flex';
 audioContainer.style.gap = '10px';
 audioContainer.style.flexWrap = 'wrap';
-audioContainer.style.zIndex = '10001'; // acima do vídeo
+audioContainer.style.marginBottom = '10px'; // espaçamento do vídeo
 
 if (item.audios && item.audios.length > 0) {
   item.audios.forEach(a => {
