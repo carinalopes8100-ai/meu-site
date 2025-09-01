@@ -306,21 +306,22 @@ videoEl.onended = () => {
   delete progresso[item.titulo]; 
   salvarProgresso();
 
-  // Tenta ir para o próximo episódio se existir
+  // Se for uma série, toca o próximo episódio
   if(item.serie && item.serie.episodios){
     const epIndex = item.serie.episodios.findIndex(ep => ep.titulo === item.titulo);
     const proximoEp = item.serie.episodios[epIndex + 1];
     if(proximoEp){
-      videoModal.remove();           // remove o modal atual
-      abrirVideo(proximoEp);         // toca o próximo episódio automaticamente
-      return;                        // sai da função
+      // NÃO removemos o modal aqui
+      abrirVideo(proximoEp); // chama a função para o próximo episódio
+      return; // sai antes de mostrarSecao('inicio') ou remover modal
     }
   }
 
-  // Se não houver próximo episódio, volta para a página inicial
+  // Se não houver próximo episódio, aí sim fecha o player
   mostrarSecao('inicio'); 
   videoModal.remove();
 };
+
 
 
   videoEl.ontimeupdate = () => { 
