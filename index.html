@@ -218,10 +218,16 @@ function adicionarMinhaLista(titulo) {
 const bannerVideo = document.getElementById('bannerVideo');
 const bannerImage = document.getElementById('bannerImage');
 
+bannerVideo.preload = 'auto'; // já carrega todo o vídeo
 bannerVideo.oncanplaythrough = () => {
-  bannerImage.style.display = 'none';
-  bannerVideo.style.display = 'block';
+  bannerImage.style.transition = 'opacity 1s';
+  bannerImage.style.opacity = '0'; 
+  setTimeout(() => {
+    bannerImage.style.display = 'none';
+    bannerVideo.style.display = 'block';
+  }, 1000);
 };
+
 
 
   
