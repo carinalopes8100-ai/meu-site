@@ -1860,12 +1860,12 @@ btnPlay.onclick = (e) => {
 overlay.appendChild(btnPlay);
 
 // Botão direito customizado
-const btnDireito = document.createElement('button');
+const btnVerão = document.createElement('button');
 if(item.titulo === 'Morangos com Açúcar'){
-    btnDireito.textContent = '▶ Verão';
-    btnDireito.onclick = (e) => {
+    btnVerão.textContent = '▶ Verão';
+    btnVerão.onclick = (e) => {
         e.stopPropagation();
-        abrirModalTemporadas(item); // item.verao precisa existir no objeto
+        abrirModalTemporadas({ ...item, temporadas: item.verao }); // só temporada de verão
     };
 } else {
     btnDireito.textContent = '▶ Trailer';
