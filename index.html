@@ -548,25 +548,31 @@ const series = [
   ]
 },
   
-  {
-    titulo: "Morangos com Açúcar 2025",
-    img: "https://img.iol.pt/image/id/68626fb6d34e3f0bae9fef4f/240",
-    trailer: "http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true",
-    temporadas: [
-      {
-        numero: 1,
-        episodios: [
-          { numero: 1, link: "http://localhost:8096/Videos/6f9b24bdd4d4e2954b5a732a2e1faa05/stream.mp4?Static=true" },
-          { numero: 2, link: "http://localhost:8096/Videos/27fe974c305e13eddc29256793078530/stream.mp4?Static=true" },
-          ...Array.from({ length: 8 }, (_, i) => ({ numero: i + 3, link: "#" }))
-        ]
-      },
-      {
-        numero: 2,
-        episodios: Array.from({ length: 10 }, (_, i) => ({ numero: i + 1, link: "#" }))
-      }
-    ]
-  },
+{
+  "titulo": "Morangos com Açúcar 2025",
+  "img": "https://img.iol.pt/image/id/68626fb6d34e3f0bae9fef4f/240",
+  "trailer": "http://localhost:8096/Videos/4e881aace3c877692082cd2e2f0fad64/stream.mp4?Static=true",
+  "temporadas": [
+    {
+      "numero": 1,
+      "episodios": [
+        { "numero": 1, "link": "#" },
+        { "numero": 2, "link": "#" },
+        { "numero": 3, "link": "#" }
+        ...
+      ]
+    },
+    {
+      "numero": 2,
+      "episodios": [
+        { "numero": 1, "link": "#" },
+        { "numero": 2, "link": "#" },
+        { "numero": 3, "link": "#" }
+        ...
+      ]
+    }
+  ]
+},
 
   {
     titulo: "Morangos com Açúcar",
