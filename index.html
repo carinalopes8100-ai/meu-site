@@ -8,7 +8,6 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
 
-/* [Seu CSS existente permanece inalterado] */
 header { position: fixed; top:0; left:0; width:100%; height:60px; background:#141414; display:flex; align-items:center; justify-content:flex-start; padding:0 40px; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.5); }
 header h1 { color:#e50914; font-size:24px; cursor:pointer; }
 nav { display:flex; gap:15px; margin-left: 15px; }
@@ -33,7 +32,6 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 #root { margin-top:80px; }
 
-/* [Restante CSS do seu código permanece igual] */
 .fila-container { margin:20px 50px; position:relative; }
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
 .fila { display:flex; overflow-x:auto; gap:16px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
@@ -63,30 +61,10 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .close-btn { margin-top:15px; padding:10px 20px; background:#555; border:none; border-radius:5px; color:#fff; cursor:pointer; transition:background .2s; }
 .close-btn:hover { background:#333; }
 
-.audio-btn {
-  padding: 10px 20px;
-  border-radius: 5px;
-  border: none;
-  background-color: rgba(0,0,0,0.7);
-  color: #fff;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  margin: 5px;
-}
-
+.audio-btn { padding: 10px 20px; border-radius: 5px; border: none; background-color: rgba(0,0,0,0.7); color: #fff; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; display: inline-flex; justify-content: center; align-items: center; margin: 5px; }
 .audio-btn:hover { background-color: #e50914; transform: scale(1.1); }
 
-#episodiosList {
-  max-height: 400px;
-  overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
+#episodiosList { max-height: 400px; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
 #episodiosList::-webkit-scrollbar { display: none; }
 
 .toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 20000; }
@@ -144,7 +122,6 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 <script>
 let minhaLista = [];
 let progresso = {};
-let videoModalGlobal = null; // modal reaproveitável
 
 function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
 function carregarLista() { const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
@@ -162,73 +139,119 @@ function mostrarToast(mensagem){
 function adicionarMinhaLista(titulo){
   const botao = document.querySelector('.banner-content .lista');
   if (!minhaLista.includes(titulo)) {
-    minhaLista.push(titulo); salvarLista(); botao.textContent = "Remover da Lista"; mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
+    minhaLista.push(titulo);
+    salvarLista();
+    botao.textContent = "Remover da Lista";
+    mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
   } else {
-    minhaLista = minhaLista.filter(t => t !== titulo); salvarLista(); botao.textContent = "+ Minha Lista"; mostrarToast(`"${titulo}" removido da Minha Lista!`);
+    minhaLista = minhaLista.filter(t => t !== titulo);
+    salvarLista();
+    botao.textContent = "+ Minha Lista";
+    mostrarToast(`"${titulo}" removido da Minha Lista!`);
   }
   mostrarSecao('inicio');
 }
 
 const bannerVideo = document.getElementById('bannerVideo');
 const bannerImage = document.getElementById('bannerImage');
-bannerVideo.oncanplaythrough = () => { bannerImage.style.display = 'none'; bannerVideo.style.display = 'block'; }
 
-function abrirVideo(item){
-  let videoEl;
+bannerVideo.oncanplaythrough = () => {
+  bannerImage.style.display = 'none';
+  bannerVideo.style.display = 'block';
+};
 
-  if(videoModalGlobal){
-    videoEl = videoModalGlobal.querySelector('video');
-    videoEl.src = item.link;
-    videoEl.load();
-    videoEl.currentTime = 0;
-    videoEl.play();
+let videoModalGlobal = null;
 
-    const tracks = videoEl.querySelectorAll('track'); tracks.forEach(t => t.remove());
-    const audioContainer = videoModalGlobal.querySelector('#audioContainer'); audioContainer.innerHTML = '';
+function abrirVideo(item) {
+    let videoEl;
+    if (!videoModalGlobal) {
+        videoModalGlobal = document.createElement('div');
+        videoModalGlobal.style = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;justify-content:center;align-items:center;z-index:10000;flex-direction:column;';
 
-    if(item.legendas){ item.legendas.forEach(l => { const track = document.createElement('track'); track.kind='subtitles'; track.label=l.label; track.srclang=l.lang; track.src=l.src; track.default=l.default||false; videoEl.appendChild(track); track.mode='hidden'; }); }
-    if(item.audios){ item.audios.forEach(a => { const btn = document.createElement('button'); btn.textContent = a.label; btn.className='audio-btn'; btn.onclick=()=>{ const tempo=videoEl.currentTime; videoEl.src=a.src; videoEl.load(); videoEl.currentTime=tempo; videoEl.play(); }; audioContainer.appendChild(btn); }); }
-    return;
-  }
+        videoEl = document.createElement('video');
+        videoEl.controls = true;
+        videoEl.style.width = '80%';
+        videoEl.style.height = '80%';
+        videoEl.autoplay = true;
+        videoModalGlobal.appendChild(videoEl);
 
-  videoModalGlobal = document.createElement('div');
-  videoModalGlobal.style='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;justify-content:center;align-items:center;z-index:10000;flex-direction:column;';
-  videoEl = document.createElement('video'); videoEl.src=item.link; videoEl.controls=true; videoEl.style.width='80%'; videoEl.style.height='80%'; videoEl.autoplay=true;
+        const audioContainer = document.createElement('div');
+        audioContainer.id = 'audioContainer';
+        audioContainer.style = 'display:flex;gap:10px;margin-top:10px;justify-content:center;flex-wrap:wrap;';
+        videoModalGlobal.appendChild(audioContainer);
 
-  const audioContainer=document.createElement('div'); audioContainer.id='audioContainer'; audioContainer.style='display:flex;gap:10px;margin-top:10px;justify-content:center;flex-wrap:wrap;';
-  if(item.audios){ item.audios.forEach(a => { const btn=document.createElement('button'); btn.textContent=a.label; btn.className='audio-btn'; btn.onclick=()=>{ const tempo=videoEl.currentTime; videoEl.src=a.src; videoEl.load(); videoEl.currentTime=tempo; videoEl.play(); }; audioContainer.appendChild(btn); }); }
+        const fecharBtn = document.createElement('button');
+        fecharBtn.textContent = 'Fechar';
+        fecharBtn.style = 'position:absolute;top:20px;right:20px;padding:10px 20px;cursor:pointer;';
+        fecharBtn.onclick = () => {
+            videoModalGlobal.remove();
+            videoModalGlobal = null;
+        };
+        videoModalGlobal.appendChild(fecharBtn);
 
-  videoModalGlobal.appendChild(videoEl); videoModalGlobal.appendChild(audioContainer);
-
-  const fecharBtn=document.createElement('button'); fecharBtn.textContent='Fechar'; fecharBtn.style='position:absolute;top:20px;right:20px;padding:10px 20px;cursor:pointer;'; fecharBtn.onclick=()=>{ videoModalGlobal.remove(); videoModalGlobal=null; }; videoModalGlobal.appendChild(fecharBtn);
-
-  document.body.appendChild(videoModalGlobal);
-
-  let terminou=false;
-  if(progresso[item.titulo]) videoEl.currentTime=progresso[item.titulo];
-
-  videoEl.onended=()=>{ terminou=true; delete progresso[item.titulo]; salvarProgresso();
-    if(item.serie && item.serie.episodios){
-      const epIndex=item.serie.episodios.findIndex(ep=>ep.titulo===item.titulo);
-      const proximoEp=item.serie.episodios[epIndex+1];
-      if(proximoEp){
-        item=proximoEp; terminou=false;
-        videoEl.src=proximoEp.link; videoEl.load(); videoEl.currentTime=0; videoEl.play();
-        // Atualizar legendas
-        const tracks=videoEl.querySelectorAll('track'); tracks.forEach(t=>t.remove());
-        if(proximoEp.legendas){ proximoEp.legendas.forEach(l=>{ const track=document.createElement('track'); track.kind='subtitles'; track.label=l.label; track.srclang=l.lang; track.src=l.src; track.default=l.default||false; videoEl.appendChild(track); track.mode='hidden'; }); }
-        // Atualizar áudios
-        const audioContainer=videoModalGlobal.querySelector('#audioContainer'); audioContainer.innerHTML='';
-        if(proximoEp.audios){ proximoEp.audios.forEach(a=>{ const btn=document.createElement('button'); btn.textContent=a.label; btn.className='audio-btn'; btn.onclick=()=>{ const tempo=videoEl.currentTime; videoEl.src=a.src; videoEl.load(); videoEl.currentTime=tempo; videoEl.play(); }; audioContainer.appendChild(btn); }); }
-        return;
-      }
+        document.body.appendChild(videoModalGlobal);
+    } else {
+        videoEl = videoModalGlobal.querySelector('video');
     }
-    videoModalGlobal.remove(); videoModalGlobal=null;
-  };
 
-  videoEl.ontimeupdate=()=>{ if(!terminou) progresso[item.titulo]=videoEl.currentTime; };
-  videoEl.addEventListener('loadedmetadata',()=>{ const tracks=videoEl.textTracks; for(let i=0;i<tracks.length;i++) tracks[i].mode='hidden'; });
-  videoEl.muted=false; videoEl.play();
+    function carregarEpisodio(ep) {
+        videoEl.src = ep.link;
+        videoEl.load();
+        videoEl.currentTime = progresso[ep.titulo] || 0;
+        videoEl.play();
+
+        videoEl.querySelectorAll('track').forEach(t => t.remove());
+        const audioContainer = videoModalGlobal.querySelector('#audioContainer');
+        audioContainer.innerHTML = '';
+
+        if (ep.legendas) {
+            ep.legendas.forEach(l => {
+                const track = document.createElement('track');
+                track.kind = 'subtitles';
+                track.label = l.label;
+                track.srclang = l.lang;
+                track.src = l.src;
+                track.default = l.default || false;
+                videoEl.appendChild(track);
+                track.mode = 'hidden';
+            });
+        }
+
+        if (ep.audios) {
+            ep.audios.forEach(a => {
+                const btn = document.createElement('button');
+                btn.textContent = a.label;
+                btn.className = 'audio-btn';
+                btn.onclick = () => {
+                    const tempo = videoEl.currentTime;
+                    videoEl.src = a.src;
+                    videoEl.load();
+                    videoEl.currentTime = tempo;
+                    videoEl.play();
+                };
+                audioContainer.appendChild(btn);
+            });
+        }
+
+        videoEl.ontimeupdate = () => { progresso[ep.titulo] = videoEl.currentTime; };
+
+        videoEl.onended = () => {
+            delete progresso[ep.titulo];
+            salvarProgresso();
+            if (ep.serie && ep.serie.episodios) {
+                const index = ep.serie.episodios.findIndex(e => e.titulo === ep.titulo);
+                const proximo = ep.serie.episodios[index + 1];
+                if (proximo) {
+                    carregarEpisodio(proximo);
+                    return;
+                }
+            }
+            videoModalGlobal.remove();
+            videoModalGlobal = null;
+        };
+    }
+
+    carregarEpisodio(item);
 }
 
 
