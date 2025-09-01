@@ -198,6 +198,28 @@ function mostrarToast(mensagem){
   setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
 
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open("videosDB", 1);
+    request.onupgradeneeded = function(e) {
+      const db = e.target.result;
+      db.createObjectStore("videos");
+    };
+    request.onsuccess = e => resolve(e.target.result);
+    request.onerror = e => reject(e);
+  });
+}
+
+async function reproduzirOffline(titulo) {
+  const db = await openDB();
+  const tx = db.transaction("videos", "readonly");
+  const blob = await tx.objectStore("videos").get(titulo);
+  if (blob) {
+    abrirVideo({ titulo, link: URL.createObjectURL(blob) });
+  } else {
+    mostrarToast("Vídeo não encontrado offline.");
+  }
+}
 
   
 
@@ -264,6 +286,31 @@ function abrirVideo(item) {
   loader.style.fontSize = '18px';
   loader.style.marginTop = '10px';
   loader.style.textAlign = 'center';
+
+  // Botão para assistir offline
+const offlineBtn = document.createElement('button');
+offlineBtn.textContent = 'Assistir Offline';
+offlineBtn.className = 'audio-btn'; // aproveita estilo já existente
+offlineBtn.style.position = 'absolute';
+offlineBtn.style.top = '60px'; // logo abaixo do fechar
+offlineBtn.style.right = '20px';
+videoModal.appendChild(offlineBtn);
+
+offlineBtn.onclick = async () => {
+  try {
+    const db = await openDB();
+    const res = await fetch(item.link);
+    const blob = await res.blob();
+    const tx = db.transaction("videos", "readwrite");
+    tx.objectStore("videos").put(blob, item.titulo);
+    await tx.complete;
+    mostrarToast(`"${item.titulo}" salvo para assistir offline!`);
+  } catch (err) {
+    console.error(err);
+    mostrarToast("Erro ao salvar vídeo offline.");
+  }
+};
+
 
   // Vídeo
   const videoEl = document.createElement('video');
