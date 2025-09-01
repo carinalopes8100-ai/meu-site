@@ -234,8 +234,7 @@ bannerVideo.oncanplaythrough = () => {
 
 
 
-
-function abrirVideo(item){
+function abrirVideo(item) {
   const videoModal = document.createElement('div');
   videoModal.style.position = 'fixed';
   videoModal.style.top = '0';
@@ -249,14 +248,7 @@ function abrirVideo(item){
   videoModal.style.flexDirection = 'column';
   videoModal.style.zIndex = '10000';
 
-  const videoEl = document.createElement('video');
-  videoEl.src = item.link;
-  videoEl.controls = true;
-  videoEl.preload = 'auto';
-  videoEl.style.width = '80%';
-  videoEl.style.height = '80%';
-
-  // loader
+  // Loader
   const loader = document.createElement('div');
   loader.textContent = 'Carregando...';
   loader.style.color = '#fff';
@@ -264,29 +256,97 @@ function abrirVideo(item){
   loader.style.marginBottom = '10px';
   videoModal.appendChild(loader);
 
-  // adiciona o vídeo ao modal
-  videoModal.appendChild(videoEl);
+  // Elemento de vídeo
+  const videoEl = document.createElement('video');
+  videoEl.src = item.link;
+  videoEl.controls = true;
+  videoEl.preload = 'auto';
+  videoEl.style.width = '80%';
+  videoEl.style.height = '80%';
 
-  // toca apenas quando estiver pronto
+  // Botão de fechar
+  const fecharBtn = document.createElement('button');
+  fecharBtn.textContent = 'Fechar';
+  fecharBtn.style.position = 'absolute';
+  fecharBtn.style.top = '20px';
+  fecharBtn.style.right = '20px';
+  fecharBtn.style.padding = '10px 20px';
+  fecharBtn.style.cursor = 'pointer';
+  fecharBtn.onclick = () => {
+    if (!terminou) salvarProgresso();
+    videoModal.remove();
+  };
+
+  // Container de áudio alternativo
+  const audioContainer = document.createElement('div');
+  audioContainer.style.display = 'flex';
+  audioContainer.style.gap = '10px';
+  audioContainer.style.marginTop = '10px';
+  audioContainer.style.justifyContent = 'center';
+  audioContainer.style.flexWrap = 'wrap';
+
+  if (item.audios && item.audios.length > 0) {
+    item.audios.forEach(a => {
+      const btn = document.createElement('button');
+      btn.textContent = a.label;
+      btn.className = 'audio-btn';
+      btn.onclick = () => {
+        const tempoAtual = videoEl.currentTime;
+        videoEl.src = a.src;
+        videoEl.load();
+        videoEl.currentTime = tempoAtual;
+        videoEl.play();
+      };
+      audioContainer.appendChild(btn);
+    });
+  }
+
+  // Legendas ocultas
+  if (item.legendas) {
+    item.legendas.forEach(l => {
+      const track = document.createElement('track');
+      track.kind = 'subtitles';
+      track.label = l.label;
+      track.srclang = l.lang;
+      track.src = l.src;
+      track.default = l.default || false;
+      videoEl.appendChild(track);
+      track.mode = 'hidden'; // não mostra botão CC
+    });
+  }
+
+  // Adiciona ao modal
+  videoModal.appendChild(videoEl);
+  videoModal.appendChild(audioContainer);
+  videoModal.appendChild(fecharBtn);
+  document.body.appendChild(videoModal);
+
+  // Retomar progresso
+  if (progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
+
+  let terminou = false;
+  videoEl.onended = () => {
+    terminou = true;
+    delete progresso[item.titulo];
+    salvarProgresso();
+    videoModal.remove();
+  };
+
+  videoEl.ontimeupdate = () => {
+    if (!terminou) progresso[item.titulo] = videoEl.currentTime;
+  };
+
+  // Reproduzir apenas quando totalmente carregado
   videoEl.oncanplaythrough = () => {
     loader.remove();
     videoEl.play();
   };
 
-  // botão fechar
-  const fecharBtn = document.createElement('button');
-  fecharBtn.textContent = 'Fechar';
-  fecharBtn.style.position='absolute';
-  fecharBtn.style.top='20px';
-  fecharBtn.style.right='20px';
-  fecharBtn.style.padding='10px 20px';
-  fecharBtn.style.cursor='pointer';
-  fecharBtn.onclick = () => {
-    videoModal.remove();
-  };
-
-  videoModal.appendChild(fecharBtn);
-  document.body.appendChild(videoModal);
+  // Impede legendas de aparecer automaticamente
+  videoEl.addEventListener('loadedmetadata', () => {
+    const tracks = videoEl.textTracks;
+    for (let i = 0; i < tracks.length; i++) tracks[i].mode = 'hidden';
+  });
 }
 
 
