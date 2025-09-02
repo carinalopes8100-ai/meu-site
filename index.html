@@ -277,7 +277,12 @@ bannerVideo.addEventListener('canplaythrough', () => {
 
 
 function abrirVideo(item) {
+  // Remove modal antigo
+  const antigo = document.querySelector('#videoModal');
+  if (antigo) antigo.remove();
+
   const modal = document.createElement('div');
+  modal.id = 'videoModal';
   modal.style.cssText = `
     position: fixed; top:0; left:0; width:100%; height:100%;
     background: rgba(0,0,0,0.9); display:flex;
@@ -296,7 +301,7 @@ function abrirVideo(item) {
   modal.appendChild(fecharBtn);
 
   if (item.mediaId) {
-    // Carrega script do Wistia se ainda não estiver carregado
+    // Player Wistia
     if (!document.querySelector("script[src*='wistia.com/player.js']")) {
       const s = document.createElement('script');
       s.src = "https://fast.wistia.com/player.js";
@@ -311,8 +316,8 @@ function abrirVideo(item) {
     player.style.height = '60%';
     modal.appendChild(player);
 
-  } else if (item.link) {
-    // Fallback para vídeo local
+  } else if (item.link && item.link !== "#") {
+    // Fallback: vídeo normal
     const videoEl = document.createElement('video');
     videoEl.src = item.link;
     videoEl.controls = true;
@@ -322,6 +327,7 @@ function abrirVideo(item) {
     modal.appendChild(videoEl);
     videoEl.play();
   } else {
+    // Nenhum vídeo disponível
     const aviso = document.createElement('div');
     aviso.textContent = 'Vídeo indisponível';
     aviso.style.color = '#fff';
@@ -331,6 +337,7 @@ function abrirVideo(item) {
 
   document.body.appendChild(modal);
 }
+
 
 
 
