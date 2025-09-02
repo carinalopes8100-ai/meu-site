@@ -8,12 +8,15 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
 
+
 header { position: fixed; top:0; left:0; width:100%; height:60px; background:#141414; display:flex; align-items:center; justify-content:flex-start; padding:0 40px; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.5); }
 header h1 { color:#e50914; font-size:24px; cursor:pointer; }
 nav { display:flex; gap:15px; margin-left: 15px; }
 nav div { cursor:pointer; transition:color .2s; }
 nav div:hover { color:#e50914; text-decoration:underline; }
 
+
+/* Barra de pesquisa */
 #searchContainer { margin-left:auto; }
 #searchContainer input { padding:6px 12px; border-radius:4px; border:none; outline:none; font-size:14px; }
 #searchContainer button { padding:6px 12px; margin-left:5px; border:none; border-radius:4px; background:#e50914; color:#fff; cursor:pointer; font-weight:bold; transition:background .2s; }
@@ -32,7 +35,6 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 #root { margin-top:80px; }
 
-/* Restante CSS do seu site (filas, modais, toasts, botões) */
 .fila-container { margin:20px 50px; position:relative; }
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
 .fila { display:flex; overflow-x:auto; gap:16px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
@@ -62,9 +64,10 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .close-btn { margin-top:15px; padding:10px 20px; background:#555; border:none; border-radius:5px; color:#fff; cursor:pointer; transition:background .2s; }
 .close-btn:hover { background:#333; }
 
+  
 .audio-btn {
-  padding: 10px 20px;
-  border-radius: 5px;
+  padding: 10px 20px; /* controla tamanho do botão */
+  border-radius: 5px; /* cantos arredondados */
   border: none;
   background-color: rgba(0,0,0,0.7);
   color: #fff;
@@ -72,33 +75,41 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  display: inline-flex;
+  display: inline-flex; /* ficam ao lado se o container permitir */
   justify-content: center;
   align-items: center;
-  margin: 5px;
+  margin: 5px; /* espaçamento entre botões */
 }
-.audio-btn:hover { background-color: #e50914; transform: scale(1.1); }
+
+.audio-btn:hover {
+  background-color: #e50914;
+  transform: scale(1.1);
+}
+  
 
 video::cue {
   color: #FFFFFF;
-  background-color: rgba(0, 0, 0, 0);
-  font-size: 1.5c;
+  background-color: rgba(0, 0, 0, 0); /* transparente */
+  font-size: 1.5c; /* tamanho da fonte */
   font-weight: 400;
   text-align: center;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-  line: 90%;
-  align: center;
+  line: 90%;          /* altura vertical da legenda */
+  align: center;      /* centraliza horizontalmente */
   padding: 0.2c 0.5c;
   border-radius: 0.2c;
 }
-
+  
+/* Scroll interno para temporadas/episódios sem mostrar a barra */
 #episodiosList {
   max-height: 400px;
   overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;  /* IE e Edge antigos */
 }
-#episodiosList::-webkit-scrollbar { display: none; }
+#episodiosList::-webkit-scrollbar { /* Chrome, Safari, Edge */
+  display: none;
+}
 
 .toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 20000; }
 .toast { background: rgba(51, 51, 51, 0.95); color: #fff; padding: 12px 20px; border-radius: 5px; min-width: 220px; max-width: 300px; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.7); opacity: 0; transform: translateX(100%); animation: slideIn 0.5s forwards, fadeOut 0.5s forwards 3s; }
@@ -122,7 +133,6 @@ video::cue {
   transition: opacity 0.3s;
 }
 .filme:hover .remove-continuar-btn { opacity: 1; }
-
 </style>
 </head>
 <body>
@@ -141,6 +151,10 @@ video::cue {
   <button onclick="pesquisar()">🔍︎</button>
 </div>
 </header>
+
+  
+
+
 
 <div class="banner">
   <img id="bannerImage" src="https://images.justwatch.com/poster/334324389/s718/lilo-and-stitch-2025.jpg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;">
@@ -166,38 +180,6 @@ video::cue {
 </div>
 
 <div id="toastContainer" class="toast-container"></div>
-
-<script>
-// Seu JS original para lista, progresso, banner e vídeos
-let minhaLista = [];
-let progresso = {};
-
-function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
-function carregarLista() { const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
-function salvarProgresso() { localStorage.setItem("progresso", JSON.stringify(progresso)); }
-function carregarProgresso() { const p = localStorage.getItem("progresso"); if(p) progresso = JSON.parse(p); }
-
-function mostrarToast(mensagem){
-  const container = document.getElementById('toastContainer');
-  const toast = document.createElement('div'); toast.className = 'toast'; toast.textContent = mensagem;
-  const btn = document.createElement('button'); btn.textContent = '✖'; btn.onclick = () => container.removeChild(toast);
-  toast.appendChild(btn); container.appendChild(toast);
-  setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
-}
-
-// Banner vídeo
-const bannerVideo = document.getElementById('bannerVideo');
-const bannerImage = document.getElementById('bannerImage');
-
-bannerVideo.preload = 'auto';
-bannerVideo.oncanplaythrough = () => {
-  bannerImage.style.transition = 'opacity 1s';
-  bannerImage.style.opacity = '0';
-  setTimeout(() => {
-    bannerImage.style.display = 'none';
-    bannerVideo.style.display = 'block';
-  }, 1000);
-};
 
 <script>
 let minhaLista = [];
@@ -345,6 +327,7 @@ function abrirVideo(item) {
 
     document.body.appendChild(modal);
 }
+
 
 
 
