@@ -1378,7 +1378,7 @@ function mostrarSecao(secao){
     root.innerHTML = ''; // limpa conteúdo anterior
 
     // garante que todosItens inclua animes
-    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes];
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
 
     if(secao === 'inicio'){
         const continuar = todosItens.filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
