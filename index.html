@@ -278,7 +278,12 @@ bannerVideo.addEventListener('canplaythrough', () => {
 
 function abrirVideo(item) {
     const modal = document.createElement('div');
-    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;justify-content:center;align-items:center;flex-direction:column;z-index:10000;';
+    modal.style.cssText = `
+        position:fixed;top:0;left:0;width:100%;height:100%;
+        background:rgba(0,0,0,0.9);display:flex;
+        justify-content:center;align-items:center;
+        flex-direction:column;z-index:10000;
+    `;
 
     // Botão de fechar
     const fecharBtn = document.createElement('button');
@@ -289,6 +294,8 @@ function abrirVideo(item) {
     fecharBtn.style.right = '20px';
     fecharBtn.onclick = () => modal.remove();
     modal.appendChild(fecharBtn);
+
+    let videoEl = null;
 
     if (item.mediaId) {
         // Wistia player
@@ -308,7 +315,7 @@ function abrirVideo(item) {
 
     } else if (item.link) {
         // Fallback para vídeo normal
-        const videoEl = document.createElement('video');
+        videoEl = document.createElement('video');
         videoEl.src = item.link;
         videoEl.controls = true;
         videoEl.preload = 'auto';
@@ -317,7 +324,6 @@ function abrirVideo(item) {
         modal.appendChild(videoEl);
         videoEl.play();
     } else {
-        // Se não tiver link nem Wistia
         const aviso = document.createElement('div');
         aviso.textContent = 'Vídeo indisponível';
         aviso.style.color = '#fff';
@@ -325,8 +331,45 @@ function abrirVideo(item) {
         modal.appendChild(aviso);
     }
 
+    // Botões de áudio (apenas para vídeo normal)
+    if (videoEl) {
+        const audioContainer = document.createElement('div');
+        audioContainer.style.marginTop = '10px';
+        ['Português', 'Inglês', 'Espanhol'].forEach(lng => {
+            const btn = document.createElement('button');
+            btn.textContent = lng;
+            btn.className = 'audio-btn';
+            btn.onclick = () => mostrarToast(`Áudio alterado para: ${lng}`);
+            audioContainer.appendChild(btn);
+        });
+        modal.appendChild(audioContainer);
+    }
+
+    // Legendas (apenas para vídeo normal)
+    if (videoEl) {
+        const captions = document.createElement('div');
+        captions.id = 'captions';
+        captions.style.cssText = `
+            color:#fff; font-size:1.5em; text-align:center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7); margin-top:10px;
+        `;
+        modal.appendChild(captions);
+
+        const subtitleData = item.subtitles || [
+            { start: 0, end: 5, text: "Bem-vindo ao vídeo!" },
+            { start: 5, end: 10, text: "Exemplo de legendas dinâmicas." }
+        ];
+
+        videoEl.addEventListener('timeupdate', () => {
+            const currentTime = videoEl.currentTime;
+            const currentSubtitle = subtitleData.find(s => currentTime >= s.start && currentTime <= s.end);
+            captions.textContent = currentSubtitle ? currentSubtitle.text : '';
+        });
+    }
+
     document.body.appendChild(modal);
 }
+
 
 
 
