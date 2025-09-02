@@ -295,161 +295,55 @@ bannerVideo.addEventListener('canplaythrough', () => {
 
 
 function abrirVideo(item) {
-  const videoModal = document.createElement('div');
-  videoModal.style.cssText = `
-    position: fixed; top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.9); display:flex;
-    justify-content:center; align-items:center; flex-direction:column;
-    z-index:10000;
-  `;
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;justify-content:center;align-items:center;flex-direction:column;z-index:10000;';
 
-  // Loader
-   const loader = document.createElement('div');
-  loader.textContent = 'Carregando...';
-  loader.style.color = '#fff';
-  loader.style.fontSize = '18px';
-  loader.style.marginTop = '10px';
-  loader.style.textAlign = 'center';
+    // Botão de fechar
+    const fecharBtn = document.createElement('button');
+    fecharBtn.textContent = 'Fechar';
+    fecharBtn.className = 'audio-btn';
+    fecharBtn.style.position = 'absolute';
+    fecharBtn.style.top = '20px';
+    fecharBtn.style.right = '20px';
+    fecharBtn.onclick = () => modal.remove();
+    modal.appendChild(fecharBtn);
 
-  // Botão para assistir offline
-const offlineBtn = document.createElement('button');
-offlineBtn.textContent = 'Assistir Offline';
-offlineBtn.className = 'audio-btn'; // aproveita estilo já existente
-offlineBtn.style.position = 'absolute';
-offlineBtn.style.top = '60px'; // logo abaixo do fechar
-offlineBtn.style.right = '20px';
-videoModal.appendChild(offlineBtn);
+    if (item.mediaId) {
+        // Wistia player
+        if (!document.querySelector("script[src*='wistia.com/player.js']")) {
+            const s = document.createElement('script');
+            s.src = "https://fast.wistia.com/player.js";
+            s.async = true;
+            document.body.appendChild(s);
+        }
 
-offlineBtn.onclick = async () => {
-  try {
-    const proxy = "https://cors-anywhere.herokuapp.com/"; // CORS proxy
-    const db = await openDB();
-    const res = await fetch(proxy + item.link); // usa proxy
-    const blob = await res.blob();
-    const tx = db.transaction("videos", "readwrite");
-    tx.objectStore("videos").put(blob, item.titulo);
-    await tx.complete;
-    mostrarToast(`"${item.titulo}" salvo para assistir offline!`);
-  } catch (err) {
-    console.error(err);
-    mostrarToast("Erro ao salvar vídeo offline.");
-  }
-};
+        const player = document.createElement('wistia-player');
+        player.setAttribute('media-id', item.mediaId);
+        player.setAttribute('wistia-popover', 'true');
+        player.style.width = '80%';
+        player.style.height = '60%';
+        modal.appendChild(player);
 
-
-
-  // Vídeo
-  const videoEl = document.createElement('video');
-  videoEl.src = item.link;
-  videoEl.controls = true;
-  videoEl.preload = 'auto';
-  videoEl.style.width = '80%';
-  videoEl.style.height = '80%';
-  videoModal.appendChild(videoEl);
-
- // Botão de fechar
-const fecharBtn = document.createElement('button');
-fecharBtn.textContent = 'Fechar';
-fecharBtn.className = 'audio-btn'; // estilo igual aos botões de áudio
-fecharBtn.style.position = 'absolute';
-fecharBtn.style.top = '20px';
-fecharBtn.style.right = '20px';
-videoModal.appendChild(fecharBtn);
-
-
-  let terminou = false;
-  fecharBtn.onclick = () => {
-  if (!terminou) salvarProgresso();
-  
-  // Para o vídeo imediatamente
-  videoEl.pause();       // pausa a reprodução
-  videoEl.src = '';      // limpa o src para interromper o carregamento
-  videoEl.load();        // força atualização, limpa buffers
-
-  videoModal.remove();   // remove o modal
-};
-
-  // Áudios alternativos
-const audioContainer = document.createElement('div');
-audioContainer.style.position = 'absolute';
-audioContainer.style.top = '20px';
-audioContainer.style.left = '50%';
-audioContainer.style.transform = 'translateX(-50%)';
-audioContainer.style.display = 'flex';
-audioContainer.style.gap = '10px';
-audioContainer.style.flexWrap = 'wrap';
-audioContainer.style.zIndex = '10001'; // acima do vídeo
-
-if (item.audios && item.audios.length > 0) {
-  item.audios.forEach(a => {
-    const btn = document.createElement('button');
-    btn.textContent = a.label;
-    btn.className = 'audio-btn';
-    btn.onclick = () => {
-      const tempoAtual = videoEl.currentTime;
-      videoEl.src = a.src;
-      videoEl.load();
-      videoEl.currentTime = tempoAtual;
-      videoEl.play();
-    };
-    audioContainer.appendChild(btn);
-  });
-}
-
-
-
-
-  // Legendas
-  if (item.legendas) {
-    item.legendas.forEach(l => {
-      const track = document.createElement('track');
-      track.kind = 'subtitles';
-      track.label = l.label;
-      track.srclang = l.lang;
-      track.src = l.src;
-      track.default = l.default || false;
-      videoEl.appendChild(track);
-    });
-  }
-
-  // Evento: quando metadados carregarem
-  videoEl.addEventListener('loadedmetadata', () => {
-    // Ajusta legendas
-    const tracks = videoEl.textTracks;
-    for (let i = 0; i < tracks.length; i++) {
-      tracks[i].mode = 'hidden';
-      for (let j = 0; j < tracks[i].cues.length; j++) {
-        const cue = tracks[i].cues[j];
-        cue.line = 90;
-        cue.position = 50;
-        cue.align = 'center';
-        cue.size = 80;
-      }
+    } else if (item.link) {
+        // Fallback para vídeo normal
+        const videoEl = document.createElement('video');
+        videoEl.src = item.link;
+        videoEl.controls = true;
+        videoEl.preload = 'auto';
+        videoEl.style.width = '80%';
+        videoEl.style.height = '60%';
+        modal.appendChild(videoEl);
+        videoEl.play();
+    } else {
+        // Se não tiver link nem Wistia
+        const aviso = document.createElement('div');
+        aviso.textContent = 'Vídeo indisponível';
+        aviso.style.color = '#fff';
+        aviso.style.fontSize = '18px';
+        modal.appendChild(aviso);
     }
 
-    // Retomar progresso
-    if (progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
-  });
-
-  // Atualiza progresso
-  videoEl.ontimeupdate = () => {
-    if (!terminou) progresso[item.titulo] = videoEl.currentTime;
-  };
-
-  videoEl.onended = () => {
-    terminou = true;
-    delete progresso[item.titulo];
-    salvarProgresso();
-    videoModal.remove();
-  };
-
-  // Reproduzir apenas quando carregado
-  videoEl.oncanplaythrough = () => {
-    loader.remove();
-    videoEl.play();
-  };
-  videoModal.appendChild(audioContainer);
-  document.body.appendChild(videoModal);
+    document.body.appendChild(modal);
 }
 
 
