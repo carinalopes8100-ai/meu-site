@@ -277,8 +277,8 @@ bannerVideo.addEventListener('canplaythrough', () => {
 
 
 function abrirVideo(item) {
-  const videoModal = document.createElement('div');
-  videoModal.style.cssText = `
+  const modal = document.createElement('div');
+  modal.style.cssText = `
     position: fixed; top:0; left:0; width:100%; height:100%;
     background: rgba(0,0,0,0.9); display:flex;
     justify-content:center; align-items:center; flex-direction:column;
@@ -292,90 +292,46 @@ function abrirVideo(item) {
   fecharBtn.style.position = 'absolute';
   fecharBtn.style.top = '20px';
   fecharBtn.style.right = '20px';
-  fecharBtn.onclick = () => videoModal.remove();
-  videoModal.appendChild(fecharBtn);
+  fecharBtn.onclick = () => modal.remove();
+  modal.appendChild(fecharBtn);
 
-  const criarWistia = () => {
+  if (item.mediaId) {
+    // Carrega script do Wistia se ainda não estiver carregado
+    if (!document.querySelector("script[src*='wistia.com/player.js']")) {
+      const s = document.createElement('script');
+      s.src = "https://fast.wistia.com/player.js";
+      s.async = true;
+      document.body.appendChild(s);
+    }
+
     const player = document.createElement('wistia-player');
     player.setAttribute('media-id', item.mediaId);
     player.setAttribute('wistia-popover', 'true');
     player.style.width = '80%';
     player.style.height = '60%';
-    videoModal.appendChild(player);
-  };
+    modal.appendChild(player);
 
-  if (item.mediaId) {
-    // Checa se o script já existe
-    const scriptExistente = document.querySelector("script[src*='wistia.com/player.js']");
-    if (scriptExistente) {
-      criarWistia();
-    } else {
-      const s = document.createElement('script');
-      s.src = "https://fast.wistia.com/player.js";
-      s.async = true;
-      s.onload = criarWistia;
-      document.body.appendChild(s);
-    }
-  } else if (item.link && item.link !== "#") {
+  } else if (item.link) {
     // Fallback para vídeo local
     const videoEl = document.createElement('video');
     videoEl.src = item.link;
     videoEl.controls = true;
-    videoEl.autoplay = true;
+    videoEl.preload = 'auto';
     videoEl.style.width = '80%';
     videoEl.style.height = '60%';
-    videoModal.appendChild(videoEl);
-
-    // Legendas (se existirem)
-    if (item.legendas) {
-      item.legendas.forEach(l => {
-        const track = document.createElement('track');
-        track.kind = 'subtitles';
-        track.label = l.label;
-        track.srclang = l.lang;
-        track.src = l.src;
-        track.default = l.default || false;
-        videoEl.appendChild(track);
-      });
-    }
-
-    // Áudios alternativos
-    if (item.audios) {
-      const audioContainer = document.createElement('div');
-      audioContainer.style.position = 'absolute';
-      audioContainer.style.top = '20px';
-      audioContainer.style.left = '50%';
-      audioContainer.style.transform = 'translateX(-50%)';
-      audioContainer.style.display = 'flex';
-      audioContainer.style.gap = '10px';
-      audioContainer.style.flexWrap = 'wrap';
-      audioContainer.style.zIndex = '10001';
-
-      item.audios.forEach(a => {
-        const btn = document.createElement('button');
-        btn.textContent = a.label;
-        btn.className = 'audio-btn';
-        btn.onclick = () => {
-          const tempoAtual = videoEl.currentTime;
-          videoEl.src = a.src;
-          videoEl.load();
-          videoEl.currentTime = tempoAtual;
-          videoEl.play();
-        };
-        audioContainer.appendChild(btn);
-      });
-      videoModal.appendChild(audioContainer);
-    }
+    modal.appendChild(videoEl);
+    videoEl.play();
   } else {
     const aviso = document.createElement('div');
     aviso.textContent = 'Vídeo indisponível';
     aviso.style.color = '#fff';
     aviso.style.fontSize = '18px';
-    videoModal.appendChild(aviso);
+    modal.appendChild(aviso);
   }
 
-  document.body.appendChild(videoModal);
+  document.body.appendChild(modal);
 }
+
 
 
 
