@@ -295,37 +295,52 @@ function abrirVideo(item) {
   fecharBtn.onclick = () => videoModal.remove();
   videoModal.appendChild(fecharBtn);
 
-  let videoEl = null;
-
-  if (item.mediaId) {
-    // Wistia player
-    if (!document.querySelector("script[src*='wistia.com/player.js']")) {
-      const s = document.createElement('script');
-      s.src = "https://fast.wistia.com/player.js";
-      s.async = true;
-      document.body.appendChild(s);
-    }
-
+  const criarWistia = () => {
     const player = document.createElement('wistia-player');
     player.setAttribute('media-id', item.mediaId);
     player.setAttribute('wistia-popover', 'true');
     player.style.width = '80%';
     player.style.height = '60%';
     videoModal.appendChild(player);
+  };
 
-  } else if (item.link) {
-    // Fallback: vídeo normal
-    videoEl = document.createElement('video');
+  if (item.mediaId) {
+    // Checa se o script já existe
+    const scriptExistente = document.querySelector("script[src*='wistia.com/player.js']");
+    if (scriptExistente) {
+      criarWistia();
+    } else {
+      const s = document.createElement('script');
+      s.src = "https://fast.wistia.com/player.js";
+      s.async = true;
+      s.onload = criarWistia;
+      document.body.appendChild(s);
+    }
+  } else if (item.link && item.link !== "#") {
+    // Fallback para vídeo local
+    const videoEl = document.createElement('video');
     videoEl.src = item.link;
     videoEl.controls = true;
-    videoEl.preload = 'auto';
+    videoEl.autoplay = true;
     videoEl.style.width = '80%';
-    videoEl.style.height = '80%';
+    videoEl.style.height = '60%';
     videoModal.appendChild(videoEl);
-    videoEl.play();
+
+    // Legendas (se existirem)
+    if (item.legendas) {
+      item.legendas.forEach(l => {
+        const track = document.createElement('track');
+        track.kind = 'subtitles';
+        track.label = l.label;
+        track.srclang = l.lang;
+        track.src = l.src;
+        track.default = l.default || false;
+        videoEl.appendChild(track);
+      });
+    }
 
     // Áudios alternativos
-    if (item.audios && item.audios.length > 0) {
+    if (item.audios) {
       const audioContainer = document.createElement('div');
       audioContainer.style.position = 'absolute';
       audioContainer.style.top = '20px';
@@ -335,6 +350,7 @@ function abrirVideo(item) {
       audioContainer.style.gap = '10px';
       audioContainer.style.flexWrap = 'wrap';
       audioContainer.style.zIndex = '10001';
+
       item.audios.forEach(a => {
         const btn = document.createElement('button');
         btn.textContent = a.label;
@@ -350,33 +366,6 @@ function abrirVideo(item) {
       });
       videoModal.appendChild(audioContainer);
     }
-
-    // Legendas
-    if (item.legendas) {
-      item.legendas.forEach(l => {
-        const track = document.createElement('track');
-        track.kind = 'subtitles';
-        track.label = l.label;
-        track.srclang = l.lang;
-        track.src = l.src;
-        track.default = l.default || false;
-        videoEl.appendChild(track);
-      });
-
-      videoEl.addEventListener('loadedmetadata', () => {
-        const tracks = videoEl.textTracks;
-        for (let i = 0; i < tracks.length; i++) {
-          tracks[i].mode = 'hidden';
-          for (let j = 0; j < tracks[i].cues.length; j++) {
-            const cue = tracks[i].cues[j];
-            cue.line = 90;
-            cue.position = 50;
-            cue.align = 'center';
-            cue.size = 80;
-          }
-        }
-      });
-    }
   } else {
     const aviso = document.createElement('div');
     aviso.textContent = 'Vídeo indisponível';
@@ -387,6 +376,7 @@ function abrirVideo(item) {
 
   document.body.appendChild(videoModal);
 }
+
 
 
 
