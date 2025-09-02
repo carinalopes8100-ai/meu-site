@@ -144,6 +144,7 @@ video::cue {
 <div onclick="mostrarSecao('series')">Séries</div>
 <div onclick="mostrarSecao('filmes')">Filmes</div>
 <div onclick="mostrarSecao('terror')">Terror</div>
+<div onclick="mostrarSecao('desenhos')">Desenhos</div>
 <div onclick="mostrarSecao('lista')">A Minha Lista</div>
 </nav>
 <div id="searchContainer">
@@ -1393,6 +1394,7 @@ function mostrarSecao(secao){
         root.appendChild(criarFila('fila1', filmes, 'filme'));
         root.appendChild(criarFila('fila2', series, 'serie'));
         root.appendChild(criarFila('fila3', filmesTerror, 'filme'));
+        root.appendChild(criarFila('filaDesenhos', desenhos, 'serie', 'Desenhos Animados'));
         root.appendChild(criarFila('filaAnimes', animes, 'serie', 'Séries de anime')); // NOVA FILA
     }
     else if(secao === 'filmes'){
@@ -1406,6 +1408,9 @@ function mostrarSecao(secao){
     }
     else if(secao === 'animes'){
         root.appendChild(criarFila('filaAnimes', animes, 'serie', 'Séries de anime')); // NOVA SEÇÃO
+    }
+    else if(secao === 'desenhos'){
+    root.appendChild(criarFila('filaDesenhos', desenhos, 'serie', 'Desenhos Animados'));
     }
     else if(secao === 'lista'){
         const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
