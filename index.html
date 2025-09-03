@@ -153,6 +153,14 @@ video::cue {
 </head>
 <body>
 
+  <div id="audioModal" class="modal">
+  <div class="modal-content" style="max-width:400px;">
+    <h2>Escolha o áudio</h2>
+    <div id="audioOptions" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;"></div>
+    <button class="close-btn" onclick="fecharAudioModal()">Cancelar</button>
+  </div>
+</div>
+
 <header>
 <h1>EightyOne</h1>
 <nav>
@@ -168,6 +176,8 @@ video::cue {
   <button onclick="pesquisar()">🔍︎</button>
 </div>
 </header>
+
+  
 
 
 
@@ -290,7 +300,31 @@ bannerVideo.addEventListener('canplaythrough', () => {
 });
 
 
+function abrirAudioModal(item) {
+  const audioModal = document.getElementById('audioModal');
+  const audioOptions = document.getElementById('audioOptions');
+  audioOptions.innerHTML = ''; // limpa opções anteriores
 
+  // Supondo que item.audios = [{label: 'PT', src: 'linkPT'}, {label: 'EN', src: 'linkEN'}]
+  if(item.audios && item.audios.length > 0) {
+    item.audios.forEach(a => {
+      const btn = document.createElement('button');
+      btn.className = 'audio-btn';
+      btn.textContent = a.label;
+      btn.onclick = () => {
+        abrirVideo({ titulo: item.titulo, link: a.src });
+        fecharAudioModal();
+      };
+      audioOptions.appendChild(btn);
+    });
+  }
+
+  audioModal.style.display = 'flex';
+}
+
+function fecharAudioModal() {
+  document.getElementById('audioModal').style.display = 'none';
+}
 
   
 
@@ -1305,7 +1339,7 @@ btnPlay.onclick = (e) => {
   if(s){ 
       abrirModalTemporadas({ ...s, temporadas: s.temporadas }); // só temporadas normais
   } else { 
-      abrirVideo(item); 
+      abrirAudioModal(item); 
   }
 };
 overlay.appendChild(btnPlay);
