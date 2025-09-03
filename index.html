@@ -284,152 +284,126 @@ function abrirVideo(item) {
     z-index:10000;
   `;
 
-  // Loader
-   const loader = document.createElement('div');
-  loader.textContent = 'Carregando...';
-  loader.style.color = '#fff';
-  loader.style.fontSize = '18px';
-  loader.style.marginTop = '10px';
-  loader.style.textAlign = 'center';
-
-  // Botão para assistir offline
-const offlineBtn = document.createElement('button');
-offlineBtn.textContent = 'Assistir Offline';
-offlineBtn.className = 'audio-btn'; // aproveita estilo já existente
-offlineBtn.style.position = 'absolute';
-offlineBtn.style.top = '60px'; // logo abaixo do fechar
-offlineBtn.style.right = '20px';
-videoModal.appendChild(offlineBtn);
-
-offlineBtn.onclick = async () => {
-  try {
-    const proxy = "https://cors-anywhere.herokuapp.com/"; // CORS proxy
-    const db = await openDB();
-    const res = await fetch(proxy + item.link); // usa proxy
-    const blob = await res.blob();
-    const tx = db.transaction("videos", "readwrite");
-    tx.objectStore("videos").put(blob, item.titulo);
-    await tx.complete;
-    mostrarToast(`"${item.titulo}" salvo para assistir offline!`);
-  } catch (err) {
-    console.error(err);
-    mostrarToast("Erro ao salvar vídeo offline.");
-  }
-};
-
-
-
-  // Vídeo
-  const videoEl = document.createElement('video');
-  videoEl.src = item.link;
-  videoEl.controls = true;
-  videoEl.preload = 'auto';
-  videoEl.style.width = '80%';
-  videoEl.style.height = '80%';
-  videoModal.appendChild(videoEl);
-
- // Botão de fechar
-const fecharBtn = document.createElement('button');
-fecharBtn.textContent = 'Fechar';
-fecharBtn.className = 'audio-btn'; // estilo igual aos botões de áudio
-fecharBtn.style.position = 'absolute';
-fecharBtn.style.top = '20px';
-fecharBtn.style.right = '20px';
-videoModal.appendChild(fecharBtn);
-
+  // Botão Fechar
+  const fecharBtn = document.createElement('button');
+  fecharBtn.textContent = 'Fechar';
+  fecharBtn.className = 'audio-btn';
+  fecharBtn.style.position = 'absolute';
+  fecharBtn.style.top = '20px';
+  fecharBtn.style.right = '20px';
+  videoModal.appendChild(fecharBtn);
 
   let terminou = false;
-  fecharBtn.onclick = () => {
-  if (!terminou) salvarProgresso();
-  
-  // Para o vídeo imediatamente
-  videoEl.pause();       // pausa a reprodução
-  videoEl.src = '';      // limpa o src para interromper o carregamento
-  videoEl.load();        // força atualização, limpa buffers
 
-  videoModal.remove();   // remove o modal
-};
+  // Verifica se é mp4 ou embed
+  if (item.link.endsWith(".mp4")) {
+    // Loader
+    const loader = document.createElement('div');
+    loader.textContent = 'Carregando...';
+    loader.style.color = '#fff';
+    loader.style.fontSize = '18px';
+    loader.style.marginTop = '10px';
+    loader.style.textAlign = 'center';
+    videoModal.appendChild(loader);
 
-  // Áudios alternativos
-const audioContainer = document.createElement('div');
-audioContainer.style.position = 'absolute';
-audioContainer.style.top = '20px';
-audioContainer.style.left = '50%';
-audioContainer.style.transform = 'translateX(-50%)';
-audioContainer.style.display = 'flex';
-audioContainer.style.gap = '10px';
-audioContainer.style.flexWrap = 'wrap';
-audioContainer.style.zIndex = '10001'; // acima do vídeo
+    // Elemento vídeo
+    const videoEl = document.createElement('video');
+    videoEl.src = item.link;
+    videoEl.controls = true;
+    videoEl.preload = 'auto';
+    videoEl.style.width = '80%';
+    videoEl.style.height = '80%';
+    videoModal.appendChild(videoEl);
 
-if (item.audios && item.audios.length > 0) {
-  item.audios.forEach(a => {
-    const btn = document.createElement('button');
-    btn.textContent = a.label;
-    btn.className = 'audio-btn';
-    btn.onclick = () => {
-      const tempoAtual = videoEl.currentTime;
-      videoEl.src = a.src;
+    // Fechar com stop
+    fecharBtn.onclick = () => {
+      if (!terminou) salvarProgresso();
+      videoEl.pause();
+      videoEl.src = '';
       videoEl.load();
-      videoEl.currentTime = tempoAtual;
-      videoEl.play();
+      videoModal.remove();
     };
-    audioContainer.appendChild(btn);
-  });
-}
 
+    // Audios alternativos
+    const audioContainer = document.createElement('div');
+    audioContainer.style.position = 'absolute';
+    audioContainer.style.top = '20px';
+    audioContainer.style.left = '50%';
+    audioContainer.style.transform = 'translateX(-50%)';
+    audioContainer.style.display = 'flex';
+    audioContainer.style.gap = '10px';
+    audioContainer.style.flexWrap = 'wrap';
+    audioContainer.style.zIndex = '10001';
 
-
-
-  // Legendas
-  if (item.legendas) {
-    item.legendas.forEach(l => {
-      const track = document.createElement('track');
-      track.kind = 'subtitles';
-      track.label = l.label;
-      track.srclang = l.lang;
-      track.src = l.src;
-      track.default = l.default || false;
-      videoEl.appendChild(track);
-    });
-  }
-
-  // Evento: quando metadados carregarem
-  videoEl.addEventListener('loadedmetadata', () => {
-    // Ajusta legendas
-    const tracks = videoEl.textTracks;
-    for (let i = 0; i < tracks.length; i++) {
-      tracks[i].mode = 'hidden';
-      for (let j = 0; j < tracks[i].cues.length; j++) {
-        const cue = tracks[i].cues[j];
-        cue.line = 90;
-        cue.position = 50;
-        cue.align = 'center';
-        cue.size = 80;
-      }
+    if (item.audios && item.audios.length > 0) {
+      item.audios.forEach(a => {
+        const btn = document.createElement('button');
+        btn.textContent = a.label;
+        btn.className = 'audio-btn';
+        btn.onclick = () => {
+          const tempoAtual = videoEl.currentTime;
+          videoEl.src = a.src;
+          videoEl.load();
+          videoEl.currentTime = tempoAtual;
+          videoEl.play();
+        };
+        audioContainer.appendChild(btn);
+      });
+      videoModal.appendChild(audioContainer);
     }
 
-    // Retomar progresso
-    if (progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
-  });
+    // Legendas
+    if (item.legendas) {
+      item.legendas.forEach(l => {
+        const track = document.createElement('track');
+        track.kind = 'subtitles';
+        track.label = l.label;
+        track.srclang = l.lang;
+        track.src = l.src;
+        track.default = l.default || false;
+        videoEl.appendChild(track);
+      });
+    }
 
-  // Atualiza progresso
-  videoEl.ontimeupdate = () => {
-    if (!terminou) progresso[item.titulo] = videoEl.currentTime;
-  };
+    // Eventos
+    videoEl.addEventListener('loadedmetadata', () => {
+      if (progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
+    });
 
-  videoEl.onended = () => {
-    terminou = true;
-    delete progresso[item.titulo];
-    salvarProgresso();
-    videoModal.remove();
-  };
+    videoEl.ontimeupdate = () => {
+      if (!terminou) progresso[item.titulo] = videoEl.currentTime;
+    };
 
-  // Reproduzir apenas quando carregado
-  videoEl.oncanplaythrough = () => {
-    loader.remove();
-    videoEl.play();
-  };
-  videoModal.appendChild(audioContainer);
+    videoEl.onended = () => {
+      terminou = true;
+      delete progresso[item.titulo];
+      salvarProgresso();
+      videoModal.remove();
+    };
+
+    videoEl.oncanplaythrough = () => {
+      loader.remove();
+      videoEl.play();
+    };
+
+  } else {
+    // Caso seja embed/iframe
+    const iframe = document.createElement('iframe');
+    iframe.src = item.link;
+    iframe.width = "80%";
+    iframe.height = "80%";
+    iframe.allowFullscreen = true;
+    iframe.frameBorder = "0";
+    iframe.allow = "autoplay";
+    iframe.style.borderRadius = "10px";
+    iframe.style.boxShadow = "0 0 20px rgba(0,0,0,0.7)";
+    videoModal.appendChild(iframe);
+
+    fecharBtn.onclick = () => {
+      videoModal.remove();
+    };
+  }
+
   document.body.appendChild(videoModal);
 }
 
