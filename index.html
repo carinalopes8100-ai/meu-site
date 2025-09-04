@@ -470,7 +470,25 @@ function abrirVideo(item) {
 
 // ===== Dados =====
 const filmes = [
-  {titulo:"Lilo & Stitch 2025",img:"https://m.media-amazon.com/images/S/pv-target-images/3bb85691bf09203cc013b6a02bac8ff53f5eeedebaef28ef65bcf4ac050b852a.jpg",link:"https://cdn.videas.fr/v-medias/s5/a/a8/e4/a8e49c14d2d7470d903705154c0b990b/a5adf593a5724468ae05a1a202240c33/a98a7d7c-c351-4c34-b118-f41b1c226e62.mp4", trailer:"https://fv5-5.files.fm/thumb_video/uj9qwjaju5.mp4?v=1756556152&PHPSESSID=8731dce80e1edc741a910c606dd2da1d9b19e048"},
+
+    {
+  titulo: "Lilo e Stitch 2025",
+  img: "https://m.media-amazon.com/images/S/pv-target-images/3bb85691bf09203cc013b6a02bac8ff53f5eeedebaef28ef65bcf4ac050b852a.jpg",
+  link: "https://streamtape.com/e/1Wyob40KXeSeWap/", // este é o padrão inicial
+  trailer: "https://eightyone.cincopa.com/watch/A4HAcLOLOO68!AUMD4wOkgXrN",
+  audios: [
+    { label: "Português", src: "https://streamtape.com/e/1Wyob40KXeSeWap/" },
+    { label: "English", src: "linkdovideo" }
+  ],
+  legendas: [
+    {
+      label: "Português",
+      lang: "pt",
+      src: "legendas/[SubtitleTools.com] Creed.2015.1080p.BluRay.x264-SPARKS.vtt",
+      default: true
+    }
+  ]
+},
   {
   titulo: "Creed",
   img: "https://m.media-amazon.com/images/S/pv-target-images/12c462818b246e55319be5f385842b5ca6ffea2adfbf97103e44f14339ca0e85.jpg",
