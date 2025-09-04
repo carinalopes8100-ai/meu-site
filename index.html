@@ -527,7 +527,23 @@ const filmes = [
 },
   {titulo:"Creed 3",img:"https://m.media-amazon.com/images/S/pv-target-images/7362862705bdb9cbf05a7fa680e2d4d08dd4f69dbba5919f5a339e305f7ad6e7.jpg",link:"https://cdn.videas.fr/v-medias/s5/a/a8/e4/a8e49c14d2d7470d903705154c0b990b/a5adf593a5724468ae05a1a202240c33/a98a7d7c-c351-4c34-b118-f41b1c226e62.mp4", trailer:"https://streamtape.com/e/8wzwX02aLlSoVz9/"},
   {titulo:"Gigantes de Aço",img:"https://m.media-amazon.com/images/S/pv-target-images/17328fdbc4359af768e1b2c2d27f45018edaa79f034685428e05b5152d23c3ff.jpg",link:"http://38.135.27.34/deliver/336136.mp4?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjAwMDEiLCJleHAiOjE3NTY3Mzk3Njh9.eyJ1YyI6IlduQnBZbkZYWkdwSWRVOD0iLCJwYyI6ImQwTXlaMHBYU2pnMVpBPT0iLCJzdCI6IjMzNjEzNi5tcDQiLCJpcCI6IjgxLjg0LjgyLjIzNiJ9.W4nQaVuooG1LtWHd3nNb1xvOPxLPBJ9qaiKwGyOpnW4&uc=WnBpYnFXZGpIdU8=&pc=d0MyZ0pXSjg1ZA==", trailer:"https://ia801003.us.archive.org/7/items/oficial-dublado/Lilo%20e%20Stitch%20%20Trailer%20Oficial%20Dublado.mp4"},
-  {titulo:"O Discípulo",img:"https://i.ytimg.com/vi/H5Mfv6_1FVM/mqdefault.jpg",link:"https://ia600508.us.archive.org/27/items/hd_20250829/O%20Disc%C3%ADpulo%20-%20Filme%20Oficial%20%28HD%29.mp4", trailer:"https://ia600508.us.archive.org/21/items/railer-oficial-hd/O%20Disc%C3%ADpulo%20-%20Trailer%20Oficial%20%28HD%29.mp4"},
+      {
+  titulo: "O Discípulo",
+  img: "https://i.ytimg.com/vi/H5Mfv6_1FVM/mqdefault.jpg",
+  link: "https://streamtape.com/e/qgMRMyLO7xuzprb/", // este é o padrão inicial
+  trailer: "https://eightyone.cincopa.com/watch/A4HAcLOLOO68!AUMD4wOkgXrN",
+  audios: [
+    { label: "Português", src: "https://streamtape.com/e/qgMRMyLO7xuzprb/" },
+  ],
+  legendas: [
+    {
+      label: "Português",
+      lang: "pt",
+      src: "legendas/[SubtitleTools.com] Creed.2.2018.1080p.WEB-DL.DD5.1.H264-CMRG.vtt",
+      default: true
+    }
+  ]
+},
   {titulo:"Depois do Universo",img:"https://i.ytimg.com/vi/tfGY_OUtWDY/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCnJgL3D5PtfOHV3Y7k8PnLrL9z4Q",link:"https://ia800908.us.archive.org/13/items/vxt_202508/Beyond.the.Universe.2022.PORTUGUESE.1080p.WEBRip.x264-VXT.mp4", trailer:"https://ia801003.us.archive.org/23/items/portugues_202508/Depois%20do%20Universo%20%28Teaser%29%20%20Trailer%20em%20Portugu%C3%AAs%20%20Netflix.mp4"},
   {titulo:"Charm City Kings",img:"https://assets-in.bmscdn.com/discovery-catalog/events/et00320334-tslkcqkucs-landscape.jpg",link:"https://ia600506.us.archive.org/23/items/5.1_20250829/Charm%20City%20Kings%202020%20Web-Dl%201080P%20Dual%205.1.mp4", trailer:"https://ia601007.us.archive.org/16/items/trailer-2_202508/Charm%20City%20Kings%20-%20Official%20Trailer%20%282%29.mp4"},
   {titulo:"GTMAX",img:"https://i.ytimg.com/vi/nTtRzVclbc8/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCTcnaSL9KtADq8bOvF-XVtHtDubA",link:"https://ia802907.us.archive.org/28/items/5.1_20250830/Gtmax.2024.1080P.Web-Dl.Dual.5.1.mp4", trailer:"https://ia601007.us.archive.org/16/items/trailer-2_202508/Charm%20City%20Kings%20-%20Official%20Trailer%20%282%29.mp4"},
@@ -629,8 +645,26 @@ const filmes = [
     }
   ]
 },
+
+          {
+  titulo: "Harry Potter e o Enigma do Príncipe",
+  img: "https://m.media-amazon.com/images/S/pv-target-images/f13202fa5b5913f205e6269003443982efe8abf2e0adf1892401d7dab5e0e4bc.jpg",
+  link: "https://streamtape.com/e/zpkaYJPD8DiY379/", // este é o padrão inicial
+  trailer: "https://eightyone.cincopa.com/watch/A4HAcLOLOO68!AUMD4wOkgXrN",
+  audios: [
+    { label: "Português", src: "linkdovideo" },
+    { label: "English", src: "https://streamtape.com/e/zpkaYJPD8DiY379/" }
+  ],
+  legendas: [
+    {
+      label: "Português",
+      lang: "pt",
+      src: "legendas/[SubtitleTools.com] Harry.Potter.and.the.Goblet.of.Fire.2005.1080p.BluRay.DDP.5.1.x265-EDGE2020.vtt",
+      default: true
+    }
+  ]
+},
   
-  {titulo:"Harry Potter e o Enigma do Príncipe",img:"https://m.media-amazon.com/images/S/pv-target-images/f13202fa5b5913f205e6269003443982efe8abf2e0adf1892401d7dab5e0e4bc.jpg",link:"#", trailer:"https://ia600908.us.archive.org/34/items/principe-trailer-dublado/Harry%20Potter%20e%20o%20Enigma%20do%20Pr%C3%ADncipe%20-%20Trailer%20Dublado.mp4"},
   {titulo:"Harry Potter e as Relíquias da Morte – Parte 1",img:"https://m.media-amazon.com/images/S/pv-target-images/c6f01499ac69b72571d7499951921c9929d45818d64eb90977db9ff21f2ed75f.jpg",link:"#", trailer:"https://ia600902.us.archive.org/24/items/parte-1-trailer-dublado-hd/Harry%20Potter%20e%20as%20Rel%C3%ADquias%20da%20Morte%20Parte%201%20-%20Trailer%20%28dublado%29%20%5BHD%5D.mp4"},
   {titulo:"Harry Potter e as Relíquias da Morte – Parte 2",img:"https://m.media-amazon.com/images/S/pv-target-images/c732ade3a8384920bc1f7393ab936d4c0bae08add7b05186da7cdaed35cfbf03.jpg",link:"#", trailer:"https://ia601008.us.archive.org/10/items/teaser-dublado-hd/Harry%20Potter%20e%20as%20Rel%C3%ADquias%20da%20Morte%20Parte%202%20-%20Trailer%20Teaser%20%28dublado%29%20%5BHD%5D.mp4"},
 ];
