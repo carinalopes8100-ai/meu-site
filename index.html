@@ -39,76 +39,14 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
 .fila { display:flex; overflow-x:auto; gap:12px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
 .fila::-webkit-scrollbar { display:none; }
-.filme {
-  width: 250px;
-  height: 140px;
-  border-radius: 5px;
-  overflow: visible; /* importante para overlay */
-  cursor: pointer;
-  position: relative;
-  transition: transform 0.3s ease, z-index 0.3s ease;
-}
+.filme { width:310px; height:170px; border-radius:5px; overflow:hidden; cursor:pointer; position:relative; flex-shrink:0; transition: transform 0.3s ease; }
+.filme:hover { transform: scale(1.05); z-index:2; }
+.filme img { width:100%; height:100%; object-fit:cover; display:block; }
 
-.filme img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 5px;
-}
-
-/* Overlay inicial */
-.filme-hover-overlay {
-  position: absolute;
-  bottom: -20px; /* começa levemente escondido */
-  left: -50px;   /* centralizar overlay maior que o card */
-  width: 350px;  /* overlay maior que o card */
-  background: #141414;
-  border-radius: 5px;
-  padding: 15px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  z-index: 1;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-/* Conteúdo do overlay */
-.filme-hover-overlay h3 {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
-
-.filme-hover-overlay p {
-  font-size: 13px;
-  line-height: 1.2;
-  max-height: 40px;
-  overflow: hidden;
-  margin-bottom: 8px;
-}
-
-.filme-hover-overlay .btn-group {
-  display: flex;
-  gap: 5px;
-}
-
-/* Botões */
-.filme-hover-overlay button {
-  background: #e50914;
-  color: #fff;
-  font-weight: bold;
-  border: none;
-  border-radius: 4px;
-  padding: 5px 10px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.filme-hover-overlay button:hov
-
-
-
+.filme-hover-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background: rgba(20, 20, 20, 0.8); display:flex; justify-content:center; align-items:center; gap:8px; opacity:0; transition:opacity 0.3s, transform 0.3s; box-shadow: 0 0 15px rgba(0,0,0,0.5); flex-direction:column; border-radius:4px; z-index:5; }
+.filme:hover .filme-hover-overlay { opacity:1; transform: translateY(-5px); }
+.filme-hover-overlay button { width:100px; padding:8px 0; background:#e50914; border:none; color:#fff; font-weight:bold; cursor:pointer; border-radius:4px; transition: background .2s; }
+.filme-hover-overlay button:hover { background:#b20710; }
 
 .add-list-btn { position:absolute; bottom:5px; right:5px; width:30px; height:30px; border-radius:50%; border:none; background:#e50914; color:#fff; font-weight:bold; cursor:pointer; font-size:18px; z-index:6; transition: background .2s; opacity:0; }
 .filme:hover .add-list-btn { opacity:1; }
@@ -243,19 +181,21 @@ video::cue {
 
 
 
-<div class="filme">
-  <img src="link-do-filme.jpg" alt="Título do Filme">
-  <div class="filme-hover-overlay">
-    <h3>Título do Filme</h3>
-    <p>Descrição curta do filme para o usuário decidir se quer assistir ou não.</p>
-    <div class="btn-group">
-      <button onclick="abrirVideo(item)">▶ Assistir</button>
-      <button onclick="adicionarMinhaLista('Título do Filme')">+ Minha Lista</button>
-      <button onclick="abrirTrailer(item.trailer)">Trailer</button>
-    </div>
+<div class="banner">
+  <img id="bannerImage" src="https://images.justwatch.com/poster/334324389/s718/lilo-and-stitch-2025.jpg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;">
+  <video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay muted loop>
+    <source src="https://ia801003.us.archive.org/7/items/oficial-dublado/Lilo%20e%20Stitch%20%20Trailer%20Oficial%20Dublado.mp4" type="video/mp4">
+  </video>
+  <div class="banner-content">
+    <h1>Lilo & Stitch 2025</h1>
+    <p>Uma animação divertida e emocionante para toda a família.</p>
+    <button class="play" onclick="abrirVideo(filmes[0])">▶ Assistir</button>
+    <button class="lista" onclick="adicionarMinhaLista('Lilo & Stitch 2025')">+ Minha Lista</button>
+        <button class="remover-anuncios" onclick="window.location.href='https://chromewebstore.google.com/detail/adblocker-ultimate/ohahllgiabjaoigichmmfljhkcfikeof?hl=pt-PT&gl=001'">
+      REMOVER ANÚNCIOS
+   </button>        
   </div>
 </div>
-
 
 
 
@@ -2012,35 +1952,35 @@ if(progresso[item.titulo] && progresso[item.titulo] > 0){
 
 
 
-const overlay = document.createElement('div');
+const overlay = document.createElement('div'); 
 overlay.className = 'filme-hover-overlay';
 
-const titulo = document.createElement('h3');
-titulo.textContent = item.titulo;
-overlay.appendChild(titulo);
+const btnPlay = document.createElement('button'); 
 
-const descricao = document.createElement('p');
-descricao.textContent = item.descricao || 'Sem descrição.';
-overlay.appendChild(descricao);
+// Se o item estiver marcado como "em breve" ou não tiver link disponível
+if(item.emBreve || item.link === "#") {
+    btnPlay.textContent = 'Em Breve';
+    btnPlay.disabled = true;
+    btnPlay.style.backgroundColor = "#555";
+    btnPlay.style.cursor = "not-allowed";
+} else {
+    btnPlay.textContent = '▶ Assistir';
+    btnPlay.onclick = (e) => {
+        e.stopPropagation();
 
-const btnPlay = document.createElement('button');
-btnPlay.textContent = '▶ Assistir';
-btnPlay.onclick = (e) => { e.stopPropagation(); abrirAudioModal(item); };
+        // Se for série ou anime
+        const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
+        if(s){ 
+            abrirModalTemporadas({ ...s, temporadas: s.temporadas }); 
+            return;
+        } 
+
+        // Filme disponível
+        abrirAudioModal(item); 
+    };
+}
+
 overlay.appendChild(btnPlay);
-
-const btnLista = document.createElement('button');
-btnLista.textContent = minhaLista.includes(item.titulo) ? '✖ Minha Lista' : '+ Minha Lista';
-btnLista.onclick = (e) => {
-    e.stopPropagation();
-    adicionarMinhaLista(item.titulo);
-    btnLista.textContent = minhaLista.includes(item.titulo) ? '✖ Minha Lista' : '+ Minha Lista';
-};
-overlay.appendChild(btnLista);
-
-itemDiv.appendChild(overlay);
-
-
-
 
 
 
