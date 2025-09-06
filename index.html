@@ -64,16 +64,21 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .close-btn { margin-top:15px; padding:10px 20px; background:#555; border:none; border-radius:5px; color:#fff; cursor:pointer; transition:background .2s; }
 .close-btn:hover { background:#333; }
 
+.add-list-btn,
 .add-list-btn.info {
-  position: absolute;
-  left: 5px;     /* canto inferior esquerdo */
-  bottom: 5px;   /* encostado em baixo */
-  background: #555;
-  font-size: 16px;
+  bottom: 5px;        /* mesma distância do fundo */
+  height: 30px;       /* mesma altura */
+  line-height: 30px;  /* centraliza o texto verticalmente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.add-list-btn.info:hover {
-  background: #777;
+.add-list-btn.info {
+  left: 5px;
+  right: auto;   /* garante que não usa a posição à direita */
+  background: #555;
+  font-size: 16px;
 }
 
   
