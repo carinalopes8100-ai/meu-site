@@ -1973,7 +1973,6 @@ if(progresso[item.titulo] && progresso[item.titulo] > 0){
 
 
 
-// Criação do overlay e botão "Assistir"
 const overlay = document.createElement('div'); 
 overlay.className = 'filme-hover-overlay';
 
@@ -1982,23 +1981,24 @@ btnPlay.textContent = '▶ Assistir';
 btnPlay.onclick = (e) => {
     e.stopPropagation();
 
-    // Se for série ou anime
+    // Primeiro verifica se é série ou anime
     const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
     if(s){ 
         abrirModalTemporadas({ ...s, temporadas: s.temporadas }); 
         return;
     } 
 
-    // Se for filme
+    // Agora verifica se é um filme disponível
     if(item.link && item.link !== "#"){ 
         abrirAudioModal(item); 
     } else {
-        abrirEmBreve(item); // aqui mostra "Em Breve" quando não há link
+        // Só exibe "Em Breve" se não houver filme
+        abrirEmBreve(item); 
     }
 };
 
-// Adiciona o botão ao overlay
 overlay.appendChild(btnPlay);
+
 
 
 
