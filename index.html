@@ -2035,13 +2035,30 @@ if(idFila === 'filaContinuar'){
 }
 
 function abrirModalTemporadas(serie){
-  document.getElementById('modalTitle').textContent=`Escolha a temporada de "${serie.titulo}"`;
-  const list=document.getElementById('episodiosList'); list.innerHTML='';
-  serie.temporadas.forEach(temp=>{
-    const btn=document.createElement('button'); btn.className='temporada-btn'; btn.textContent=`Temporada ${temp.numero}`;
-    btn.onclick=()=>abrirModalEpisodios(temp,serie.titulo); list.appendChild(btn);
+  document.getElementById('modalTitle').textContent = `Escolha a temporada de "${serie.titulo}"`;
+  const list = document.getElementById('episodiosList'); 
+  list.innerHTML = '';
+
+  serie.temporadas.forEach(temp => {
+    const btn = document.createElement('button');
+    btn.className = 'temporada-btn';
+
+    if(temp.emBreve) {
+      // Temporada marcada como "em breve"
+      btn.textContent = `Temporada ${temp.numero} - Em Breve`;
+      btn.disabled = true;
+      btn.style.backgroundColor = "#555";
+      btn.style.cursor = "not-allowed";
+    } else {
+      // Temporada disponível
+      btn.textContent = `Temporada ${temp.numero}`;
+      btn.onclick = () => abrirModalEpisodios(temp, serie.titulo);
+    }
+
+    list.appendChild(btn);
   });
-  document.getElementById('modal').style.display='flex';
+
+  document.getElementById('modal').style.display = 'flex';
 }
 
 function abrirModalEpisodios(temporada, serieTitulo){
@@ -2053,21 +2070,22 @@ function abrirModalEpisodios(temporada, serieTitulo){
     const btn = document.createElement('button');
     btn.className = 'episodio-btn';
 
-    // Se o link for "#" ou a temporada estiver marcada como futura
     if(ep.link === "#" || temporada.emBreve){
-        btn.textContent = `Episódio ${ep.numero} - Em Breve`;
-        btn.disabled = true; // desativa o botão
-        btn.style.backgroundColor = "#555"; // cor diferente
-        btn.style.cursor = "not-allowed";
+      btn.textContent = `Episódio ${ep.numero} - Em Breve`;
+      btn.disabled = true;
+      btn.style.backgroundColor = "#555";
+      btn.style.cursor = "not-allowed";
     } else {
-        // Se for o último episódio, mostra "Episódio Final X"
-        btn.textContent = (idx === temporada.episodios.length - 1) ? `Episódio Final ${ep.numero}` : `Episódio ${ep.numero}`;
-        btn.onclick = () => abrirVideo({ titulo: serieTitulo + ' - Ep ' + ep.numero, link: ep.link });
+      btn.textContent = (idx === temporada.episodios.length - 1) 
+                        ? `Episódio Final ${ep.numero}` 
+                        : `Episódio ${ep.numero}`;
+      btn.onclick = () => abrirVideo({ titulo: serieTitulo + ' - Ep ' + ep.numero, link: ep.link });
     }
 
-    list.appendChild(btn); // sempre adiciona o botão
+    list.appendChild(btn);
   });
 }
+
 
 
 
