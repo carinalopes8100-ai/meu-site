@@ -287,22 +287,17 @@ function inicializarSetas() {
     if (!filmes.length) return;
 
     const filmeWidth = filmes[0].offsetWidth;
-    const totalGap = (5 - 1) * gap;
-    let scrollPorVez = filmeWidth * 5 + totalGap;
-
-    // Centraliza apenas na primeira posição
-    let offsetCentral = (fila.clientWidth - scrollPorVez) / 2;
+    const scrollPorVez = filmeWidth * 5 + gap * 4; // 5 filmes + 4 gaps
 
     const atualizarSetas = () => {
       btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
       btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
     };
 
-    // Aplica centralização na primeira posição
-    fila.scrollTo({ left: -offsetCentral, behavior: 'auto' });
-
     const rolar = (direcao) => {
       let novoScroll = fila.scrollLeft + direcao * scrollPorVez;
+
+      // Limitar scroll para não passar da fila
       if (novoScroll < 0) novoScroll = 0;
       if (novoScroll > fila.scrollWidth - fila.clientWidth)
         novoScroll = fila.scrollWidth - fila.clientWidth;
@@ -313,10 +308,7 @@ function inicializarSetas() {
     btnLeft.addEventListener('click', () => rolar(-1));
     btnRight.addEventListener('click', () => rolar(1));
 
-    container.addEventListener('mouseenter', () => {
-      if (btnLeft.style.display !== 'none') btnLeft.style.opacity = 1;
-      if (btnRight.style.display !== 'none') btnRight.style.opacity = 1;
-    });
+    container.addEventListener('mouseenter', atualizarSetas);
     container.addEventListener('mouseleave', () => {
       btnLeft.style.opacity = 0;
       btnRight.style.opacity = 0;
@@ -325,15 +317,6 @@ function inicializarSetas() {
     fila.addEventListener('scroll', atualizarSetas);
 
     window.addEventListener('resize', () => {
-      const filmeWidth = filmes[0].offsetWidth;
-      scrollPorVez = filmeWidth * 5 + totalGap;
-      offsetCentral = (fila.clientWidth - scrollPorVez) / 2;
-
-      // Re-centraliza apenas a primeira posição
-      if (fila.scrollLeft === 0) {
-        fila.scrollTo({ left: -offsetCentral, behavior: 'auto' });
-      }
-
       atualizarSetas();
     });
 
@@ -342,6 +325,7 @@ function inicializarSetas() {
 }
 
 window.addEventListener('DOMContentLoaded', inicializarSetas);
+
 
 
 
