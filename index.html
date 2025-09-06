@@ -40,6 +40,9 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .fila { display:flex; overflow-x:auto; gap:12px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
 .fila::-webkit-scrollbar { display:none; }
 .filme { width:310px; height:170px; border-radius:5px; overflow:hidden; cursor:pointer; position:relative; flex-shrink:0; transition: transform 0.3s ease; }
+.filme:hover .descricao-btn {
+    opacity: 1; /* aparece ao passar o mouse */
+}
 .filme:hover { transform: scale(1.05); z-index:2; }
 .filme img { width:100%; height:100%; object-fit:cover; display:block; }
 
@@ -2030,7 +2033,7 @@ addBtn.onclick = (e) => {
 updateButton(); 
 itemDiv.appendChild(addBtn);
 
-    // --------- AQUI COLOCA O BOTÃO DE DESCRIÇÃO ---------
+// --------- AQUI COLOCA O BOTÃO DE DESCRIÇÃO ---------
 const btnDescricao = document.createElement('button');
 btnDescricao.className = 'descricao-btn';
 btnDescricao.textContent = 'ℹ️';
@@ -2045,6 +2048,10 @@ btnDescricao.style.borderRadius = '4px';
 btnDescricao.style.padding = '4px 8px';
 btnDescricao.style.cursor = 'pointer';
 btnDescricao.style.fontSize = '14px';
+
+// 👇 estas linhas fazem o botão começar invisível e aparecer suavemente no hover
+btnDescricao.style.opacity = '0';
+btnDescricao.style.transition = 'opacity 0.3s';
 
 btnDescricao.onclick = (e) => {
     e.stopPropagation();
