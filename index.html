@@ -1966,32 +1966,36 @@ if(progresso[item.titulo] && progresso[item.titulo] > 0){
 const overlay = document.createElement('div'); 
 overlay.className = 'filme-hover-overlay';
 
-const btnPlay = document.createElement('button'); 
+// Botão de descrição
+const btnDescricao = document.createElement('button');
+btnDescricao.className = 'descricao-btn';
+btnDescricao.textContent = 'ℹ️';
+btnDescricao.title = 'Ver descrição';
+btnDescricao.style.position = 'absolute';
+btnDescricao.style.bottom = '10px';
+btnDescricao.style.left = '10px';
+btnDescricao.style.backgroundColor = 'rgba(0,0,0,0.6)';
+btnDescricao.style.color = 'white';
+btnDescricao.style.border = 'none';
+btnDescricao.style.borderRadius = '4px';
+btnDescricao.style.padding = '4px 8px';
+btnDescricao.style.cursor = 'pointer';
+btnDescricao.style.fontSize = '14px';
+btnDescricao.style.opacity = '0';
+btnDescricao.style.transition = 'opacity 0.3s';
+btnDescricao.style.zIndex = '10';
 
-// Se o item estiver marcado como "em breve" ou não tiver link disponível
-if(item.emBreve || item.link === "#") {
-    btnPlay.textContent = 'Em Breve';
-    btnPlay.disabled = true;
-    btnPlay.style.backgroundColor = "#555";
-    btnPlay.style.cursor = "not-allowed";
-} else {
-    btnPlay.textContent = '▶ Assistir';
-    btnPlay.onclick = (e) => {
-        e.stopPropagation();
+btnDescricao.onclick = (e) => {
+    e.stopPropagation();
+    document.getElementById('descricaoTitulo').textContent = item.titulo;
+    document.getElementById('descricaoTexto').textContent = item.descricao || 'Sem descrição disponível.';
+    document.getElementById('modalDescricao').style.display = 'flex';
+};
 
-        // Se for série ou anime
-        const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
-        if(s){ 
-            abrirModalTemporadas({ ...s, temporadas: s.temporadas }); 
-            return;
-        } 
+overlay.appendChild(btnDescricao);
+itemDiv.appendChild(overlay);
 
-        // Filme disponível
-        abrirAudioModal(item); 
-    };
-}
 
-overlay.appendChild(btnPlay);
 
 
 
