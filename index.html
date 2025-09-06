@@ -52,19 +52,19 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .filme:hover .add-list-btn { opacity:1; }
 
 .btn-scroll {
-  position:absolute;
-  top:0;
-  height:100%;       /* cobre toda a altura da fila */
-  background:rgba(0,0,0,.4); /* deixa semi-transparente */
-  border:none;
-  color:#fff;
-  font-size:40px;    /* aumenta um pouco para caber na altura */
-  width:60px;        /* largura maior para ficar fácil de clicar */
-  cursor:pointer;
-  z-index:10;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  position: absolute;
+  top: 0;
+  bottom: 0;           /* cobre toda a altura da fila */
+  width: 60px;         /* largura da seta */
+  background: rgba(0,0,0,0.4);
+  border: none;
+  color: #fff;
+  font-size: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
   transition: background 0.2s;
 }
 .btn-scroll:hover { background:rgba(229,9,20,0.8); }
