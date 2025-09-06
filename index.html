@@ -35,11 +35,29 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 #root { margin-top:80px; }
 
-.fila-container { margin:20px 50px; position:relative; }
+.fila-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
-.fila { display:flex; overflow-x:auto; gap:12px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
+.fila {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: 10px 0;
+}
 .fila::-webkit-scrollbar { display:none; }
-.filme { width:310px; height:170px; border-radius:5px; overflow:hidden; cursor:pointer; position:relative; flex-shrink:0; transition: transform 0.3s ease; }
+.filme {
+  min-width: calc((100% - 4 * 12px)/5); /* 5 filmes visíveis + gaps */
+  scroll-snap-align: center;
+  flex-shrink: 0;
+  height: 170px;
+  background: #333;
+  border-radius: 5px;
+}
 .filme:hover { transform: scale(1.05); z-index:2; }
 .filme img { width:100%; height:auto; object-fit:contain; display:block; }
 
@@ -53,27 +71,25 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 .btn-scroll {
   position: absolute;
-  top: 56%; /* ajusta para descer a seta */
+  top: 50%;
   transform: translateY(-50%);
-  width: 60px;
-  height: 170px; /* mesma altura da fila */
-  background: rgba(0,0,0,0.4);
-  border: none;
+  width: 50px;
+  height: 170px;
+  background: rgba(0,0,0,0.5);
   color: #fff;
-  font-size: 40px;
+  font-size: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: none;
   cursor: pointer;
   z-index: 10;
-  transition: background 0.2s, opacity 0.3s;
-  opacity: 0; /* <- seta invisível por padrão */
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
 
-.btn-scroll:hover {
-  background: rgba(229,9,20,0.8);
-}
+.fila-container:hover .btn-scroll { opacity: 1; }
 
 .btn-left { left: 0; }
 .btn-right { right: 0; }
@@ -281,52 +297,33 @@ function inicializarSetas() {
     const fila = container.querySelector('.fila');
     const btnLeft = container.querySelector('.btn-left');
     const btnRight = container.querySelector('.btn-right');
-    const filmes = fila.querySelectorAll('.filme');
-    if (!fila || !btnLeft || !btnRight || filmes.length === 0) return;
 
-    const gap = 12; // o gap que tens no CSS
-    const total5Width = filmes[0].offsetWidth * 5 + gap * 4;
-    const offsetCentral = (fila.clientWidth - total5Width) / 2;
+    const filmes = fila.querySelectorAll('.filme');
+    const filmesPorVez = 5;
+    const gap = 12;
+    const filmeWidth = filmes[0].offsetWidth + gap;
 
     const atualizarSetas = () => {
       btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
       btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
     };
 
-    const rolar = (direcao) => {
-      let novoScroll = fila.scrollLeft + direcao * total5Width;
-      // Limitar scroll
-      if (novoScroll < 0) novoScroll = 0;
-      if (novoScroll > fila.scrollWidth - fila.clientWidth) novoScroll = fila.scrollWidth - fila.clientWidth;
-      // Scroll centralizado
-      fila.scrollTo({ left: novoScroll - offsetCentral, behavior: 'smooth' });
-    };
-
-    btnLeft.addEventListener('click', () => rolar(-1));
-    btnRight.addEventListener('click', () => rolar(1));
+    btnLeft.addEventListener('click', () => {
+      fila.scrollBy({ left: -filmeWidth * filmesPorVez, behavior: 'smooth' });
+    });
+    btnRight.addEventListener('click', () => {
+      fila.scrollBy({ left: filmeWidth * filmesPorVez, behavior: 'smooth' });
+    });
 
     fila.addEventListener('scroll', atualizarSetas);
-    container.addEventListener('mouseenter', () => {
-      atualizarSetas();
-      btnLeft.style.opacity = btnLeft.style.display === 'none' ? 0 : 1;
-      btnRight.style.opacity = btnRight.style.display === 'none' ? 0 : 1;
-    });
-    container.addEventListener('mouseleave', () => {
-      btnLeft.style.opacity = 0;
-      btnRight.style.opacity = 0;
-    });
+    window.addEventListener('resize', atualizarSetas);
 
-    window.addEventListener('resize', () => {
-      atualizarSetas();
-    });
-
-    // Atualiza na inicialização
     atualizarSetas();
   });
 }
 
-// Apenas uma chamada:
-document.addEventListener('DOMContentLoaded', inicializarSetas);
+window.addEventListener('DOMContentLoaded', inicializarSetas);
+
 
 
 
