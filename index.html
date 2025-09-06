@@ -39,9 +39,21 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
 .fila { display:flex; overflow-x:auto; gap:12px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
 .fila::-webkit-scrollbar { display:none; }
-.filme { width:310px; height:170px; border-radius:5px; overflow:hidden; cursor:pointer; position:relative; flex-shrink:0; transition: transform 0.3s ease; }
+.filme {
+  width: 310px;        /* largura fixa */
+  height: 170px;       /* altura fixa */
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  display: flex;        /* centraliza a imagem */
+  justify-content: center;
+  align-items: center;
+  background-color: #141414; /* fundo neutro para preencher espaço */
+}
 .filme:hover { transform: scale(1.05); z-index:2; }
-.filme img { width:100%; height:100%; object-fit:cover; display:block; }
+.filme img { width:100%; height:100%; object-fit:contain; display:block; }
 
 .filme-hover-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background: rgba(20, 20, 20, 0.8); display:flex; justify-content:center; align-items:center; gap:8px; opacity:0; transition:opacity 0.3s, transform 0.3s; box-shadow: 0 0 15px rgba(0,0,0,0.5); flex-direction:column; border-radius:4px; z-index:5; }
 .filme:hover .filme-hover-overlay { opacity:1; transform: translateY(-5px); }
