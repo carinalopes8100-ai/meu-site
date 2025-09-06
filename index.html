@@ -285,8 +285,11 @@ function inicializarSetas() {
     const filmes = fila.querySelectorAll('.filme');
     const gap = 12;
     
-     // Cálculo do scroll exato de 5 filmes
-    let scrollPorVez = Array.from(filmes).slice(0,5).reduce((acc, f) => acc + f.offsetWidth, 0) + gap * 4;
+    let scrollPorVez = 0;
+    for (let i = 0; i < 5 && i < filmes.length; i++) {
+        scrollPorVez += filmes[i].offsetWidth;
+    }
+    scrollPorVez += gap * 4;
 
 const atualizarSetas = () => {
   if (!fila || !btnLeft || !btnRight) return;
@@ -342,8 +345,11 @@ btnRight.addEventListener('click', () => {
       btnRight.style.opacity = 0;
     });
 
+
     window.addEventListener('resize', () => {
-      scrollPorVez = (filmes[0]?.offsetWidth + gap) * 5;
+      scrollPorVez = 0;
+      for (let i = 0; i < 5 && i < filmes.length; i++) scrollPorVez += filmes[i].offsetWidth;
+      scrollPorVez += gap * 4;
       atualizarSetas();
     });
 
