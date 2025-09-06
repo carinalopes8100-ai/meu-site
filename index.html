@@ -2033,7 +2033,6 @@ addBtn.onclick = (e) => {
 updateButton(); 
 itemDiv.appendChild(addBtn);
 
-// --------- AQUI COLOCA O BOTÃO DE DESCRIÇÃO ---------
 const btnDescricao = document.createElement('button');
 btnDescricao.className = 'descricao-btn';
 btnDescricao.textContent = 'ℹ️';
@@ -2049,7 +2048,7 @@ btnDescricao.style.padding = '4px 8px';
 btnDescricao.style.cursor = 'pointer';
 btnDescricao.style.fontSize = '14px';
 
-// 👇 estas linhas fazem o botão começar invisível e aparecer suavemente no hover
+// botão começa invisível
 btnDescricao.style.opacity = '0';
 btnDescricao.style.transition = 'opacity 0.3s';
 
@@ -2061,6 +2060,7 @@ btnDescricao.onclick = (e) => {
 };
 
 itemDiv.appendChild(btnDescricao);
+
 
 if(idFila === 'filaContinuar'){
     const removeBtn = document.createElement('button');
