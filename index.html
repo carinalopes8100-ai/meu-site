@@ -286,18 +286,20 @@ function inicializarSetas() {
 
     if (!filmes.length) return;
 
-    // Largura de um filme + gap
     const filmeWidth = filmes[0].offsetWidth;
     const totalGap = (5 - 1) * gap;
     let scrollPorVez = filmeWidth * 5 + totalGap;
 
-    // Para centralizar os 5 filmes
-    let offsetCentral = (fila.clientWidth - (filmeWidth * 5 + totalGap)) / 2;
+    // Centraliza apenas na primeira posição
+    let offsetCentral = (fila.clientWidth - scrollPorVez) / 2;
 
     const atualizarSetas = () => {
       btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
       btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
     };
+
+    // Aplica centralização na primeira posição
+    fila.scrollTo({ left: -offsetCentral, behavior: 'auto' });
 
     const rolar = (direcao) => {
       let novoScroll = fila.scrollLeft + direcao * scrollPorVez;
@@ -305,7 +307,7 @@ function inicializarSetas() {
       if (novoScroll > fila.scrollWidth - fila.clientWidth)
         novoScroll = fila.scrollWidth - fila.clientWidth;
 
-      fila.scrollTo({ left: novoScroll - offsetCentral, behavior: 'smooth' });
+      fila.scrollTo({ left: novoScroll, behavior: 'smooth' });
     };
 
     btnLeft.addEventListener('click', () => rolar(-1));
@@ -323,20 +325,24 @@ function inicializarSetas() {
     fila.addEventListener('scroll', atualizarSetas);
 
     window.addEventListener('resize', () => {
-      // recalcula scrollPorVez e offsetCentral
       const filmeWidth = filmes[0].offsetWidth;
       scrollPorVez = filmeWidth * 5 + totalGap;
-      offsetCentral = (fila.clientWidth - (filmeWidth * 5 + totalGap)) / 2;
+      offsetCentral = (fila.clientWidth - scrollPorVez) / 2;
+
+      // Re-centraliza apenas a primeira posição
+      if (fila.scrollLeft === 0) {
+        fila.scrollTo({ left: -offsetCentral, behavior: 'auto' });
+      }
+
       atualizarSetas();
     });
 
-    // Inicializa
     atualizarSetas();
-    fila.scrollTo({ left: 0, behavior: 'auto' });
   });
 }
 
 window.addEventListener('DOMContentLoaded', inicializarSetas);
+
 
 
 
