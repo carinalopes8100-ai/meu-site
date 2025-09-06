@@ -281,64 +281,63 @@ function inicializarSetas() {
     const fila = container.querySelector('.fila');
     const btnLeft = container.querySelector('.btn-left');
     const btnRight = container.querySelector('.btn-right');
-
-    const filmes = Array.from(fila.querySelectorAll('.filme'));
+    const filmes = fila.querySelectorAll('.filme');
     const gap = 12;
 
-    const calcularScrollPorVez = () => {
-      let larguraTotal = 0;
-      for (let i = 0; i < 5 && i < filmes.length; i++) larguraTotal += filmes[i].offsetWidth;
-      larguraTotal += gap * 4; // gaps entre filmes
-      return larguraTotal;
-    }
+    if (!filmes.length) return;
 
-    let scrollPorVez = calcularScrollPorVez();
+    // Largura de um filme + gap
+    const filmeWidth = filmes[0].offsetWidth;
+    const totalGap = (5 - 1) * gap;
+    let scrollPorVez = filmeWidth * 5 + totalGap;
+
+    // Para centralizar os 5 filmes
+    let offsetCentral = (fila.clientWidth - (filmeWidth * 5 + totalGap)) / 2;
 
     const atualizarSetas = () => {
       btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
       btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
-    }
+    };
 
-    atualizarSetas();
-
-    const rolarSuave = (direcao) => {
+    const rolar = (direcao) => {
       let novoScroll = fila.scrollLeft + direcao * scrollPorVez;
-
       if (novoScroll < 0) novoScroll = 0;
-      if (novoScroll > fila.scrollWidth - fila.clientWidth) 
-          novoScroll = fila.scrollWidth - fila.clientWidth;
+      if (novoScroll > fila.scrollWidth - fila.clientWidth)
+        novoScroll = fila.scrollWidth - fila.clientWidth;
 
-      fila.scrollTo({ left: novoScroll, behavior: 'smooth' });
-    }
+      fila.scrollTo({ left: novoScroll - offsetCentral, behavior: 'smooth' });
+    };
 
-    btnLeft.addEventListener('click', () => rolarSuave(-1));
-    btnRight.addEventListener('click', () => rolarSuave(1));
+    btnLeft.addEventListener('click', () => rolar(-1));
+    btnRight.addEventListener('click', () => rolar(1));
 
-    // Aparece as setas quando entra o mouse
     container.addEventListener('mouseenter', () => {
-      atualizarSetas(); // garante que as setas corretas apareçam
-      btnLeft.style.opacity = btnLeft.style.display === 'flex' ? 1 : 0;
-      btnRight.style.opacity = btnRight.style.display === 'flex' ? 1 : 0;
+      if (btnLeft.style.display !== 'none') btnLeft.style.opacity = 1;
+      if (btnRight.style.display !== 'none') btnRight.style.opacity = 1;
     });
-
-    // Oculta as setas ao sair
     container.addEventListener('mouseleave', () => {
       btnLeft.style.opacity = 0;
       btnRight.style.opacity = 0;
     });
 
-    // Atualiza setas ao rolar
     fila.addEventListener('scroll', atualizarSetas);
 
-    // Atualiza scrollPorVez ao redimensionar
     window.addEventListener('resize', () => {
-      scrollPorVez = calcularScrollPorVez();
+      // recalcula scrollPorVez e offsetCentral
+      const filmeWidth = filmes[0].offsetWidth;
+      scrollPorVez = filmeWidth * 5 + totalGap;
+      offsetCentral = (fila.clientWidth - (filmeWidth * 5 + totalGap)) / 2;
       atualizarSetas();
     });
+
+    // Inicializa
+    atualizarSetas();
+    fila.scrollTo({ left: 0, behavior: 'auto' });
   });
 }
 
 window.addEventListener('DOMContentLoaded', inicializarSetas);
+
 
 
 
