@@ -281,13 +281,14 @@ function inicializarSetas() {
     const fila = container.querySelector('.fila');
     const btnLeft = container.querySelector('.btn-left');
     const btnRight = container.querySelector('.btn-right');
-    const filmes = fila.querySelectorAll('.filme');
-    const gap = 12;
 
+    if (!fila || !btnLeft || !btnRight) return;
+
+    const filmes = fila.querySelectorAll('.filme');
     if (!filmes.length) return;
 
-    const filmeWidth = filmes[0].offsetWidth;
-    const scrollPorVez = filmeWidth * 5 + gap * 4; // 5 filmes + 4 gaps
+    const gap = 12;
+    const scrollPorVez = filmes[0].offsetWidth * 5 + gap * 4;
 
     const atualizarSetas = () => {
       btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
@@ -296,30 +297,31 @@ function inicializarSetas() {
 
     const rolar = (direcao) => {
       let novoScroll = fila.scrollLeft + direcao * scrollPorVez;
-
-      // Limitar scroll para não passar da fila
       if (novoScroll < 0) novoScroll = 0;
       if (novoScroll > fila.scrollWidth - fila.clientWidth)
         novoScroll = fila.scrollWidth - fila.clientWidth;
-
       fila.scrollTo({ left: novoScroll, behavior: 'smooth' });
     };
 
     btnLeft.addEventListener('click', () => rolar(-1));
     btnRight.addEventListener('click', () => rolar(1));
 
-    container.addEventListener('mouseenter', atualizarSetas);
+    fila.addEventListener('scroll', atualizarSetas);
+
+    // Hover para aparecer/desaparecer
+    container.addEventListener('mouseenter', () => {
+      atualizarSetas();
+      btnLeft.style.opacity = btnLeft.style.display === 'none' ? 0 : 1;
+      btnRight.style.opacity = btnRight.style.display === 'none' ? 0 : 1;
+    });
     container.addEventListener('mouseleave', () => {
       btnLeft.style.opacity = 0;
       btnRight.style.opacity = 0;
     });
 
-    fila.addEventListener('scroll', atualizarSetas);
+    window.addEventListener('resize', atualizarSetas);
 
-    window.addEventListener('resize', () => {
-      atualizarSetas();
-    });
-
+    // Atualiza setas inicialmente
     atualizarSetas();
   });
 }
