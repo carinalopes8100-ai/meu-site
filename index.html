@@ -161,6 +161,15 @@ video::cue {
   </div>
 </div>
 
+  <div id="descricaoModal" class="modal">
+  <div class="modal-content" style="max-width:500px;">
+    <h2 id="descricaoTitulo"></h2>
+    <p id="descricaoTexto" style="margin-bottom:20px;"></p>
+    <button class="close-btn" onclick="fecharDescricaoModal()">Fechar</button>
+  </div>
+</div>
+
+
 <header>
 <h1>EightyOne</h1>
 <nav>
@@ -251,6 +260,15 @@ async function reproduzirOffline(titulo) {
   }
 }
 
+function abrirDescricaoModal(item) {
+  document.getElementById('descricaoTitulo').textContent = item.titulo;
+  document.getElementById('descricaoTexto').textContent = item.descricao || "Sem descrição disponível.";
+  document.getElementById('descricaoModal').style.display = 'flex';
+}
+
+function fecharDescricaoModal() {
+  document.getElementById('descricaoModal').style.display = 'none';
+}
   
 
 function adicionarMinhaLista(titulo){
@@ -1895,157 +1913,179 @@ const filmesTerror = [
 
 // ===== Funções de interface =====
 function criarFila(idFila, lista, tipo, tituloFila=null){
-  const container=document.createElement('div'); container.className='fila-container'; container.id=idFila;
-  const titulo=document.createElement('div'); titulo.className='fila-titulo'; titulo.textContent=tituloFila || (tipo==='filme'? (idFila==='fila3'?'Terror':'Filmes Populares'):'Séries Populares');
-  const btnLeft=document.createElement('button'); btnLeft.className='btn-scroll btn-left'; btnLeft.innerHTML='&#10094;';
-  const btnRight=document.createElement('button'); btnRight.className='btn-scroll btn-right'; btnRight.innerHTML='&#10095;';
-  const fila=document.createElement('div'); fila.className='fila'; fila.id=idFila+'-content';
+  const container=document.createElement('div'); 
+  container.className='fila-container'; 
+  container.id=idFila;
 
+  const titulo=document.createElement('div'); 
+  titulo.className='fila-titulo'; 
+  titulo.textContent=tituloFila || (tipo==='filme' ? (idFila==='fila3' ? 'Terror' : 'Filmes Populares') : 'Séries Populares');
+
+  const btnLeft=document.createElement('button'); 
+  btnLeft.className='btn-scroll btn-left'; 
+  btnLeft.innerHTML='&#10094;';
+
+  const btnRight=document.createElement('button'); 
+  btnRight.className='btn-scroll btn-right'; 
+  btnRight.innerHTML='&#10095;';
+
+  const fila=document.createElement('div'); 
+  fila.className='fila'; 
+  fila.id=idFila+'-content';
+  
   lista.forEach(item=>{
-    const itemDiv=document.createElement('div'); itemDiv.className='filme';
-    const img=document.createElement('img'); img.src=item.img; img.alt=item.titulo; itemDiv.appendChild(img);
+    const itemDiv=document.createElement('div'); 
+    itemDiv.className='filme';
 
-if(progresso[item.titulo] && progresso[item.titulo] > 0){
-    const progressoDiv = document.createElement('div');
-    progressoDiv.style.position = 'absolute';
-    progressoDiv.style.bottom = '0';
-    progressoDiv.style.left = '0';
-    progressoDiv.style.width = '100%';
-    progressoDiv.style.height = '5px';
-    progressoDiv.style.backgroundColor = 'rgba(255,255,255,0.3)';
+    const img=document.createElement('img'); 
+    img.src=item.img; 
+    img.alt=item.titulo; 
+    itemDiv.appendChild(img);
 
-    const progressoInner = document.createElement('div');
-    progressoInner.style.height = '100%';
-    progressoInner.style.backgroundColor = '#e50914';
-    progressoDiv.appendChild(progressoInner);
-    itemDiv.appendChild(progressoDiv);
+    // ==== Barra de progresso ====
+    if(progresso[item.titulo] && progresso[item.titulo] > 0){
+      const progressoDiv = document.createElement('div');
+      progressoDiv.style.position = 'absolute';
+      progressoDiv.style.bottom = '0';
+      progressoDiv.style.left = '0';
+      progressoDiv.style.width = '100%';
+      progressoDiv.style.height = '5px';
+      progressoDiv.style.backgroundColor = 'rgba(255,255,255,0.3)';
 
-    const atualizarBarra = (duracao) => {
+      const progressoInner = document.createElement('div');
+      progressoInner.style.height = '100%';
+      progressoInner.style.backgroundColor = '#e50914';
+      progressoDiv.appendChild(progressoInner);
+      itemDiv.appendChild(progressoDiv);
+
+      const atualizarBarra = (duracao) => {
         const pct = Math.min((progresso[item.titulo] / duracao) * 100, 100);
         progressoInner.style.width = pct + '%';
-    };
+      };
 
-    // Se tiver duração definida
-    if(item.duracao){
+      if(item.duracao){
         atualizarBarra(item.duracao);
-    } else if(item.link){
+      } else if(item.link){
         const tempVideo = document.createElement('video');
         tempVideo.src = item.link;
         tempVideo.preload = 'metadata';
         tempVideo.addEventListener('loadedmetadata', () => {
-            item.duracao = tempVideo.duration; // salva duração no item
-            atualizarBarra(tempVideo.duration);
+          item.duracao = tempVideo.duration; 
+          atualizarBarra(tempVideo.duration);
         });
-    }
+      }
 
-    // Atualizar barra em tempo real quando o vídeo é reproduzido
-    const observer = new MutationObserver(() => {
+      const observer = new MutationObserver(() => {
         const video = document.getElementById('playerVideo');
         if(video && video.dataset.titulo === item.titulo){
-            video.addEventListener('timeupdate', () => {
-                atualizarBarra(video.duration);
-            });
+          video.addEventListener('timeupdate', () => {
+            atualizarBarra(video.duration);
+          });
         }
-    });
-    observer.observe(document.body, {childList: true, subtree: true});
-}
+      });
+      observer.observe(document.body, {childList: true, subtree: true});
+    }
 
+    // ==== Overlay com botões (play e trailer/verão) ====
+    const overlay = document.createElement('div'); 
+    overlay.className = 'filme-hover-overlay';
 
-
-const overlay = document.createElement('div'); 
-overlay.className = 'filme-hover-overlay';
-
-const btnPlay = document.createElement('button'); 
-
-// Se o item estiver marcado como "em breve" ou não tiver link disponível
-if(item.emBreve || item.link === "#") {
-    btnPlay.textContent = 'Em Breve';
-    btnPlay.disabled = true;
-    btnPlay.style.backgroundColor = "#555";
-    btnPlay.style.cursor = "not-allowed";
-} else {
-    btnPlay.textContent = '▶ Assistir';
-    btnPlay.onclick = (e) => {
+    const btnPlay = document.createElement('button'); 
+    if(item.emBreve || item.link === "#") {
+      btnPlay.textContent = 'Em Breve';
+      btnPlay.disabled = true;
+      btnPlay.style.backgroundColor = "#555";
+      btnPlay.style.cursor = "not-allowed";
+    } else {
+      btnPlay.textContent = '▶ Assistir';
+      btnPlay.onclick = (e) => {
         e.stopPropagation();
-
-        // Se for série ou anime
         const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
         if(s){ 
-            abrirModalTemporadas({ ...s, temporadas: s.temporadas }); 
-            return;
+          abrirModalTemporadas({ ...s, temporadas: s.temporadas }); 
+          return;
         } 
-
-        // Filme disponível
         abrirAudioModal(item); 
-    };
-}
+      };
+    }
+    overlay.appendChild(btnPlay);
 
-overlay.appendChild(btnPlay);
-
-
-
-// Botão Verão ou Trailer
-const btnDireito = document.createElement('button');
-if(item.titulo === 'Morangos com Açúcar'){
-    btnDireito.textContent = '▶ Verão';
-    btnDireito.onclick = (e) => {
+    const btnDireito = document.createElement('button');
+    if(item.titulo === 'Morangos com Açúcar'){
+      btnDireito.textContent = '▶ Verão';
+      btnDireito.onclick = (e) => {
         e.stopPropagation();
-        abrirModalTemporadas({ ...item, temporadas: item.verao }); // só temporada de verão
-    };
-} else {
-    btnDireito.textContent = '▶ Trailer';
-    btnDireito.onclick = (e) => {
+        abrirModalTemporadas({ ...item, temporadas: item.verao });
+      };
+    } else {
+      btnDireito.textContent = '▶ Trailer';
+      btnDireito.onclick = (e) => {
         e.stopPropagation();
         if(item.trailer) abrirVideo({ titulo: item.titulo + ' - Trailer', link: item.trailer });
+      };
+    }
+    overlay.appendChild(btnDireito);
+
+    itemDiv.appendChild(overlay);
+
+    // ==== Botão de descrição (NOVO) ====
+    const btnDescricao = document.createElement('button');
+    btnDescricao.className = 'add-list-btn info';
+    btnDescricao.textContent = 'i';
+    btnDescricao.title = 'Ver descrição';
+    btnDescricao.onclick = (e) => {
+      e.stopPropagation();
+      abrirDescricaoModal(item);
     };
-}
-overlay.appendChild(btnDireito);
+    itemDiv.appendChild(btnDescricao);
 
-itemDiv.appendChild(overlay);
-
-const addBtn = document.createElement('button'); 
-addBtn.className = 'add-list-btn';
-function updateButton() { 
-    if(minhaLista.includes(item.titulo)){
+    // ==== Botão de adicionar/remover lista ====
+    const addBtn = document.createElement('button'); 
+    addBtn.className = 'add-list-btn';
+    function updateButton() { 
+      if(minhaLista.includes(item.titulo)){
         addBtn.textContent='✖'; 
         addBtn.title='Remover da Minha Lista'; 
-    } else { 
+      } else { 
         addBtn.textContent='+'; 
         addBtn.title='Adicionar à Minha Lista'; 
-    } 
-}
-addBtn.onclick = (e) => { 
-    e.stopPropagation(); 
-    adicionarMinhaLista(item.titulo); 
+      } 
+    }
+    addBtn.onclick = (e) => { 
+      e.stopPropagation(); 
+      adicionarMinhaLista(item.titulo); 
+      updateButton(); 
+    }
     updateButton(); 
-}
-updateButton(); 
-itemDiv.appendChild(addBtn);
+    itemDiv.appendChild(addBtn);
 
-if(idFila === 'filaContinuar'){
-    const removeBtn = document.createElement('button');
-    removeBtn.className = 'remove-continuar-btn';
-    removeBtn.textContent = '✖';
-    removeBtn.title = 'Remover da fila Continuar Assistindo';
-    removeBtn.onclick = (e) => { 
+    // ==== Botão remover da fila continuar ====
+    if(idFila === 'filaContinuar'){
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-continuar-btn';
+      removeBtn.textContent = '✖';
+      removeBtn.title = 'Remover da fila Continuar Assistindo';
+      removeBtn.onclick = (e) => { 
         e.stopPropagation(); 
         delete progresso[item.titulo]; 
         salvarProgresso(); 
         mostrarSecao('inicio'); 
         mostrarToast(`"${item.titulo}" removido da fila Continuar a ver!`);
+      }
+      itemDiv.appendChild(removeBtn);
     }
-     itemDiv.appendChild(removeBtn);
-}
-
-    
 
     fila.appendChild(itemDiv);
   });
 
+  container.appendChild(titulo); 
+  container.appendChild(btnLeft); 
+  container.appendChild(fila); 
+  container.appendChild(btnRight);
 
-  container.appendChild(titulo); container.appendChild(btnLeft); container.appendChild(fila); container.appendChild(btnRight);
   btnLeft.addEventListener('click',()=>fila.scrollBy({left:-1400,behavior:'smooth'}));
   btnRight.addEventListener('click',()=>fila.scrollBy({left:1400,behavior:'smooth'}));
+
   return container;
 }
 
