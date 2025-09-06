@@ -35,29 +35,11 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 #root { margin-top:80px; }
 
-.fila-container {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-}
+.fila-container { position: relative; width: 100%; overflow: hidden; }
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
-.fila {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
-  padding: 10px 0;
-}
+.fila { display: flex; gap: 12px; overflow-x: auto; scroll-behavior: smooth; padding: 10px 0; }
 .fila::-webkit-scrollbar { display:none; }
-.filme {
-  min-width: calc((100% - 4 * 12px)/5); /* 5 filmes visíveis + gaps */
-  scroll-snap-align: center;
-  flex-shrink: 0;
-  height: 170px;
-  background: #333;
-  border-radius: 5px;
-}
+.filme { min-width: 200px; height: 170px; flex-shrink: 0; background: #333; border-radius: 5px; scroll-snap-align: center; }
 .filme:hover { transform: scale(1.05); z-index:2; }
 .filme img { width:100%; height:auto; object-fit:contain; display:block; }
 
@@ -69,24 +51,7 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .add-list-btn { position:absolute; bottom:5px; right:5px; width:30px; height:30px; border-radius:50%; border:none; background:#e50914; color:#fff; font-weight:bold; cursor:pointer; font-size:18px; z-index:6; transition: background .2s; opacity:0; }
 .filme:hover .add-list-btn { opacity:1; }
 
-.btn-scroll {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 50px;
-  height: 170px;
-  background: rgba(0,0,0,0.5);
-  color: #fff;
-  font-size: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  cursor: pointer;
-  z-index: 10;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
+.btn-scroll { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 170px; background: rgba(0,0,0,0.5); color:#fff; font-size: 30px; display:flex; justify-content:center; align-items:center; border:none; cursor:pointer; opacity:0; transition: opacity 0.3s; z-index:10; }
 
 
 .fila-container:hover .btn-scroll { opacity: 1; }
@@ -293,34 +258,32 @@ function mostrarToast(mensagem){
 }
 
 function inicializarSetas() {
-  document.querySelectorAll('.fila-container').forEach(container => {
-    const fila = container.querySelector('.fila');
-    const btnLeft = container.querySelector('.btn-left');
-    const btnRight = container.querySelector('.btn-right');
+document.querySelectorAll('.fila-container').forEach(container => {
+  const fila = container.querySelector('.fila');
+  const btnLeft = container.querySelector('.btn-left');
+  const btnRight = container.querySelector('.btn-right');
+  const filmes = fila.querySelectorAll('.filme');
+  const gap = 12;
+  const filmeWidth = filmes[0].offsetWidth;
+  const scrollPorVez = filmeWidth * 5 + gap * 4;
 
-    const filmes = fila.querySelectorAll('.filme');
-    const filmesPorVez = 5;
-    const gap = 12;
-    const filmeWidth = filmes[0].offsetWidth + gap;
+  const atualizarSetas = () => {
+    btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
+    btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
+  };
 
-    const atualizarSetas = () => {
-      btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
-      btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
-    };
-
-    btnLeft.addEventListener('click', () => {
-      fila.scrollBy({ left: -filmeWidth * filmesPorVez, behavior: 'smooth' });
-    });
-    btnRight.addEventListener('click', () => {
-      fila.scrollBy({ left: filmeWidth * filmesPorVez, behavior: 'smooth' });
-    });
-
-    fila.addEventListener('scroll', atualizarSetas);
-    window.addEventListener('resize', atualizarSetas);
-
-    atualizarSetas();
+  btnLeft.addEventListener('click', () => {
+    fila.scrollBy({ left: -scrollPorVez, behavior: 'smooth' });
   });
-}
+  btnRight.addEventListener('click', () => {
+    fila.scrollBy({ left: scrollPorVez, behavior: 'smooth' });
+  });
+
+  fila.addEventListener('scroll', atualizarSetas);
+  window.addEventListener('resize', atualizarSetas);
+  atualizarSetas();
+});
+
 
 window.addEventListener('DOMContentLoaded', inicializarSetas);
 
