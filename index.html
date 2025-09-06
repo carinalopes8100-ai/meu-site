@@ -293,8 +293,13 @@ document.querySelectorAll('.fila-container').forEach(container => {
       return;
     }
 
+    // Mostrar ou esconder conforme posição
     btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
     btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
+
+    // Inicialmente, esconder opacity
+    btnLeft.style.opacity = 0;
+    btnRight.style.opacity = 0;
   };
 
   atualizarSetas();
@@ -312,19 +317,18 @@ document.querySelectorAll('.fila-container').forEach(container => {
 
   // Mostrar setas só ao passar o mouse
   container.addEventListener('mouseenter', () => {
-    atualizarSetas();
-    if (btnLeft.style.display === 'flex') btnLeft.style.opacity = 1;
-    if (btnRight.style.display === 'flex') btnRight.style.opacity = 1;
+    if (btnLeft.style.display !== 'none') btnLeft.style.opacity = 1;
+    if (btnRight.style.display !== 'none') btnRight.style.opacity = 1;
   });
 
   container.addEventListener('mouseleave', () => {
-    btnLeft.style.opacity = 0;
-    btnRight.style.opacity = 0;
+    if (btnLeft.style.display !== 'none') btnLeft.style.opacity = 0;
+    if (btnRight.style.display !== 'none') btnRight.style.opacity = 0;
   });
 
-  // Atualizar as setas quando a janela for redimensionada
   window.addEventListener('resize', atualizarSetas);
 });
+
 
   
 
