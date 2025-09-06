@@ -321,8 +321,14 @@ const atualizarSetas = () => {
       anim();
     };
 
-    btnLeft.addEventListener('click', () => rolarSuave(fila.scrollLeft - fila.clientWidth));
-    btnRight.addEventListener('click', () => rolarSuave(fila.scrollLeft + fila.clientWidth));
+btnLeft.addEventListener('click', () => {
+  rolarSuave(fila.scrollLeft - scrollPorVez);
+});
+
+btnRight.addEventListener('click', () => {
+  rolarSuave(fila.scrollLeft + scrollPorVez);
+});
+
 
     container.addEventListener('mouseenter', () => {
       if (getComputedStyle(btnLeft).display !== 'none') btnLeft.style.opacity = 1;
