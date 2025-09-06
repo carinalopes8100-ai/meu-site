@@ -284,9 +284,8 @@ function inicializarSetas() {
     const filmes = fila.querySelectorAll('.filme');
     if (!fila || !btnLeft || !btnRight || filmes.length === 0) return;
 
-    const gap = 12;
-    const filmeWidth = filmes[0].offsetWidth;
-    const total5Width = filmeWidth * 5 + gap * 4;
+    const gap = 12; // o gap que tens no CSS
+    const total5Width = filmes[0].offsetWidth * 5 + gap * 4;
     const offsetCentral = (fila.clientWidth - total5Width) / 2;
 
     const atualizarSetas = () => {
@@ -295,17 +294,18 @@ function inicializarSetas() {
     };
 
     const rolar = (direcao) => {
-      let novoScroll = fila.scrollLeft + direcao * (total5Width);
+      let novoScroll = fila.scrollLeft + direcao * total5Width;
+      // Limitar scroll
       if (novoScroll < 0) novoScroll = 0;
-      if (novoScroll > fila.scrollWidth - fila.clientWidth)
-        novoScroll = fila.scrollWidth - fila.clientWidth;
+      if (novoScroll > fila.scrollWidth - fila.clientWidth) novoScroll = fila.scrollWidth - fila.clientWidth;
+      // Scroll centralizado
       fila.scrollTo({ left: novoScroll - offsetCentral, behavior: 'smooth' });
     };
 
     btnLeft.addEventListener('click', () => rolar(-1));
     btnRight.addEventListener('click', () => rolar(1));
-    fila.addEventListener('scroll', atualizarSetas);
 
+    fila.addEventListener('scroll', atualizarSetas);
     container.addEventListener('mouseenter', () => {
       atualizarSetas();
       btnLeft.style.opacity = btnLeft.style.display === 'none' ? 0 : 1;
@@ -317,14 +317,16 @@ function inicializarSetas() {
     });
 
     window.addEventListener('resize', () => {
-      const total5Width = filmes[0].offsetWidth * 5 + gap * 4;
-      const offsetCentral = (fila.clientWidth - total5Width) / 2;
       atualizarSetas();
     });
 
+    // Atualiza na inicialização
     atualizarSetas();
   });
 }
+
+// Apenas uma chamada:
+document.addEventListener('DOMContentLoaded', inicializarSetas);
 
 
 
