@@ -283,41 +283,41 @@ function inicializarSetas() {
     const btnRight = container.querySelector('.btn-right');
 
     const filmes = fila.querySelectorAll('.filme');
-    const gap = 12; // gap entre filmes
+    const gap = 12;
     let scrollPorVez = (filmes[0]?.offsetWidth + gap) * 5;
 
     const atualizarSetas = () => {
       if (!fila || !btnLeft || !btnRight) return;
-
-      // Se não houver rolagem possível
       if (fila.scrollWidth <= fila.clientWidth) {
         btnLeft.style.display = 'none';
         btnRight.style.display = 'none';
         return;
       }
-
       btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
       btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
     };
 
-    atualizarSetas();
+    const rolarSuave = (target) => {
+      fila.scrollTo({ left: target, behavior: 'smooth' });
+      const anim = () => {
+        atualizarSetas();
+        if (Math.abs(fila.scrollLeft - target) > 1) {
+          requestAnimationFrame(anim);
+        } else {
+          atualizarSetas();
+        }
+      };
+      anim();
+    };
 
-    // Clicar nas setas
-   btnLeft.addEventListener('click', () => {
-  fila.scrollBy({ left: -fila.clientWidth, behavior: 'smooth' });
-  atualizarSetas(); // << chama imediatamente
-});
+    btnLeft.addEventListener('click', () => rolarSuave(fila.scrollLeft - fila.clientWidth));
+    btnRight.addEventListener('click', () => rolarSuave(fila.scrollLeft + fila.clientWidth));
 
-btnRight.addEventListener('click', () => {
-  fila.scrollBy({ left: fila.clientWidth, behavior: 'smooth' });
-  atualizarSetas(); // << chama imediatamente
-});
-
-    // Hover para aparecer/desaparecer
     container.addEventListener('mouseenter', () => {
       if (getComputedStyle(btnLeft).display !== 'none') btnLeft.style.opacity = 1;
       if (getComputedStyle(btnRight).display !== 'none') btnRight.style.opacity = 1;
     });
+
     container.addEventListener('mouseleave', () => {
       btnLeft.style.opacity = 0;
       btnRight.style.opacity = 0;
@@ -328,8 +328,9 @@ btnRight.addEventListener('click', () => {
       atualizarSetas();
     });
 
-    // Atualiza setas ao rolar, mas não mexe na opacidade
     fila.addEventListener('scroll', atualizarSetas);
+
+    atualizarSetas(); // chamada inicial
   });
 }
 
