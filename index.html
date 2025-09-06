@@ -215,27 +215,6 @@ video::cue {
 let minhaLista = [];
 let progresso = {};
 
-  function abrirEmBreve(item) {
-    const audioModal = document.getElementById('audioModal');
-    const audioOptions = document.getElementById('audioOptions');
-
-    // Limpa opções anteriores
-    audioOptions.innerHTML = '';
-
-    // Altera o título do modal
-    audioModal.querySelector('h2').textContent = item.titulo ? `${item.titulo} - Em Breve` : 'Em Breve';
-
-    // Se quiser, pode adicionar uma mensagem dentro do conteúdo
-    const msg = document.createElement('p');
-    msg.textContent = 'Este filme ainda não está disponível.';
-    msg.style.color = '#fff';
-    audioOptions.appendChild(msg);
-
-    // Abre o modal
-    audioModal.style.display = 'flex';
-}
-
-
 function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
 function carregarLista() { const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
 function salvarProgresso() { localStorage.setItem("progresso", JSON.stringify(progresso)); }
@@ -1977,30 +1956,31 @@ const overlay = document.createElement('div');
 overlay.className = 'filme-hover-overlay';
 
 const btnPlay = document.createElement('button'); 
-btnPlay.textContent = '▶ Assistir';
-btnPlay.onclick = (e) => {
-    e.stopPropagation();
 
-    // Primeiro verifica se é série ou anime
-    const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
-    if(s){ 
-        abrirModalTemporadas({ ...s, temporadas: s.temporadas }); 
-        return;
-    } 
+// Se o item estiver marcado como "em breve" ou não tiver link disponível
+if(item.emBreve || item.link === "#") {
+    btnPlay.textContent = 'Em Breve';
+    btnPlay.disabled = true;
+    btnPlay.style.backgroundColor = "#555";
+    btnPlay.style.cursor = "not-allowed";
+} else {
+    btnPlay.textContent = '▶ Assistir';
+    btnPlay.onclick = (e) => {
+        e.stopPropagation();
 
-    // Agora verifica se é um filme disponível
-    if(item.link && item.link !== "#"){ 
+        // Se for série ou anime
+        const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
+        if(s){ 
+            abrirModalTemporadas({ ...s, temporadas: s.temporadas }); 
+            return;
+        } 
+
+        // Filme disponível
         abrirAudioModal(item); 
-    } else {
-        // Só exibe "Em Breve" se não houver filme
-        abrirEmBreve(item); 
-    }
-};
+    };
+}
 
 overlay.appendChild(btnPlay);
-
-
-
 
 
 
