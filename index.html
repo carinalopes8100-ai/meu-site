@@ -282,10 +282,14 @@ function inicializarSetas() {
     const btnLeft = container.querySelector('.btn-left');
     const btnRight = container.querySelector('.btn-right');
 
+    const filmes = fila.querySelectorAll('.filme');
+    const gap = 12; // gap entre filmes
+    let scrollPorVez = (filmes[0]?.offsetWidth + gap) * 5;
+
     const atualizarSetas = () => {
       if (!fila || !btnLeft || !btnRight) return;
 
-      // Se a fila não tiver conteúdo suficiente para rolar
+      // Se não houver rolagem possível
       if (fila.scrollWidth <= fila.clientWidth) {
         btnLeft.style.display = 'none';
         btnRight.style.display = 'none';
@@ -294,39 +298,43 @@ function inicializarSetas() {
 
       btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
       btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
-
-      btnLeft.style.opacity = 0;
-      btnRight.style.opacity = 0;
     };
 
     atualizarSetas();
 
-    fila.addEventListener('scroll', atualizarSetas);
+    // Clicar nas setas
+    btnLeft.addEventListener('click', () => {
+      fila.scrollBy({ left: -scrollPorVez, behavior: 'smooth' });
+      setTimeout(atualizarSetas, 300); // atualiza display, mas não mexe na opacidade
+    });
 
-btnLeft.addEventListener('click', () => {
-  fila.scrollBy({ left: -fila.clientWidth, behavior: 'smooth' });
-  // não usar setTimeout
-});
+    btnRight.addEventListener('click', () => {
+      fila.scrollBy({ left: scrollPorVez, behavior: 'smooth' });
+      setTimeout(atualizarSetas, 300);
+    });
 
-btnRight.addEventListener('click', () => {
-  fila.scrollBy({ left: fila.clientWidth, behavior: 'smooth' });
-  // não usar setTimeout
-});
-
-
+    // Hover para aparecer/desaparecer
     container.addEventListener('mouseenter', () => {
       if (getComputedStyle(btnLeft).display !== 'none') btnLeft.style.opacity = 1;
       if (getComputedStyle(btnRight).display !== 'none') btnRight.style.opacity = 1;
     });
-
     container.addEventListener('mouseleave', () => {
-      if (getComputedStyle(btnLeft).display !== 'none') btnLeft.style.opacity = 0;
-      if (getComputedStyle(btnRight).display !== 'none') btnRight.style.opacity = 0;
+      btnLeft.style.opacity = 0;
+      btnRight.style.opacity = 0;
     });
 
-    window.addEventListener('resize', atualizarSetas);
+    window.addEventListener('resize', () => {
+      scrollPorVez = (filmes[0]?.offsetWidth + gap) * 5;
+      atualizarSetas();
+    });
+
+    // Atualiza setas ao rolar, mas não mexe na opacidade
+    fila.addEventListener('scroll', atualizarSetas);
   });
 }
+
+window.addEventListener('DOMContentLoaded', inicializarSetas);
+
 
 
 
