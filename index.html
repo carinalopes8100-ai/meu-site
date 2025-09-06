@@ -1955,19 +1955,31 @@ if(progresso[item.titulo] && progresso[item.titulo] > 0){
 const overlay = document.createElement('div'); 
 overlay.className = 'filme-hover-overlay';
 
-// Botão Assistir (temporadas normais)
+// Botão Assistir (temporadas normais ou filme)
 const btnPlay = document.createElement('button'); 
-btnPlay.textContent = '▶ Assistir';
-btnPlay.onclick = (e) => {
-  e.stopPropagation();
-  const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
-  if(s){ 
-      abrirModalTemporadas({ ...s, temporadas: s.temporadas }); // só temporadas normais
-  } else { 
-      abrirAudioModal(item); 
-  }
-};
+
+if(item.emBreve) {
+    // Se o filme ou série estiver marcado como "em breve"
+    btnPlay.textContent = 'Em Breve';
+    btnPlay.disabled = true;
+    btnPlay.style.backgroundColor = "#555";
+    btnPlay.style.cursor = "not-allowed";
+} else {
+    btnPlay.textContent = '▶ Assistir';
+    btnPlay.onclick = (e) => {
+        e.stopPropagation();
+        const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
+        if(s){ 
+            abrirModalTemporadas({ ...s, temporadas: s.temporadas }); 
+        } else { 
+            abrirAudioModal(item); 
+        }
+    };
+}
+
+// Adiciona o botão ao overlay sempre
 overlay.appendChild(btnPlay);
+
 
 // Botão Verão ou Trailer
 const btnDireito = document.createElement('button');
