@@ -284,7 +284,9 @@ function inicializarSetas() {
 
     const filmes = fila.querySelectorAll('.filme');
     const gap = 12;
-    let scrollPorVez = (filmes[0]?.offsetWidth + gap) * 5;
+    
+     // Cálculo do scroll exato de 5 filmes
+    let scrollPorVez = Array.from(filmes).slice(0,5).reduce((acc, f) => acc + f.offsetWidth, 0) + gap * 4;
 
 const atualizarSetas = () => {
   if (!fila || !btnLeft || !btnRight) return;
