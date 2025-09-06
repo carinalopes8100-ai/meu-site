@@ -1968,11 +1968,20 @@ if(item.emBreve) {
     btnPlay.textContent = '▶ Assistir';
     btnPlay.onclick = (e) => {
         e.stopPropagation();
+
+        // Se for série ou anime
         const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
         if(s){ 
             abrirModalTemporadas({ ...s, temporadas: s.temporadas }); 
-        } else { 
+            return;
+        } 
+
+        // Se for filme
+        if(item.link && !item.emBreve){ 
             abrirAudioModal(item); 
+        } else {
+            // Filme marcado como em breve
+            alert('Em Breve'); // ou modal customizado
         }
     };
 }
