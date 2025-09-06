@@ -1969,14 +1969,23 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
     const itemDiv=document.createElement('div'); itemDiv.className='filme';
     const img=document.createElement('img'); img.src=item.img; img.alt=item.titulo; itemDiv.appendChild(img);
 itemDiv.addEventListener('mouseenter', () => {
-  if(item.trailer) {
-    img.src = item.trailerPreview; // URL de mini-vídeo ou GIF
-  }
+  const preview = itemDiv.querySelector('video.preview');
+  const poster = itemDiv.querySelector('img');
+  
+  poster.style.display = 'none';
+  preview.style.display = 'block';
+  preview.play();
 });
 
 itemDiv.addEventListener('mouseleave', () => {
-  img.src = item.img; // volta para o poster
+  const preview = itemDiv.querySelector('video.preview');
+  const poster = itemDiv.querySelector('img');
+
+  preview.pause();
+  preview.style.display = 'none';
+  poster.style.display = 'block';
 });
+
 
 if(progresso[item.titulo] && progresso[item.titulo] > 0){
     const progressoDiv = document.createElement('div');
