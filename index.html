@@ -303,15 +303,16 @@ function inicializarSetas() {
 
     fila.addEventListener('scroll', atualizarSetas);
 
-    btnLeft.addEventListener('click', () => {
-      fila.scrollBy({ left: -fila.clientWidth, behavior: 'smooth' });
-      setTimeout(atualizarSetas, 300);
-    });
+btnLeft.addEventListener('click', () => {
+  fila.scrollBy({ left: -fila.clientWidth, behavior: 'smooth' });
+  // não usar setTimeout
+});
 
-    btnRight.addEventListener('click', () => {
-      fila.scrollBy({ left: fila.clientWidth, behavior: 'smooth' });
-      setTimeout(atualizarSetas, 300);
-    });
+btnRight.addEventListener('click', () => {
+  fila.scrollBy({ left: fila.clientWidth, behavior: 'smooth' });
+  // não usar setTimeout
+});
+
 
     container.addEventListener('mouseenter', () => {
       if (getComputedStyle(btnLeft).display !== 'none') btnLeft.style.opacity = 1;
