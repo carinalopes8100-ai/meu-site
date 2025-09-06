@@ -282,84 +282,60 @@ function inicializarSetas() {
     const btnLeft = container.querySelector('.btn-left');
     const btnRight = container.querySelector('.btn-right');
 
-    const filmes = fila.querySelectorAll('.filme');
+    const filmes = Array.from(fila.querySelectorAll('.filme'));
     const gap = 12;
-    
-    let scrollPorVez = 0;
-    for (let i = 0; i < 5 && i < filmes.length; i++) {
-        scrollPorVez += filmes[i].offsetWidth;
+
+    const calcularScrollPorVez = () => {
+      let larguraTotal = 0;
+      for (let i = 0; i < 5 && i < filmes.length; i++) larguraTotal += filmes[i].offsetWidth;
+      larguraTotal += gap * 4; // gaps entre filmes
+      return larguraTotal;
     }
-    scrollPorVez += gap * 4;
 
-const atualizarSetas = () => {
-  if (!fila || !btnLeft || !btnRight) return;
+    let scrollPorVez = calcularScrollPorVez();
 
-  if (fila.scrollWidth <= fila.clientWidth) {
-    btnLeft.style.display = 'none';
-    btnRight.style.display = 'none';
-  } else {
-    btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
-    btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
-  }
+    const atualizarSetas = () => {
+      btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
+      btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
+    }
 
-  // Atualiza opacidade dependendo se o mouse está sobre a fila
-  if (container.matches(':hover')) {
-    btnLeft.style.opacity = btnLeft.style.display !== 'none' ? 1 : 0;
-    btnRight.style.opacity = btnRight.style.display !== 'none' ? 1 : 0;
-  } else {
-    btnLeft.style.opacity = 0;
-    btnRight.style.opacity = 0;
-  }
-};
+    atualizarSetas();
 
+    const rolarSuave = (direcao) => {
+      // Calcula o scroll ideal para centralizar os 5 filmes
+      let novoScroll = fila.scrollLeft + direcao * scrollPorVez;
 
-    const rolarSuave = (target) => {
-      fila.scrollTo({ left: target, behavior: 'smooth' });
-      const anim = () => {
-        atualizarSetas();
-        if (Math.abs(fila.scrollLeft - target) > 1) {
-          requestAnimationFrame(anim);
-        } else {
-          atualizarSetas();
-        }
-      };
-      anim();
-    };
+      // Ajuste para não ultrapassar limites
+      if (novoScroll < 0) novoScroll = 0;
+      if (novoScroll > fila.scrollWidth - fila.clientWidth) 
+          novoScroll = fila.scrollWidth - fila.clientWidth;
 
-btnLeft.addEventListener('click', () => {
-  rolarSuave(fila.scrollLeft - scrollPorVez);
-});
+      fila.scrollTo({ left: novoScroll, behavior: 'smooth' });
+    }
 
-btnRight.addEventListener('click', () => {
-  rolarSuave(fila.scrollLeft + scrollPorVez);
-});
-
+    btnLeft.onclick = () => rolarSuave(-1);
+    btnRight.onclick = () => rolarSuave(1);
 
     container.addEventListener('mouseenter', () => {
-      if (getComputedStyle(btnLeft).display !== 'none') btnLeft.style.opacity = 1;
-      if (getComputedStyle(btnRight).display !== 'none') btnRight.style.opacity = 1;
+      if (btnLeft.style.display !== 'none') btnLeft.style.opacity = 1;
+      if (btnRight.style.display !== 'none') btnRight.style.opacity = 1;
     });
-
     container.addEventListener('mouseleave', () => {
       btnLeft.style.opacity = 0;
       btnRight.style.opacity = 0;
     });
 
-
     window.addEventListener('resize', () => {
-      scrollPorVez = 0;
-      for (let i = 0; i < 5 && i < filmes.length; i++) scrollPorVez += filmes[i].offsetWidth;
-      scrollPorVez += gap * 4;
+      scrollPorVez = calcularScrollPorVez();
       atualizarSetas();
     });
 
     fila.addEventListener('scroll', atualizarSetas);
-
-    atualizarSetas(); // chamada inicial
   });
 }
 
 window.addEventListener('DOMContentLoaded', inicializarSetas);
+
 
 
 
