@@ -2030,12 +2030,12 @@ addBtn.onclick = (e) => {
 updateButton(); 
 itemDiv.appendChild(addBtn);
 
-    // --- Botão de descrição ---
+// --- Botão de descrição ---
 const descBtn = document.createElement('button');
-descBtn.className = 'add-list-btn';  // Reaproveitar estilo circular
-descBtn.style.right = '40px';        // desloca para esquerda do botão '+'
+descBtn.className = 'add-list-btn';
+descBtn.style.right = '40px';   // desloca para esquerda do botão '+'
 descBtn.style.zIndex = '7';
-descBtn.textContent = 'i';           // ícone simples de info
+descBtn.textContent = 'i';
 descBtn.title = 'Ver descrição';
 descBtn.onclick = (e) => {
     e.stopPropagation();
@@ -2046,6 +2046,7 @@ itemDiv.appendChild(descBtn);
 // --- Botão de adicionar à Minha Lista ---
 const addBtn = document.createElement('button'); 
 addBtn.className = 'add-list-btn';
+addBtn.style.zIndex = '6';  // atrás do descBtn
 function updateButton() { 
     if(minhaLista.includes(item.titulo)){
         addBtn.textContent='✖'; 
@@ -2062,6 +2063,7 @@ addBtn.onclick = (e) => {
 }
 updateButton(); 
 itemDiv.appendChild(addBtn);
+
 
 if(idFila === 'filaContinuar'){
     const removeBtn = document.createElement('button');
