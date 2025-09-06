@@ -279,6 +279,44 @@ function mostrarToast(mensagem){
   setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
 
+// Código para esconder setas automaticamente
+document.querySelectorAll('.fila-container').forEach(container => {
+  const fila = container.querySelector('.fila');
+  const btnLeft = container.querySelector('.btn-left');
+  const btnRight = container.querySelector('.btn-right');
+
+  const atualizarSetas = () => {
+    btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
+    btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
+  };
+
+  atualizarSetas();
+
+  fila.addEventListener('scroll', atualizarSetas);
+
+  btnLeft.addEventListener('click', () => {
+    fila.scrollBy({ left: -fila.clientWidth, behavior: 'smooth' });
+    setTimeout(atualizarSetas, 300);
+  });
+  btnRight.addEventListener('click', () => {
+    fila.scrollBy({ left: fila.clientWidth, behavior: 'smooth' });
+    setTimeout(atualizarSetas, 300);
+  });
+
+  // Mostrar setas só ao passar o mouse
+  container.addEventListener('mouseenter', () => {
+    atualizarSetas();
+    if (btnLeft.style.display !== 'none') btnLeft.style.opacity = 1;
+    if (btnRight.style.display !== 'none') btnRight.style.opacity = 1;
+  });
+
+  container.addEventListener('mouseleave', () => {
+    btnLeft.style.opacity = 0;
+    btnRight.style.opacity = 0;
+  });
+});
+  
+
 function openDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open("videosDB", 1);
