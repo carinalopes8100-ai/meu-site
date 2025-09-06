@@ -303,15 +303,15 @@ function inicializarSetas() {
     atualizarSetas();
 
     // Clicar nas setas
-    btnLeft.addEventListener('click', () => {
-      fila.scrollBy({ left: -scrollPorVez, behavior: 'smooth' });
-      setTimeout(atualizarSetas, 300); // atualiza display, mas não mexe na opacidade
-    });
+   btnLeft.addEventListener('click', () => {
+  fila.scrollBy({ left: -fila.clientWidth, behavior: 'smooth' });
+  atualizarSetas(); // << chama imediatamente
+});
 
-    btnRight.addEventListener('click', () => {
-      fila.scrollBy({ left: scrollPorVez, behavior: 'smooth' });
-      setTimeout(atualizarSetas, 300);
-    });
+btnRight.addEventListener('click', () => {
+  fila.scrollBy({ left: fila.clientWidth, behavior: 'smooth' });
+  atualizarSetas(); // << chama imediatamente
+});
 
     // Hover para aparecer/desaparecer
     container.addEventListener('mouseenter', () => {
