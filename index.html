@@ -279,55 +279,59 @@ function mostrarToast(mensagem){
   setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
 
-// Código para esconder setas automaticamente
-document.querySelectorAll('.fila-container').forEach(container => {
-  const fila = container.querySelector('.fila');
-  const btnLeft = container.querySelector('.btn-left');
-  const btnRight = container.querySelector('.btn-right');
+function inicializarSetas() {
+  document.querySelectorAll('.fila-container').forEach(container => {
+    const fila = container.querySelector('.fila');
+    const btnLeft = container.querySelector('.btn-left');
+    const btnRight = container.querySelector('.btn-right');
 
-  const atualizarSetas = () => {
-    // Se a fila não tiver conteúdo suficiente para rolar
-    if (fila.scrollWidth <= fila.clientWidth) {
-      btnLeft.style.display = 'none';
-      btnRight.style.display = 'none';
-      return;
-    }
+    const atualizarSetas = () => {
+      if (!fila || !btnLeft || !btnRight) return;
 
-    btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
-    btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
+      // Se a fila não tiver conteúdo suficiente para rolar
+      if (fila.scrollWidth <= fila.clientWidth) {
+        btnLeft.style.display = 'none';
+        btnRight.style.display = 'none';
+        return;
+      }
 
-    // Esconder opacity inicialmente
-    btnLeft.style.opacity = 0;
-    btnRight.style.opacity = 0;
-  };
+      btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
+      btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
 
-  atualizarSetas();
+      btnLeft.style.opacity = 0;
+      btnRight.style.opacity = 0;
+    };
 
-  fila.addEventListener('scroll', atualizarSetas);
+    atualizarSetas();
 
-  btnLeft.addEventListener('click', () => {
-    fila.scrollBy({ left: -fila.clientWidth, behavior: 'smooth' });
-    setTimeout(atualizarSetas, 300);
+    fila.addEventListener('scroll', atualizarSetas);
+
+    btnLeft.addEventListener('click', () => {
+      fila.scrollBy({ left: -fila.clientWidth, behavior: 'smooth' });
+      setTimeout(atualizarSetas, 300);
+    });
+
+    btnRight.addEventListener('click', () => {
+      fila.scrollBy({ left: fila.clientWidth, behavior: 'smooth' });
+      setTimeout(atualizarSetas, 300);
+    });
+
+    container.addEventListener('mouseenter', () => {
+      if (getComputedStyle(btnLeft).display !== 'none') btnLeft.style.opacity = 1;
+      if (getComputedStyle(btnRight).display !== 'none') btnRight.style.opacity = 1;
+    });
+
+    container.addEventListener('mouseleave', () => {
+      if (getComputedStyle(btnLeft).display !== 'none') btnLeft.style.opacity = 0;
+      if (getComputedStyle(btnRight).display !== 'none') btnRight.style.opacity = 0;
+    });
+
+    window.addEventListener('resize', atualizarSetas);
   });
-  btnRight.addEventListener('click', () => {
-    fila.scrollBy({ left: fila.clientWidth, behavior: 'smooth' });
-    setTimeout(atualizarSetas, 300);
-  });
+}
 
-  // Mostrar setas só ao passar o mouse, **mas apenas se display != 'none'**
-  container.addEventListener('mouseenter', () => {
-    if (getComputedStyle(btnLeft).display !== 'none') btnLeft.style.opacity = 1;
-    if (getComputedStyle(btnRight).display !== 'none') btnRight.style.opacity = 1;
-  });
-
-  container.addEventListener('mouseleave', () => {
-    if (getComputedStyle(btnLeft).display !== 'none') btnLeft.style.opacity = 0;
-    if (getComputedStyle(btnRight).display !== 'none') btnRight.style.opacity = 0;
-  });
-
-  window.addEventListener('resize', atualizarSetas);
-});
-
+// Esperar que o DOM carregue
+window.addEventListener('DOMContentLoaded', inicializarSetas);
 
 
   
