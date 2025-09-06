@@ -286,16 +286,27 @@ function inicializarSetas() {
     const gap = 12;
     let scrollPorVez = (filmes[0]?.offsetWidth + gap) * 5;
 
-    const atualizarSetas = () => {
-      if (!fila || !btnLeft || !btnRight) return;
-      if (fila.scrollWidth <= fila.clientWidth) {
-        btnLeft.style.display = 'none';
-        btnRight.style.display = 'none';
-        return;
-      }
-      btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
-      btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
-    };
+const atualizarSetas = () => {
+  if (!fila || !btnLeft || !btnRight) return;
+
+  if (fila.scrollWidth <= fila.clientWidth) {
+    btnLeft.style.display = 'none';
+    btnRight.style.display = 'none';
+  } else {
+    btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
+    btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
+  }
+
+  // Atualiza opacidade dependendo se o mouse está sobre a fila
+  if (container.matches(':hover')) {
+    btnLeft.style.opacity = btnLeft.style.display !== 'none' ? 1 : 0;
+    btnRight.style.opacity = btnRight.style.display !== 'none' ? 1 : 0;
+  } else {
+    btnLeft.style.opacity = 0;
+    btnRight.style.opacity = 0;
+  }
+};
+
 
     const rolarSuave = (target) => {
       fila.scrollTo({ left: target, behavior: 'smooth' });
