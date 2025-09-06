@@ -1956,31 +1956,29 @@ const overlay = document.createElement('div');
 overlay.className = 'filme-hover-overlay';
 
 const btnPlay = document.createElement('button'); 
+btnPlay.textContent = '▶ Assistir'; // Sempre mostra "Assistir"
 
-// Se o item estiver marcado como "em breve" ou não tiver link disponível
-if(item.emBreve || item.link === "#") {
-    btnPlay.textContent = 'Em Breve';
-    btnPlay.disabled = true;
-    btnPlay.style.backgroundColor = "#555";
-    btnPlay.style.cursor = "not-allowed";
-} else {
-    btnPlay.textContent = '▶ Assistir';
-    btnPlay.onclick = (e) => {
-        e.stopPropagation();
+btnPlay.onclick = (e) => {
+    e.stopPropagation();
 
-        // Se for série ou anime
-        const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
-        if(s){ 
-            abrirModalTemporadas({ ...s, temporadas: s.temporadas }); 
-            return;
-        } 
+    // Se for série ou anime
+    const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
+    if(s){ 
+        abrirModalTemporadas({ ...s, temporadas: s.temporadas }); 
+        return;
+    } 
 
-        // Filme disponível
-        abrirAudioModal(item); 
-    };
-}
+    // Filme
+    if(item.link && item.link !== "#"){ 
+        abrirAudioModal(item); // Abre normalmente
+    } else {
+        // Filme ainda não disponível
+        alert('Em Breve'); // Ou abrir modal customizado
+    }
+};
 
 overlay.appendChild(btnPlay);
+
 
 
 
