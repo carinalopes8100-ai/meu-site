@@ -1955,11 +1955,10 @@ if(progresso[item.titulo] && progresso[item.titulo] > 0){
 const overlay = document.createElement('div'); 
 overlay.className = 'filme-hover-overlay';
 
-// Botão Assistir (temporadas normais ou filme)
 const btnPlay = document.createElement('button'); 
 
-if(item.emBreve) {
-    // Se o filme ou série estiver marcado como "em breve"
+// Se o item estiver marcado como "em breve" ou não tiver link disponível
+if(item.emBreve || item.link === "#") {
     btnPlay.textContent = 'Em Breve';
     btnPlay.disabled = true;
     btnPlay.style.backgroundColor = "#555";
@@ -1976,18 +1975,13 @@ if(item.emBreve) {
             return;
         } 
 
-        // Se for filme
-        if(item.link && !item.emBreve){ 
-            abrirAudioModal(item); 
-        } else {
-            // Filme marcado como em breve
-            alert('Em Breve'); // ou modal customizado
-        }
+        // Filme disponível
+        abrirAudioModal(item); 
     };
 }
 
-// Adiciona o botão ao overlay sempre
 overlay.appendChild(btnPlay);
+
 
 
 // Botão Verão ou Trailer
