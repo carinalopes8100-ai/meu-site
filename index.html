@@ -302,10 +302,8 @@ function inicializarSetas() {
     atualizarSetas();
 
     const rolarSuave = (direcao) => {
-      // Calcula o scroll ideal para centralizar os 5 filmes
       let novoScroll = fila.scrollLeft + direcao * scrollPorVez;
 
-      // Ajuste para não ultrapassar limites
       if (novoScroll < 0) novoScroll = 0;
       if (novoScroll > fila.scrollWidth - fila.clientWidth) 
           novoScroll = fila.scrollWidth - fila.clientWidth;
@@ -313,24 +311,30 @@ function inicializarSetas() {
       fila.scrollTo({ left: novoScroll, behavior: 'smooth' });
     }
 
-    btnLeft.onclick = () => rolarSuave(-1);
-    btnRight.onclick = () => rolarSuave(1);
+    btnLeft.addEventListener('click', () => rolarSuave(-1));
+    btnRight.addEventListener('click', () => rolarSuave(1));
 
+    // Aparece as setas quando entra o mouse
     container.addEventListener('mouseenter', () => {
-      if (btnLeft.style.display !== 'none') btnLeft.style.opacity = 1;
-      if (btnRight.style.display !== 'none') btnRight.style.opacity = 1;
+      atualizarSetas(); // garante que as setas corretas apareçam
+      btnLeft.style.opacity = btnLeft.style.display === 'flex' ? 1 : 0;
+      btnRight.style.opacity = btnRight.style.display === 'flex' ? 1 : 0;
     });
+
+    // Oculta as setas ao sair
     container.addEventListener('mouseleave', () => {
       btnLeft.style.opacity = 0;
       btnRight.style.opacity = 0;
     });
 
+    // Atualiza setas ao rolar
+    fila.addEventListener('scroll', atualizarSetas);
+
+    // Atualiza scrollPorVez ao redimensionar
     window.addEventListener('resize', () => {
       scrollPorVez = calcularScrollPorVez();
       atualizarSetas();
     });
-
-    fila.addEventListener('scroll', atualizarSetas);
   });
 }
 
