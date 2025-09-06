@@ -2196,7 +2196,10 @@ function abrirModalEpisodios(temporada, serieTitulo){
 }
 
 
-
+function fecharDescricaoModal() {
+    document.getElementById('descricaoModal').style.display = 'none';
+    mostrarSecao(secaoAtual); // volta para a seção que estava
+}
 
 
 function fecharModal(){ 
