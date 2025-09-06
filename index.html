@@ -286,6 +286,13 @@ document.querySelectorAll('.fila-container').forEach(container => {
   const btnRight = container.querySelector('.btn-right');
 
   const atualizarSetas = () => {
+    // Se a fila não tiver conteúdo suficiente para rolar
+    if (fila.scrollWidth <= fila.clientWidth) {
+      btnLeft.style.display = 'none';
+      btnRight.style.display = 'none';
+      return;
+    }
+
     btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
     btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
   };
@@ -306,15 +313,19 @@ document.querySelectorAll('.fila-container').forEach(container => {
   // Mostrar setas só ao passar o mouse
   container.addEventListener('mouseenter', () => {
     atualizarSetas();
-    if (btnLeft.style.display !== 'none') btnLeft.style.opacity = 1;
-    if (btnRight.style.display !== 'none') btnRight.style.opacity = 1;
+    if (btnLeft.style.display === 'flex') btnLeft.style.opacity = 1;
+    if (btnRight.style.display === 'flex') btnRight.style.opacity = 1;
   });
 
   container.addEventListener('mouseleave', () => {
     btnLeft.style.opacity = 0;
     btnRight.style.opacity = 0;
   });
+
+  // Atualizar as setas quando a janela for redimensionada
+  window.addEventListener('resize', atualizarSetas);
 });
+
   
 
 function openDB() {
