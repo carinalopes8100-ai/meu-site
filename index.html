@@ -53,9 +53,10 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 .btn-scroll {
   position: absolute;
-  top: 0;
-  bottom: 0;           /* cobre toda a altura da fila */
-  width: 60px;         /* largura da seta */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 170px; /* mesma altura da fila */
   background: rgba(0,0,0,0.4);
   border: none;
   color: #fff;
