@@ -278,14 +278,30 @@ async function reproduzirOffline(titulo) {
 }
 
 function abrirDescricaoModal(item) {
-  document.getElementById('descricaoTitulo').textContent = item.titulo;
-  document.getElementById('descricaoTexto').textContent = item.descricao || "Sem descrição disponível.";
+  const texto = item.descricao || "Sem descrição disponível.";
+
+  // Detecta ano no início da string (4 dígitos)
+  let ano = "";
+  let desc = texto;
+
+  const matchAno = texto.match(/^(\d{4})\s*(.*)$/);
+  if (matchAno) {
+    ano = matchAno[1];   // captura os 4 dígitos
+    desc = matchAno[2];  // resto da descrição
+  }
+
+  document.getElementById('descricaoTitulo').textContent = item.titulo; // mantém o título
+
+  // Adiciona ano e descrição no corpo do modal
+  document.getElementById('descricaoTexto').innerHTML = `
+    ${ano ? `<p><strong>Ano:</strong> ${ano}</p>` : ""}
+    <p>${desc}</p>
+  `;
+
   document.getElementById('descricaoModal').style.display = 'flex';
 }
 
-function fecharDescricaoModal() {
-  document.getElementById('descricaoModal').style.display = 'none';
-}
+
   
 
 function adicionarMinhaLista(titulo){
@@ -530,7 +546,7 @@ const filmes = [
   img: "https://i.ytimg.com/vi/UF82gjvULhw/maxresdefault.jpg",
   link: "https://streamtape.com/e/RAjwmJMjagsdyXd/", // este é o padrão inicial
   trailer: "https://eightyone.cincopa.com/watch/A4HAcLOLOO68!AUMD4wOkgXrN",
-  descricao: "ANO: 2025                                          Nando trabalha como entregador em uma lanchonete de Copacabana e sonha em ser uma estrela do trap, mas não tem muitas oportunidades. Até que ele conhece Jaque, uma moça acostumada desde cedo a se virar para sobreviver – nem sempre da forma mais convencional.",
+  descricao: "2025 Nando trabalha como entregador em uma lanchonete de Copacabana e sonha em ser uma estrela do trap, mas não tem muitas oportunidades. Até que ele conhece Jaque, uma moça acostumada desde cedo a se virar para sobreviver – nem sempre da forma mais convencional.",
   audios: [
     { label: "Português", src: "linkdovideo" },
     { label: "English", src: "https://streamtape.com/e/RAjwmJMjagsdyXd/" }
