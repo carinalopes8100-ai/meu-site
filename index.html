@@ -283,24 +283,14 @@ function mostrarToast(mensagem){
   setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
 
-function atualizarSetas(filaContainer) {
-  const fila = filaContainer.querySelector('.fila');
-  const btnLeft = filaContainer.querySelector('.btn-left');
-  const btnRight = filaContainer.querySelector('.btn-right');
+function atualizarSetas(container) {
+  const fila = container.querySelector('.fila');
+  const btnLeft = container.querySelector('.btn-left');
+  const btnRight = container.querySelector('.btn-right');
 
-  // Se a fila estiver no início, esconde seta esquerda
-  if (fila.scrollLeft <= 0) {
-    btnLeft.style.display = 'none';
-  } else {
-    btnLeft.style.display = 'flex';
-  }
-
-  // Se a fila estiver no final, esconde seta direita
-  if (fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1) {
-    btnRight.style.display = 'none';
-  } else {
-    btnRight.style.display = 'flex';
-  }
+  // Mostra ou esconde as setas dependendo do scroll
+  btnLeft.style.display = fila.scrollLeft > 0 ? 'flex' : 'none';
+  btnRight.style.display = fila.scrollLeft + fila.clientWidth < fila.scrollWidth ? 'flex' : 'none';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -329,28 +319,38 @@ document.addEventListener('DOMContentLoaded', () => {
     // Atualiza setas ao rolar manualmente
     fila.addEventListener('scroll', () => atualizarSetas(container));
 
-    // Hover nos filmes para esconder/mostrar setas
+    // Hover nos filmes para esconder setas apenas se estiverem sobre elas
     const filmes = container.querySelectorAll('.filme');
-filmes.forEach(filme => {
-  filme.addEventListener('mouseenter', () => {
-    // Dá zoom no card
-    filme.style.transform = 'scale(1.05)';
-    filme.style.zIndex = '2';
-    
-    // Esconde as setas
-    btnLeft.style.opacity = '0';
-    btnRight.style.opacity = '0';
-  });
+    filmes.forEach(filme => {
+      filme.addEventListener('mouseenter', () => {
+        // Zoom no card
+        filme.style.transform = 'scale(1.05)';
+        filme.style.zIndex = '2';
 
-  filme.addEventListener('mouseleave', () => {
-    // Remove zoom do card
-    filme.style.transform = '';
-    filme.style.zIndex = '';
+        const rect = filme.getBoundingClientRect();
+        const leftRect = btnLeft.getBoundingClientRect();
+        const rightRect = btnRight.getBoundingClientRect();
 
-    // Volta a mostrar as setas, se houver scroll disponível
+        // Esconde apenas as setas que estiverem "cobertas" pelo card
+        if (rect.left < leftRect.right) btnLeft.style.opacity = '0';
+        if (rect.right > rightRect.left) btnRight.style.opacity = '0';
+      });
+
+      filme.addEventListener('mouseleave', () => {
+        // Remove zoom
+        filme.style.transform = '';
+        filme.style.zIndex = '';
+
+        // Atualiza visibilidade das setas
+        atualizarSetas(container);
+      });
+    });
+
+    // Inicializa visibilidade das setas
     atualizarSetas(container);
   });
 });
+
 
 
     // Inicializa visibilidade das setas
