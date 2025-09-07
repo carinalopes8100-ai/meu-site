@@ -265,31 +265,18 @@ function mostrarToast(mensagem){
 
 document.querySelectorAll('.fila-container').forEach(container => {
   const fila = container.querySelector('.fila');
-
-  // Cria os botões se não existirem
-  let btnLeft = container.querySelector('.btn-left');
-  let btnRight = container.querySelector('.btn-right');
-
-  if (!btnLeft) {
-    btnLeft = document.createElement('button');
-    btnLeft.className = 'btn-scroll btn-left';
-    btnLeft.innerHTML = '&#8249;'; // seta esquerda
-    container.appendChild(btnLeft);
-  }
-  if (!btnRight) {
-    btnRight = document.createElement('button');
-    btnRight.className = 'btn-scroll btn-right';
-    btnRight.innerHTML = '&#8250;'; // seta direita
-    container.appendChild(btnRight);
-  }
+  const btnLeft = container.querySelector('.btn-left');
+  const btnRight = container.querySelector('.btn-right');
 
   function atualizarSetas() {
-    const margem = 2;
-    btnLeft.style.display = fila.scrollLeft > margem ? 'flex' : 'none';
-    btnRight.style.display = fila.scrollLeft + fila.clientWidth < fila.scrollWidth - margem ? 'flex' : 'none';
+    const scrollLeft = Math.floor(fila.scrollLeft);
+    const scrollRight = Math.ceil(fila.scrollLeft + fila.clientWidth);
+    const scrollWidth = Math.ceil(fila.scrollWidth);
+
+    btnLeft.style.display = scrollLeft > 0 ? 'flex' : 'none';
+    btnRight.style.display = scrollRight < scrollWidth ? 'flex' : 'none';
   }
 
-  // Scroll das setas
   btnLeft.addEventListener('click', () => {
     fila.scrollBy({ left: -fila.clientWidth, behavior: 'smooth' });
   });
@@ -297,11 +284,9 @@ document.querySelectorAll('.fila-container').forEach(container => {
     fila.scrollBy({ left: fila.clientWidth, behavior: 'smooth' });
   });
 
-  // Atualiza setas no scroll e resize
   fila.addEventListener('scroll', atualizarSetas);
   window.addEventListener('resize', atualizarSetas);
 
-  // Inicializa setas após renderizar conteúdo
   setTimeout(atualizarSetas, 100);
 });
 
