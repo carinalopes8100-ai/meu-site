@@ -46,21 +46,22 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   
 .fila-container {
   position: relative;
-  margin: 20px 0;       /* mantém apenas margem vertical */
-  padding: 0 20px;      /* margem lateral apenas visual */
-  overflow: visible;    /* permite que os cards ultrapassem visualmente */
-  width: 100vw;         /* ocupa a largura total da tela */
+  margin: 20px auto;      /* centraliza e mantém distância entre filas */
+  padding: 0 40px;        /* margem lateral visual, igual ao Prime Video */
+  width: calc(100% - 80px); /* largura total menos padding */
+  overflow: hidden;       /* esconde overflow horizontal extra */
 }
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
-.fila {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding: 0;           /* remove qualquer padding que limitava scroll */
-  width: max-content;   /* essencial para permitir scroll completo */
+.fila-container {
+  position: relative;
+  margin: 20px auto;      /* centraliza e mantém distância entre filas */
+  padding: 0 40px;        /* margem lateral visual, igual ao Prime Video */
+  width: calc(100% - 80px); /* largura total menos padding */
+  overflow: hidden;       /* esconde overflow horizontal extra */
 }
-.fila::-webkit-scrollbar { display:none; }
+.fila::-webkit-scrollbar {
+  display: none;          /* esconde barra de scroll */
+}
 .filme { width:280px; height:160px; border-radius:20px; overflow:hidden; cursor:pointer; position:relative; flex-shrink:0; transition: transform 0.3s ease; }
   
 @media (max-width: 1024px) {
