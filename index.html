@@ -263,6 +263,52 @@ function mostrarToast(mensagem){
   setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
 
+function atualizarSetas(filaContainer) {
+  const fila = filaContainer.querySelector('.fila');
+  const btnLeft = filaContainer.querySelector('.btn-left');
+  const btnRight = filaContainer.querySelector('.btn-right');
+
+  // Se a fila estiver no início, esconde seta esquerda
+  if (fila.scrollLeft <= 0) {
+    btnLeft.style.display = 'none';
+  } else {
+    btnLeft.style.display = 'flex';
+  }
+
+  // Se a fila estiver no final, esconde seta direita
+  if (fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1) {
+    btnRight.style.display = 'none';
+  } else {
+    btnRight.style.display = 'flex';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const filas = document.querySelectorAll('.fila-container');
+
+  filas.forEach(container => {
+    const fila = container.querySelector('.fila');
+    const btnLeft = container.querySelector('.btn-left');
+    const btnRight = container.querySelector('.btn-right');
+
+    // Scroll ao clicar
+    btnLeft.onclick = () => {
+      fila.scrollBy({ left: -300, behavior: 'smooth' });
+      setTimeout(() => atualizarSetas(container), 200);
+    };
+    btnRight.onclick = () => {
+      fila.scrollBy({ left: 300, behavior: 'smooth' });
+      setTimeout(() => atualizarSetas(container), 200);
+    };
+
+    // Atualiza setas ao rolar manualmente
+    fila.addEventListener('scroll', () => atualizarSetas(container));
+
+    // Inicializa visibilidade das setas
+    atualizarSetas(container);
+  });
+});
+  
 function openDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open("videosDB", 1);
