@@ -263,32 +263,48 @@ function mostrarToast(mensagem){
   setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.fila-container').forEach(container => {
-    const fila = container.querySelector('.fila');
-    const btnLeft = container.querySelector('.btn-left');
-    const btnRight = container.querySelector('.btn-right');
+document.querySelectorAll('.fila-container').forEach(container => {
+  const fila = container.querySelector('.fila');
 
-    function atualizarSetas() {
-      const margem = 2;
-      btnLeft.style.display = fila.scrollLeft > margem ? 'flex' : 'none';
-      btnRight.style.display = fila.scrollLeft + fila.clientWidth < fila.scrollWidth - margem ? 'flex' : 'none';
-    }
+  // Cria os botões se não existirem
+  let btnLeft = container.querySelector('.btn-left');
+  let btnRight = container.querySelector('.btn-right');
 
-    // Scroll das setas
-    btnLeft.addEventListener('click', () => {
-      fila.scrollBy({ left: -fila.clientWidth, behavior: 'smooth' });
-    });
-    btnRight.addEventListener('click', () => {
-      fila.scrollBy({ left: fila.clientWidth, behavior: 'smooth' });
-    });
+  if (!btnLeft) {
+    btnLeft = document.createElement('button');
+    btnLeft.className = 'btn-scroll btn-left';
+    btnLeft.innerHTML = '&#8249;'; // seta esquerda
+    container.appendChild(btnLeft);
+  }
+  if (!btnRight) {
+    btnRight = document.createElement('button');
+    btnRight.className = 'btn-scroll btn-right';
+    btnRight.innerHTML = '&#8250;'; // seta direita
+    container.appendChild(btnRight);
+  }
 
-    // Atualiza setas no scroll e resize
-    fila.addEventListener('scroll', atualizarSetas);
-    window.addEventListener('resize', atualizarSetas);
+  function atualizarSetas() {
+    const margem = 2;
+    btnLeft.style.display = fila.scrollLeft > margem ? 'flex' : 'none';
+    btnRight.style.display = fila.scrollLeft + fila.clientWidth < fila.scrollWidth - margem ? 'flex' : 'none';
+  }
 
-    // Inicializa setas após renderizar conteúdo
-    setTimeout(atualizarSetas, 100); // pequena espera para o layout estar pronto
+  // Scroll das setas
+  btnLeft.addEventListener('click', () => {
+    fila.scrollBy({ left: -fila.clientWidth, behavior: 'smooth' });
+  });
+  btnRight.addEventListener('click', () => {
+    fila.scrollBy({ left: fila.clientWidth, behavior: 'smooth' });
+  });
+
+  // Atualiza setas no scroll e resize
+  fila.addEventListener('scroll', atualizarSetas);
+  window.addEventListener('resize', atualizarSetas);
+
+  // Inicializa setas após renderizar conteúdo
+  setTimeout(atualizarSetas, 100);
+});
+
 
 
 
