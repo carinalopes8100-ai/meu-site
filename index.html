@@ -269,14 +269,17 @@ document.querySelectorAll('.fila-container').forEach(container => {
   const btnRight = container.querySelector('.btn-right');
 
   function atualizarSetas() {
-    // Arredonda para evitar problemas com frações de pixel
-    const scrollLeft = Math.ceil(fila.scrollLeft);
-    const maxScrollLeft = Math.floor(fila.scrollWidth - fila.clientWidth);
+    const scrollLeft = Math.round(fila.scrollLeft);
+    const maxScrollLeft = Math.round(fila.scrollWidth - fila.clientWidth);
 
-    // Seta esquerda só aparece se houver scroll à esquerda
+    // Se o conteúdo couber todo, nenhuma seta aparece
+    if (fila.scrollWidth <= fila.clientWidth) {
+      btnLeft.style.display = 'none';
+      btnRight.style.display = 'none';
+      return;
+    }
+
     btnLeft.style.display = scrollLeft > 0 ? 'flex' : 'none';
-
-    // Seta direita só aparece se houver scroll à direita
     btnRight.style.display = scrollLeft < maxScrollLeft ? 'flex' : 'none';
   }
 
@@ -295,6 +298,7 @@ document.querySelectorAll('.fila-container').forEach(container => {
   // Inicializa setas
   atualizarSetas();
 });
+
 
 
 
