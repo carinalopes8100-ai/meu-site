@@ -35,20 +35,6 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 #root { margin-top:80px; }
 
-/* Esconde as setas inicialmente */
-.fila-container .btn-scroll {
-  opacity: 0;
-  pointer-events: none; /* evita clicar quando invisível */
-  transition: opacity 0.3s ease;
-}
-
-/* Mostra as setas quando o mouse estiver sobre a fila */
-.fila-container:hover .btn-scroll {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-  
 .fila-container { margin:20px 50px; position:relative; }
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
 .fila { display:flex; overflow-x:auto; gap:12px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
@@ -268,32 +254,6 @@ function mostrarToast(mensagem){
   setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
 
-function atualizarSetasFilas() {
-  document.querySelectorAll('.fila-container').forEach(container => {
-    const fila = container.querySelector('.fila');
-    const btnLeft = container.querySelector('.btn-left');
-    const btnRight = container.querySelector('.btn-right');
-
-    // Esconde seta esquerda se não pode rolar
-    btnLeft.style.display = fila.scrollLeft <= 0 ? 'none' : 'flex';
-
-    // Esconde seta direita se chegou ao final
-    btnRight.style.display = fila.scrollLeft + fila.clientWidth >= fila.scrollWidth - 1 ? 'none' : 'flex';
-  });
-}
-
-// Atualiza sempre que rolar a fila
-document.querySelectorAll('.fila').forEach(fila => {
-  fila.addEventListener('scroll', atualizarSetasFilas);
-});
-
-// Atualiza ao carregar a página
-window.addEventListener('load', atualizarSetasFilas);
-
-// Atualiza ao redimensionar a janela
-window.addEventListener('resize', atualizarSetasFilas);
-
-  
 function openDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open("videosDB", 1);
@@ -552,6 +512,7 @@ function abrirVideo(item) {
 
   document.body.appendChild(videoModal);
 }
+
 
 
 
