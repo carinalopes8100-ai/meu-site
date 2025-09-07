@@ -46,9 +46,10 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   
 .fila-container {
   position: relative;
-  margin: 0 auto;
-  padding: 0 50px; /* só para visual */
-  overflow: visible;
+  margin: 20px 0;       /* mantém apenas margem vertical */
+  padding: 0 20px;      /* margem lateral apenas visual */
+  overflow: visible;    /* permite que os cards ultrapassem visualmente */
+  width: 100vw;         /* ocupa a largura total da tela */
 }
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
 .fila {
@@ -56,7 +57,8 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   gap: 12px;
   overflow-x: auto;
   scroll-behavior: smooth;
-  padding: 0;       /* remove padding interno que limita scroll */
+  padding: 0;           /* remove qualquer padding que limitava scroll */
+  width: max-content;   /* essencial para permitir scroll completo */
 }
 .fila::-webkit-scrollbar { display:none; }
 .filme { width:280px; height:160px; border-radius:20px; overflow:hidden; cursor:pointer; position:relative; flex-shrink:0; transition: transform 0.3s ease; }
