@@ -2246,35 +2246,8 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
   btnLeft.addEventListener('click',()=>fila.scrollBy({left:-1400,behavior:'smooth'}));
   btnRight.addEventListener('click',()=>fila.scrollBy({left:1400,behavior:'smooth'}));
 
-// Atualiza visibilidade dos botões para esta fila
-atualizarBotoesScroll(container);
-
-// Atualiza quando a fila é rolada
-fila.addEventListener('scroll', () => atualizarBotoesScroll(container));
-
-// Mostra botões ao passar o mouse
-container.addEventListener('mouseenter', () => {
-  const btnLeft = container.querySelector('.btn-left');
-  const btnRight = container.querySelector('.btn-right');
-
-  // só mostra se houver overflow
-  const fila = container.querySelector('.fila');
-  btnLeft.style.opacity = fila.scrollLeft > 0 ? '1' : '0';
-  btnLeft.style.pointerEvents = fila.scrollLeft > 0 ? 'auto' : 'none';
-  btnRight.style.opacity = fila.scrollLeft + fila.clientWidth < fila.scrollWidth ? '1' : '0';
-  btnRight.style.pointerEvents = fila.scrollLeft + fila.clientWidth < fila.scrollWidth ? 'auto' : 'none';
-});
-
-// Esconde botões quando o mouse sai
-container.addEventListener('mouseleave', () => {
-  const btnLeft = container.querySelector('.btn-left');
-  const btnRight = container.querySelector('.btn-right');
-  btnLeft.style.opacity = '0';
-  btnLeft.style.pointerEvents = 'none';
-  btnRight.style.opacity = '0';
-  btnRight.style.pointerEvents = 'none';
-});
-
+  return container;
+}
 
 function abrirModalTemporadas(serie){
   document.getElementById('modalTitle').textContent = `Escolha a temporada de "${serie.titulo}"`;
@@ -2395,7 +2368,7 @@ function pesquisar(){
         mostrarSecao('inicio');
         return;
     }
-    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes];
     const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
     root.innerHTML='';
     if(resultados.length>0){
@@ -2439,36 +2412,6 @@ video.addEventListener('timeupdate', () => {
 
 // Pesquisa instantânea
 document.getElementById('searchInput').addEventListener('input', () => pesquisar());
-
-  // ====== Adicionar controle dos botões de scroll ======
-  function atualizarBotoesScroll(filaContainer) {
-    const fila = filaContainer.querySelector('.fila');
-    const btnLeft = filaContainer.querySelector('.btn-left');
-    const btnRight = filaContainer.querySelector('.btn-right');
-
-    const scrollLeft = fila.scrollLeft;
-    const scrollWidth = fila.scrollWidth;
-    const clientWidth = fila.clientWidth;
-
-    btnLeft.style.opacity = scrollLeft > 0 ? '1' : '0';
-    btnLeft.style.pointerEvents = scrollLeft > 0 ? 'auto' : 'none';
-
-    btnRight.style.opacity = scrollLeft + clientWidth < scrollWidth ? '1' : '0';
-    btnRight.style.pointerEvents = scrollLeft + clientWidth < scrollWidth ? 'auto' : 'none';
-  }
-
-  document.querySelectorAll('.fila-container').forEach(container => {
-    const fila = container.querySelector('.fila');
-
-    // Atualiza ao carregar
-    atualizarBotoesScroll(container);
-
-    // Atualiza ao rolar
-    fila.addEventListener('scroll', () => atualizarBotoesScroll(container));
-
-    // Atualiza ao passar mouse
-    container.addEventListener('mouseenter', () => atualizarBotoesScroll(container));
-  });  
 </script>
 </body>
 </html>
