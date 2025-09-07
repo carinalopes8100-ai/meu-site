@@ -2263,7 +2263,8 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
 atualizarBotoesScroll(container);
 fila.addEventListener('scroll', () => atualizarBotoesScroll(container));
 container.addEventListener('mouseenter', () => atualizarBotoesScroll(container));
-
+  // Atualiza quando o mouse sai
+  container.addEventListener('mouseleave', () => atualizarBotoesScroll(container));
 
   return container;
 }
