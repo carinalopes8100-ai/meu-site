@@ -290,60 +290,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const fila = container.querySelector('.fila');
     const btnLeft = container.querySelector('.btn-left');
     const btnRight = container.querySelector('.btn-right');
-    const filmes = fila.querySelectorAll('.filme');
-    const gap = 12; // mesmo gap do CSS
+
+    // ← Aqui calcula a largura do scroll por página
     const filmesPorPagina = 6;
+    const filme = fila.querySelector('.filme');
+    const gap = 12; // mesmo gap do CSS
+    const scrollAmount = filmesPorPagina * (filme.offsetWidth + gap);
+    
+    // Scroll ao clicar
+btnLeft.onclick = () => {
+  fila.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+  setTimeout(() => atualizarSetas(container), 200);
+};
 
-    // Calcula a largura total de 6 filmes + gaps
-    const scrollAmount = filmesPorPagina * (filmes[0].offsetWidth + gap);
-
-    // Função para atualizar visibilidade das setas
-    const atualizarSetas = () => {
-      btnLeft.style.display = fila.scrollLeft > 0 ? 'flex' : 'none';
-      btnRight.style.display =
-        fila.scrollLeft + fila.clientWidth < fila.scrollWidth ? 'flex' : 'none';
-    };
-
-    // Scroll ao clicar nas setas
-    btnLeft.onclick = () => {
-      fila.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-      setTimeout(atualizarSetas, 300); // atualiza após animação
-    };
-    btnRight.onclick = () => {
-      fila.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-      setTimeout(atualizarSetas, 300);
-    };
+btnRight.onclick = () => {
+  fila.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  setTimeout(() => atualizarSetas(container), 200);
+};
 
     // Atualiza setas ao rolar manualmente
-    fila.addEventListener('scroll', atualizarSetas);
+    fila.addEventListener('scroll', () => atualizarSetas(container));
 
     // Inicializa visibilidade das setas
-    atualizarSetas();
-
-    // Zoom das setas quando hover em filme
-    filmes.forEach(filme => {
-      filme.addEventListener('mouseenter', () => {
-        btnLeft.style.transform = 'scale(1.1)';
-        btnRight.style.transform = 'scale(1.1)';
-      });
-      filme.addEventListener('mouseleave', () => {
-        btnLeft.style.transform = 'scale(1)';
-        btnRight.style.transform = 'scale(1)';
-      });
-    });
-
-    // Zoom do filme ao passar o mouse
-    filmes.forEach(filme => {
-      filme.addEventListener('mouseenter', () => {
-        filme.style.transform = 'scale(1.05)';
-      });
-      filme.addEventListener('mouseleave', () => {
-        filme.style.transform = 'scale(1)';
-      });
-    });
+    atualizarSetas(container);
   });
 });
-
   
 function openDB() {
   return new Promise((resolve, reject) => {
