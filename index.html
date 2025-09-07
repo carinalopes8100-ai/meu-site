@@ -35,6 +35,15 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 #root { margin-top:80px; }
 
+.fila-container .btn-scroll {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+  .fila-container:hover .btn-scroll {
+  opacity: 1;
+}
+  
 .fila-container { margin:20px 50px; position:relative; }
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
 .fila { display:flex; overflow-x:auto; gap:12px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
