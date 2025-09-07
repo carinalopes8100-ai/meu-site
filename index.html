@@ -268,24 +268,20 @@ document.querySelectorAll('.fila-container').forEach(container => {
   const btnLeft = container.querySelector('.btn-left');
   const btnRight = container.querySelector('.btn-right');
 
- function atualizarSetas() {
-  const scrollLeft = Math.round(fila.scrollLeft);
-  const maxScrollLeft = Math.round(fila.scrollWidth - fila.clientWidth);
-  const margem = 5; // tolerância de 5px
+  function atualizarSetas() {
+    const scrollLeft = Math.round(fila.scrollLeft);
+    const maxScrollLeft = Math.round(fila.scrollWidth - fila.clientWidth);
+    const margem = 5; // tolerância
 
-    // Se o conteúdo couber todo, nenhuma seta aparece
-   if (fila.scrollWidth <= fila.clientWidth + margem) {
-    btnLeft.style.display = 'none';
-    btnRight.style.display = 'none';
-    return;
-  }
+    // Nenhuma seta se todo o conteúdo couber
+    if (fila.scrollWidth <= fila.clientWidth + margem) {
+      btnLeft.style.display = 'none';
+      btnRight.style.display = 'none';
+      return;
+    }
 
-
-   // Seta esquerda
-  btnLeft.style.display = scrollLeft > margem ? 'flex' : 'none';
-
-  // Seta direita
-  btnRight.style.display = scrollLeft < maxScrollLeft - margem ? 'flex' : 'none';
+    btnLeft.style.display = scrollLeft > margem ? 'flex' : 'none';
+    btnRight.style.display = scrollLeft < maxScrollLeft - margem ? 'flex' : 'none';
   }
 
   // Scroll ao clicar nas setas
@@ -296,7 +292,7 @@ document.querySelectorAll('.fila-container').forEach(container => {
     fila.scrollBy({ left: fila.clientWidth, behavior: 'smooth' });
   });
 
-  // Atualiza setas quando o usuário scrolla ou redimensiona a janela
+  // Atualiza setas ao scroll ou resize
   fila.addEventListener('scroll', atualizarSetas);
   window.addEventListener('resize', atualizarSetas);
 
