@@ -291,15 +291,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnLeft = container.querySelector('.btn-left');
     const btnRight = container.querySelector('.btn-right');
 
+    // ← Aqui calcula a largura do scroll por página
+    const filmesPorPagina = 6;
+    const filme = fila.querySelector('.filme');
+    const gap = 12; // mesmo gap do CSS
+    const scrollAmount = filmesPorPagina * (filme.offsetWidth + gap);
+    
     // Scroll ao clicar
-    btnLeft.onclick = () => {
-      fila.scrollBy({ left: -600, behavior: 'smooth' });
-      setTimeout(() => atualizarSetas(container), 200);
-    };
-    btnRight.onclick = () => {
-      fila.scrollBy({ left: 600, behavior: 'smooth' });
-      setTimeout(() => atualizarSetas(container), 200);
-    };
+btnLeft.onclick = () => {
+  fila.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+  setTimeout(() => atualizarSetas(container), 200);
+};
+
+btnRight.onclick = () => {
+  fila.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  setTimeout(() => atualizarSetas(container), 200);
+};
 
     // Atualiza setas ao rolar manualmente
     fila.addEventListener('scroll', () => atualizarSetas(container));
