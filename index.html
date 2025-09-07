@@ -2259,15 +2259,35 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
   btnLeft.addEventListener('click',()=>fila.scrollBy({left:-1400,behavior:'smooth'}));
   btnRight.addEventListener('click',()=>fila.scrollBy({left:1400,behavior:'smooth'}));
 
-  // Atualiza visibilidade dos botões para esta fila
+// Atualiza visibilidade dos botões para esta fila
 atualizarBotoesScroll(container);
-fila.addEventListener('scroll', () => atualizarBotoesScroll(container));
-container.addEventListener('mouseenter', () => atualizarBotoesScroll(container));
-  // Atualiza quando o mouse sai
-  container.addEventListener('mouseleave', () => atualizarBotoesScroll(container));
 
-  return container;
-}
+// Atualiza quando a fila é rolada
+fila.addEventListener('scroll', () => atualizarBotoesScroll(container));
+
+// Mostra botões ao passar o mouse
+container.addEventListener('mouseenter', () => {
+  const btnLeft = container.querySelector('.btn-left');
+  const btnRight = container.querySelector('.btn-right');
+
+  // só mostra se houver overflow
+  const fila = container.querySelector('.fila');
+  btnLeft.style.opacity = fila.scrollLeft > 0 ? '1' : '0';
+  btnLeft.style.pointerEvents = fila.scrollLeft > 0 ? 'auto' : 'none';
+  btnRight.style.opacity = fila.scrollLeft + fila.clientWidth < fila.scrollWidth ? '1' : '0';
+  btnRight.style.pointerEvents = fila.scrollLeft + fila.clientWidth < fila.scrollWidth ? 'auto' : 'none';
+});
+
+// Esconde botões quando o mouse sai
+container.addEventListener('mouseleave', () => {
+  const btnLeft = container.querySelector('.btn-left');
+  const btnRight = container.querySelector('.btn-right');
+  btnLeft.style.opacity = '0';
+  btnLeft.style.pointerEvents = 'none';
+  btnRight.style.opacity = '0';
+  btnRight.style.pointerEvents = 'none';
+});
+
 
 function abrirModalTemporadas(serie){
   document.getElementById('modalTitle').textContent = `Escolha a temporada de "${serie.titulo}"`;
