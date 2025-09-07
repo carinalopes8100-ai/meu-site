@@ -271,35 +271,39 @@ document.querySelectorAll('.fila-container').forEach(container => {
   function atualizarSetas() {
     const scrollLeft = Math.round(fila.scrollLeft);
     const maxScrollLeft = Math.round(fila.scrollWidth - fila.clientWidth);
-    const margem = 5; // tolerância
+    const margem = 5; // tolerância para pequenos deslocamentos
 
-    // Nenhuma seta se todo o conteúdo couber
+    // Se todo o conteúdo couber na fila, esconda ambas as setas
     if (fila.scrollWidth <= fila.clientWidth + margem) {
       btnLeft.style.display = 'none';
       btnRight.style.display = 'none';
       return;
     }
 
+    // Mostrar/esconder seta esquerda
     btnLeft.style.display = scrollLeft > margem ? 'flex' : 'none';
+
+    // Mostrar/esconder seta direita
     btnRight.style.display = scrollLeft < maxScrollLeft - margem ? 'flex' : 'none';
   }
 
   // Scroll ao clicar nas setas
   btnRight.addEventListener('click', () => {
-  fila.scrollBy({ left: 310 + 12, behavior: 'smooth' }); // 310px + gap
-});
-btnLeft.addEventListener('click', () => {
-  fila.scrollBy({ left: -(310 + 12), behavior: 'smooth' });
-});
+    fila.scrollBy({ left: 310 + 12, behavior: 'smooth' }); // 310px = largura do filme + 12px gap
+  });
 
+  btnLeft.addEventListener('click', () => {
+    fila.scrollBy({ left: -(310 + 12), behavior: 'smooth' });
+  });
 
-  // Atualiza setas ao scroll ou resize
+  // Atualiza as setas ao scroll e resize
   fila.addEventListener('scroll', atualizarSetas);
   window.addEventListener('resize', atualizarSetas);
 
-  // Inicializa setas
+  // Inicializa as setas
   atualizarSetas();
 });
+
 
 
 
