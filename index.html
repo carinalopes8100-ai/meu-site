@@ -285,12 +285,13 @@ document.querySelectorAll('.fila-container').forEach(container => {
   }
 
   // Scroll ao clicar nas setas
-  btnLeft.addEventListener('click', () => {
-    fila.scrollBy({ left: -fila.clientWidth, behavior: 'smooth' });
-  });
   btnRight.addEventListener('click', () => {
-    fila.scrollBy({ left: fila.clientWidth, behavior: 'smooth' });
-  });
+  fila.scrollBy({ left: 310 + 12, behavior: 'smooth' }); // 310px + gap
+});
+btnLeft.addEventListener('click', () => {
+  fila.scrollBy({ left: -(310 + 12), behavior: 'smooth' });
+});
+
 
   // Atualiza setas ao scroll ou resize
   fila.addEventListener('scroll', atualizarSetas);
