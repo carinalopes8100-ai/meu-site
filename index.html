@@ -35,20 +35,6 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 #root { margin-top:80px; }
 
-/* Esconde as setas inicialmente */
-.fila-container .btn-scroll {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-/* Mostra as setas quando o mouse estiver sobre a fila */
-.fila-container:hover .btn-scroll {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-  
 .fila-container { margin:20px 50px; position:relative; }
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
 .fila { display:flex; overflow-x:auto; gap:12px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
@@ -526,6 +512,7 @@ function abrirVideo(item) {
 
   document.body.appendChild(videoModal);
 }
+
 
 
 
