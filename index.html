@@ -311,30 +311,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnLeft = container.querySelector('.btn-left');
     const btnRight = container.querySelector('.btn-right');
 
-    // ← Aqui calcula a largura do scroll por página
     const filmesPorPagina = 6;
     const filme = fila.querySelector('.filme');
-    const gap = 12; // mesmo gap do CSS
+    const gap = 12;
     const scrollAmount = filmesPorPagina * (filme.offsetWidth + gap);
     
     // Scroll ao clicar
-btnLeft.onclick = () => {
-  fila.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-  setTimeout(() => atualizarSetas(container), 200);
-};
-
-btnRight.onclick = () => {
-  fila.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-  setTimeout(() => atualizarSetas(container), 200);
-};
+    btnLeft.onclick = () => {
+      fila.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      setTimeout(() => atualizarSetas(container), 200);
+    };
+    btnRight.onclick = () => {
+      fila.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      setTimeout(() => atualizarSetas(container), 200);
+    };
 
     // Atualiza setas ao rolar manualmente
     fila.addEventListener('scroll', () => atualizarSetas(container));
+
+    // Hover nos filmes para esconder/mostrar setas
+    const filmes = container.querySelectorAll('.filme');
+    filmes.forEach(filme => {
+      filme.addEventListener('mouseenter', () => {
+        btnLeft.style.opacity = '0';
+        btnRight.style.opacity = '0';
+      });
+      filme.addEventListener('mouseleave', () => {
+        atualizarSetas(container); // volta a mostrar as setas conforme o scroll
+      });
+    });
 
     // Inicializa visibilidade das setas
     atualizarSetas(container);
   });
 });
+
   
 function openDB() {
   return new Promise((resolve, reject) => {
