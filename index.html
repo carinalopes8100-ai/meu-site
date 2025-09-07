@@ -263,6 +263,33 @@ function mostrarToast(mensagem){
   setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
 
+document.querySelectorAll('.fila-container').forEach(container => {
+  const fila = container.querySelector('.fila');
+  const btnLeft = container.querySelector('.btn-left');
+  const btnRight = container.querySelector('.btn-right');
+
+  function atualizarSetas() {
+    btnLeft.style.display = fila.scrollLeft > 0 ? 'flex' : 'none';
+    btnRight.style.display = fila.scrollLeft + fila.clientWidth < fila.scrollWidth ? 'flex' : 'none';
+  }
+
+  // Atualiza setas no scroll
+  fila.addEventListener('scroll', atualizarSetas);
+  window.addEventListener('resize', atualizarSetas);
+
+  // Inicializa setas
+  atualizarSetas();
+
+  // Scroll das setas
+  btnLeft.addEventListener('click', () => {
+    fila.scrollBy({ left: -fila.clientWidth, behavior: 'smooth' });
+  });
+  btnRight.addEventListener('click', () => {
+    fila.scrollBy({ left: fila.clientWidth, behavior: 'smooth' });
+  });
+});
+
+
 function openDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open("videosDB", 1);
