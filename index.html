@@ -2259,6 +2259,12 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
   btnLeft.addEventListener('click',()=>fila.scrollBy({left:-1400,behavior:'smooth'}));
   btnRight.addEventListener('click',()=>fila.scrollBy({left:1400,behavior:'smooth'}));
 
+  // Atualiza visibilidade dos botões para esta fila
+atualizarBotoesScroll(container);
+fila.addEventListener('scroll', () => atualizarBotoesScroll(container));
+container.addEventListener('mouseenter', () => atualizarBotoesScroll(container));
+
+
   return container;
 }
 
