@@ -333,20 +333,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const filmes = container.querySelectorAll('.filme');
 filmes.forEach(filme => {
   filme.addEventListener('mouseenter', () => {
-    const rect = filme.getBoundingClientRect();
-    const containerRect = container.getBoundingClientRect();
+    // Dá zoom no card
+    filme.style.transform = 'scale(1.05)';
+    filme.style.zIndex = '2';
     
-    const tocandoEsquerda = rect.left < btnLeft.getBoundingClientRect().right;
-    const tocandoDireita = rect.right > btnRight.getBoundingClientRect().left;
-    
-    if (tocandoEsquerda) btnLeft.style.opacity = '0';
-    if (tocandoDireita) btnRight.style.opacity = '0';
+    // Esconde as setas
+    btnLeft.style.opacity = '0';
+    btnRight.style.opacity = '0';
   });
 
   filme.addEventListener('mouseleave', () => {
+    // Remove zoom do card
+    filme.style.transform = '';
+    filme.style.zIndex = '';
+
+    // Volta a mostrar as setas, se houver scroll disponível
     atualizarSetas(container);
   });
 });
+
 
     // Inicializa visibilidade das setas
     atualizarSetas(container);
