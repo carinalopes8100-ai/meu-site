@@ -331,15 +331,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hover nos filmes para esconder/mostrar setas
     const filmes = container.querySelectorAll('.filme');
-    filmes.forEach(filme => {
-      filme.addEventListener('mouseenter', () => {
-        btnLeft.style.opacity = '0';
-        btnRight.style.opacity = '0';
-      });
-      filme.addEventListener('mouseleave', () => {
-        atualizarSetas(container); // volta a mostrar as setas
-      });
-    });
+filmes.forEach(filme => {
+  filme.addEventListener('mouseenter', () => {
+    const rect = filme.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    
+    const tocandoEsquerda = rect.left < btnLeft.getBoundingClientRect().right;
+    const tocandoDireita = rect.right > btnRight.getBoundingClientRect().left;
+    
+    if (tocandoEsquerda) btnLeft.style.opacity = '0';
+    if (tocandoDireita) btnRight.style.opacity = '0';
+  });
+
+  filme.addEventListener('mouseleave', () => {
+    atualizarSetas(container);
+  });
+});
 
     // Inicializa visibilidade das setas
     atualizarSetas(container);
