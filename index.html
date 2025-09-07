@@ -269,11 +269,11 @@ document.querySelectorAll('.fila-container').forEach(container => {
   const btnRight = container.querySelector('.btn-right');
 
   function atualizarSetas() {
-    const scrollLeft = fila.scrollLeft;
-    const maxScrollLeft = fila.scrollWidth - fila.clientWidth;
+    const scrollLeft = Math.ceil(fila.scrollLeft);
+    const maxScrollLeft = Math.floor(fila.scrollWidth - fila.clientWidth);
 
-    btnLeft.style.display = scrollLeft > 1 ? 'flex' : 'none';
-    btnRight.style.display = scrollLeft < maxScrollLeft - 1 ? 'flex' : 'none';
+    btnLeft.style.display = scrollLeft > 0 ? 'flex' : 'none';
+    btnRight.style.display = scrollLeft < maxScrollLeft ? 'flex' : 'none';
   }
 
   btnLeft.addEventListener('click', () => {
