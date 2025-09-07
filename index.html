@@ -310,33 +310,7 @@ function abrirDescricaoModal(item) {
   document.getElementById('descricaoModal').style.display = 'flex';
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const filas = document.querySelectorAll('.fila-container');
 
-  filas.forEach(container => {
-    const fila = container.querySelector('.fila');
-    const btnLeft = container.querySelector('.btn-left');
-    const btnRight = container.querySelector('.btn-right');
-
-    // Scroll normal
-    btnLeft.onclick = () => fila.scrollBy({ left: -300, behavior: 'smooth' });
-    btnRight.onclick = () => fila.scrollBy({ left: 300, behavior: 'smooth' });
-
-    // Zoom das setas quando hover em filme
-    const filmes = container.querySelectorAll('.filme');
-
-    filmes.forEach(filme => {
-      filme.addEventListener('mouseenter', () => {
-        btnLeft.style.transform = 'scale(1.1)';
-        btnRight.style.transform = 'scale(1.1)';
-      });
-      filme.addEventListener('mouseleave', () => {
-        btnLeft.style.transform = 'scale(1)';
-        btnRight.style.transform = 'scale(1)';
-      });
-    });
-  });
-});
 
   
 
