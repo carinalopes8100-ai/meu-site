@@ -2257,7 +2257,7 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
       btnPlay.style.backgroundColor = "#555";
       btnPlay.style.cursor = "not-allowed";
     } else {
-      btnPlay.textContent = '▶ Assistir';
+      btnPlay.textContent = '▶ Ver';
       btnPlay.onclick = (e) => {
         e.stopPropagation();
         const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
@@ -2279,7 +2279,7 @@ if(item.titulo === 'Morangos com Açúcar'){
     abrirModalTemporadas({ ...item, temporadas: item.verao });
   };
 } else {
-  btnDireito.textContent = '▶ Trailer / Teaser';
+  btnDireito.textContent = '▶ Trailer';
   btnDireito.onclick = (e) => {
     e.stopPropagation();
 
