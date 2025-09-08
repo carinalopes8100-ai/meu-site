@@ -249,6 +249,15 @@ video::cue {
   </div>
 </div>
 
+ <!-- Modal de trailers -->
+<div id="modalTrailer" class="modal">
+  <div class="modal-content" style="max-width:500px;">
+    <h2 id="modalTrailerTitle"></h2>
+    <div id="trailerList"></div>
+    <button class="close-btn" onclick="fecharModalTrailer()">Fechar</button>
+  </div>
+</div> 
+
 <div id="toastContainer" class="toast-container"></div>
 
 <script>
@@ -392,6 +401,37 @@ function fecharAudioModal() {
 }
 
   
+function abrirModalTrailers(item){
+  const modal = document.getElementById('modalTrailer');
+  const trailerList = document.getElementById('trailerList');
+  const titulo = document.getElementById('modalTrailerTitle');
+
+  titulo.textContent = `Trailers de "${item.titulo}"`;
+  trailerList.innerHTML = '';
+
+  // Supondo que o item tenha trailers: [{titulo: 'Trailer 1', link: '...'}, {...}]
+  if(item.trailers && item.trailers.length > 0){
+    item.trailers.forEach((tr, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'episodio-btn';
+      btn.textContent = `${tr.titulo || 'Trailer ' + (idx+1)}`;
+      btn.onclick = () => abrirVideo({ titulo: item.titulo + ' - ' + (tr.titulo || 'Trailer'), link: tr.link });
+      trailerList.appendChild(btn);
+    });
+  } else if(item.trailer){ // fallback para trailer único
+    const btn = document.createElement('button');
+    btn.className = 'episodio-btn';
+    btn.textContent = 'Trailer Oficial';
+    btn.onclick = () => abrirVideo({ titulo: item.titulo + ' - Trailer', link: item.trailer });
+    trailerList.appendChild(btn);
+  }
+
+  modal.style.display = 'flex';
+}
+
+function fecharModalTrailer(){
+  document.getElementById('modalTrailer').style.display = 'none';
+}
 
 
 
@@ -2220,11 +2260,11 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
         abrirModalTemporadas({ ...item, temporadas: item.verao });
       };
     } else {
-      btnDireito.textContent = '▶ Trailer';
-      btnDireito.onclick = (e) => {
-        e.stopPropagation();
-        if(item.trailer) abrirVideo({ titulo: item.titulo + ' - Trailer', link: item.trailer });
-      };
+btnDireito.textContent = '▶ Trailer';
+btnDireito.onclick = (e) => {
+  e.stopPropagation();
+  if(item.trailer || item.trailers) abrirModalTrailers(item);
+};
     }
     overlay.appendChild(btnDireito);
 
