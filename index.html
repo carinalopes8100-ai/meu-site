@@ -401,33 +401,25 @@ function fecharAudioModal() {
 }
 
   
-function abrirModalTrailers(item, tipo='trailer'){
+function abrirModalTrailers(item){
   const modal = document.getElementById('modalTrailer');
   const trailerList = document.getElementById('trailerList');
   const titulo = document.getElementById('modalTrailerTitle');
 
-  // Define o título do modal conforme o tipo
-  titulo.textContent = `${tipo === 'trailer' ? 'Trailers' : 'Teasers'} de "${item.titulo}"`;
+  // O título do modal sempre "Trailers"
+  titulo.textContent = `Trailers de "${item.titulo}"`;
   trailerList.innerHTML = '';
 
-  // Supondo que o item tenha trailers ou teasers: [{titulo, link, tipo}]
   if(item.trailers && item.trailers.length > 0){
-    const videosFiltrados = item.trailers.filter(t => t.tipo === tipo);
-    if(videosFiltrados.length === 0) {
-      const aviso = document.createElement('div');
-      aviso.textContent = `Nenhum ${tipo} disponível.`;
-      aviso.style.margin = '10px 0';
-      trailerList.appendChild(aviso);
-    } else {
-      videosFiltrados.forEach((tr, idx) => {
-        const btn = document.createElement('button');
-        btn.className = 'episodio-btn';
-        btn.textContent = tr.titulo || `${tipo.charAt(0).toUpperCase() + tipo.slice(1)} ${idx+1}`;
-        btn.onclick = () => abrirVideo({ titulo: `${item.titulo} - ${tr.titulo || tipo}`, link: tr.link });
-        trailerList.appendChild(btn);
-      });
-    }
-  } else if(item.trailer && tipo === 'trailer'){ // fallback para trailer único
+    item.trailers.forEach((tr, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'episodio-btn';
+      // Exibe o título do vídeo ou um fallback
+      btn.textContent = tr.titulo || `Trailer ${idx+1}`;
+      btn.onclick = () => abrirVideo({ titulo: `${item.titulo} - ${tr.titulo || 'Trailer'}`, link: tr.link });
+      trailerList.appendChild(btn);
+    });
+  } else if(item.trailer){ // fallback para trailer único
     const btn = document.createElement('button');
     btn.className = 'episodio-btn';
     btn.textContent = 'Trailer Oficial';
