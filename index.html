@@ -457,7 +457,7 @@ function abrirVideo(item) {
 
   let terminou = false;
 
-  // Verifica se é mp4 ou embed
+  // 🔴 Caso seja arquivo MP4
   if (item.link.endsWith(".mp4")) {
     // Loader
     const loader = document.createElement('div');
@@ -468,7 +468,7 @@ function abrirVideo(item) {
     loader.style.textAlign = 'center';
     videoModal.appendChild(loader);
 
-    // Elemento vídeo
+    // Elemento de vídeo
     const videoEl = document.createElement('video');
     videoEl.src = item.link;
     videoEl.controls = true;
@@ -477,7 +477,7 @@ function abrirVideo(item) {
     videoEl.style.height = '80%';
     videoModal.appendChild(videoEl);
 
-    // Fechar com stop
+    // Fechar
     fecharBtn.onclick = () => {
       if (!terminou) salvarProgresso();
       videoEl.pause();
@@ -486,7 +486,7 @@ function abrirVideo(item) {
       videoModal.remove();
     };
 
-    // Audios alternativos
+    // Botões de áudio
     const audioContainer = document.createElement('div');
     audioContainer.style.position = 'absolute';
     audioContainer.style.top = '20px';
@@ -549,33 +549,38 @@ function abrirVideo(item) {
     };
 
   } else {
-    // Caso seja embed/iframe
-// Caso seja embed/iframe
-const container = document.createElement('div');
-container.style.position = "relative";
-container.style.width = "100%";
-container.style.paddingTop = "56.25%"; // 16:9 ratio
-container.style.borderRadius = "10px";
-container.style.boxShadow = "0 0 20px rgba(0,0,0,0.7)";
-container.style.overflow = "hidden";
+    // 🔵 Caso seja embed/iframe
+    const container = document.createElement('div');
+    container.style.position = "relative";
+    container.style.width = "100%";
+    container.style.paddingTop = "56.25%"; // 16:9
+    container.style.borderRadius = "10px";
+    container.style.boxShadow = "0 0 20px rgba(0,0,0,0.7)";
+    container.style.overflow = "hidden";
 
-const iframe = document.createElement('iframe');
-iframe.src = item.link;
-iframe.style.position = "absolute";
-iframe.style.top = "0";
-iframe.style.left = "0";
-iframe.style.width = "100%";
-iframe.style.height = "100%";
-iframe.style.border = "0";
-iframe.allowFullscreen = true;
-iframe.allow = "autoplay";
+    const iframe = document.createElement('iframe');
+    iframe.src = item.link;
+    iframe.style.position = "absolute";
+    iframe.style.top = "0";
+    iframe.style.left = "0";
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    iframe.style.border = "0";
+    iframe.allowFullscreen = true;
+    iframe.allow = "autoplay";
 
-container.appendChild(iframe);
-videoModal.appendChild(container);
+    container.appendChild(iframe);
+    videoModal.appendChild(container);
 
-fecharBtn.onclick = () => {
-  videoModal.remove();
-};
+    fecharBtn.onclick = () => {
+      videoModal.remove();
+    };
+  }
+
+  // 🔑 Importante: adicionar o modal ao body
+  document.body.appendChild(videoModal);
+}
+
 
 
 
