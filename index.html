@@ -548,51 +548,26 @@ function abrirVideo(item) {
       videoEl.play();
     };
 
-} else {
-  // Caso seja embed/iframe
-  const iframe = document.createElement('iframe');
-
-  if (item.link.includes("youtube.com") || item.link.includes("youtu.be")) {
-    // YouTube
-    iframe.src = item.link;
-  } else if (item.link.includes("drive.google.com")) {
-    // Google Drive -> forçar preview
-    iframe.src = item.link
-      .replace("/view", "/preview")
-      .replace("/edit", "/preview");
-  } else if (item.link.includes("mega.nz")) {
-    // Mega -> usar embed
-    iframe.src = item.link.replace("/file/", "/embed/");
-  } else if (item.link.includes("filemoon.sx") || item.link.includes("filemoon.to")) {
-    // Filemoon -> /d/xxx -> /e/xxx
-    iframe.src = item.link.replace("/d/", "/e/");
-  } else if (item.link.includes("dood.watch") || item.link.includes("doodstream.com")) {
-    // Doodstream -> /d/xxx -> /e/xxx
-    iframe.src = item.link.replace("/d/", "/e/");
   } else {
-    // Outros players
+    // Caso seja embed/iframe
+    const iframe = document.createElement('iframe');
     iframe.src = item.link;
+    iframe.width = "100%";
+    iframe.height = "100%";
+    iframe.allowFullscreen = true;
+    iframe.frameBorder = "0";
+    iframe.allow = "autoplay";
+    iframe.style.borderRadius = "10px";
+    iframe.style.boxShadow = "0 0 20px rgba(0,0,0,0.7)";
+    videoModal.appendChild(iframe);
+
+    fecharBtn.onclick = () => {
+      videoModal.remove();
+    };
   }
 
-  iframe.width = "100%";
-  iframe.height = "100%";
-  iframe.allowFullscreen = true;
-  iframe.frameBorder = "0";
-  iframe.allow = "autoplay";
-  iframe.style.borderRadius = "10px";
-  iframe.style.boxShadow = "0 0 20px rgba(0,0,0,0.7)";
-
-  videoModal.appendChild(iframe);
-
-  fecharBtn.onclick = () => {
-    videoModal.remove();
-  };
+  document.body.appendChild(videoModal);
 }
-
-
-
-document.body.appendChild(videoModal);
-
 
 
 
@@ -1561,7 +1536,7 @@ const series = [
     {
       "numero": 1,
       "episodios": [
-        { "numero": 1, "link": "https://drive.google.com/file/d/1Bxz_KaORQiVlgGTn94JCD5gyBZohReye/preview" },
+        { "numero": 1, "link": "https://d-s.io/e/490spb2t70zj" },
         { "numero": 2, "link": "https://d-s.io/e/9ops02mexelm" },
         { "numero": 3, "link": "https://d-s.io/e/q2hatgs65gn6" },
         { "numero": 4, "link": "https://d-s.io/e/er6fejc8bw8x" },
