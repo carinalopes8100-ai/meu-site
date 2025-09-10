@@ -548,26 +548,35 @@ function abrirVideo(item) {
       videoEl.play();
     };
 
-  } else {
-    // Caso seja embed/iframe
-    const iframe = document.createElement('iframe');
-    iframe.src = item.link;
-    iframe.width = "100%";
-    iframe.height = "100%";
-    iframe.allowFullscreen = true;
-    iframe.frameBorder = "0";
-    iframe.allow = "autoplay";
-    iframe.style.borderRadius = "10px";
-    iframe.style.boxShadow = "0 0 20px rgba(0,0,0,0.7)";
-    videoModal.appendChild(iframe);
+} else {
+  // Caso seja embed/iframe
+  const iframe = document.createElement('iframe');
 
-    fecharBtn.onclick = () => {
-      videoModal.remove();
-    };
+  if (item.link.includes("youtube.com")) {
+    // Trailers (YouTube)
+    iframe.src = item.link;
+  } else if (item.link.includes("drive.google.com")) {
+    // Episódios (Google Drive no formato /preview)
+    iframe.src = item.link;
   }
 
-  document.body.appendChild(videoModal);
+  iframe.width = "100%";
+  iframe.height = "100%";
+  iframe.allowFullscreen = true;
+  iframe.frameBorder = "0";
+  iframe.allow = "autoplay";
+  iframe.style.borderRadius = "10px";
+  iframe.style.boxShadow = "0 0 20px rgba(0,0,0,0.7)";
+
+  videoModal.appendChild(iframe);
+
+  fecharBtn.onclick = () => {
+    videoModal.remove();
+  };
 }
+
+document.body.appendChild(videoModal);
+
 
 
 
