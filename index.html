@@ -552,11 +552,14 @@ function abrirVideo(item) {
   // Caso seja embed/iframe
   const iframe = document.createElement('iframe');
 
-  if (item.link.includes("youtube.com")) {
+  if (item.link.includes("youtube.com") || item.link.includes("youtu.be")) {
     // Trailers (YouTube)
     iframe.src = item.link;
   } else if (item.link.includes("drive.google.com")) {
-    // Episódios (Google Drive no formato /preview)
+    // Episódios (Google Drive - forçar /preview)
+    iframe.src = item.link.replace("/view", "/preview");
+  } else {
+    // Outros players (Mega, Dood, Filemoon, etc.)
     iframe.src = item.link;
   }
 
@@ -574,6 +577,7 @@ function abrirVideo(item) {
     videoModal.remove();
   };
 }
+
 
 document.body.appendChild(videoModal);
 
