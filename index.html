@@ -2175,7 +2175,24 @@ const desenhos = [
 
   
 const filmesTerror = [
-  {titulo:"A Órfã",img:"https://m.media-amazon.com/images/S/pv-target-images/6bb54a2800e5124b4d6f345aaa713e219560bc64f4b41b4a77a9cadd29562008.jpg",link:"https://d-s.io/e/xnesg51wt0m9",trailer:"https://www.youtube.com/embed/83dEw6cNg94?autoplay=1"},
+           {
+  titulo: "A Órfã",
+  img: "https://m.media-amazon.com/images/S/pv-target-images/6bb54a2800e5124b4d6f345aaa713e219560bc64f4b41b4a77a9cadd29562008.jpg",
+  link: "https://d-s.io/e/xnesg51wt0m9", // este é o padrão inicial
+  trailer: "https://www.youtube.com/embed/83dEw6cNg94?autoplay=1",
+  audios: [
+    { label: "English", src: "https://d-s.io/e/xnesg51wt0m9" },
+  ],
+  legendas: [
+    {
+      label: "Português",
+      lang: "pt",
+      src: "legendas/[SubtitleTools.com] Harry.Potter.and.the.Goblet.of.Fire.2005.1080p.BluRay.DDP.5.1.x265-EDGE2020.vtt",
+      default: true
+    }
+  ]
+},
+];
   {titulo:"O Mal Mora Aqui",img:"https://img.youtube.com/vi/a7tltGB46rM/mqdefault.jpg",link:"#",trailer:"https://www.youtube.com/embed/s9yiUhrBXSE?autoplay=1"},
   {titulo:"Pesadelos Macabros",img:"https://i.ytimg.com/vi/OqaLb5zyrQo/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCv51tSJr4o2F-B7mYY5UZQLR_Ozw",link:"#",trailer:"https://www.youtube.com/embed/BvNXCkHF8l0?autoplay=1"},
   {titulo:"M3GAN",img:"https://m.media-amazon.com/images/S/pv-target-images/6307d8175bd745e1b9d4c79052c67090003de35bb4b75fc92d149d66ead18150.jpg",link:"https://ia903208.us.archive.org/4/items/sf_20250829/M3gan.2022.1080P.X264.Full.Hd.Web-Dl.Dual.5.1-Sf.ia.mp4",trailer:"https://www.youtube.com/embed/G7ZdxfF3A4A?autoplay=1"},
