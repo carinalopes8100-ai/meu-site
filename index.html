@@ -553,13 +553,24 @@ function abrirVideo(item) {
   const iframe = document.createElement('iframe');
 
   if (item.link.includes("youtube.com") || item.link.includes("youtu.be")) {
-    // Trailers (YouTube)
+    // YouTube
     iframe.src = item.link;
   } else if (item.link.includes("drive.google.com")) {
-    // Episódios (Google Drive - forçar /preview)
-    iframe.src = item.link.replace("/view", "/preview");
+    // Google Drive -> forçar preview
+    iframe.src = item.link
+      .replace("/view", "/preview")
+      .replace("/edit", "/preview");
+  } else if (item.link.includes("mega.nz")) {
+    // Mega -> usar embed
+    iframe.src = item.link.replace("/file/", "/embed/");
+  } else if (item.link.includes("filemoon.sx") || item.link.includes("filemoon.to")) {
+    // Filemoon -> /d/xxx -> /e/xxx
+    iframe.src = item.link.replace("/d/", "/e/");
+  } else if (item.link.includes("dood.watch") || item.link.includes("doodstream.com")) {
+    // Doodstream -> /d/xxx -> /e/xxx
+    iframe.src = item.link.replace("/d/", "/e/");
   } else {
-    // Outros players (Mega, Dood, Filemoon, etc.)
+    // Outros players
     iframe.src = item.link;
   }
 
@@ -577,6 +588,7 @@ function abrirVideo(item) {
     videoModal.remove();
   };
 }
+
 
 
 document.body.appendChild(videoModal);
