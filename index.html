@@ -457,7 +457,7 @@ function abrirVideo(item) {
 
   let terminou = false;
 
-  // 🔴 Caso seja arquivo MP4
+  // Verifica se é mp4 ou embed
   if (item.link.endsWith(".mp4")) {
     // Loader
     const loader = document.createElement('div');
@@ -468,7 +468,7 @@ function abrirVideo(item) {
     loader.style.textAlign = 'center';
     videoModal.appendChild(loader);
 
-    // Elemento de vídeo
+    // Elemento vídeo
     const videoEl = document.createElement('video');
     videoEl.src = item.link;
     videoEl.controls = true;
@@ -477,7 +477,7 @@ function abrirVideo(item) {
     videoEl.style.height = '80%';
     videoModal.appendChild(videoEl);
 
-    // Fechar
+    // Fechar com stop
     fecharBtn.onclick = () => {
       if (!terminou) salvarProgresso();
       videoEl.pause();
@@ -486,7 +486,7 @@ function abrirVideo(item) {
       videoModal.remove();
     };
 
-    // Botões de áudio
+    // Audios alternativos
     const audioContainer = document.createElement('div');
     audioContainer.style.position = 'absolute';
     audioContainer.style.top = '20px';
@@ -549,38 +549,25 @@ function abrirVideo(item) {
     };
 
   } else {
-    // 🔵 Caso seja embed/iframe
-    const container = document.createElement('div');
-    container.style.position = "relative";
-    container.style.width = "100%";
-    container.style.paddingTop = "56.25%"; // 16:9
-    container.style.borderRadius = "10px";
-    container.style.boxShadow = "0 0 20px rgba(0,0,0,0.7)";
-    container.style.overflow = "hidden";
-
+    // Caso seja embed/iframe
     const iframe = document.createElement('iframe');
     iframe.src = item.link;
-    iframe.style.position = "absolute";
-    iframe.style.top = "0";
-    iframe.style.left = "0";
-    iframe.style.width = "100%";
-    iframe.style.height = "100%";
-    iframe.style.border = "0";
+    iframe.width = "100%";
+    iframe.height = "100%";
     iframe.allowFullscreen = true;
+    iframe.frameBorder = "0";
     iframe.allow = "autoplay";
-
-    container.appendChild(iframe);
-    videoModal.appendChild(container);
+    iframe.style.borderRadius = "10px";
+    iframe.style.boxShadow = "0 0 20px rgba(0,0,0,0.7)";
+    videoModal.appendChild(iframe);
 
     fecharBtn.onclick = () => {
       videoModal.remove();
     };
   }
 
-  // 🔑 Importante: adicionar o modal ao body
   document.body.appendChild(videoModal);
 }
-
 
 
 
@@ -1549,7 +1536,7 @@ const series = [
     {
       "numero": 1,
       "episodios": [
-        { "numero": 1, "link": "https://drive.google.com/file/d/1Bxz_KaORQiVlgGTn94JCD5gyBZohReye/preview" },
+        { "numero": 1, "link": "https://d-s.io/e/490spb2t70zj" },
         { "numero": 2, "link": "https://d-s.io/e/9ops02mexelm" },
         { "numero": 3, "link": "https://d-s.io/e/q2hatgs65gn6" },
         { "numero": 4, "link": "https://d-s.io/e/er6fejc8bw8x" },
