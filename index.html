@@ -2871,6 +2871,49 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
     img.alt=item.titulo; 
     itemDiv.appendChild(img);
 
+    // ==== Barra de progresso ====
+    if(progresso[item.titulo] && progresso[item.titulo] > 0){
+      const progressoDiv = document.createElement('div');
+      progressoDiv.style.position = 'absolute';
+      progressoDiv.style.bottom = '0';
+      progressoDiv.style.left = '0';
+      progressoDiv.style.width = '100%';
+      progressoDiv.style.height = '5px';
+      progressoDiv.style.backgroundColor = 'rgba(255,255,255,0.3)';
+
+      const progressoInner = document.createElement('div');
+      progressoInner.style.height = '100%';
+      progressoInner.style.backgroundColor = '#e50914';
+      progressoDiv.appendChild(progressoInner);
+      itemDiv.appendChild(progressoDiv);
+
+      const atualizarBarra = (duracao) => {
+        const pct = Math.min((progresso[item.titulo] / duracao) * 100, 100);
+        progressoInner.style.width = pct + '%';
+      };
+
+      if(item.duracao){
+        atualizarBarra(item.duracao);
+      } else if(item.link){
+        const tempVideo = document.createElement('video');
+        tempVideo.src = item.link;
+        tempVideo.preload = 'metadata';
+        tempVideo.addEventListener('loadedmetadata', () => {
+          item.duracao = tempVideo.duration; 
+          atualizarBarra(tempVideo.duration);
+        });
+      }
+
+      const observer = new MutationObserver(() => {
+        const video = document.getElementById('playerVideo');
+        if(video && video.dataset.titulo === item.titulo){
+          video.addEventListener('timeupdate', () => {
+            atualizarBarra(video.duration);
+          });
+        }
+      });
+      observer.observe(document.body, {childList: true, subtree: true});
+    }
 
     // ==== Overlay com botões (play e trailer/verão) ====
     const overlay = document.createElement('div'); 
@@ -3116,8 +3159,6 @@ function pesquisar(){
 // Carrega listas e progresso antes de mostrar a tela inicial
 carregarLista(); 
 carregarProgresso();
-
-  
 mostrarSecao('inicio');
 
 // Banner
@@ -3147,40 +3188,8 @@ video.addEventListener('timeupdate', () => {
   captions.textContent = currentSubtitle ? currentSubtitle.text : '';
 });
 
-
-document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('searchInput');
-    const root = document.getElementById('root');
-
-    function pesquisarInstantanea() {
-        const termo = searchInput.value.toLowerCase().trim();
-        root.innerHTML = '';
-
-        if (termo === '') {
-            mostrarSecao('inicio');
-            return;
-        }
-
-        const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
-        const resultados = todosItens.filter(item => item.titulo.toLowerCase().includes(termo));
-
-        if (resultados.length > 0) {
-            root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
-        } else {
-            root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
-        }
-    }
-
-    // Pesquisa instantânea ao digitar
-    searchInput.addEventListener('input', pesquisarInstantanea);
-
-    // Botão 🔍 chama a mesma função
-    document.querySelector('#searchContainer button').onclick = pesquisarInstantanea;
-});
-
-
-
-
+// Pesquisa instantânea
+document.getElementById('searchInput').addEventListener('input', () => pesquisar());
 </script>
 </body>
 </html>
