@@ -3227,8 +3227,31 @@ video.addEventListener('timeupdate', () => {
   captions.textContent = currentSubtitle ? currentSubtitle.text : '';
 });
 
-// Pesquisa instantânea
-document.getElementById('searchInput').addEventListener('input', () => pesquisar());
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('searchInput');
+
+  searchInput.addEventListener('input', () => {
+    const termo = searchInput.value.toLowerCase().trim();
+    const root = document.getElementById('root');
+    
+    if (termo === "") {
+      mostrarSecao('inicio'); // volta para a tela inicial se não digitar nada
+      return;
+    }
+    
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+    const resultados = todosItens.filter(item => item.titulo.toLowerCase().includes(termo));
+
+    root.innerHTML = ''; // limpa resultados antigos
+
+    if (resultados.length > 0) {
+      root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+    } else {
+      root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+    }
+  });
+});
+
 </script>
 </body>
 </html>
