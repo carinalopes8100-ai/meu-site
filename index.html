@@ -3150,7 +3150,8 @@ video.addEventListener('timeupdate', () => {
   captions.textContent = currentSubtitle ? currentSubtitle.text : '';
 });
 
-window.addEventListener('DOMContentLoaded', () => {
+
+document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
 
     searchInput.addEventListener('input', () => {
@@ -3158,7 +3159,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const root = document.getElementById('root');
 
         if (termo === "") {
-            mostrarSecao('inicio'); // volta à tela inicial se não tiver termo
+            mostrarSecao('inicio'); // volta à tela inicial
             return;
         }
 
