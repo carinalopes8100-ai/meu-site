@@ -3226,44 +3226,37 @@ video.addEventListener('timeupdate', () => {
   captions.textContent = currentSubtitle ? currentSubtitle.text : '';
 });
 
-// Função para normalizar strings (ignora maiúsculas, minúsculas e acentos)
+// Função utilitária para normalizar strings (ignora maiúsculas, minúsculas e acentos)
 function normalizar(str) {
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
 // Pesquisa instantânea
-function pesquisarInstantaneamente() {
-    const input = document.getElementById('searchInput');
-    if (!input) return;
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) return;
 
-    const termo = normalizar(input.value.trim());
-    const root = document.getElementById('root');
+    searchInput.addEventListener('input', () => {
+        const termo = normalizar(searchInput.value.trim());
+        const root = document.getElementById('root');
 
-    // Se estiver vazio, volta para a tela inicial
-    if (termo === "") {
-        mostrarSecao('inicio');
-        return;
-    }
+        if (termo === "") {
+            mostrarSecao('inicio');
+            return;
+        }
 
-    // Lista completa de itens
-    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+        const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
 
-    // Filtra os resultados
-    const resultados = todosItens.filter(item => normalizar(item.titulo).includes(termo));
+        const resultados = todosItens.filter(item => normalizar(item.titulo).includes(termo));
 
-    // Limpa resultados anteriores
-    root.innerHTML = '';
-
-    if (resultados.length > 0) {
-        root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${input.value}"`));
-    } else {
-        root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${input.value}"</div>`;
-    }
-}
-
-// Ligar evento input
-const searchInput = document.getElementById('searchInput');
-searchInput.addEventListener('input', pesquisarInstantaneamente);
+        root.innerHTML = '';
+        if (resultados.length > 0) {
+            root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${searchInput.value}"`));
+        } else {
+            root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${searchInput.value}"</div>`;
+        }
+    });
+});
 
 </script>
 </body>
