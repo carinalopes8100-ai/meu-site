@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -36,6 +35,26 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 #root { margin-top:80px; }
 
+  #bannerMuteBtn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 5;
+  background: rgba(0,0,0,0.6);
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#bannerMuteBtn:hover {
+  background: rgba(229,9,20,0.8);
+}
+
+
 /* Esconde as setas inicialmente */
 .fila-container .btn-scroll {
   opacity: 0;
@@ -49,6 +68,21 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   pointer-events: auto;
 }
 
+ #bannerContainer {
+  position: relative;
+  width: 100%;
+  height: 500px; /* altura do banner */
+  overflow: hidden;
+}
+
+#bannerImage,
+#bannerVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+ 
   
 .fila-container { margin:20px 50px; position:relative; }
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
@@ -233,7 +267,7 @@ video::cue {
 </nav>
 <div id="searchContainer">
   <input type="text" id="searchInput" placeholder="Pesquisar...">
-  <!-- <button onclick="pesquisar()">🔍︎</button> -->
+  <button onclick="pesquisar()">🔍︎</button>
 </div>
 </header>
 
@@ -242,20 +276,26 @@ video::cue {
 
 
 <div class="banner">
-  <img id="bannerImage" src="https://i.ytimg.com/vi/UF82gjvULhw/maxresdefault.jpg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;">
-  <video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay muted loop>
-    <source src="https://ia801004.us.archive.org/21/items/confia-sonho-de-cria-teaser-globoplay/CONFIA%20-%20SONHO%20DE%20CRIA%20%20Teaser%20%20Globoplay.mp4" type="video/mp4">
+  <img id="bannerImage" src="..." style="..." >
+  <video id="bannerVideo" style="display:none; ... " autoplay muted loop>
+    <source src="..." type="video/mp4">
   </video>
+
   <div class="banner-content">
     <h1>Confia: Sonho de Cria</h1>
-    <p>O Nando trabalha como entregador numa cafetaria em Copacabana e sonha em tornar-se uma estrela do trap, mas não tem muitas oportunidades.</p>
+    <p>O Nando trabalha...</p>
     <button class="play" onclick="abrirVideo(filmes[0])">▶ Assistir</button>
     <button class="lista" onclick="adicionarMinhaLista('Confia Sonho De Cria')">+ Minha Lista</button>
-        <button class="remover-anuncios" onclick="window.location.href='https://chromewebstore.google.com/detail/adblocker-ultimate/ohahllgiabjaoigichmmfljhkcfikeof?hl=pt-PT&gl=001'">
+    <button class="remover-anuncios" onclick="window.location.href='...'">
       REMOVER ANÚNCIOS
-   </button>        
+    </button>
   </div>
+
+  <!-- Botão de mute/unmute do banner -->
+  <button id="bannerMuteBtn">🔇</button>
 </div>
+
+
 
 
 
@@ -296,6 +336,47 @@ function mostrarToast(mensagem){
   toast.appendChild(btn); container.appendChild(toast);
   setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
+
+  function debounce(func, delay) {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', debounce(() => {
+  const termo = searchInput.value.toLowerCase().trim();
+  const root = document.getElementById('root');
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+
+  if (termo === "") {
+    mostrarSecao('inicio'); 
+    return;
+  }
+
+  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
+  root.innerHTML = '';
+
+  if (resultados.length > 0) {
+    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+  } else {
+    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+  }
+}, 150)); // 150ms de atraso
+
+const bannerVideo = document.getElementById('bannerVideo');
+const muteBtn = document.getElementById('bannerMuteBtn');
+
+bannerVideo.muted = true;
+muteBtn.textContent = '🔇';
+
+muteBtn.addEventListener('click', () => {
+  bannerVideo.muted = !bannerVideo.muted;
+  muteBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
+});
+
 
 function openDB() {
   return new Promise((resolve, reject) => {
@@ -590,6 +671,16 @@ function abrirVideo(item) {
 }
 
 
+
+
+
+
+
+
+
+
+
+
 // ===== Dados =====
 const filmes = [
 
@@ -653,11 +744,11 @@ const filmes = [
   {
   titulo: "Stomp The Yard",
   img: "https://is1-ssl.mzstatic.com/image/thumb/TysfrjpVPxNEnqZxrYsHXA/1200x675.jpg",
-  link: "https://filemoon.sx/e/ran7sqabuedr", // este é o padrão inicial
+  link: "https://filemoon.to/e/ran7sqabuedr", // este é o padrão inicial
   trailer: "https://filemoon.to/e/ukquy8x395jv",
   descricao: "2007 Quando o seu irmão é assassinado, um dançarino de rua muda-se para a Geórgia para frequentar a universidade. Junta-se à equipa de dança de passos de uma fraternidade para competir. Conseguirá obter a educação… e conquistar a rapariga?",
   audios: [
-    { label: "English", src: "https://filemoon.sx/e/ran7sqabuedr" },
+    { label: "English", src: "https://filemoon.to/e/ran7sqabuedr" },
   ],
   legendas: [
     {
@@ -672,11 +763,11 @@ const filmes = [
     {
   titulo: "Stomp The Yard 2 Homecoming",
   img: "https://is1-ssl.mzstatic.com/image/thumb/5iXGLHfkIYLmU6Lel3eikA/1200x675.jpg",
-  link: "https://filemoon.sx/e/fii7es6h3qtj", // este é o padrão inicial
+  link: "https://filemoon.to/e/fii7es6h3qtj", // este é o padrão inicial
   trailer: "https://filemoon.to/e/os5xhuzkk6dn",
   descricao: "2010 Chance Harris tenta encontrar um equilíbrio entre a escola, o trabalho, os relacionamentos e a oportunidade de atuar na competição de step transmitida a nível nacional durante o fim de semana de regresso a casa na Truth University.",
   audios: [
-    { label: "English", src: "https://filemoon.sx/e/fii7es6h3qtj" },
+    { label: "English", src: "https://filemoon.to/e/fii7es6h3qtj" },
   ],
   legendas: [
     {
@@ -2872,6 +2963,49 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
     img.alt=item.titulo; 
     itemDiv.appendChild(img);
 
+    // ==== Barra de progresso ====
+    if(progresso[item.titulo] && progresso[item.titulo] > 0){
+      const progressoDiv = document.createElement('div');
+      progressoDiv.style.position = 'absolute';
+      progressoDiv.style.bottom = '0';
+      progressoDiv.style.left = '0';
+      progressoDiv.style.width = '100%';
+      progressoDiv.style.height = '5px';
+      progressoDiv.style.backgroundColor = 'rgba(255,255,255,0.3)';
+
+      const progressoInner = document.createElement('div');
+      progressoInner.style.height = '100%';
+      progressoInner.style.backgroundColor = '#e50914';
+      progressoDiv.appendChild(progressoInner);
+      itemDiv.appendChild(progressoDiv);
+
+      const atualizarBarra = (duracao) => {
+        const pct = Math.min((progresso[item.titulo] / duracao) * 100, 100);
+        progressoInner.style.width = pct + '%';
+      };
+
+      if(item.duracao){
+        atualizarBarra(item.duracao);
+      } else if(item.link){
+        const tempVideo = document.createElement('video');
+        tempVideo.src = item.link;
+        tempVideo.preload = 'metadata';
+        tempVideo.addEventListener('loadedmetadata', () => {
+          item.duracao = tempVideo.duration; 
+          atualizarBarra(tempVideo.duration);
+        });
+      }
+
+      const observer = new MutationObserver(() => {
+        const video = document.getElementById('playerVideo');
+        if(video && video.dataset.titulo === item.titulo){
+          video.addEventListener('timeupdate', () => {
+            atualizarBarra(video.duration);
+          });
+        }
+      });
+      observer.observe(document.body, {childList: true, subtree: true});
+    }
 
     // ==== Overlay com botões (play e trailer/verão) ====
     const overlay = document.createElement('div'); 
@@ -3100,28 +3234,28 @@ function mostrarSecao(secao){
 function pesquisar(){
     const termo = document.getElementById('searchInput').value.toLowerCase().trim();
     const root = document.getElementById('root');
-    if (termo === "") {
-        mostrarSecao('inicio');
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+
+    if(termo === "") {
+        mostrarSecao('inicio'); // MOSTRA a tela inicial quando o input está vazio
         return;
     }
-    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+
     const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
-    root.innerHTML='';
-    if(resultados.length>0){
+    root.innerHTML = '';
+
+    if(resultados.length > 0){
         root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
     } else {
         root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
     }
 }
 
+
+
 // Carrega listas e progresso antes de mostrar a tela inicial
 carregarLista(); 
 carregarProgresso();
-
-// Limpa todo o progresso para remover barras antigas
-localStorage.removeItem('progresso');
-progresso = {};
-  
 mostrarSecao('inicio');
 
 // Banner
@@ -3151,14 +3285,10 @@ video.addEventListener('timeupdate', () => {
   captions.textContent = currentSubtitle ? currentSubtitle.text : '';
 });
 
-// Pesquisa instantânea
-document.getElementById('searchInput').addEventListener('input', () => pesquisar());
-
-// Pesquisa instantânea: digita e pesquisa automaticamente
-const searchInput = document.getElementById('searchInput');
-searchInput.addEventListener('input', () => {
-  pesquisar();
-});
+// Inicialização da tela inicial
+carregarLista(); 
+carregarProgresso();
+mostrarSecao('inicio');
 </script>
 </body>
 </html>
