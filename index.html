@@ -3149,24 +3149,24 @@ function mostrarSecao(secao){
     }
 }
 
-function pesquisar() {
-  const termo = document.getElementById('searchInput').value.toLowerCase().trim();
-  const root = document.getElementById('root');
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+function pesquisar(){
+    const termo = document.getElementById('searchInput').value.toLowerCase().trim();
+    const root = document.getElementById('root');
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
 
-  if (termo === "") {
-      root.innerHTML = ''; // limpa resultados
-      return;              // não chama mostrarSecao aqui
-  }
+    if(termo === "") {
+        root.innerHTML = ''; // limpa resultados
+        return;              // não chama mostrarSecao aqui
+    }
 
-  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
-  root.innerHTML = '';
+    const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
+    root.innerHTML = '';
 
-  if (resultados.length > 0) {
-      root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
-  } else {
-      root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
-  }
+    if(resultados.length > 0){
+        root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+    } else {
+        root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+    }
 }
 
 
