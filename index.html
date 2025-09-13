@@ -3148,35 +3148,31 @@ video.addEventListener('timeupdate', () => {
 });
 
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Arrays globais que você já deve ter
-    // const filmes = [...]; const series = [...]; etc.
+function pesquisarInstantanea() {
+    const termo = searchInput.value.toLowerCase().trim();
+    root.innerHTML = '';
 
-    const searchInput = document.getElementById('searchInput');
-    const root = document.getElementById('root');
-
-    function pesquisaInstantanea() {
-        const termo = searchInput.value.toLowerCase().trim();
-        root.innerHTML = '';
-
-        if (termo === '') {
-            mostrarSecao('inicio');
-            return;
-        }
-
-        const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
-        const resultados = todosItens.filter(item => item.titulo.toLowerCase().includes(termo));
-
-        if (resultados.length > 0) {
-            root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
-        } else {
-            root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
-        }
+    if (termo === '') {
+        mostrarSecao('inicio');
+        return;
     }
 
-    // Pesquisa ao digitar
-    searchInput.addEventListener('input', pesquisaInstantanea);
-});
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+    const resultados = todosItens.filter(item => item.titulo.toLowerCase().includes(termo));
+
+    if (resultados.length > 0) {
+        root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+    } else {
+        root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+    }
+}
+
+// Pesquisa instantânea ao digitar
+searchInput.addEventListener('input', pesquisarInstantanea);
+
+// Botão 🔍 chama a mesma função
+document.querySelector('#searchContainer button').onclick = pesquisarInstantanea;
+
 
 </script>
 </body>
