@@ -257,24 +257,25 @@ video::cue {
 
 
 <div class="banner">
-  <img id="bannerImage" src="https://i.ytimg.com/vi/UF82gjvULhw/maxresdefault.jpg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;">
-  <video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay muted loop>
-    <source src="https://ia801004.us.archive.org/21/items/confia-sonho-de-cria-teaser-globoplay/CONFIA%20-%20SONHO%20DE%20CRIA%20%20Teaser%20%20Globoplay.mp4" type="video/mp4">
+  <img id="bannerImage" src="..." style="..." >
+  <video id="bannerVideo" style="display:none; ... " autoplay muted loop>
+    <source src="..." type="video/mp4">
   </video>
-
-  <!-- Overlay para degradê -->
-  <div class="banner-overlay"></div>
 
   <div class="banner-content">
     <h1>Confia: Sonho de Cria</h1>
-    <p>O Nando trabalha como entregador numa cafetaria em Copacabana e sonha em tornar-se uma estrela do trap, mas não tem muitas oportunidades.</p>
+    <p>O Nando trabalha...</p>
     <button class="play" onclick="abrirVideo(filmes[0])">▶ Assistir</button>
     <button class="lista" onclick="adicionarMinhaLista('Confia Sonho De Cria')">+ Minha Lista</button>
-    <button class="remover-anuncios" onclick="window.location.href='https://chromewebstore.google.com/detail/adblocker-ultimate/ohahllgiabjaoigichmmfljhkcfikeof?hl=pt-PT&gl=001'">
+    <button class="remover-anuncios" onclick="window.location.href='...'">
       REMOVER ANÚNCIOS
-    </button>        
+    </button>
   </div>
+
+  <!-- Botão de mute/unmute do banner -->
+  <button id="bannerMuteBtn">🔇</button>
 </div>
+
 
 
 
@@ -346,6 +347,16 @@ searchInput.addEventListener('input', debounce(() => {
   }
 }, 150)); // 150ms de atraso
 
+const bannerVideo = document.getElementById('bannerVideo');
+const muteBtn = document.getElementById('bannerMuteBtn');
+
+bannerVideo.muted = true;
+muteBtn.textContent = '🔇';
+
+muteBtn.addEventListener('click', () => {
+  bannerVideo.muted = !bannerVideo.muted;
+  muteBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
+});
 
 
 function openDB() {
