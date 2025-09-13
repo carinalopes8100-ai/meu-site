@@ -461,15 +461,11 @@ function ativarSom() {
         bannerVideo.muted = true;
         muteBtn.textContent = '🔊';
     }
-    window.removeEventListener('click', ativarSom);
-    window.removeEventListener('keydown', ativarSom);
-    window.removeEventListener('touchstart', ativarSom);
+  
 }
 
 // Ativa som ao clicar, tocar ou apertar tecla
-window.addEventListener('click', ativarSom);
-window.addEventListener('keydown', ativarSom);
-window.addEventListener('touchstart', ativarSom);
+
 
 // Botão de mute/unmute
 muteBtn.addEventListener('click', () => {
