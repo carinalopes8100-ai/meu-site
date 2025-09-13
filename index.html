@@ -3073,22 +3073,26 @@ function mostrarSecao(secao){
     }
 }
 
-function pesquisar(){
-    const termo = document.getElementById('searchInput').value.toLowerCase().trim();
-    const root = document.getElementById('root');
-    if (termo === "") {
-        mostrarSecao('inicio');
-        return;
-    }
-    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
-    const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
-    root.innerHTML='';
-    if(resultados.length>0){
-        root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
-    } else {
-        root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
-    }
+function pesquisar() {
+  const termo = document.getElementById('searchInput').value.toLowerCase().trim();
+  const root = document.getElementById('root');
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+
+  if (termo === "") {
+      root.innerHTML = ''; // limpa resultados
+      return;              // não chama mostrarSecao aqui
+  }
+
+  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
+  root.innerHTML = '';
+
+  if (resultados.length > 0) {
+      root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+  } else {
+      root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+  }
 }
+
 
 // Carrega listas e progresso antes de mostrar a tela inicial
 carregarLista(); 
@@ -3123,7 +3127,15 @@ video.addEventListener('timeupdate', () => {
 });
 
 // Pesquisa instantânea
-document.getElementById('searchInput').addEventListener('input', () => pesquisar());
+window.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', pesquisar);
+});
+
+// Inicialização da tela inicial
+carregarLista(); 
+carregarProgresso();
+mostrarSecao('inicio');
 </script>
 </body>
 </html>
