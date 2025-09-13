@@ -3289,7 +3289,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   if (!muteBtn || !bannerVideo) return;
 
-  bannerVideo.muted = true;
+  bannerVideo.muted = false;
   muteBtn.textContent = '🔇';
 
   muteBtn.addEventListener('click', async () => {
