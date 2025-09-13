@@ -3150,13 +3150,11 @@ video.addEventListener('timeupdate', () => {
   captions.textContent = currentSubtitle ? currentSubtitle.text : '';
 });
 
-// Pesquisa instantânea
-document.getElementById('searchInput').addEventListener('input', () => pesquisar());
-
-// Pesquisa instantânea: digita e pesquisa automaticamente
-const searchInput = document.getElementById('searchInput');
-searchInput.addEventListener('input', () => {
-  pesquisar();
+window.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', () => {
+        pesquisar(); // chama a pesquisa a cada letra digitada
+    });
 });
 </script>
 </body>
