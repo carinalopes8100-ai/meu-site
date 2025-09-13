@@ -3188,7 +3188,7 @@ video.addEventListener('timeupdate', () => {
   captions.textContent = currentSubtitle ? currentSubtitle.text : '';
 });
 
-// Função utilitária para normalizar strings (ignora maiúsculas, minúsculas e acentos)
+// Função utilitária para normalizar strings
 function normalizar(str) {
   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
@@ -3199,13 +3199,11 @@ function pesquisarInstantaneamente() {
   const termo = normalizar(input.value.trim());
   const root = document.getElementById('root');
 
-  // Se campo vazio, mostra tela inicial
   if (termo === "") {
     mostrarSecao('inicio');
     return;
   }
 
-  // Junta todos os itens (garantindo que não sejam undefined)
   const todosItens = [
     ...(filmes || []),
     ...(series || []),
@@ -3214,10 +3212,8 @@ function pesquisarInstantaneamente() {
     ...(desenhos || [])
   ];
 
-  // Filtra os itens
   const resultados = todosItens.filter(item => normalizar(item.titulo).includes(termo));
 
-  // Mostra resultados
   root.innerHTML = '';
   if (resultados.length > 0) {
     root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${input.value}"`));
@@ -3226,8 +3222,8 @@ function pesquisarInstantaneamente() {
   }
 }
 
-// Liga o evento de digitação após a página carregar
-window.addEventListener('load', () => {
+// Liga o evento de digitação assim que o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('searchInput');
   if (searchInput) {
     searchInput.addEventListener('input', pesquisarInstantaneamente);
