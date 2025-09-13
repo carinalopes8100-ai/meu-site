@@ -35,7 +35,6 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 #root { margin-top:80px; }
 
-  
 /* Esconde as setas inicialmente */
 .fila-container .btn-scroll {
   opacity: 0;
@@ -49,24 +48,6 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   pointer-events: auto;
 }
 
-#bannerContainer {
-    width: 100%;
-    height: 800px; /* altura do banner */
-    position: relative;
-    overflow: hidden;
-}
-
-#bannerImage,
-#bannerVideo {
-    width: 100%;
-    height: 100%;        /* preenche o container */
-    object-fit: contain; /* mostra todo o vídeo */
-    object-position: center center; /* centraliza vertical e horizontalmente */
-    background-color: black; /* preenche faixas vazias com preto */
-}
-
-
- 
   
 .fila-container { margin:20px 50px; position:relative; }
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
@@ -261,28 +242,19 @@ video::cue {
 
 <div class="banner">
   <img id="bannerImage" src="https://i.ytimg.com/vi/UF82gjvULhw/maxresdefault.jpg" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;">
-<video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay loop>
-  <source src="https://ia801004.us.archive.org/21/items/confia-sonho-de-cria-teaser-globoplay/CONFIA%20-%20SONHO%20DE%20CRIA%20%20Teaser%20%20Globoplay.mp4" type="video/mp4">
-</video>
-
-  <!-- Overlay para degradê -->
-  <div class="banner-overlay"></div>
-
+  <video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay muted loop>
+    <source src="https://ia801004.us.archive.org/21/items/confia-sonho-de-cria-teaser-globoplay/CONFIA%20-%20SONHO%20DE%20CRIA%20%20Teaser%20%20Globoplay.mp4" type="video/mp4">
+  </video>
   <div class="banner-content">
     <h1>Confia: Sonho de Cria</h1>
     <p>O Nando trabalha como entregador numa cafetaria em Copacabana e sonha em tornar-se uma estrela do trap, mas não tem muitas oportunidades.</p>
     <button class="play" onclick="abrirVideo(filmes[0])">▶ Assistir</button>
     <button class="lista" onclick="adicionarMinhaLista('Confia Sonho De Cria')">+ Minha Lista</button>
-    <button class="remover-anuncios" onclick="window.location.href='https://chromewebstore.google.com/detail/adblocker-ultimate/ohahllgiabjaoigichmmfljhkcfikeof?hl=pt-PT&gl=001'">
+        <button class="remover-anuncios" onclick="window.location.href='https://chromewebstore.google.com/detail/adblocker-ultimate/ohahllgiabjaoigichmmfljhkcfikeof?hl=pt-PT&gl=001'">
       REMOVER ANÚNCIOS
-    </button>        
+   </button>        
   </div>
-  
-   <!-- BOTÃO MUTE/UNMUTE -->
-  <button id="bannerMuteBtn" class="audio-btn" style="position:absolute; bottom:20px; right:20px; z-index:5;">🔇</button>
-  
 </div>
-
 
 
 
@@ -323,37 +295,6 @@ function mostrarToast(mensagem){
   toast.appendChild(btn); container.appendChild(toast);
   setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
-
-  function debounce(func, delay) {
-  let timeout;
-  return (...args) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(this, args), delay);
-  };
-}
-
-const searchInput = document.getElementById('searchInput');
-searchInput.addEventListener('input', debounce(() => {
-  const termo = searchInput.value.toLowerCase().trim();
-  const root = document.getElementById('root');
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
-
-  if (termo === "") {
-    mostrarSecao('inicio'); 
-    return;
-  }
-
-  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
-  root.innerHTML = '';
-
-  if (resultados.length > 0) {
-    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
-  } else {
-    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
-  }
-}, 150)); // 150ms de atraso
-
-
 
 function openDB() {
   return new Promise((resolve, reject) => {
@@ -432,52 +373,24 @@ function adicionarMinhaLista(titulo) {
   mostrarSecao('inicio'); // se você quiser voltar à seção inicial
 }
 
+// <<< AQUI: adicionar o código para oncanplaythrough >>>
 const bannerVideo = document.getElementById('bannerVideo');
 const bannerImage = document.getElementById('bannerImage');
-const muteBtn = document.getElementById('bannerMuteBtn');
 
-// Inicializa invisível e mutado
-bannerVideo.style.opacity = 0;
-bannerVideo.style.display = 'block';
-bannerVideo.muted = true;
-muteBtn.textContent = '🔇';
+bannerVideo.preload = 'auto';  // garante que o navegador carregue todo o vídeo
 
-// Quando o vídeo estiver pronto
 bannerVideo.addEventListener('canplaythrough', () => {
-    // Fade da imagem para o vídeo
-    bannerImage.style.transition = 'opacity 1s ease';
-    bannerImage.style.opacity = 0;
+  // Fade out da imagem de banner
+  bannerImage.style.transition = 'opacity 1s ease';
+  bannerImage.style.opacity = '0';
 
-    bannerVideo.style.transition = 'opacity 1s ease';
-    bannerVideo.style.opacity = 1;
-
-    // Esconde a imagem após o fade
-    setTimeout(() => bannerImage.style.display = 'none', 1000);
-
-    // Tenta tocar o vídeo (mutado, autoplay permitido)
-    bannerVideo.play().catch(err => console.log('Autoplay bloqueado:', err));
+  // Após o fade, esconder a imagem e mostrar o vídeo
+  setTimeout(() => {
+    bannerImage.style.display = 'none';
+    bannerVideo.style.display = 'block';
+    bannerVideo.play();  // garante autoplay
+  }, 1000);
 });
-
-// Detecta a primeira interação do usuário para ativar som
-function ativarSom() {
-    if (bannerVideo.muted) {
-        bannerVideo.muted = true;
-        muteBtn.textContent = '🔊';
-    }
-  
-}
-
-// Ativa som ao clicar, tocar ou apertar tecla
-
-
-// Botão de mute/unmute
-muteBtn.addEventListener('click', () => {
-    bannerVideo.muted = !bannerVideo.muted;
-    muteBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
-});
-
-
-
 
 
 function abrirAudioModal(item) {
@@ -674,17 +587,6 @@ function abrirVideo(item) {
 
   document.body.appendChild(videoModal);
 }
-
-
-
-
-
-
-
-
-
-
-
 
 // ===== Dados =====
 const filmes = [
@@ -3239,24 +3141,19 @@ function mostrarSecao(secao){
 function pesquisar(){
     const termo = document.getElementById('searchInput').value.toLowerCase().trim();
     const root = document.getElementById('root');
-    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
-
-    if(termo === "") {
-        mostrarSecao('inicio'); // MOSTRA a tela inicial quando o input está vazio
+    if (termo === "") {
+        mostrarSecao('inicio');
         return;
     }
-
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
     const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
-    root.innerHTML = '';
-
-    if(resultados.length > 0){
+    root.innerHTML='';
+    if(resultados.length>0){
         root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
     } else {
         root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
     }
 }
-
-
 
 // Carrega listas e progresso antes de mostrar a tela inicial
 carregarLista(); 
@@ -3290,30 +3187,8 @@ video.addEventListener('timeupdate', () => {
   captions.textContent = currentSubtitle ? currentSubtitle.text : '';
 });
 
-// Inicialização da tela inicial
-carregarLista(); 
-carregarProgresso();
-mostrarSecao('inicio');
-
-window.addEventListener('DOMContentLoaded', () => {
-  const muteBtn = document.getElementById('bannerMuteBtn');
-  const bannerVideo = document.getElementById('bannerVideo');
-
-  if (!muteBtn || !bannerVideo) return;
-
-  bannerVideo.muted = false;
-  muteBtn.textContent = '🔇';
-
-  muteBtn.addEventListener('click', async () => {
-    bannerVideo.muted = !bannerVideo.muted;
-    muteBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
-    try {
-      await bannerVideo.play();
-    } catch (err) {
-      console.log('Erro ao tentar ativar áudio:', err);
-    }
-  });
-});
+// Pesquisa instantânea
+document.getElementById('searchInput').addEventListener('input', () => pesquisar());
 </script>
 </body>
 </html>
