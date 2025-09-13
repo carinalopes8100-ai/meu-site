@@ -458,7 +458,7 @@ bannerVideo.addEventListener('canplaythrough', () => {
 // Detecta a primeira interação do usuário para ativar som
 function ativarSom() {
     if (bannerVideo.muted) {
-        bannerVideo.muted = false;
+        bannerVideo.muted = true;
         muteBtn.textContent = '🔊';
     }
     window.removeEventListener('click', ativarSom);
