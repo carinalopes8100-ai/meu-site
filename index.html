@@ -432,27 +432,39 @@ function adicionarMinhaLista(titulo) {
 
 const bannerVideo = document.getElementById('bannerVideo');
 const bannerImage = document.getElementById('bannerImage');
+const muteBtn = document.getElementById('bannerMuteBtn');
 
-// Começa invisível e mutado
+// Inicializa invisível e mutado
 bannerVideo.style.opacity = 0;
 bannerVideo.muted = true;
+bannerVideo.style.display = 'block';
+muteBtn.textContent = '🔇';
 
-// Quando o vídeo estiver pronto para tocar
+// Quando o vídeo estiver pronto
 bannerVideo.addEventListener('canplaythrough', () => {
-    // Transição suave da imagem para o vídeo
+    // Fade da imagem para o vídeo
     bannerImage.style.transition = 'opacity 1s ease';
     bannerImage.style.opacity = 0;
 
-    bannerVideo.style.display = 'block';
     bannerVideo.style.transition = 'opacity 1s ease';
-
     setTimeout(() => {
         bannerVideo.style.opacity = 1;
-        // Opcional: esconder completamente a imagem após o fade
         setTimeout(() => bannerImage.style.display = 'none', 1000);
-        bannerVideo.play();
-    }, 50); // pequeno delay para garantir que a transição seja aplicada
+        bannerVideo.play().catch(err => console.log('Autoplay bloqueado:', err));
+    }, 50);
 });
+
+// Botão de mute/unmute
+muteBtn.addEventListener('click', async () => {
+    bannerVideo.muted = !bannerVideo.muted;
+    muteBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
+    try {
+        await bannerVideo.play(); // garante que o vídeo continue se usuário ativou som
+    } catch(err) {
+        console.log('Erro ao ativar áudio:', err);
+    }
+});
+
 
 
 
