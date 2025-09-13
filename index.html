@@ -442,8 +442,9 @@ muteBtn.textContent = '🔇';
 // Detecta a primeira interação do usuário para ativar som
 function ativarSom() {
     if (bannerVideo.muted) {
-        bannerVideo.muted = false;
-        muteBtn.textContent = '🔊';
+        bannerVideo.muted = false;      // ativa som
+        muteBtn.textContent = '🔊';     // atualiza botão
+        bannerVideo.play().catch(err => console.log('Erro ao tocar vídeo:', err));
     }
     window.removeEventListener('click', ativarSom);
     window.removeEventListener('keydown', ativarSom);
@@ -451,10 +452,12 @@ function ativarSom() {
     window.removeEventListener('scroll', ativarSom);
 }
 
+
+// Eventos de primeira interação
 window.addEventListener('click', ativarSom);
 window.addEventListener('keydown', ativarSom);
 window.addEventListener('touchstart', ativarSom);
-window.addEventListener('scroll', ativarSom); // Ativa som ao rolar a página
+window.addEventListener('scroll', ativarSom);
   
 
 // Quando o vídeo estiver pronto
