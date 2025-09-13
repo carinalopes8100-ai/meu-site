@@ -3224,35 +3224,33 @@ video.addEventListener('timeupdate', () => {
   captions.textContent = currentSubtitle ? currentSubtitle.text : '';
 });
 
-function pesquisaInstantanea() {
-  const searchInput = document.getElementById('searchInput');
-  searchInput.addEventListener('input', () => {
-    const termo = searchInput.value.toLowerCase().trim();
-    const root = document.getElementById('root');
+window.addEventListener('DOMContentLoaded', () => {
+    // Carrega listas e progresso
+    carregarLista();
+    carregarProgresso();
+    mostrarSecao('inicio');
 
-    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+    // Pesquisa instantânea
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', () => {
+        const termo = searchInput.value.toLowerCase().trim();
+        const root = document.getElementById('root');
+        const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
 
-    if (termo === "") {
-      mostrarSecao('inicio');
-      return;
-    }
+        if (termo === "") {
+            mostrarSecao('inicio'); // volta para a tela inicial se estiver vazio
+            return;
+        }
 
-    const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
-
-    root.innerHTML = '';
-    if (resultados.length > 0) {
-      root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
-    } else {
-      root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
-    }
-  });
-}
-
-// Chame essa função **depois de carregar as listas e mostrar a seção inicial**
-carregarLista();
-carregarProgresso();
-mostrarSecao('inicio');
-pesquisaInstantanea();
+        const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
+        root.innerHTML = '';
+        if (resultados.length > 0) {
+            root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+        } else {
+            root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+        }
+    });
+});
 
 
 </script>
