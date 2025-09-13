@@ -435,53 +435,47 @@ const muteBtn = document.getElementById('bannerMuteBtn');
 
 // Inicializa invisível e mutado
 bannerVideo.style.opacity = 0;
-bannerVideo.muted = true;
 bannerVideo.style.display = 'block';
+bannerVideo.muted = true;
 muteBtn.textContent = '🔇';
 
-// Detecta a primeira interação do usuário para ativar som
+// Fade da imagem para o vídeo quando ele estiver pronto
+bannerVideo.addEventListener('canplaythrough', () => {
+    bannerImage.style.transition = 'opacity 1s ease';
+    bannerImage.style.opacity = 0;
+
+    bannerVideo.style.transition = 'opacity 1s ease';
+    bannerVideo.style.opacity = 1;
+
+    setTimeout(() => bannerImage.style.display = 'none', 1000);
+
+    bannerVideo.play().catch(err => console.log('Autoplay bloqueado:', err));
+});
+
+// Detecta primeira interação do usuário e ativa o som
 function ativarSom() {
     if (bannerVideo.muted) {
-        bannerVideo.muted = false;      // ativa som
-        muteBtn.textContent = '🔊';     // atualiza botão
-        bannerVideo.play().catch(err => console.log('Erro ao tocar vídeo:', err));
+        bannerVideo.muted = false; // ativa som
+        muteBtn.textContent = '🔊'; // atualiza botão
     }
     window.removeEventListener('click', ativarSom);
     window.removeEventListener('keydown', ativarSom);
     window.removeEventListener('touchstart', ativarSom);
+    window.removeEventListener('scroll', ativarSom);
 }
-
 
 // Eventos de primeira interação
 window.addEventListener('click', ativarSom);
 window.addEventListener('keydown', ativarSom);
 window.addEventListener('touchstart', ativarSom);
-  
-
-// Quando o vídeo estiver pronto
-bannerVideo.addEventListener('canplaythrough', () => {
-    // Fade da imagem para o vídeo
-    bannerImage.style.transition = 'opacity 1s ease';
-    bannerImage.style.opacity = 0;
-
-    bannerVideo.style.transition = 'opacity 1s ease';
-    setTimeout(() => {
-        bannerVideo.style.opacity = 1;
-        setTimeout(() => bannerImage.style.display = 'none', 1000);
-        bannerVideo.play().catch(err => console.log('Autoplay bloqueado:', err));
-    }, 50);
-});
+window.addEventListener('scroll', ativarSom);
 
 // Botão de mute/unmute
-muteBtn.addEventListener('click', async () => {
+muteBtn.addEventListener('click', () => {
     bannerVideo.muted = !bannerVideo.muted;
     muteBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
-    try {
-        await bannerVideo.play(); // garante que o vídeo continue se usuário ativou som
-    } catch(err) {
-        console.log('Erro ao ativar áudio:', err);
-    }
 });
+
 
 
 
