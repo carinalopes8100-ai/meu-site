@@ -3124,6 +3124,11 @@ function pesquisar(){
 // Carrega listas e progresso antes de mostrar a tela inicial
 carregarLista(); 
 carregarProgresso();
+
+// Limpa todo o progresso para remover barras antigas
+localStorage.removeItem('progresso');
+progresso = {};
+  
 mostrarSecao('inicio');
 
 // Banner
