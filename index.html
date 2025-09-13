@@ -3235,14 +3235,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const root = document.getElementById('root');
     
     if (termo === "") {
-      mostrarSecao('inicio'); // volta para a tela inicial se não digitar nada
+      mostrarSecao('inicio');
       return;
     }
     
     const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
     const resultados = todosItens.filter(item => item.titulo.toLowerCase().includes(termo));
 
-    root.innerHTML = ''; // limpa resultados antigos
+    root.innerHTML = '';
 
     if (resultados.length > 0) {
       root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
@@ -3251,6 +3251,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
 
 </script>
 </body>
