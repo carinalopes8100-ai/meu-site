@@ -3116,10 +3116,10 @@ function pesquisar(){
 // Carrega listas e progresso antes de mostrar a tela inicial
 carregarLista(); 
 carregarProgresso();
-
-// Limpa todo o progresso para remover barras antigas
 localStorage.removeItem('progresso');
 progresso = {};
+
+
   
 mostrarSecao('inicio');
 
@@ -3152,8 +3152,25 @@ video.addEventListener('timeupdate', () => {
 
 window.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
+
     searchInput.addEventListener('input', () => {
-        pesquisar(); // chama a pesquisa a cada letra digitada
+        const termo = searchInput.value.toLowerCase().trim();
+        const root = document.getElementById('root');
+
+        if (termo === "") {
+            mostrarSecao('inicio'); // volta à tela inicial se não tiver termo
+            return;
+        }
+
+        const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+        const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
+
+        root.innerHTML = '';
+        if (resultados.length > 0) {
+            root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+        } else {
+            root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+        }
     });
 });
 </script>
