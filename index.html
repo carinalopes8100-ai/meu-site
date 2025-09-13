@@ -3153,30 +3153,30 @@ video.addEventListener('timeupdate', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
+    const root = document.getElementById('root');
 
-    searchInput.addEventListener('input', () => {
+    function pesquisarInstantaneo() {
         const termo = searchInput.value.toLowerCase().trim();
-        const root = document.getElementById('root');
 
         if (termo === "") {
-            mostrarSecao('inicio'); // volta à tela inicial se o campo estiver vazio
+            mostrarSecao('inicio'); // volta à tela inicial se vazio
             return;
         }
 
-        // Junta todas as listas
         const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
-
-        // Filtra pelo termo digitado
         const resultados = todosItens.filter(item => item.titulo.toLowerCase().includes(termo));
 
-        root.innerHTML = ''; // limpa resultados anteriores
+        root.innerHTML = '';
 
         if (resultados.length > 0) {
             root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
         } else {
             root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
         }
-    });
+    }
+
+    // dispara a pesquisa a cada letra digitada
+    searchInput.addEventListener('input', pesquisarInstantaneo);
 });
 </script>
 </body>
