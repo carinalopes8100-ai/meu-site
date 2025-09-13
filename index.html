@@ -36,6 +36,7 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 #root { margin-top:80px; }
 
+  
 /* Esconde as setas inicialmente */
 .fila-container .btn-scroll {
   opacity: 0;
@@ -274,6 +275,10 @@ video::cue {
       REMOVER ANÚNCIOS
     </button>        
   </div>
+  
+   <!-- BOTÃO MUTE/UNMUTE -->
+  <button id="bannerMuteBtn" class="audio-btn" style="position:absolute; bottom:20px; right:20px; z-index:5;">🔇</button>
+  
 </div>
 
 
@@ -3259,6 +3264,17 @@ video.addEventListener('timeupdate', () => {
 carregarLista(); 
 carregarProgresso();
 mostrarSecao('inicio');
+
+const muteBtn = document.getElementById('bannerMuteBtn');
+const bannerVideo = document.getElementById('bannerVideo');
+bannerVideo.muted = true;
+muteBtn.textContent = '🔇';
+
+muteBtn.addEventListener('click', () => {
+  bannerVideo.muted = !bannerVideo.muted;
+  muteBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
+});
+  
 </script>
 </body>
 </html>
