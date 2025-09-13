@@ -3149,15 +3149,17 @@ video.addEventListener('timeupdate', () => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('searchInput');
-    if (!searchInput) return; // garante que existe
+    // Arrays globais que você já deve ter
+    // const filmes = [...]; const series = [...]; etc.
 
-    searchInput.addEventListener('input', () => {
+    const searchInput = document.getElementById('searchInput');
+    const root = document.getElementById('root');
+
+    function pesquisaInstantanea() {
         const termo = searchInput.value.toLowerCase().trim();
-        const root = document.getElementById('root');
         root.innerHTML = '';
 
-        if (termo === "") {
+        if (termo === '') {
             mostrarSecao('inicio');
             return;
         }
@@ -3170,9 +3172,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
         }
-    });
-});
+    }
 
+    // Pesquisa ao digitar
+    searchInput.addEventListener('input', pesquisaInstantanea);
+});
 
 </script>
 </body>
