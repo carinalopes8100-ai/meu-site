@@ -508,7 +508,17 @@ function abrirVideo(item) {
   let terminou = false;
 
   // Verifica se é mp4 ou embed
-if (item.link.endsWith(".mp4")) {
+  if (item.link.endsWith(".mp4")) {
+    // Loader
+    const loader = document.createElement('div');
+    loader.textContent = 'Carregando...';
+    loader.style.color = '#fff';
+    loader.style.fontSize = '18px';
+    loader.style.marginTop = '10px';
+    loader.style.textAlign = 'center';
+    videoModal.appendChild(loader);
+
+    // Elemento vídeo
     const videoEl = document.createElement('video');
     videoEl.src = item.link;
     videoEl.controls = true;
@@ -517,32 +527,76 @@ if (item.link.endsWith(".mp4")) {
     videoEl.style.height = '80%';
     videoModal.appendChild(videoEl);
 
-    // === AQUI: adiciona à fila "Continuar a ver" automaticamente ===
-    if (!progresso[item.titulo]) {
-        progresso[item.titulo] = 0;
-        salvarProgresso();
-        mostrarSecao('inicio'); // atualiza a fila "Continuar a ver"
+    // Fechar com stop
+    fecharBtn.onclick = () => {
+      if (!terminou) salvarProgresso();
+      videoEl.pause();
+      videoEl.src = '';
+      videoEl.load();
+      videoModal.remove();
+    };
+
+    // Audios alternativos
+    const audioContainer = document.createElement('div');
+    audioContainer.style.position = 'absolute';
+    audioContainer.style.top = '20px';
+    audioContainer.style.left = '50%';
+    audioContainer.style.transform = 'translateX(-50%)';
+    audioContainer.style.display = 'flex';
+    audioContainer.style.gap = '10px';
+    audioContainer.style.flexWrap = 'wrap';
+    audioContainer.style.zIndex = '10001';
+
+    if (item.audios && item.audios.length > 0) {
+      item.audios.forEach(a => {
+        const btn = document.createElement('button');
+        btn.textContent = a.label;
+        btn.className = 'audio-btn';
+        btn.onclick = () => {
+          const tempoAtual = videoEl.currentTime;
+          videoEl.src = a.src;
+          videoEl.load();
+          videoEl.currentTime = tempoAtual;
+          videoEl.play();
+        };
+        audioContainer.appendChild(btn);
+      });
+      videoModal.appendChild(audioContainer);
     }
 
-    // Define o tempo inicial se já houver progresso
-    if (progresso[item.titulo]) {
-        videoEl.currentTime = progresso[item.titulo];
+    // Legendas
+    if (item.legendas) {
+      item.legendas.forEach(l => {
+        const track = document.createElement('track');
+        track.kind = 'subtitles';
+        track.label = l.label;
+        track.srclang = l.lang;
+        track.src = l.src;
+        track.default = l.default || false;
+        videoEl.appendChild(track);
+      });
     }
+
+    // Eventos
+    videoEl.addEventListener('loadedmetadata', () => {
+      if (progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
+    });
 
     videoEl.ontimeupdate = () => {
-        progresso[item.titulo] = videoEl.currentTime;
+      if (!terminou) progresso[item.titulo] = videoEl.currentTime;
     };
 
     videoEl.onended = () => {
-        delete progresso[item.titulo];
-        salvarProgresso();
-        videoModal.remove();
+      terminou = true;
+      delete progresso[item.titulo];
+      salvarProgresso();
+      videoModal.remove();
     };
 
     videoEl.oncanplaythrough = () => {
-        videoEl.play();
+      loader.remove();
+      videoEl.play();
     };
-}
 
   } else {
     // Caso seja embed/iframe
