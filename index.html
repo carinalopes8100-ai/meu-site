@@ -3188,40 +3188,51 @@ video.addEventListener('timeupdate', () => {
   captions.textContent = currentSubtitle ? currentSubtitle.text : '';
 });
 
- // função utilitária para ignorar maiúsculas, minúsculas e acentos
-function normalizar(str){
+// Função utilitária para normalizar strings (ignora maiúsculas, minúsculas e acentos)
+function normalizar(str) {
   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
-// função que pesquisa instantaneamente
+// Pesquisa instantânea
 function pesquisarInstantaneamente() {
-  const termo = normalizar(document.getElementById('searchInput').value.trim());
+  const input = document.getElementById('searchInput');
+  const termo = normalizar(input.value.trim());
   const root = document.getElementById('root');
 
+  // Se campo vazio, mostra tela inicial
   if (termo === "") {
-    mostrarSecao('inicio'); 
+    mostrarSecao('inicio');
     return;
   }
 
-  const todosItens = [...(filmes||[]), ...(series||[]), ...(filmesTerror||[]), ...(animes||[]), ...(desenhos||[])];
+  // Junta todos os itens (garantindo que não sejam undefined)
+  const todosItens = [
+    ...(filmes || []),
+    ...(series || []),
+    ...(filmesTerror || []),
+    ...(animes || []),
+    ...(desenhos || [])
+  ];
 
-  const resultados = todosItens.filter(item => 
-    item.titulo && normalizar(item.titulo).includes(termo)
-  );
+  // Filtra os itens
+  const resultados = todosItens.filter(item => normalizar(item.titulo).includes(termo));
 
+  // Mostra resultados
   root.innerHTML = '';
-
   if (resultados.length > 0) {
-    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${input.value}"`));
   } else {
-    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${input.value}"</div>`;
   }
 }
 
-// Eventos
-const searchInput = document.getElementById('searchInput');
-searchInput.addEventListener('input', pesquisarInstantaneamente);
-document.querySelector('#searchContainer button').onclick = pesquisarInstantaneamente;
+// Liga o evento de digitação após a página carregar
+window.addEventListener('load', () => {
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', pesquisarInstantaneamente);
+  }
+});
 
 
 </script>
