@@ -496,6 +496,14 @@ function abrirVideo(item) {
     z-index:10000;
   `;
 
+  // Assim que o vídeo abrir, adiciona ao progresso (mesmo que seja 0)
+if (!progresso[item.titulo]) {
+  progresso[item.titulo] = 0;
+  salvarProgresso();
+  mostrarSecao('inicio'); // Atualiza a fila "Continuar a ver"
+}
+
+
   // Botão Fechar
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
