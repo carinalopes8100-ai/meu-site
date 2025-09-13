@@ -3188,7 +3188,7 @@ video.addEventListener('timeupdate', () => {
   captions.textContent = currentSubtitle ? currentSubtitle.text : '';
 });
 
-// Função utilitária para normalizar strings
+// Função utilitária para normalizar strings (ignora maiúsculas, minúsculas e acentos)
 function normalizar(str) {
   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
@@ -3196,6 +3196,8 @@ function normalizar(str) {
 // Pesquisa instantânea
 function pesquisarInstantaneamente() {
   const input = document.getElementById('searchInput');
+  if (!input) return;
+
   const termo = normalizar(input.value.trim());
   const root = document.getElementById('root');
 
@@ -3222,13 +3224,18 @@ function pesquisarInstantaneamente() {
   }
 }
 
-// Liga o evento de digitação assim que o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', () => {
-  const searchInput = document.getElementById('searchInput');
-  if (searchInput) {
-    searchInput.addEventListener('input', pesquisarInstantaneamente);
+// Tenta ligar o evento ao input enquanto ele não existir ainda
+function ligarPesquisaInstantanea() {
+  const input = document.getElementById('searchInput');
+  if (input) {
+    input.addEventListener('input', pesquisarInstantaneamente);
+  } else {
+    setTimeout(ligarPesquisaInstantanea, 100);
   }
-});
+}
+
+// Inicializa
+ligarPesquisaInstantanea();
 
 
 </script>
