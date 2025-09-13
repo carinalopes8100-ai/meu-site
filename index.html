@@ -3116,9 +3116,6 @@ function pesquisar(){
 // Carrega listas e progresso antes de mostrar a tela inicial
 carregarLista(); 
 carregarProgresso();
-localStorage.removeItem('progresso');
-progresso = {};
-
 
   
 mostrarSecao('inicio');
@@ -3152,26 +3149,28 @@ video.addEventListener('timeupdate', () => {
 
 
 window.addEventListener('load', () => {
- const searchInput = document.getElementById('searchInput');
-searchInput.addEventListener('input', () => {
-    const termo = searchInput.value.toLowerCase().trim();
-    const root = document.getElementById('root');
-    root.innerHTML = '';
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', () => {
+        const termo = searchInput.value.toLowerCase().trim();
+        const root = document.getElementById('root');
+        root.innerHTML = '';
 
-    if (termo === "") {
-        mostrarSecao('inicio');
-        return;
-    }
+        if (termo === "") {
+            mostrarSecao('inicio');
+            return;
+        }
 
-    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
-    const resultados = todosItens.filter(item => item.titulo.toLowerCase().includes(termo));
+        const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+        const resultados = todosItens.filter(item => item.titulo.toLowerCase().includes(termo));
 
-    if (resultados.length > 0) {
-        root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
-    } else {
-        root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
-    }
+        if (resultados.length > 0) {
+            root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+        } else {
+            root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+        }
+    });
 });
+
 
 </script>
 </body>
