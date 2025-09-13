@@ -3151,33 +3151,28 @@ video.addEventListener('timeupdate', () => {
 });
 
 
-document.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('load', () => {
     const searchInput = document.getElementById('searchInput');
-    const root = document.getElementById('root');
-
-    function pesquisarInstantaneo() {
+    searchInput.addEventListener('input', () => {
         const termo = searchInput.value.toLowerCase().trim();
+        const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+        const resultados = todosItens.filter(item => item.titulo.toLowerCase().includes(termo));
+        const root = document.getElementById('root');
+        root.innerHTML = '';
 
-        if (termo === "") {
-            mostrarSecao('inicio'); // volta à tela inicial se vazio
+        if(termo === '') {
+            mostrarSecao('inicio');
             return;
         }
 
-        const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
-        const resultados = todosItens.filter(item => item.titulo.toLowerCase().includes(termo));
-
-        root.innerHTML = '';
-
-        if (resultados.length > 0) {
+        if(resultados.length > 0) {
             root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
         } else {
             root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
         }
-    }
-
-    // dispara a pesquisa a cada letra digitada
-    searchInput.addEventListener('input', pesquisarInstantaneo);
+    });
 });
+
 </script>
 </body>
 </html>
