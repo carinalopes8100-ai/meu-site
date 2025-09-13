@@ -3155,8 +3155,8 @@ function pesquisar(){
     const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
 
     if(termo === "") {
-        root.innerHTML = ''; // limpa resultados
-        return;              // não chama mostrarSecao aqui
+        mostrarSecao('inicio'); // MOSTRA a tela inicial quando o input está vazio
+        return;
     }
 
     const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
@@ -3168,6 +3168,7 @@ function pesquisar(){
         root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
     }
 }
+
 
 
 // Carrega listas e progresso antes de mostrar a tela inicial
