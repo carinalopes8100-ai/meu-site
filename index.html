@@ -509,7 +509,7 @@ function abrirVideo(item) {
 
   // Adiciona automaticamente à fila "Continuar a ver"
   if (!progresso[item.titulo]) {
-    progresso[item.titulo] = 0;
+    progresso[item.titulo] = 0.1;
     salvarProgresso();
     mostrarSecao('inicio'); // atualiza a interface imediatamente
   }
