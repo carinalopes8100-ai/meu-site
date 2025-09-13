@@ -3265,16 +3265,20 @@ carregarLista();
 carregarProgresso();
 mostrarSecao('inicio');
 
-const muteBtn = document.getElementById('bannerMuteBtn');
-const bannerVideo = document.getElementById('bannerVideo');
-bannerVideo.muted = true;
-muteBtn.textContent = '🔇';
+window.addEventListener('DOMContentLoaded', () => {
+  const muteBtn = document.getElementById('bannerMuteBtn');
+  const bannerVideo = document.getElementById('bannerVideo');
 
-muteBtn.addEventListener('click', () => {
-  bannerVideo.muted = !bannerVideo.muted;
-  muteBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
+  if (!muteBtn || !bannerVideo) return; // previne erro
+
+  bannerVideo.muted = true;
+  muteBtn.textContent = '🔇';
+
+  muteBtn.addEventListener('click', () => {
+    bannerVideo.muted = !bannerVideo.muted;
+    muteBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
+  });
 });
-  
 </script>
 </body>
 </html>
