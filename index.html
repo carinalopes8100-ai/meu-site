@@ -439,36 +439,37 @@ bannerVideo.style.display = 'block';
 bannerVideo.muted = true;
 muteBtn.textContent = '🔇';
 
-// Fade da imagem para o vídeo quando ele estiver pronto
+// Quando o vídeo estiver pronto
 bannerVideo.addEventListener('canplaythrough', () => {
+    // Fade da imagem para o vídeo
     bannerImage.style.transition = 'opacity 1s ease';
     bannerImage.style.opacity = 0;
 
     bannerVideo.style.transition = 'opacity 1s ease';
     bannerVideo.style.opacity = 1;
 
+    // Esconde a imagem após o fade
     setTimeout(() => bannerImage.style.display = 'none', 1000);
 
+    // Tenta tocar o vídeo (mutado, autoplay permitido)
     bannerVideo.play().catch(err => console.log('Autoplay bloqueado:', err));
 });
 
-// Detecta primeira interação do usuário e ativa o som
+// Detecta a primeira interação do usuário para ativar som
 function ativarSom() {
     if (bannerVideo.muted) {
-        bannerVideo.muted = false; // ativa som
-        muteBtn.textContent = '🔊'; // atualiza botão
+        bannerVideo.muted = false;
+        muteBtn.textContent = '🔊';
     }
     window.removeEventListener('click', ativarSom);
     window.removeEventListener('keydown', ativarSom);
     window.removeEventListener('touchstart', ativarSom);
-    window.removeEventListener('scroll', ativarSom);
 }
 
-// Eventos de primeira interação
+// Ativa som ao clicar, tocar ou apertar tecla
 window.addEventListener('click', ativarSom);
 window.addEventListener('keydown', ativarSom);
 window.addEventListener('touchstart', ativarSom);
-window.addEventListener('scroll', ativarSom);
 
 // Botão de mute/unmute
 muteBtn.addEventListener('click', () => {
