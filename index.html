@@ -326,6 +326,7 @@ searchInput.addEventListener('input', debounce(() => {
 }, 150)); // 150ms de atraso
 
 
+
 function openDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open("videosDB", 1);
@@ -3232,10 +3233,6 @@ video.addEventListener('timeupdate', () => {
   const currentSubtitle = subtitleData.find(s => currentTime >= s.start && currentTime <= s.end);
   captions.textContent = currentSubtitle ? currentSubtitle.text : '';
 });
-
-// Pesquisa instantânea
-const searchInput = document.getElementById('searchInput');
-searchInput.addEventListener('input', pesquisar);
 
 // Inicialização da tela inicial
 carregarLista(); 
