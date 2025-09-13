@@ -3152,6 +3152,12 @@ video.addEventListener('timeupdate', () => {
 
 // Pesquisa instantânea
 document.getElementById('searchInput').addEventListener('input', () => pesquisar());
+
+// Pesquisa instantânea: digita e pesquisa automaticamente
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', () => {
+  pesquisar();
+});
 </script>
 </body>
 </html>
