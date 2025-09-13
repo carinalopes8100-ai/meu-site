@@ -296,6 +296,36 @@ function mostrarToast(mensagem){
   setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
 
+  function debounce(func, delay) {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', debounce(() => {
+  const termo = searchInput.value.toLowerCase().trim();
+  const root = document.getElementById('root');
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+
+  if (termo === "") {
+    mostrarSecao('inicio'); 
+    return;
+  }
+
+  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
+  root.innerHTML = '';
+
+  if (resultados.length > 0) {
+    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+  } else {
+    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+  }
+}, 150)); // 150ms de atraso
+
+
 function openDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open("videosDB", 1);
