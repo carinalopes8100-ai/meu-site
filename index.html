@@ -457,13 +457,19 @@ function fecharModalTrailer(){
 
 
 function abrirVideo(item) {
-  const videoModal = document.createElement('div');
-  videoModal.style.cssText = `
-    position: fixed; top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.9); display:flex;
-    justify-content:center; align-items:center; flex-direction:column;
-    z-index:10000;
-  `;
+    // Adiciona à fila "Continuar a ver"
+    if (!progresso[item.titulo]) {
+        progresso[item.titulo] = 1; // só um flag para indicar que começou
+        salvarProgresso();           // salva no localStorage
+    }
+
+    const videoModal = document.createElement('div');
+    videoModal.style.cssText = `
+        position: fixed; top:0; left:0; width:100%; height:100%;
+        background: rgba(0,0,0,0.9); display:flex;
+        justify-content:center; align-items:center; flex-direction:column;
+        z-index:10000;
+    `;
 
   // Botão Fechar
   const fecharBtn = document.createElement('button');
