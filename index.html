@@ -3080,7 +3080,7 @@ function pesquisar(){
         mostrarSecao('inicio');
         return;
     }
-    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes];
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
     const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
     root.innerHTML='';
     if(resultados.length>0){
