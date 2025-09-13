@@ -231,7 +231,8 @@ video::cue {
 <div onclick="mostrarSecao('lista')">A Minha Lista</div>
 </nav>
 <div id="searchContainer">
-  <input type="text" id="searchInput" placeholder="Pesquisar..." autocomplete="off">
+  <input type="text" id="searchInput" placeholder="Pesquisar...">
+  <button onclick="pesquisar()">🔍︎</button>
 </div>
 </header>
 
@@ -3226,38 +3227,8 @@ video.addEventListener('timeupdate', () => {
   captions.textContent = currentSubtitle ? currentSubtitle.text : '';
 });
 
-// Função utilitária para normalizar strings (ignora maiúsculas, minúsculas e acentos)
-function normalizar(str) {
-    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
-}
-
 // Pesquisa instantânea
-document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('searchInput');
-    if (!searchInput) return;
-
-    searchInput.addEventListener('input', () => {
-        const termo = normalizar(searchInput.value.trim());
-        const root = document.getElementById('root');
-
-        if (termo === "") {
-            mostrarSecao('inicio');
-            return;
-        }
-
-        const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
-
-        const resultados = todosItens.filter(item => normalizar(item.titulo).includes(termo));
-
-        root.innerHTML = '';
-        if (resultados.length > 0) {
-            root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${searchInput.value}"`));
-        } else {
-            root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${searchInput.value}"</div>`;
-        }
-    });
-});
-
+document.getElementById('searchInput').addEventListener('input', () => pesquisar());
 </script>
 </body>
 </html>
