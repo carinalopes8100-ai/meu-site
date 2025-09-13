@@ -459,8 +459,11 @@ function fecharModalTrailer(){
 function abrirVideo(item) {
     // Adiciona à fila "Continuar a ver"
     if (!progresso[item.titulo]) {
-        progresso[item.titulo] = 1; // só um flag para indicar que começou
+        progresso[item.titulo] = 1; // flag para indicar que começou
         salvarProgresso();           // salva no localStorage
+
+        // Atualiza a tela inicial para mostrar na fila "Continuar a ver"
+        mostrarSecao('inicio');
     }
 
     const videoModal = document.createElement('div');
