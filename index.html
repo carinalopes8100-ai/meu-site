@@ -3159,14 +3159,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const root = document.getElementById('root');
 
         if (termo === "") {
-            mostrarSecao('inicio'); // volta à tela inicial
+            mostrarSecao('inicio'); // volta à tela inicial se o campo estiver vazio
             return;
         }
 
+        // Junta todas as listas
         const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
-        const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
 
-        root.innerHTML = '';
+        // Filtra pelo termo digitado
+        const resultados = todosItens.filter(item => item.titulo.toLowerCase().includes(termo));
+
+        root.innerHTML = ''; // limpa resultados anteriores
+
         if (resultados.length > 0) {
             root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
         } else {
