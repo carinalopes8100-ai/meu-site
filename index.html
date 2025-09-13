@@ -3226,55 +3226,44 @@ video.addEventListener('timeupdate', () => {
   captions.textContent = currentSubtitle ? currentSubtitle.text : '';
 });
 
-// Função utilitária para normalizar strings (ignora maiúsculas, minúsculas e acentos)
+// Função para normalizar strings (ignora maiúsculas, minúsculas e acentos)
 function normalizar(str) {
-  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
 // Pesquisa instantânea
 function pesquisarInstantaneamente() {
-  const input = document.getElementById('searchInput');
-  if (!input) return;
+    const input = document.getElementById('searchInput');
+    if (!input) return;
 
-  const termo = normalizar(input.value.trim());
-  const root = document.getElementById('root');
+    const termo = normalizar(input.value.trim());
+    const root = document.getElementById('root');
 
-  if (termo === "") {
-    mostrarSecao('inicio');
-    return;
-  }
+    // Se estiver vazio, volta para a tela inicial
+    if (termo === "") {
+        mostrarSecao('inicio');
+        return;
+    }
 
-  const todosItens = [
-    ...(filmes || []),
-    ...(series || []),
-    ...(filmesTerror || []),
-    ...(animes || []),
-    ...(desenhos || [])
-  ];
+    // Lista completa de itens
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
 
-  const resultados = todosItens.filter(item => normalizar(item.titulo).includes(termo));
+    // Filtra os resultados
+    const resultados = todosItens.filter(item => normalizar(item.titulo).includes(termo));
 
-  root.innerHTML = '';
-  if (resultados.length > 0) {
-    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${input.value}"`));
-  } else {
-    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${input.value}"</div>`;
-  }
+    // Limpa resultados anteriores
+    root.innerHTML = '';
+
+    if (resultados.length > 0) {
+        root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${input.value}"`));
+    } else {
+        root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${input.value}"</div>`;
+    }
 }
 
-// Tenta ligar o evento ao input enquanto ele não existir ainda
-function ligarPesquisaInstantanea() {
-  const input = document.getElementById('searchInput');
-  if (input) {
-    input.addEventListener('input', pesquisarInstantaneamente);
-  } else {
-    setTimeout(ligarPesquisaInstantanea, 100);
-  }
-}
-
-// Inicializa
-ligarPesquisaInstantanea();
-
+// Ligar evento input
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', pesquisarInstantaneamente);
 
 </script>
 </body>
