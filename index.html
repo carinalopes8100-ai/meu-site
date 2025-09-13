@@ -3188,8 +3188,39 @@ video.addEventListener('timeupdate', () => {
   captions.textContent = currentSubtitle ? currentSubtitle.text : '';
 });
 
-// Pesquisa instantânea
-document.getElementById('searchInput').addEventListener('input', () => pesquisar());
+ // função utilitária para ignorar maiúsculas, minúsculas e acentos
+function normalizar(str){
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
+// função que pesquisa instantaneamente
+function pesquisarInstantaneamente() {
+  const termo = normalizar(document.getElementById('searchInput').value.trim());
+  const root = document.getElementById('root');
+
+  if (termo === "") {
+    mostrarSecao('inicio'); // se vazio, volta para a tela inicial
+    return;
+  }
+
+  // junta todos os itens
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+  
+  // filtra todos os itens usando normalizar
+  const resultados = todosItens.filter(item => normalizar(item.titulo).includes(termo));
+
+  root.innerHTML = '';
+
+  if (resultados.length > 0) {
+    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+  } else {
+    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+  }
+}
+
+// liga ao evento de digitação
+document.getElementById('searchInput').addEventListener('input', pesquisarInstantaneamente);
+
 </script>
 </body>
 </html>
