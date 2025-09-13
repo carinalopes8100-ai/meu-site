@@ -3204,10 +3204,8 @@ video.addEventListener('timeupdate', () => {
 });
 
 // Pesquisa instantânea
-window.addEventListener('DOMContentLoaded', () => {
-  const searchInput = document.getElementById('searchInput');
-  searchInput.addEventListener('input', pesquisar);
-});
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', pesquisar);
 
 // Inicialização da tela inicial
 carregarLista(); 
