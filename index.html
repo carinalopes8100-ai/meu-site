@@ -578,9 +578,15 @@ function abrirVideo(item) {
     }
 
     // Eventos
-    videoEl.addEventListener('loadedmetadata', () => {
-      if (progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
-    });
+  videoEl.addEventListener('loadedmetadata', () => {
+  if (!progresso[item.titulo]) {
+    progresso[item.titulo] = 0; // adiciona automaticamente à fila "Continuar a ver"
+    salvarProgresso();
+    mostrarSecao('inicio'); // atualiza a página para mostrar a fila
+  } else {
+    videoEl.currentTime = progresso[item.titulo];
+  }
+});
 
     videoEl.ontimeupdate = () => {
       if (!terminou) progresso[item.titulo] = videoEl.currentTime;
