@@ -3195,10 +3195,7 @@ function pesquisar(){
     }
 }
 
-// Carrega listas e progresso antes de mostrar a tela inicial
-carregarLista(); 
-carregarProgresso();
-mostrarSecao('inicio');
+
 
 // Banner
 window.addEventListener('load', ()=>{
@@ -3227,30 +3224,35 @@ video.addEventListener('timeupdate', () => {
   captions.textContent = currentSubtitle ? currentSubtitle.text : '';
 });
 
-document.addEventListener('DOMContentLoaded', () => {
+function pesquisaInstantanea() {
   const searchInput = document.getElementById('searchInput');
-
   searchInput.addEventListener('input', () => {
     const termo = searchInput.value.toLowerCase().trim();
     const root = document.getElementById('root');
-    
+
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+
     if (termo === "") {
       mostrarSecao('inicio');
       return;
     }
-    
-    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
-    const resultados = todosItens.filter(item => item.titulo.toLowerCase().includes(termo));
+
+    const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
 
     root.innerHTML = '';
-
     if (resultados.length > 0) {
       root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
     } else {
       root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
     }
   });
-});
+}
+
+// Chame essa função **depois de carregar as listas e mostrar a seção inicial**
+carregarLista();
+carregarProgresso();
+mostrarSecao('inicio');
+pesquisaInstantanea();
 
 
 </script>
