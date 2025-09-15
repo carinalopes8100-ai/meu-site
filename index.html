@@ -3457,6 +3457,9 @@ else if(secao === 'terror'){
 else if(secao === 'animes'){
     root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
 }
+  else if(secao === 'comedia'){
+    root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
+  }
 else if(secao === 'desenhos'){
     root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
 }
