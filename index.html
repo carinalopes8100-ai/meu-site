@@ -2744,6 +2744,21 @@ const desenhos = [
 },
 ];
 
+  const filmesComedia = [
+  {
+    titulo: 'Filme de Comédia 1',
+    img: 'imagens/comedia1.jpg',
+    link: 'videos/comedia1.mp4'
+  },
+  {
+    titulo: 'Filme de Comédia 2',
+    img: 'imagens/comedia2.jpg',
+    link: 'videos/comedia2.mp4'
+  }
+  // …adicione quantos quiser
+];
+
+
   
 const filmesTerror = [
            {
@@ -3409,7 +3424,7 @@ function mostrarSecao(secao){
     root.innerHTML = ''; // limpa conteúdo anterior
 
     // garante que todosItens inclua animes
-    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...comédia];
 
     if(secao === 'inicio'){
         const continuar = todosItens.filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
