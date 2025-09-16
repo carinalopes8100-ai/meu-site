@@ -24,18 +24,18 @@ header {
   align-items: center;
   padding: 0 40px;
   z-index: 1000;
-  background: transparent;          /* transparente no topo */
-  box-shadow: none;                 /* sem sombra no topo */
+  background: transparent;         /* transparente no topo */
+  box-shadow: none;                /* sem sombra no topo */
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 header.scrolled {
-  background: #141414;              /* fundo preto */
+  background: rgba(20,20,20,1);    /* fundo preto quando rolar */
   box-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
 header h1, nav, #searchContainer {
   position: relative;
-  z-index: 1;
+  z-index: 1;                      /* elementos acima do fundo */
 }
 
 nav {
@@ -3813,6 +3813,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
   
 </script>
 </body>
