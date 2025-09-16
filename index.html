@@ -6,7 +6,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body{height:2000px;background:#222;color:#fff;}
+body{
+  height:2000px; /* só para conseguir scroll */
+  background:#141414;
+  color:#fff;
+  font-family:sans-serif;
+}
 
 
 header{
@@ -18,23 +23,34 @@ header{
   display:flex;
   align-items:center;
   padding:0 40px;
-  background:transparent;
+  z-index:1000;
+  background:transparent; /* transparente no topo */
+  box-shadow:none;
   transition:background .3s ease, box-shadow .3s ease;
 }
-
 header.scrolled{
-  background:#141414;
+  background:#141414; /* preto ao rolar */
   box-shadow:0 2px 5px rgba(0,0,0,.5);
 }
-header h1{color:#e50914;font-size:27px;}
-nav {
+header h1{
+  color:#e50914;
+  font-size:27px;
+  cursor:pointer;
+}
+nav{
   display:flex;
   gap:15px;
-  margin-left: 15px;
+  margin-left:15px;
 }
-nav div {cursor:pointer;transition:color .2s;}
-nav div:hover {color:#e50914;text-decoration:underline;}
-
+nav div{
+  color:#fff;
+  cursor:pointer;
+  transition:color .2s;
+}
+nav div:hover{
+  color:#e50914;
+  text-decoration:underline;
+}
 
 /* Barra de pesquisa */
 #searchContainer { margin-left:auto; }
@@ -3784,7 +3800,6 @@ function shuffleArray(array) {
 
 window.addEventListener('scroll', () => {
   const header = document.querySelector('header');
-  console.log(window.scrollY); // debug
   if (window.scrollY > 0) {
     header.classList.add('scrolled');
   } else {
