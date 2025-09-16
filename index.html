@@ -23,19 +23,19 @@ header {
   display: flex;
   align-items: center;
   padding: 0 40px;
-  z-index: 1000; /* muito acima do banner */
-  background: transparent;         /* transparente no topo */
+  z-index: 1000;
+  background: transparent; /* topo transparente */
   box-shadow: none;
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 header.scrolled {
-  background: rgba(20,20,20,1);    /* fundo preto ao rolar */
+  background: #141414; /* fundo PRETO totalmente opaco */
   box-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
 header h1, nav, #searchContainer {
   position: relative;
-  z-index: 1;                      /* elementos acima do fundo */
+  z-index: 1; /* garante que fiquem acima do fundo do header */
 }
 
 nav {
@@ -3823,8 +3823,8 @@ function shuffleArray(array) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  const header = document.querySelector('header');
   window.addEventListener('scroll', () => {
-    const header = document.querySelector('header');
     if (window.scrollY > 0) {
       header.classList.add('scrolled');
     } else {
