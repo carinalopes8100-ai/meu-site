@@ -20,13 +20,14 @@ header {
   justify-content: flex-start;
   padding: 0 40px;
   z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+  box-shadow: none;
   background: transparent;        /* começa transparente */
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 header.scrolled {
-  background: #141414;            /* quando rolar fica preto */
+  background: #141414;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
 header h1 { color:#e50914; font-size:27px; cursor:pointer; }
 nav { display:flex; gap:15px; margin-left: 15px; }
