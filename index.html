@@ -20,19 +20,27 @@ header {
   justify-content: flex-start;
   padding: 0 40px;
   z-index: 1000;
+  background: transparent;       /* começa transparente */
   box-shadow: none;
-  background: transparent;        /* começa transparente */
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 header.scrolled {
-  background: #141414;
+  background: #141414;           /* quando rolar fica preto */
   box-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
-header h1 { color:#e50914; font-size:27px; cursor:pointer; }
-nav { display:flex; gap:15px; margin-left: 15px; }
-nav div { cursor:pointer; transition:color .2s; }
-nav div:hover { color:#e50914; text-decoration:underline; }
+header h1 {
+  color:#e50914;
+  font-size:27px;
+  cursor:pointer;
+}
+nav {
+  display:flex;
+  gap:15px;
+  margin-left: 15px;
+}
+nav div {cursor:pointer;transition:color .2s;}
+nav div:hover {color:#e50914;text-decoration:underline;}
 
 
 /* Barra de pesquisa */
@@ -3781,7 +3789,7 @@ function shuffleArray(array) {
   return arr;
 }
 
-  window.addEventListener('scroll', function() {
+ window.addEventListener('scroll', () => {
   const header = document.querySelector('header');
   if (window.scrollY > 0) {
     header.classList.add('scrolled');
