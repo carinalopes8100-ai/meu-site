@@ -6,52 +6,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body{
-  height:2000px; /* só para conseguir scroll */
-  background:#141414;
-  color:#fff;
-  font-family:sans-serif;
-}
+body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
 
 
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  padding: 0 40px;
-  z-index: 1000;
-  background: transparent; /* topo transparente */
-  box-shadow: none;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-}
+header { position: fixed; top:0; left:0; width:100%; height:60px; background:#141414; display:flex; align-items:center; justify-content:flex-start; padding:0 40px; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.5); }
+header h1 { color:#e50914; font-size:27px; cursor:pointer; }
+nav { display:flex; gap:15px; margin-left: 15px; }
+nav div { cursor:pointer; transition:color .2s; }
+nav div:hover { color:#e50914; text-decoration:underline; }
 
-header.scrolled {
-  background: #141414; /* fundo PRETO totalmente opaco */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-}
-header h1, nav, #searchContainer {
-  position: relative;
-  z-index: 1; /* garante que fiquem acima do fundo do header */
-}
-
-nav {
-  display:flex;
-  gap:15px;
-  margin-left:15px;
-}
-nav div {
-  color:#fff;
-  cursor:pointer;
-  transition: color .2s;
-}
-nav div:hover {
-  color:#e50914;
-  text-decoration:underline;
-}
 
 /* Barra de pesquisa */
 #searchContainer { margin-left:auto; }
@@ -59,26 +22,7 @@ nav div:hover {
 #searchContainer button { padding:6px 12px; margin-left:5px; border:none; border-radius:4px; background:#e50914; color:#fff; cursor:pointer; font-weight:bold; transition:background .2s; }
 #searchContainer button:hover { background:#b20710; }
 
-.banner {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 40px;
-  overflow: hidden;
-  z-index: 0; /* garante que header fique acima */
-}
-.banner img, .banner video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0; /* abaixo do header */
-}
+.banner { position: relative; width:100%; height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
 .banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
 .banner-content { position:relative; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:15px; }
 .banner h1 { font-size:48px; margin-bottom:10px; }
@@ -89,11 +33,7 @@ nav div:hover {
 .banner-content button.lista { background:rgba(109,109,110,0.7); color:#fff; }
 .banner-content button.lista:hover { background:rgba(109,109,110,0.5); }
 
-#root {
-  margin-top:60px; /* espaço para o header fixo */
-  padding:20px;
-  color:#fff;
-}
+#root { margin-top:80px; }
 
 /* Esconde as setas inicialmente */
 .fila-container .btn-scroll {
@@ -3821,19 +3761,6 @@ function shuffleArray(array) {
   }
   return arr;
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const header = document.querySelector('header');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 0) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
-    }
-  });
-});
-
-
   
 </script>
 </body>
