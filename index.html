@@ -6,34 +6,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body {height:2000px; background:#141414; color:#fff;} /* altura só para testar scroll */
+body{height:2000px;background:#222;color:#fff;}
 
 
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 0 40px;
-  z-index: 1000;
-  background: transparent;       /* começa transparente */
-  box-shadow: none;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+header{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:60px;
+  display:flex;
+  align-items:center;
+  padding:0 40px;
+  background:transparent;
+  transition:background .3s ease, box-shadow .3s ease;
 }
 
-header.scrolled {
-  background: #141414;           /* quando rolar fica preto */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+header.scrolled{
+  background:#141414;
+  box-shadow:0 2px 5px rgba(0,0,0,.5);
 }
-header h1 {
-  color:#e50914;
-  font-size:27px;
-  cursor:pointer;
-}
+header h1{color:#e50914;font-size:27px;}
 nav {
   display:flex;
   gap:15px;
@@ -3789,8 +3782,9 @@ function shuffleArray(array) {
   return arr;
 }
 
- window.addEventListener('scroll', () => {
+window.addEventListener('scroll', () => {
   const header = document.querySelector('header');
+  console.log(window.scrollY); // debug
   if (window.scrollY > 0) {
     header.classList.add('scrolled');
   } else {
