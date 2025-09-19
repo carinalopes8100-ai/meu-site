@@ -296,6 +296,15 @@ function mostrarToast(mensagem){
   setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
 }
 
+function abrirEpisodio(episodio) {
+  if(episodio.audios && episodio.audios.length > 1){
+    abrirAudioModal(episodio);
+  } else {
+    abrirVideo(episodio);
+  }
+}
+
+  
   function debounce(func, delay) {
   let timeout;
   return (...args) => {
@@ -4021,7 +4030,11 @@ function abrirModalEpisodios(temporada, serieTitulo){
       btn.textContent = (idx === temporada.episodios.length - 1) 
                         ? `Episódio Final ${ep.numero}` 
                         : `Episódio ${ep.numero}`;
-      btn.onclick = () => abrirVideo({ titulo: serieTitulo + ' - Ep ' + ep.numero, link: ep.link });
+      btn.onclick = () => {
+  const episodioObj = { ...ep, titulo: serieTitulo + ' - Ep ' + ep.numero };
+  abrirEpisodio(episodioObj);
+};
+
     }
 
     list.appendChild(btn);
