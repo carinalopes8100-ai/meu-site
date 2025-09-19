@@ -297,12 +297,13 @@ function mostrarToast(mensagem){
 }
 
 function abrirEpisodio(episodio) {
-  if(episodio.audios && episodio.audios.length > 1){
+  if(episodio.audios && episodio.audios.length > 0){ // muda >1 para >0
     abrirAudioModal(episodio);
   } else {
     abrirVideo(episodio);
   }
 }
+
 
   
   function debounce(func, delay) {
