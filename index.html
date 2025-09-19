@@ -4027,19 +4027,24 @@ function abrirModalEpisodios(temporada, serieTitulo){
       btn.style.backgroundColor = "#555";
       btn.style.cursor = "not-allowed";
     } else {
-      btn.textContent = (idx === temporada.episodios.length - 1) 
-                        ? `Episódio Final ${ep.numero}` 
-                        : `Episódio ${ep.numero}`;
-      btn.onclick = () => {
-  const episodioObj = { ...ep, titulo: serieTitulo + ' - Ep ' + ep.numero };
-  abrirEpisodio(episodioObj);
-};
+      btn.textContent = `Episódio ${ep.numero}`;
 
+      // Cria objeto completo do episódio, incluindo áudios
+      const episodioObj = {
+        ...ep,
+        titulo: `${serieTitulo} - Ep ${ep.numero}`
+      };
+
+      // Usa função que decide abrir modal ou reproduzir direto
+      btn.onclick = () => abrirEpisodio(episodioObj);
     }
 
     list.appendChild(btn);
   });
+
+  document.getElementById('modal').style.display = 'flex';
 }
+
 
 
 function fecharDescricaoModal() {
