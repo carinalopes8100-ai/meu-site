@@ -247,7 +247,7 @@ video::cue {
   </video>
   <div class="banner-content">
     <h1>THE TOWN</h1>
-    <button class="play" onclick="abrirItem(filmes[0])">▶ Ver</button>
+    <button class="play" onclick="abrirVideo(filmes[0])">▶ Ver</button>
     <button class="lista" onclick="adicionarMinhaLista('The Town')">+ Minha Lista</button>
         <button class="remover-anuncios" onclick="window.location.href='https://chromewebstore.google.com/detail/adblocker-ultimate/ohahllgiabjaoigichmmfljhkcfikeof?hl=pt-PT&gl=001'">
       REMOVER ANÚNCIOS
@@ -338,14 +338,7 @@ searchInput.addEventListener('input', debounce(() => {
   }
 }, 150)); // 150ms de atraso
 
-function abrirItem(item) {
-  // se for um filme com audios, abre modal de áudios
-  if (Array.isArray(item.audios) && item.audios.length > 0) {
-    abrirAudioModal(item);
-  } else {
-    abrirVideo(item);
-  }
-}
+
 
 function openDB() {
   return new Promise((resolve, reject) => {
@@ -3913,7 +3906,7 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
       btnPlay.style.backgroundColor = "#555";
       btnPlay.style.cursor = "not-allowed";
     } else {
-     btnPlay.onclick = () => abrirItem(item);
+      btnPlay.textContent = '▶ Ver';
       btnPlay.onclick = (e) => {
         e.stopPropagation();
         const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
