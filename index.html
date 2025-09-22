@@ -3914,7 +3914,11 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
           abrirModalTemporadas({ ...s, temporadas: s.temporadas }); 
           return;
         } 
-        abrirAudioModal(item); 
+        if(item.audios && item.audios.length > 0){
+  abrirAudioModal(item);
+} else {
+  abrirVideo(item); // abre direto se não houver áudios
+} 
       };
     }
     overlay.appendChild(btnPlay);
