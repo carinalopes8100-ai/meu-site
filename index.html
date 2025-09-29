@@ -4592,7 +4592,9 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
       btnPlay.textContent = '▶ Ver';
       btnPlay.onclick = (e) => {
         e.stopPropagation();
-        const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
+        const s = series.find(s => s.titulo === item.titulo) 
+        || novelas.find(n => n.titulo === item.titulo) 
+        || animes.find(a => a.titulo === item.titulo);
         if(s){ 
           abrirModalTemporadas({ ...s, temporadas: s.temporadas }); 
           return;
