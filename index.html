@@ -4044,6 +4044,24 @@ const desenhos = [
 },   
 ];
 
+  const documentarios = [
+  {
+    titulo: "Planeta Terra",
+    img: "https://link-da-imagem.jpg",
+    link: "https://link-do-video.mp4",
+    trailer: "https://link-do-trailer.mp4",
+    audios: ["PT-BR", "EN"],
+    descricao: "Uma viagem pelo nosso planeta, mostrando sua diversidade e beleza."
+  },
+  {
+    titulo: "A História da Internet",
+    img: "https://link-da-imagem2.jpg",
+    link: "https://link-do-video2.mp4",
+    descricao: "Documentário sobre a evolução da internet."
+  }
+];
+
+
 
   
 const filmesTerror = [
@@ -4774,8 +4792,14 @@ root.appendChild(criarFila('fila3', shuffleArray(filmesTerror), 'filme'));
 root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
 root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
 root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
+root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
 
-    }
+
+}
+else if(secao === 'documentarios'){
+    root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
+}
+
 else if(secao === 'filmes'){
     root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
 }
