@@ -4044,6 +4044,18 @@ const desenhos = [
 },   
 ];
 
+  const novelas = [
+  {
+    titulo: "Avenida Brasil",
+    img: "https://link-da-capa-avenida.jpg",
+    temporadas: [
+      { numero: 1, episodios: [ { numero: 1, link: "https://link-ep1.mp4" }, { numero: 2, link: "https://link-ep2.mp4" } ] }
+    ],
+    descricao: "Um dos maiores sucessos da teledramaturgia brasileira.",
+  }
+];
+
+
   const documentarios = [
   {
     titulo: "Planeta Terra",
@@ -4793,9 +4805,15 @@ root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Des
 root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
 root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
 root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
+root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
+
 
 
 }
+else if(secao === 'novelas'){
+  root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
+}
+
 else if(secao === 'documentarios'){
     root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
 }
