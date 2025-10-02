@@ -321,7 +321,7 @@ const searchInput = document.getElementById('searchInput');
 searchInput.addEventListener('input', debounce(() => {
   const termo = searchInput.value.toLowerCase().trim();
   const root = document.getElementById('root');
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...documentarios, ...novelas];
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia];
 
   if (termo === "") {
     mostrarSecao('inicio'); 
@@ -3918,8 +3918,7 @@ const series = [
   { "numero": 49, "link": "https://filemoon.sx/e/168zb9zip4vr" },
   { "numero": 50, "link": "https://filemoon.sx/e/urn200y5mujy" },
   { "numero": 51, "link": "https://filemoon.sx/e/txuq790ad02t" }
-      ]
-    },
+  },
   {
     "numero": 9,
     "episodios": [
@@ -5193,9 +5192,7 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
       btnPlay.textContent = '▶ Ver';
       btnPlay.onclick = (e) => {
         e.stopPropagation();
-        const s = series.find(s => s.titulo === item.titulo) 
-        || novelas.find(n => n.titulo === item.titulo) 
-        || animes.find(a => a.titulo === item.titulo);
+        const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
         if(s){ 
           abrirModalTemporadas({ ...s, temporadas: s.temporadas }); 
           return;
@@ -5314,7 +5311,7 @@ function abrirModalTemporadas(serie){
       btn.style.cursor = "not-allowed";
     } else {
       // Temporada disponível
-      btn.textContent = `Temporada ${temp.numero}` + (temp.parte ? ` – Parte ${temp.parte}` : '');
+      btn.textContent = `Temporada ${temp.numero}`;
       btn.onclick = () => abrirModalEpisodios(temp, serie.titulo);
     }
 
@@ -5390,23 +5387,11 @@ function mostrarSecao(secao){
 root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
 root.appendChild(criarFila('fila2', shuffleArray(series), 'serie'));
 root.appendChild(criarFila('fila3', shuffleArray(filmesTerror), 'filme'));
-root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
-root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
-root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
 root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
 root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
+root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
 
-
-
-}
-else if(secao === 'novelas'){
-  root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
-}
-
-else if(secao === 'documentarios'){
-    root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
-}
-
+    }
 else if(secao === 'filmes'){
     root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
 }
