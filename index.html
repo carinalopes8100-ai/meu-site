@@ -5215,30 +5215,33 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
 
 const btnDireito = document.createElement('button');
 
-if(item.titulo === 'Morangos com Açúcar'){
+if(item.titulo === 'Morangos com Açúcar' && item.verao && item.verao.length > 0){
+  // Só mostra "▶ Verão" se houver temporadas de verão
   btnDireito.textContent = '▶ Verão';
   btnDireito.onclick = (e) => {
     e.stopPropagation();
     abrirModalTemporadas({ ...item, temporadas: item.verao });
   };
-} else {
+  overlay.appendChild(btnDireito);
+} else if((item.trailer) || (item.trailers && item.trailers.length > 0)){
+  // Mostra trailer somente se houver trailer ou teaser
   btnDireito.textContent = '▶ Trailer';
   btnDireito.onclick = (e) => {
     e.stopPropagation();
 
-    // Detecta se há algum teaser
     let tipo = 'trailer';
     if(item.trailers && item.trailers.some(t => t.tipo === 'teaser')){
       tipo = 'teaser';
     }
 
-    // Abre o modal com o tipo correto
-    if(item.trailer || item.trailers) abrirModalTrailers(item, tipo);
+    abrirModalTrailers(item, tipo);
   };
-    }
-    overlay.appendChild(btnDireito);
+  overlay.appendChild(btnDireito);
+}
 
-    itemDiv.appendChild(overlay);
+// Adiciona overlay ao itemDiv sempre
+itemDiv.appendChild(overlay);
+
 
     // ==== Botão de descrição (NOVO) ====
     const btnDescricao = document.createElement('button');
