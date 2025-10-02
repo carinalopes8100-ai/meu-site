@@ -321,7 +321,7 @@ const searchInput = document.getElementById('searchInput');
 searchInput.addEventListener('input', debounce(() => {
   const termo = searchInput.value.toLowerCase().trim();
   const root = document.getElementById('root');
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia];
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...documentarios, ...novelas];
 
   if (termo === "") {
     mostrarSecao('inicio'); 
@@ -5197,7 +5197,9 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
       btnPlay.textContent = '▶ Ver';
       btnPlay.onclick = (e) => {
         e.stopPropagation();
-        const s = series.find(s => s.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
+        const s = series.find(s => s.titulo === item.titulo) 
+        || novelas.find(n => n.titulo === item.titulo) 
+        || animes.find(a => a.titulo === item.titulo);
         if(s){ 
           abrirModalTemporadas({ ...s, temporadas: s.temporadas }); 
           return;
@@ -5213,32 +5215,30 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
 
 const btnDireito = document.createElement('button');
 
-if(item.titulo === 'Morangos com Açúcar' && item.verao && item.verao.length > 0){
-  // Só mostra "▶ Verão" se houver temporadas de verão
+if(item.titulo === 'Morangos com Açúcar'){
   btnDireito.textContent = '▶ Verão';
   btnDireito.onclick = (e) => {
     e.stopPropagation();
     abrirModalTemporadas({ ...item, temporadas: item.verao });
   };
-  overlay.appendChild(btnDireito);
-} else if((item.trailer) || (item.trailers && item.trailers.length > 0)){
-  // Mostra trailer somente se houver trailer ou teaser
+} else {
   btnDireito.textContent = '▶ Trailer';
   btnDireito.onclick = (e) => {
     e.stopPropagation();
 
+    // Detecta se há algum teaser
     let tipo = 'trailer';
     if(item.trailers && item.trailers.some(t => t.tipo === 'teaser')){
       tipo = 'teaser';
     }
 
-    abrirModalTrailers(item, tipo);
+    // Abre o modal com o tipo correto
+    if(item.trailer || item.trailers) abrirModalTrailers(item, tipo);
   };
-  overlay.appendChild(btnDireito);
-}
+    }
+    overlay.appendChild(btnDireito);
 
-// Adiciona overlay ao itemDiv sempre
-itemDiv.appendChild(overlay);
+    itemDiv.appendChild(overlay);
 
     // ==== Botão de descrição (NOVO) ====
     const btnDescricao = document.createElement('button');
@@ -5318,7 +5318,7 @@ function abrirModalTemporadas(serie){
       btn.style.cursor = "not-allowed";
     } else {
       // Temporada disponível
-      btn.textContent = `Temporada ${temp.numero}`;
+      btn.textContent = `Temporada ${temp.numero}` + (temp.parte ? ` – Parte ${temp.parte}` : '');
       btn.onclick = () => abrirModalEpisodios(temp, serie.titulo);
     }
 
@@ -5394,11 +5394,23 @@ function mostrarSecao(secao){
 root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
 root.appendChild(criarFila('fila2', shuffleArray(series), 'serie'));
 root.appendChild(criarFila('fila3', shuffleArray(filmesTerror), 'filme'));
+root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
+root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
+root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
 root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
 root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
-root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
 
-    }
+
+
+}
+else if(secao === 'novelas'){
+  root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
+}
+
+else if(secao === 'documentarios'){
+    root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
+}
+
 else if(secao === 'filmes'){
     root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
 }
