@@ -37,9 +37,21 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   gap: 10px;          /* espaço entre os botões */
   flex-wrap: wrap;    /* se a tela for pequena, quebra a linha */
 }
-  .banner-content button.play {
-  width: 120px;   /* largura menor */
-  padding: 6px 0; /* ajusta a altura também */
+.banner-content button.play {
+  width: 120px;            /* largura do botão */
+  padding: 6px 0;          /* altura */
+  background: #fff;
+  color: #000;
+  display: flex;            /* ativa flexbox */
+  align-items: center;      /* alinha verticalmente */
+  justify-content: center;  /* alinha horizontalmente */
+  gap: 5px;                 /* espaço entre símbolo e texto */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;          /* tamanho do texto */
+  transition: background 0.2s;
 }
 .banner-description {
   font-size: 16px;
