@@ -53,6 +53,12 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   white-space: normal;     /* permite quebra de linha */
 }
 
+.play-symbol {
+  font-size: 24px;         /* aumenta apenas o ▶ */
+  vertical-align: middle;  /* alinha com o texto Ver */
+}
+  
+
 
 
 #root { margin-top:80px; }
@@ -280,14 +286,13 @@ video::cue {
     Quatro desajustados são transportados para um bizarro país das maravilhas cúbico onde impera a imaginação. Para voltar para casa, eles terão que dominar este mundo.
   </p>
 
-    <!-- agrupe os botões -->
-    <div class="banner-buttons">
-      <button class="play" onclick="abrirVideo(filmes[0])">▶ Ver</button>
-      <button class="lista" onclick="adicionarMinhaLista('Um Filme Minecraft')">+ Minha Lista</button>
-      </button>
-    </div>
-  </div>
+  <div class="banner-buttons">
+  <button class="play" onclick="abrirVideo(filmes[0])">
+    <span class="play-symbol">▶</span> Ver
+  </button>
+  <button class="lista" onclick="adicionarMinhaLista('Um Filme Minecraft')">+ Minha Lista</button>
 </div>
+
 
 
 
