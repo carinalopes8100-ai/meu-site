@@ -5631,17 +5631,27 @@ function shuffleArray(array) {
   return arr;
 }
 
-  const searchButton = document.getElementById('searchButton');
-  const searchInput = document.getElementById('searchInput');
+document.addEventListener('DOMContentLoaded', () => {
+    const searchButton = document.getElementById('searchButton');
+    const searchInput = document.getElementById('searchInput');
 
-  searchButton.addEventListener('click', () => {
-    if(searchInput.classList.contains('hidden')){
-      searchInput.classList.remove('hidden');
-      searchInput.focus();
-    } else {
-      searchInput.classList.add('hidden');
-    }
-  });
+    // Toggle mostrar/esconder input
+    searchButton.addEventListener('click', () => {
+        if (searchInput.classList.contains('hidden')) {
+            searchInput.classList.remove('hidden');
+            searchInput.focus();
+        } else {
+            searchInput.classList.add('hidden');
+        }
+    });
+
+    // Pesquisa ao digitar Enter
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            pesquisar(); // sua função de pesquisa
+        }
+    });
+});
 
 </script>
 </body>
