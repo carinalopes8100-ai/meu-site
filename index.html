@@ -5632,25 +5632,27 @@ function shuffleArray(array) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const searchButton = document.getElementById('searchButton');
-    const searchInput = document.getElementById('searchInput');
+  const searchButton = document.getElementById('searchButton');
+  const searchInput = document.getElementById('searchInput');
 
-    // Toggle mostrar/esconder input
-    searchButton.addEventListener('click', () => {
-        searchInput.classList.toggle('hidden');
-        if (!searchInput.classList.contains('hidden')) {
-            searchInput.focus();
-        }
-    });
+  searchButton.addEventListener('click', () => {
+    searchInput.classList.toggle('hidden');
+    if (!searchInput.classList.contains('hidden')) searchInput.focus();
+    else searchInput.value = ''; // limpa campo quando fecha
+  });
 
-    // Pesquisa ao pressionar Enter
-    searchInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            pesquisar(); // chama sua função de pesquisa
-        }
-    });
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      pesquisar();
+    }
+  });
+
+  searchInput.addEventListener('input', debounce(() => {
+    pesquisar();
+  }, 150));
 });
+
 
 </script>
 </body>
