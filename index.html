@@ -32,6 +32,11 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .banner-content button.play:hover { background:#ddd; }
 .banner-content button.lista { background:rgba(109,109,110,0.7); color:#fff; }
 .banner-content button.lista:hover { background:rgba(109,109,110,0.5); }
+.banner-buttons {
+  display: flex;      /* coloca os botões em linha */
+  gap: 10px;          /* espaço entre os botões */
+  flex-wrap: wrap;    /* se a tela for pequena, quebra a linha */
+}
 
 #root { margin-top:80px; }
 
@@ -253,11 +258,14 @@ video::cue {
          class="banner-title"
          style="width:450px; height:auto;">
 
-    <button class="play" onclick="abrirVideo(filmes[0])">▶ Ver</button>
-    <button class="lista" onclick="adicionarMinhaLista('Um Filme Minecraft')">+ Minha Lista</button>
-    <button class="remover-anuncios" onclick="window.location.href='https://chromewebstore.google.com/detail/adblocker-ultimate/ohahllgiabjaoigichmmfljhkcfikeof?hl=pt-PT&gl=001'">
-      REMOVER ANÚNCIOS
-    </button>        
+    <!-- agrupe os botões -->
+    <div class="banner-buttons">
+      <button class="play" onclick="abrirVideo(filmes[0])">▶ Ver</button>
+      <button class="lista" onclick="adicionarMinhaLista('Um Filme Minecraft')">+ Minha Lista</button>
+      <button class="remover-anuncios" onclick="window.location.href='https://chromewebstore.google.com/detail/adblocker-ultimate/ohahllgiabjaoigichmmfljhkcfikeof?hl=pt-PT&gl=001'">
+        REMOVER ANÚNCIOS
+      </button>
+    </div>
   </div>
 </div>
 
