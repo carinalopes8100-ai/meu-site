@@ -5563,6 +5563,7 @@ else if(secao === 'desenhos'){
     }
 }
 
+// Função de pesquisa
 function pesquisar(){
     const termo = document.getElementById('searchInput').value.toLowerCase().trim();
     const root = document.getElementById('root');
@@ -5583,82 +5584,84 @@ function pesquisar(){
     }
 }
 
-
-
-// Carrega listas e progresso antes de mostrar a tela inicial
-carregarLista(); 
-carregarProgresso();
-mostrarSecao('inicio');
-
-// Banner
-window.addEventListener('load', ()=>{
-    const img = document.getElementById('bannerImage');
-    const video = document.getElementById('bannerVideo');
-    setTimeout(()=>{
-        img.style.display='none'; 
-        video.style.display='block'; 
-        video.play();
-    },2000);
-});
-
-  const video = document.getElementById('video');
-const captions = document.getElementById('captions');
-
-// Exemplo de legendas
-const subtitleData = [
-  { start: 0, end: 5, text: "Olá, bem-vindo ao vídeo!" },
-  { start: 5, end: 10, text: "Agora as legendas estão no meio da tela." },
-  { start: 10, end: 15, text: "Estilo elegante tipo Prime Video." }
-];
-
-video.addEventListener('timeupdate', () => {
-  const currentTime = video.currentTime;
-  const currentSubtitle = subtitleData.find(s => currentTime >= s.start && currentTime <= s.end);
-  captions.textContent = currentSubtitle ? currentSubtitle.text : '';
-});
-
-// Inicialização da tela inicial
-carregarLista(); 
-carregarProgresso();
-mostrarSecao('inicio');
-
-function shuffleArray(array) {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
+// Função debounce simples
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const searchButton = document.getElementById('searchButton');
-  const searchInput = document.getElementById('searchInput');
-
-  searchButton.addEventListener('click', () => {
-    searchInput.classList.toggle('hidden');
-    if (!searchInput.classList.contains('hidden')) {
-      searchInput.focus(); // foca no input
-    } else {
-      searchInput.value = ''; // limpa campo quando fecha
-      mostrarSecao('inicio'); // volta à tela inicial
+// Função shuffleArray
+function shuffleArray(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-  });
+    return arr;
+}
 
-  searchInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      if (searchInput.value.trim() !== '') pesquisar();
-      else mostrarSecao('inicio');
-    }
-  });
+// Código principal aguardando carregamento total do DOM
+window.addEventListener('load', () => {
+    // Inicialização da tela inicial
+    carregarLista(); 
+    carregarProgresso();
+    mostrarSecao('inicio');
 
-  searchInput.addEventListener('input', debounce(() => {
-    if (searchInput.value.trim() !== '') pesquisar();
-    else mostrarSecao('inicio'); // se vazio, volta à tela inicial
-  }, 150));
+    // Banner
+    const img = document.getElementById('bannerImage');
+    const videoBanner = document.getElementById('bannerVideo');
+    setTimeout(() => {
+        img.style.display = 'none';
+        videoBanner.style.display = 'block';
+        videoBanner.play();
+    }, 2000);
+
+    // Video e legendas
+    const video = document.getElementById('video');
+    const captions = document.getElementById('captions');
+    const subtitleData = [
+        { start: 0, end: 5, text: "Olá, bem-vindo ao vídeo!" },
+        { start: 5, end: 10, text: "Agora as legendas estão no meio da tela." },
+        { start: 10, end: 15, text: "Estilo elegante tipo Prime Video." }
+    ];
+    video.addEventListener('timeupdate', () => {
+        const currentTime = video.currentTime;
+        const currentSubtitle = subtitleData.find(
+            s => currentTime >= s.start && currentTime <= s.end
+        );
+        captions.textContent = currentSubtitle ? currentSubtitle.text : '';
+    });
+
+    // Pesquisa - lupa e input
+    const searchButton = document.getElementById('searchButton');
+    const searchInput = document.getElementById('searchInput');
+
+    searchButton.addEventListener('click', () => {
+        searchInput.classList.toggle('hidden');
+        if (!searchInput.classList.contains('hidden')) {
+            searchInput.focus();
+        } else {
+            searchInput.value = '';
+            mostrarSecao('inicio');
+        }
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (searchInput.value.trim() !== '') pesquisar();
+            else mostrarSecao('inicio');
+        }
+    });
+
+    searchInput.addEventListener('input', debounce(() => {
+        if (searchInput.value.trim() !== '') pesquisar();
+        else mostrarSecao('inicio');
+    }, 150));
 });
-
 
 
 </script>
