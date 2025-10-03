@@ -5455,6 +5455,22 @@ function shuffleArray(array){
     const continuar = todosItens.filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
     if(continuar.length > 0) root.appendChild(criarFila('filaContinuar', continuar, 'filme', 'Continuar a ver'));
 
+     } 
+    else if(secao === 'animes') {
+        if(animes && animes.length > 0){
+            root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
+        } else {
+            root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum anime disponível.</div>`;
+        }
+    }
+    else if(secao === 'desenhos') {
+        if(desenhos && desenhos.length > 0){
+            root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
+        } else {
+            root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum desenho disponível.</div>`;
+        }
+    }
+
     if(minhaLista.length > 0){
       const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
       root.appendChild(criarFila('fila0', itensLista, 'filme', 'Minha Lista'));
