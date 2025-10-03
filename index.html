@@ -22,6 +22,10 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 #searchContainer button { padding:6px 12px; margin-left:5px; border:none; border-radius:4px; background:transparent; color:#fff; cursor:pointer; font-weight:bold; transition:background .2s; font-size:24px; }
 #searchContainer button:hover { background: transparent; }
 
+.hidden {
+  display: none;
+}
+
 .banner { position: relative; width:100%; height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
 .banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
 .banner-content { position:relative; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:15px; }
@@ -277,9 +281,10 @@ video::cue {
 <div onclick="mostrarSecao('lista')">A Minha Lista</div>
 </nav>
 <div id="searchContainer">
-  <input type="text" id="searchInput" placeholder="Pesquisar...">
-  <button onclick="pesquisar()">🔍︎</button>
+  <input type="text" id="searchInput" placeholder="Pesquisar..." class="hidden">
+  <button id="searchButton">🔍︎</button>
 </div>
+
 </header>
 
   
@@ -5625,6 +5630,18 @@ function shuffleArray(array) {
   }
   return arr;
 }
+
+  // --- NOVO: barra de pesquisa oculta e clique na lupa ---
+const searchButton = document.querySelector('#searchContainer button');
+const searchInput = document.getElementById('searchInput');
+
+searchButton.addEventListener('click', () => {
+  if(searchInput.classList.contains('hidden')) {
+    searchInput.classList.remove('hidden'); // mostra input
+    searchInput.focus();                     // foca automaticamente
+  } else {
+    searchInput.classList.add('hidden');    // esconde input
+  }
   
 </script>
 </body>
