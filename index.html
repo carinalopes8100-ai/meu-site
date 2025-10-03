@@ -5445,46 +5445,74 @@ function shuffleArray(array){
   return arr;
 }
 
-  function mostrarSecao(secao) {
-  const root = document.getElementById('root');
-  root.innerHTML = '';
+function mostrarSecao(secao) {
+    const root = document.getElementById('root');
+    root.innerHTML = '';
 
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia];
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios];
 
-  if(secao === 'inicio'){
-    const continuar = todosItens.filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
-    if(continuar.length > 0) root.appendChild(criarFila('filaContinuar', continuar, 'filme', 'Continuar a ver'));
+    if(secao === 'inicio'){
+        const continuar = todosItens.filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
+        if(continuar.length > 0){
+            root.appendChild(criarFila('filaContinuar', continuar, 'filme', 'Continuar a ver'));
+        }
 
-     } 
-    else if(secao === 'animes') {
-        if(animes && animes.length > 0){
+        if(minhaLista.length > 0){
+            const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
+            root.appendChild(criarFila('fila0', itensLista, 'filme', 'Minha Lista'));
+        }
+
+        root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
+        root.appendChild(criarFila('fila2', shuffleArray(series), 'serie'));
+        root.appendChild(criarFila('fila3', shuffleArray(filmesTerror), 'filme'));
+        root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
+        root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
+        root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
+        root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
+        root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
+    }
+    else if(secao === 'filmes'){
+        root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
+    }
+    else if(secao === 'series'){
+        root.appendChild(criarFila('fila2', shuffleArray(series), 'serie'));
+    }
+    else if(secao === 'terror'){
+        root.appendChild(criarFila('fila3', shuffleArray(filmesTerror), 'filme'));
+    }
+    else if(secao === 'comedia'){
+        root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
+    }
+    else if(secao === 'animes'){
+        if(animes.length > 0){
             root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
         } else {
             root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum anime disponível.</div>`;
         }
     }
-    else if(secao === 'desenhos') {
-        if(desenhos && desenhos.length > 0){
+    else if(secao === 'desenhos'){
+        if(desenhos.length > 0){
             root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
         } else {
             root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum desenho disponível.</div>`;
         }
     }
-
-    if(minhaLista.length > 0){
-      const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
-      root.appendChild(criarFila('fila0', itensLista, 'filme', 'Minha Lista'));
+    else if(secao === 'novelas'){
+        root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
     }
+    else if(secao === 'documentarios'){
+        root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
+    }
+    else if(secao === 'lista'){
+        const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
+        if(itensLista.length > 0){
+            root.appendChild(criarFila('filaMinhaLista', itensLista, 'filme', 'Minha Lista'));
+        } else {
+            root.innerHTML = `<div style="margin:50px; font-size:18px;">Você não adicionou nenhum item à Minha Lista.</div>`;
+        }
+    }
+}
 
-    root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
-    root.appendChild(criarFila('fila2', shuffleArray(series), 'serie'));
-    root.appendChild(criarFila('fila3', shuffleArray(filmesTerror), 'filme'));
-    root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
-    root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
-    root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
-    root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
-    root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
-  }
 
   // Pode adicionar mais seções aqui...
 }
