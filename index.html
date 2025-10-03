@@ -5408,6 +5408,105 @@ function shuffleArray(array){
   return arr;
 }
 
+  function mostrarSecao(secao) {
+  const root = document.getElementById('root');
+  root.innerHTML = '';
+
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia];
+
+  if(secao === 'inicio'){
+    const continuar = todosItens.filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
+    if(continuar.length > 0) root.appendChild(criarFila('filaContinuar', continuar, 'filme', 'Continuar a ver'));
+
+    if(minhaLista.length > 0){
+      const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
+      root.appendChild(criarFila('fila0', itensLista, 'filme', 'Minha Lista'));
+    }
+
+    root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
+    root.appendChild(criarFila('fila2', shuffleArray(series), 'serie'));
+    root.appendChild(criarFila('fila3', shuffleArray(filmesTerror), 'filme'));
+    root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
+    root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
+    root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
+    root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
+    root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
+  }
+
+  // Pode adicionar mais seções aqui...
+}
+
+function pesquisar() {
+  const termo = document.getElementById('searchInput').value.toLowerCase().trim();
+  const root = document.getElementById('root');
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+
+  if (termo === "") {
+    mostrarSecao('inicio');
+    return;
+  }
+
+  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
+  root.innerHTML = '';
+
+  if (resultados.length > 0) {
+    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+  } else {
+    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+  }
+}
+
+function abrirModalTemporadas(serie) {
+  const list = document.getElementById('episodiosList');
+  document.getElementById('modalTitle').textContent = `Escolha a temporada de "${serie.titulo}"`;
+  list.innerHTML = '';
+
+  serie.temporadas.forEach(temp => {
+    const btn = document.createElement('button');
+    btn.className = 'temporada-btn';
+    if(temp.emBreve) {
+      btn.textContent = `Temporada ${temp.numero} - Em Breve`;
+      btn.disabled = true;
+      btn.style.backgroundColor = "#555";
+      btn.style.cursor = "not-allowed";
+    } else {
+      btn.textContent = `Temporada ${temp.numero}` + (temp.parte ? ` – Parte ${temp.parte}` : '');
+      btn.onclick = () => abrirModalEpisodios(temp, serie.titulo);
+    }
+    list.appendChild(btn);
+  });
+
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function abrirModalEpisodios(temporada, serieTitulo) {
+  const list = document.getElementById('episodiosList');
+  document.getElementById('modalTitle').textContent = `Escolha o episódio - ${serieTitulo} (Temporada ${temporada.numero})`;
+  list.innerHTML = '';
+
+  temporada.episodios.forEach(ep => {
+    const btn = document.createElement('button');
+    btn.className = 'episodio-btn';
+    if(ep.link === "#" || temporada.emBreve){
+      btn.textContent = `Episódio ${ep.numero} - Em Breve`;
+      btn.disabled = true;
+      btn.style.backgroundColor = "#555";
+      btn.style.cursor = "not-allowed";
+    } else {
+      btn.textContent = `Episódio ${ep.numero}`;
+      const episodioObj = {...ep, titulo: `${serieTitulo} - Ep ${ep.numero}`};
+      btn.onclick = () => abrirEpisodio(episodioObj);
+    }
+    list.appendChild(btn);
+  });
+
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function fecharModal() { document.getElementById('modal').style.display = 'none'; }
+function fecharDescricaoModal() { document.getElementById('descricaoModal').style.display = 'none'; mostrarSecao(secaoAtual); }
+
+
 // ===== Inicialização =====
 document.addEventListener('DOMContentLoaded', ()=>{
   carregarLista();
