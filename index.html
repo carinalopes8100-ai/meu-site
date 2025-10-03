@@ -5637,21 +5637,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   searchButton.addEventListener('click', () => {
     searchInput.classList.toggle('hidden');
-    if (!searchInput.classList.contains('hidden')) searchInput.focus();
-    else searchInput.value = ''; // limpa campo quando fecha
+    if (!searchInput.classList.contains('hidden')) {
+      searchInput.focus(); // foca no input
+    } else {
+      searchInput.value = ''; // limpa campo quando fecha
+      mostrarSecao('inicio'); // volta à tela inicial
+    }
   });
 
   searchInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      pesquisar();
+      if (searchInput.value.trim() !== '') pesquisar();
+      else mostrarSecao('inicio');
     }
   });
 
   searchInput.addEventListener('input', debounce(() => {
-    pesquisar();
+    if (searchInput.value.trim() !== '') pesquisar();
+    else mostrarSecao('inicio'); // se vazio, volta à tela inicial
   }, 150));
 });
+
 
 
 </script>
