@@ -5631,18 +5631,20 @@ function shuffleArray(array) {
   return arr;
 }
 
-  // --- NOVO: barra de pesquisa oculta e clique na lupa ---
-const searchButton = document.querySelector('#searchContainer button');
-const searchInput = document.getElementById('searchInput');
+document.addEventListener('DOMContentLoaded', () => {
+  const searchButton = document.getElementById('searchButton');
+  const searchInput = document.getElementById('searchInput');
 
-searchButton.addEventListener('click', () => {
-  if(searchInput.classList.contains('hidden')) {
-    searchInput.classList.remove('hidden'); // mostra input
-    searchInput.focus();                     // foca automaticamente
-  } else {
-    searchInput.classList.add('hidden');    // esconde input
-  }
-  
+  searchButton.addEventListener('click', () => {
+    if(searchInput.classList.contains('hidden')){
+      searchInput.classList.remove('hidden');
+      searchInput.focus();
+    } else {
+      searchInput.classList.add('hidden');
+    }
+  });
+});
+
 </script>
 </body>
 </html>
