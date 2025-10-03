@@ -5231,33 +5231,33 @@ const filmesTerror = [
 
 // ===== Funções de interface =====
 function criarFila(idFila, lista, tipo, tituloFila=null){
-  const container=document.createElement('div'); 
-  container.className='fila-container'; 
-  container.id=idFila;
+  const container = document.createElement('div'); 
+  container.className = 'fila-container'; 
+  container.id = idFila;
 
-  const titulo=document.createElement('div'); 
-  titulo.className='fila-titulo'; 
-  titulo.textContent=tituloFila || (tipo==='filme' ? (idFila==='fila3' ? 'Terror' : 'Filmes Populares') : 'Séries Populares');
+  const titulo = document.createElement('div'); 
+  titulo.className = 'fila-titulo'; 
+  titulo.textContent = tituloFila || (tipo==='filme' ? (idFila==='fila3' ? 'Terror' : 'Filmes Populares') : 'Séries Populares');
 
-  const btnLeft=document.createElement('button'); 
-  btnLeft.className='btn-scroll btn-left'; 
-  btnLeft.innerHTML='&#10094;';
+  const btnLeft = document.createElement('button'); 
+  btnLeft.className = 'btn-scroll btn-left'; 
+  btnLeft.innerHTML = '&#10094;';
 
-  const btnRight=document.createElement('button'); 
-  btnRight.className='btn-scroll btn-right'; 
-  btnRight.innerHTML='&#10095;';
+  const btnRight = document.createElement('button'); 
+  btnRight.className = 'btn-scroll btn-right'; 
+  btnRight.innerHTML = '&#10095;';
 
-  const fila=document.createElement('div'); 
-  fila.className='fila'; 
-  fila.id=idFila+'-content';
+  const fila = document.createElement('div'); 
+  fila.className = 'fila'; 
+  fila.id = idFila + '-content';
   
-  lista.forEach(item=>{
-    const itemDiv=document.createElement('div'); 
-    itemDiv.className='filme';
+  lista.forEach(item => {
+    const itemDiv = document.createElement('div'); 
+    itemDiv.className = 'filme';
 
-    const img=document.createElement('img'); 
-    img.src=item.img; 
-    img.alt=item.titulo; 
+    const img = document.createElement('img'); 
+    img.src = item.img; 
+    img.alt = item.titulo; 
     itemDiv.appendChild(img);
 
     // ==== Barra de progresso ====
@@ -5276,7 +5276,7 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
       progressoDiv.appendChild(progressoInner);
       itemDiv.appendChild(progressoDiv);
 
-      const atualizarBarra = (duracao) => {
+      const atualizarBarra = duracao => {
         const pct = Math.min((progresso[item.titulo] / duracao) * 100, 100);
         progressoInner.style.width = pct + '%';
       };
@@ -5296,9 +5296,7 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
       const observer = new MutationObserver(() => {
         const video = document.getElementById('playerVideo');
         if(video && video.dataset.titulo === item.titulo){
-          video.addEventListener('timeupdate', () => {
-            atualizarBarra(video.duration);
-          });
+          video.addEventListener('timeupdate', () => atualizarBarra(video.duration));
         }
       });
       observer.observe(document.body, {childList: true, subtree: true});
@@ -5316,83 +5314,50 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
       btnPlay.style.cursor = "not-allowed";
     } else {
       btnPlay.textContent = '▶ Ver';
-      btnPlay.onclick = (e) => {
+      btnPlay.onclick = e => {
         e.stopPropagation();
-        const s = series.find(s => s.titulo === item.titulo) 
-        || novelas.find(n => n.titulo === item.titulo) 
-        || animes.find(a => a.titulo === item.titulo);
-        if(s){ 
-          abrirModalTemporadas({ ...s, temporadas: s.temporadas }); 
-          return;
-        } 
-        if(item.audios && item.audios.length > 0){
-  abrirAudioModal(item);
-} else {
-  abrirVideo(item); // abre direto se não houver áudios
-} 
+        const s = series.find(s => s.titulo === item.titulo) || novelas.find(n => n.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
+        if(s){ abrirModalTemporadas({...s, temporadas: s.temporadas}); return; } 
+        if(item.audios && item.audios.length > 0){ abrirAudioModal(item); } 
+        else { abrirVideo(item); }
       };
     }
     overlay.appendChild(btnPlay);
 
-const btnDireito = document.createElement('button');
-
-if(item.titulo === 'Morangos com Açúcar' && item.verao && item.verao.length > 0){
-  // Só mostra "▶ Verão" se houver temporadas de verão
-  btnDireito.textContent = '▶ Verão';
-  btnDireito.onclick = (e) => {
-    e.stopPropagation();
-    abrirModalTemporadas({ ...item, temporadas: item.verao });
-  };
-  overlay.appendChild(btnDireito);
-} else if((item.trailer) || (item.trailers && item.trailers.length > 0)){
-  // Mostra trailer somente se houver trailer ou teaser
-  btnDireito.textContent = '▶ Trailer';
-  btnDireito.onclick = (e) => {
-    e.stopPropagation();
-
-    let tipo = 'trailer';
-    if(item.trailers && item.trailers.some(t => t.tipo === 'teaser')){
-      tipo = 'teaser';
+    const btnDireito = document.createElement('button');
+    if(item.titulo === 'Morangos com Açúcar' && item.verao && item.verao.length > 0){
+      btnDireito.textContent = '▶ Verão';
+      btnDireito.onclick = e => { e.stopPropagation(); abrirModalTemporadas({...item, temporadas: item.verao}); };
+      overlay.appendChild(btnDireito);
+    } else if(item.trailer || (item.trailers && item.trailers.length > 0)){
+      btnDireito.textContent = '▶ Trailer';
+      btnDireito.onclick = e => {
+        e.stopPropagation();
+        let tipo = 'trailer';
+        if(item.trailers && item.trailers.some(t => t.tipo === 'teaser')) tipo = 'teaser';
+        abrirModalTrailers(item, tipo);
+      };
+      overlay.appendChild(btnDireito);
     }
+    itemDiv.appendChild(overlay);
 
-    abrirModalTrailers(item, tipo);
-  };
-  overlay.appendChild(btnDireito);
-}
-
-// Adiciona overlay ao itemDiv sempre
-itemDiv.appendChild(overlay);
-
-
-    // ==== Botão de descrição (NOVO) ====
+    // ==== Botão de descrição ====
     const btnDescricao = document.createElement('button');
     btnDescricao.className = 'add-list-btn info';
     btnDescricao.textContent = 'i';
     btnDescricao.title = 'Ver descrição';
-    btnDescricao.onclick = (e) => {
-      e.stopPropagation();
-      abrirDescricaoModal(item);
-    };
+    btnDescricao.onclick = e => { e.stopPropagation(); abrirDescricaoModal(item); };
     itemDiv.appendChild(btnDescricao);
 
-    // ==== Botão de adicionar/remover lista ====
+    // ==== Botão adicionar/remover lista ====
     const addBtn = document.createElement('button'); 
     addBtn.className = 'add-list-btn';
-    function updateButton() { 
-      if(minhaLista.includes(item.titulo)){
-        addBtn.textContent='✖'; 
-        addBtn.title='Remover da Minha Lista'; 
-      } else { 
-        addBtn.textContent='+'; 
-        addBtn.title='Adicionar à Minha Lista'; 
-      } 
-    }
-    addBtn.onclick = (e) => { 
-      e.stopPropagation(); 
-      adicionarMinhaLista(item.titulo); 
-      updateButton(); 
-    }
-    updateButton(); 
+    const updateButton = () => {
+      if(minhaLista.includes(item.titulo)){ addBtn.textContent='✖'; addBtn.title='Remover da Minha Lista'; } 
+      else { addBtn.textContent='+'; addBtn.title='Adicionar à Minha Lista'; }
+    };
+    addBtn.onclick = e => { e.stopPropagation(); adicionarMinhaLista(item.titulo); updateButton(); };
+    updateButton();
     itemDiv.appendChild(addBtn);
 
     // ==== Botão remover da fila continuar ====
@@ -5401,13 +5366,13 @@ itemDiv.appendChild(overlay);
       removeBtn.className = 'remove-continuar-btn';
       removeBtn.textContent = '✖';
       removeBtn.title = 'Remover da fila Continuar Assistindo';
-      removeBtn.onclick = (e) => { 
-        e.stopPropagation(); 
-        delete progresso[item.titulo]; 
-        salvarProgresso(); 
-        mostrarSecao('inicio'); 
+      removeBtn.onclick = e => {
+        e.stopPropagation();
+        delete progresso[item.titulo];
+        salvarProgresso();
+        mostrarSecao('inicio');
         mostrarToast(`"${item.titulo}" removido da fila Continuar a ver!`);
-      }
+      };
       itemDiv.appendChild(removeBtn);
     }
 
@@ -5419,248 +5384,72 @@ itemDiv.appendChild(overlay);
   container.appendChild(fila); 
   container.appendChild(btnRight);
 
-  btnLeft.addEventListener('click',()=>fila.scrollBy({left:-1400,behavior:'smooth'}));
-  btnRight.addEventListener('click',()=>fila.scrollBy({left:1400,behavior:'smooth'}));
+  btnLeft.addEventListener('click', ()=>fila.scrollBy({left:-1400, behavior:'smooth'}));
+  btnRight.addEventListener('click', ()=>fila.scrollBy({left:1400, behavior:'smooth'}));
 
   return container;
 }
 
-function abrirModalTemporadas(serie){
-  document.getElementById('modalTitle').textContent = `Escolha a temporada de "${serie.titulo}"`;
-  const list = document.getElementById('episodiosList'); 
-  list.innerHTML = '';
-
-  serie.temporadas.forEach(temp => {
-    const btn = document.createElement('button');
-    btn.className = 'temporada-btn';
-
-    if(temp.emBreve) {
-      // Temporada marcada como "em breve"
-      btn.textContent = `Temporada ${temp.numero} - Em Breve`;
-      btn.disabled = true;
-      btn.style.backgroundColor = "#555";
-      btn.style.cursor = "not-allowed";
-    } else {
-      // Temporada disponível
-      btn.textContent = `Temporada ${temp.numero}` + (temp.parte ? ` – Parte ${temp.parte}` : '');
-      btn.onclick = () => abrirModalEpisodios(temp, serie.titulo);
-    }
-
-    list.appendChild(btn);
-  });
-
-  document.getElementById('modal').style.display = 'flex';
-}
-
-function abrirModalEpisodios(temporada, serieTitulo){
-  document.getElementById('modalTitle').textContent = `Escolha o episódio - ${serieTitulo} (Temporada ${temporada.numero})`;
-  const list = document.getElementById('episodiosList'); 
-  list.innerHTML = '';
-
-  temporada.episodios.forEach((ep, idx) => {
-    const btn = document.createElement('button');
-    btn.className = 'episodio-btn';
-
-    if(ep.link === "#" || temporada.emBreve){
-      btn.textContent = `Episódio ${ep.numero} - Em Breve`;
-      btn.disabled = true;
-      btn.style.backgroundColor = "#555";
-      btn.style.cursor = "not-allowed";
-    } else {
-      btn.textContent = `Episódio ${ep.numero}`;
-
-      // Cria objeto completo do episódio, incluindo áudios
-      const episodioObj = {
-        ...ep,
-        titulo: `${serieTitulo} - Ep ${ep.numero}`
-      };
-
-      // Usa função que decide abrir modal ou reproduzir direto
-      btn.onclick = () => abrirEpisodio(episodioObj);
-    }
-
-    list.appendChild(btn);
-  });
-
-  document.getElementById('modal').style.display = 'flex';
-}
-
-
-
-function fecharDescricaoModal() {
-    document.getElementById('descricaoModal').style.display = 'none';
-    mostrarSecao(secaoAtual); // volta para a seção que estava
-}
-
-
-function fecharModal(){ 
-    document.getElementById('modal').style.display='none'; 
-}
-
-function mostrarSecao(secao){
-    const root = document.getElementById('root');
-    root.innerHTML = ''; // limpa conteúdo anterior
-
-    // garante que todosItens inclua animes
-    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia];
-
-    if(secao === 'inicio'){
-        const continuar = todosItens.filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
-        if(continuar.length > 0){
-            root.appendChild(criarFila('filaContinuar', continuar, 'filme', 'Continuar a ver'));
-        }
-
-        if(minhaLista.length > 0){
-            const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
-            root.appendChild(criarFila('fila0', itensLista, 'filme', 'Minha Lista'));
-        }
-
-root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
-root.appendChild(criarFila('fila2', shuffleArray(series), 'serie'));
-root.appendChild(criarFila('fila3', shuffleArray(filmesTerror), 'filme'));
-root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
-root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
-root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
-root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
-root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
-
-
-
-}
-else if(secao === 'novelas'){
-  root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
-}
-
-else if(secao === 'documentarios'){
-    root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
-}
-
-else if(secao === 'filmes'){
-    root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
-}
-else if(secao === 'series'){
-    root.appendChild(criarFila('fila2', shuffleArray(series), 'serie'));
-}
-else if(secao === 'terror'){
-    root.appendChild(criarFila('fila3', shuffleArray(filmesTerror), 'filme'));
-}
-else if(secao === 'animes'){
-    root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
-}
-  else if(secao === 'comedia'){
-    root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
-  }
-else if(secao === 'desenhos'){
-    root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
-}
-    else if(secao === 'lista'){
-        const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
-        if(itensLista.length > 0){
-            root.appendChild(criarFila('filaMinhaLista', itensLista, 'filme', 'Minha Lista'));
-        } else {
-            root.innerHTML = `<div style="margin:50px; font-size:18px;">Você não adicionou nenhum item à Minha Lista.</div>`;
-        }
-    }
-}
-
-function pesquisar() {
-    const termo = document.getElementById('searchInput').value.toLowerCase().trim();
-    const root = document.getElementById('root');
-    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
-
-    if (termo === "") {
-        mostrarSecao('inicio');
-        return;
-    }
-
-    const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
-    root.innerHTML = '';
-
-    if (resultados.length > 0) {
-        root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
-    } else {
-        root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
-    }
-}
-
-// Função debounce
+// ===== Funções utilitárias =====
 function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-    };
+  let timeout;
+  return function(...args){
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
 }
 
-// Função shuffleArray
-function shuffleArray(array) {
-    const arr = [...array];
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+function shuffleArray(array){
+  const arr = [...array];
+  for(let i=arr.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// ===== Inicialização =====
+document.addEventListener('DOMContentLoaded', ()=>{
+  carregarLista();
+  carregarProgresso();
+  mostrarSecao('inicio');
+
+  // Banner
+  const bannerImage = document.getElementById('bannerImage');
+  const bannerVideo = document.getElementById('bannerVideo');
+  bannerVideo.preload = 'auto';
+  bannerVideo.addEventListener('canplaythrough', ()=>{
+    bannerImage.style.transition = 'opacity 1s';
+    bannerImage.style.opacity = '0';
+    setTimeout(()=>{
+      bannerImage.style.display = 'none';
+      bannerVideo.style.display = 'block';
+      bannerVideo.play();
+    }, 1000);
+  });
+
+  // Pesquisa
+  const searchInput = document.getElementById('searchInput');
+  const searchButton = document.getElementById('searchButton');
+
+  searchButton.addEventListener('click', ()=>{
+    searchInput.classList.toggle('hidden');
+    if(!searchInput.classList.contains('hidden')) searchInput.focus();
+    else { searchInput.value=''; mostrarSecao('inicio'); }
+  });
+
+  searchInput.addEventListener('keydown', e=>{
+    if(e.key==='Enter'){ 
+      e.preventDefault();
+      searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio'); 
     }
-    return arr;
-}
+  });
 
-// Tudo dentro do DOMContentLoaded
-document.addEventListener('DOMContentLoaded', () => {
-    // Inicialização da tela inicial
-    carregarLista(); 
-    carregarProgresso();
-    mostrarSecao('inicio');
-
-    // Banner
-    const img = document.getElementById('bannerImage');
-    const videoBanner = document.getElementById('bannerVideo');
-    setTimeout(() => {
-        img.style.display = 'none';
-        videoBanner.style.display = 'block';
-        videoBanner.play();
-    }, 2000);
-
-    // Video e legendas
-    const video = document.getElementById('video');
-    const captions = document.getElementById('captions');
-    const subtitleData = [
-        { start: 0, end: 5, text: "Olá, bem-vindo ao vídeo!" },
-        { start: 5, end: 10, text: "Agora as legendas estão no meio da tela." },
-        { start: 10, end: 15, text: "Estilo elegante tipo Prime Video." }
-    ];
-    video.addEventListener('timeupdate', () => {
-        const currentTime = video.currentTime;
-        const currentSubtitle = subtitleData.find(
-            s => currentTime >= s.start && currentTime <= s.end
-        );
-        captions.textContent = currentSubtitle ? currentSubtitle.text : '';
-    });
-
-    // Pesquisa - lupa e input
-    const searchButton = document.getElementById('searchButton');
-    const searchInput = document.getElementById('searchInput');
-
-    searchButton.addEventListener('click', () => {
-        searchInput.classList.toggle('hidden');
-        if (!searchInput.classList.contains('hidden')) {
-            searchInput.focus();
-        } else {
-            searchInput.value = '';
-            mostrarSecao('inicio');
-        }
-    });
-
-    searchInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            if (searchInput.value.trim() !== '') pesquisar();
-            else mostrarSecao('inicio');
-        }
-    });
-
-    searchInput.addEventListener('input', debounce(() => {
-        if (searchInput.value.trim() !== '') pesquisar();
-        else mostrarSecao('inicio');
-    }, 150));
+  searchInput.addEventListener('input', debounce(()=>{
+    searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
+  }, 150));
 });
+
 </script>
 </body>
 </html>
