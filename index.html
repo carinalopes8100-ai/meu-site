@@ -5637,18 +5637,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Toggle mostrar/esconder input
     searchButton.addEventListener('click', () => {
-        if (searchInput.classList.contains('hidden')) {
-            searchInput.classList.remove('hidden');
+        searchInput.classList.toggle('hidden');
+        if (!searchInput.classList.contains('hidden')) {
             searchInput.focus();
-        } else {
-            searchInput.classList.add('hidden');
         }
     });
 
-    // Pesquisa ao digitar Enter
-    searchInput.addEventListener('keypress', (e) => {
+    // Pesquisa ao pressionar Enter
+    searchInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-            pesquisar(); // sua função de pesquisa
+            e.preventDefault();
+            pesquisar(); // chama sua função de pesquisa
         }
     });
 });
