@@ -5631,6 +5631,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
   searchInput.addEventListener('input', debounce(()=>{
     searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
   }, 150));
+
+    // Logo volta para a página inicial
+  const logo = document.getElementById('logo');
+  if (logo) {
+    logo.addEventListener('click', () => {
+      mostrarSecao('inicio');
+    });
+  }
 });
 
 </script>
