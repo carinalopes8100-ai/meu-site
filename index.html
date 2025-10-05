@@ -316,6 +316,8 @@ video::cue {
 </head>
 <body>
 
+<div id="pumpkinContainer"></div>
+  
   <div id="audioModal" class="modal">
   <div class="modal-content" style="max-width:400px;">
     <h2>Escolha o áudio</h2>
@@ -5753,7 +5755,8 @@ function fecharModal() { document.getElementById('modal').style.display = 'none'
 function fecharDescricaoModal() { document.getElementById('descricaoModal').style.display = 'none'; mostrarSecao(secaoAtual); }
 
   
-  const NUM_PUMPKINS = 50; // quantidade de abóboras
+const container = document.getElementById("pumpkinContainer");
+const NUM_PUMPKINS = 30;
 const pumpkinURL = "https://png.pngtree.com/png-vector/20240922/ourmid/pngtree-colorful-halloween-pumpkin-with-fiery-designs-png-image_13683803.png";
 
 for (let i = 0; i < NUM_PUMPKINS; i++) {
@@ -5761,16 +5764,39 @@ for (let i = 0; i < NUM_PUMPKINS; i++) {
   img.src = pumpkinURL;
   img.className = "pumpkin";
 
-  img.style.top = Math.random() * window.innerHeight + "px";
-  img.style.left = Math.random() * window.innerWidth + "px";
+  let x = Math.random() * window.innerWidth;
+  let y = -50 - Math.random() * 200;
+  let angle = Math.random() * 360;
 
-  const size = 20 + Math.random() * 30; // tamanhos aleatórios
-  img.style.width = size + "px";
-
-  const angle = Math.random() * 360; // rotação aleatória
+  img.style.left = x + "px";
+  img.style.top = y + "px";
   img.style.transform = `rotate(${angle}deg)`;
+  img.style.width = 20 + Math.random() * 30 + "px";
 
-  document.body.appendChild(img);
+  container.appendChild(img);
+
+  const speedY = 1 + Math.random() * 2;
+  const speedX = (Math.random() - 0.5) * 1;
+  const rotateSpeed = (Math.random() - 0.5) * 2;
+
+  function animate() {
+    y += speedY;
+    x += speedX;
+    angle += rotateSpeed;
+
+    if (y > window.innerHeight) {
+      y = -50;
+      x = Math.random() * window.innerWidth;
+    }
+
+    img.style.top = y + "px";
+    img.style.left = x + "px";
+    img.style.transform = `rotate(${angle}deg)`;
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
 }
 
 
