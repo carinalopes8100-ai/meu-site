@@ -5754,51 +5754,6 @@ function abrirModalEpisodios(temporada, serieTitulo) {
 function fecharModal() { document.getElementById('modal').style.display = 'none'; }
 function fecharDescricaoModal() { document.getElementById('descricaoModal').style.display = 'none'; mostrarSecao(secaoAtual); }
 
-  
-const container = document.getElementById("pumpkinContainer");
-const NUM_PUMPKINS = 30;
-const pumpkinURL = "https://png.pngtree.com/png-vector/20240922/ourmid/pngtree-colorful-halloween-pumpkin-with-fiery-designs-png-image_13683803.png";
-
-for (let i = 0; i < NUM_PUMPKINS; i++) {
-  const img = document.createElement("img");
-  img.src = pumpkinURL;
-  img.className = "pumpkin";
-
-  let x = Math.random() * window.innerWidth;
-  let y = -50 - Math.random() * 200;
-  let angle = Math.random() * 360;
-
-  img.style.left = x + "px";
-  img.style.top = y + "px";
-  img.style.transform = `rotate(${angle}deg)`;
-  img.style.width = 20 + Math.random() * 30 + "px";
-
-  container.appendChild(img);
-
-  const speedY = 1 + Math.random() * 2;
-  const speedX = (Math.random() - 0.5) * 1;
-  const rotateSpeed = (Math.random() - 0.5) * 2;
-
-  function animate() {
-    y += speedY;
-    x += speedX;
-    angle += rotateSpeed;
-
-    if (y > window.innerHeight) {
-      y = -50;
-      x = Math.random() * window.innerWidth;
-    }
-
-    img.style.top = y + "px";
-    img.style.left = x + "px";
-    img.style.transform = `rotate(${angle}deg)`;
-
-    requestAnimationFrame(animate);
-  }
-
-  animate();
-}
-
 
 // ===== Inicialização =====
 document.addEventListener('DOMContentLoaded', ()=>{
@@ -5856,6 +5811,66 @@ document.addEventListener('DOMContentLoaded', ()=>{
     });
   }
 });
+
+const container = document.getElementById("pumpkinContainer");
+const NUM_PUMPKINS = 30;
+const pumpkinURL = "https://png.pngtree.com/png-vector/20240922/ourmid/pngtree-colorful-halloween-pumpkin-with-fiery-designs-png-image_13683803.png";
+
+const pumpkins = [];
+
+for (let i = 0; i < NUM_PUMPKINS; i++) {
+  const img = document.createElement("img");
+  img.src = pumpkinURL;
+  img.className = "pumpkin";
+
+  const pumpkin = {
+    img,
+    x: Math.random() * window.innerWidth,
+    y: -50 - Math.random() * 200,
+    angle: Math.random() * 360,
+    speedY: 1 + Math.random() * 2,
+    speedX: (Math.random() - 0.5) * 1,
+    rotateSpeed: (Math.random() - 0.5) * 2,
+    width: 20 + Math.random() * 30
+  };
+
+  img.style.left = pumpkin.x + "px";
+  img.style.top = pumpkin.y + "px";
+  img.style.width = pumpkin.width + "px";
+  img.style.transform = `rotate(${pumpkin.angle}deg)`;
+
+  container.appendChild(img);
+  pumpkins.push(pumpkin);
+}
+
+function animatePumpkins() {
+  pumpkins.forEach(p => {
+    p.y += p.speedY;
+    p.x += p.speedX;
+    p.angle += p.rotateSpeed;
+
+    if (p.y > window.innerHeight) {
+      p.y = -50;
+      p.x = Math.random() * window.innerWidth;
+    }
+
+    p.img.style.top = p.y + "px";
+    p.img.style.left = p.x + "px";
+    p.img.style.transform = `rotate(${p.angle}deg)`;
+  });
+
+  requestAnimationFrame(animatePumpkins);
+}
+
+animatePumpkins();
+
+window.addEventListener('resize', () => {
+  pumpkins.forEach(p => {
+    if (p.x > window.innerWidth) p.x = Math.random() * window.innerWidth;
+  });
+});
+
+
 
 </script>
 </body>
