@@ -7,12 +7,17 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
-  font-family: 'Roboto', sans-serif;
+  margin: 0;
   background-color: #141414; /* fundo escuro */
-  background-image: url("https://png.pngtree.com/png-vector/20240922/ourmid/pngtree-colorful-halloween-pumpkin-with-fiery-designs-png-image_13683803.png");
-  background-repeat: repeat;   /* repete em toda a página */
-  background-size: 120px;      /* controla o tamanho de cada abóbora */
-  color: #fff;
+  overflow: hidden;           /* evita scroll */
+}
+
+.pumpkin {
+  position: absolute;
+  width: 40px;          /* tamanho pequeno */
+  pointer-events: none; /* não atrapalha cliques */
+  opacity: 0.8;
+  transform: rotate(0deg);
 }
 
 
@@ -5732,8 +5737,30 @@ function abrirModalEpisodios(temporada, serieTitulo) {
   document.getElementById('modal').style.display = 'flex';
 }
 
+
 function fecharModal() { document.getElementById('modal').style.display = 'none'; }
 function fecharDescricaoModal() { document.getElementById('descricaoModal').style.display = 'none'; mostrarSecao(secaoAtual); }
+
+  
+  const NUM_PUMPKINS = 50; // quantidade de abóboras
+const pumpkinURL = "https://png.pngtree.com/png-vector/20240922/ourmid/pngtree-colorful-halloween-pumpkin-with-fiery-designs-png-image_13683803.png";
+
+for (let i = 0; i < NUM_PUMPKINS; i++) {
+  const img = document.createElement("img");
+  img.src = pumpkinURL;
+  img.className = "pumpkin";
+
+  img.style.top = Math.random() * window.innerHeight + "px";
+  img.style.left = Math.random() * window.innerWidth + "px";
+
+  const size = 20 + Math.random() * 30; // tamanhos aleatórios
+  img.style.width = size + "px";
+
+  const angle = Math.random() * 360; // rotação aleatória
+  img.style.transform = `rotate(${angle}deg)`;
+
+  document.body.appendChild(img);
+}
 
 
 // ===== Inicialização =====
