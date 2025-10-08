@@ -5107,6 +5107,21 @@ const desenhos = [
 ];
 
 
+const filmesMarvel = [
+  {
+    titulo: "Homem de Ferro",
+    img: "link_da_imagem.jpg",
+    link: "link_do_video.mp4",
+    duracao: 7200 // em segundos (opcional)
+  },
+  {
+    titulo: "Vingadores: Ultimato",
+    img: "link_da_imagem2.jpg",
+    link: "link_do_video2.mp4",
+    duracao: 10800
+  },
+  // ...adicione outros filmes Marvel aqui
+];  
 
   
 const filmesTerror = [
@@ -5689,7 +5704,7 @@ function mostrarSecao(secao) {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
-    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios];
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel];
 
     if(secao === 'inicio'){
         const continuar = todosItens.filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
@@ -5705,6 +5720,7 @@ function mostrarSecao(secao) {
         root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
         root.appendChild(criarFila('fila2', shuffleArray(series), 'serie'));
         root.appendChild(criarFila('fila3', shuffleArray(filmesTerror), 'filme'));
+        root.appendChild(criarFila('filaMarvel', shuffleArray(filmesMarvel), 'filme', 'Filmes Marvel'));
         root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
         root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
         root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
@@ -5722,6 +5738,11 @@ else if(secao === 'documentarios'){
 else if(secao === 'filmes'){
     root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
 }
+
+  else if(secao === 'marvel'){
+  root.appendChild(criarFila('filaMarvel', shuffleArray(filmesMarvel), 'filme', 'Filmes Marvel'));
+}
+
 else if(secao === 'series'){
     root.appendChild(criarFila('fila2', shuffleArray(series), 'serie'));
 }
