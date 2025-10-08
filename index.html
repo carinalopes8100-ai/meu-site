@@ -456,7 +456,7 @@ const searchInput = document.getElementById('searchInput');
 searchInput.addEventListener('input', debounce(() => {
   const termo = searchInput.value.toLowerCase().trim();
   const root = document.getElementById('root');
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...documentarios, ...novelas];
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...documentarios, ...novelas, ...filmesDc];
 
   if (termo === "") {
     mostrarSecao('inicio'); 
@@ -5107,6 +5107,23 @@ const desenhos = [
 ];
 
 
+  const filmesDc = [
+  {
+    titulo: "Batman: O Cavaleiro das Trevas",
+    img: "URL_DA_IMAGEM",
+    link: "URL_DO_FILME",
+    // outros campos: duracao, trailer, audios, etc
+  },
+  {
+    titulo: "Mulher-Maravilha",
+    img: "URL_DA_IMAGEM",
+    link: "URL_DO_FILME",
+  },
+  // ... adicione outros filmes da DC aqui
+];
+
+
+
 const filmesMarvel = [
   {
     titulo: "Homem de Ferro",
@@ -5721,6 +5738,7 @@ function mostrarSecao(secao) {
         root.appendChild(criarFila('fila2', shuffleArray(series), 'serie'));
         root.appendChild(criarFila('fila3', shuffleArray(filmesTerror), 'filme'));
         root.appendChild(criarFila('filaMarvel', shuffleArray(filmesMarvel), 'filme', 'Filmes Marvel'));
+        root.appendChild(criarFila('filaDc', shuffleArray(filmesDc), 'filme', 'DC Comics'));
         root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
         root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
         root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
@@ -5741,6 +5759,10 @@ else if(secao === 'filmes'){
 
   else if(secao === 'marvel'){
   root.appendChild(criarFila('filaMarvel', shuffleArray(filmesMarvel), 'filme', 'Filmes Marvel'));
+}
+
+else if(secao === 'dc'){
+  root.appendChild(criarFila('filaDc', shuffleArray(filmesDc), 'filme', 'DC Comics'));
 }
 
 else if(secao === 'series'){
@@ -5771,7 +5793,7 @@ else if(secao === 'desenhos'){
 function pesquisar() {
   const termo = document.getElementById('searchInput').value.toLowerCase().trim();
   const root = document.getElementById('root');
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesMarvel, ...novelas, ...documentarios];
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesMarvel, ...novelas, ...documentarios , ...filmesDc];
 
   if (termo === "") {
     mostrarSecao('inicio');
