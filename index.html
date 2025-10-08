@@ -5771,7 +5771,7 @@ else if(secao === 'desenhos'){
 function pesquisar() {
   const termo = document.getElementById('searchInput').value.toLowerCase().trim();
   const root = document.getElementById('root');
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos];
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesMarvel, ...novelas];
 
   if (termo === "") {
     mostrarSecao('inicio');
