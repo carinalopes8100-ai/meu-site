@@ -5823,6 +5823,14 @@ function pesquisar() {
   }
 }
 
+// Variável global para salvar temporadas selecionadas
+let temporadaSelecionada = {};
+
+// Carrega do localStorage ao iniciar a página
+document.addEventListener('DOMContentLoaded', () => {
+  temporadaSelecionada = JSON.parse(localStorage.getItem('temporadaSelecionada') || '{}');
+});
+
 function abrirModalTemporadas(serie) {
   const list = document.getElementById('episodiosList');
   document.getElementById('modalTitle').textContent = `Escolha a temporada de "${serie.titulo}"`;
@@ -5833,7 +5841,8 @@ function abrirModalTemporadas(serie) {
     btn.className = 'temporada-btn';
     btn.dataset.numero = temp.numero;
 
-    if(temp.emBreve) {
+    // Temporada em breve
+    if (temp.emBreve) {
       btn.textContent = `Temporada ${temp.numero} - Em Breve`;
       btn.disabled = true;
       btn.style.backgroundColor = "#555";
@@ -5841,6 +5850,7 @@ function abrirModalTemporadas(serie) {
     } else {
       btn.textContent = `Temporada ${temp.numero}` + (temp.parte ? ` – Parte ${temp.parte}` : '');
 
+      // Onclick da temporada
       btn.onclick = () => {
         // Remove destaque das outras temporadas
         document.querySelectorAll('.temporada-btn.selecionada').forEach(b => b.classList.remove('selecionada'));
@@ -5856,7 +5866,7 @@ function abrirModalTemporadas(serie) {
         abrirModalEpisodios(temp, serie.titulo);
       };
 
-      // Reaplica seleção ao criar os botões
+      // Reaplica seleção ao criar o botão
       if (temporadaSelecionada[serie.titulo] === temp.numero) {
         btn.classList.add('selecionada');
       }
@@ -5865,9 +5875,11 @@ function abrirModalTemporadas(serie) {
     list.appendChild(btn);
   });
 
+  // Exibe o modal
   document.getElementById('modal').style.display = 'flex';
 }
 
+// Função para reaplicar seleções de temporadas já salvas
 function reaplicarSelecaoTemporadas() {
   const temporadasSalvas = JSON.parse(localStorage.getItem('temporadaSelecionada') || '{}');
   for (let [serieTitulo, tempNum] of Object.entries(temporadasSalvas)) {
@@ -5878,6 +5890,7 @@ function reaplicarSelecaoTemporadas() {
     });
   }
 }
+
   
 
 function abrirModalEpisodios(temporada, serieTitulo) {
