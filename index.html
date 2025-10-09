@@ -5870,22 +5870,23 @@ function abrirModalEpisodios(temporada, serieTitulo) {
         btn.classList.add('selecionado');
       }
 
-      btn.onclick = () => {
-        // Remove destaque de outros episódios
-        document.querySelectorAll('.episodio-btn.selecionado').forEach(b =>
-          b.classList.remove('selecionado')
-        );
+btn.onclick = () => {
+  // Remove destaque de outros episódios da mesma série
+  document.querySelectorAll('.episodio-btn.selecionado').forEach(b =>
+    b.classList.remove('selecionado')
+  );
 
-        // Marca este como selecionado
-        btn.classList.add('selecionado');
+  // Marca o botão clicado
+  btn.classList.add('selecionado');
 
-        // Salva a seleção no localStorage
-        episodioSelecionado[serieTitulo] = ep.numero;
-        localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
+  // Atualiza a variável global e salva no localStorage
+  episodioSelecionado[serieTitulo] = ep.numero;
+  localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
 
-        // Abre o episódio
-        abrirEpisodio(episodioObj);
-      };
+  // Abre o episódio
+  abrirEpisodio(episodioObj);
+};
+
     }
 
     list.appendChild(btn);
