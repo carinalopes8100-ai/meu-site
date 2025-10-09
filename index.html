@@ -5854,7 +5854,7 @@ function abrirModalEpisodios(temporada, serieTitulo) {
   temporada.episodios.forEach(ep => {
     const btn = document.createElement('button');
     btn.className = 'episodio-btn';
-    btn.dataset.numero = ep.numero; // guarda o número do episódio
+    btn.dataset.numero = ep.numero;
 
     if (ep.link === "#" || temporada.emBreve) {
       btn.textContent = `Episódio ${ep.numero} - Em Breve`;
@@ -5865,12 +5865,10 @@ function abrirModalEpisodios(temporada, serieTitulo) {
       btn.textContent = `Episódio ${ep.numero}`;
       const episodioObj = { ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` };
 
-      // 👉 É AQUI que colocas o trecho do onclick 👇
       btn.onclick = () => {
-        // Remove destaque de outros episódios
-        document.querySelectorAll('.episodio-btn.selecionado').forEach(b =>
-          b.classList.remove('selecionado')
-        );
+        // Remove destaque de outros episódios no modal atual
+        list.querySelectorAll('.episodio-btn.selecionado')
+            .forEach(b => b.classList.remove('selecionado'));
 
         // Marca este como selecionado
         btn.classList.add('selecionado');
@@ -5883,9 +5881,9 @@ function abrirModalEpisodios(temporada, serieTitulo) {
     list.appendChild(btn);
   });
 
-  // Mostra o modal
   document.getElementById('modal').style.display = 'flex';
 }
+
 
 
 
