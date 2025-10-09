@@ -5826,6 +5826,7 @@ function pesquisar() {
 let temporadaSelecionada = {};
 let episodioSelecionado = {};
 
+// Carrega do localStorage ao iniciar
 document.addEventListener('DOMContentLoaded', () => {
   temporadaSelecionada = JSON.parse(localStorage.getItem('temporadaSelecionada') || '{}');
   episodioSelecionado = JSON.parse(localStorage.getItem('episodioSelecionado') || '{}');
@@ -5848,7 +5849,7 @@ function abrirModalTemporadas(serie) {
       btn.style.cursor = "not-allowed";
     } else {
       btn.textContent = `Temporada ${temp.numero}` + (temp.parte ? ` – Parte ${temp.parte}` : '');
-
+      
       btn.onclick = () => {
         document.querySelectorAll('.temporada-btn.selecionada').forEach(b => b.classList.remove('selecionada'));
         btn.classList.add('selecionada');
@@ -5857,6 +5858,7 @@ function abrirModalTemporadas(serie) {
         abrirModalEpisodios(temp, serie.titulo);
       };
 
+      // Marca a temporada previamente selecionada
       if (temporadaSelecionada[serie.titulo] === temp.numero) {
         btn.classList.add('selecionada');
       }
@@ -5885,7 +5887,7 @@ function abrirModalEpisodios(temporada, serieTitulo) {
       btn.style.cursor = "not-allowed";
     } else {
       btn.textContent = `Episódio ${ep.numero}`;
-
+      
       btn.onclick = () => {
         document.querySelectorAll('.episodio-btn.selecionado').forEach(b => b.classList.remove('selecionado'));
         btn.classList.add('selecionado');
@@ -5894,6 +5896,7 @@ function abrirModalEpisodios(temporada, serieTitulo) {
         abrirEpisodio({ ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` });
       };
 
+      // Marca o episódio previamente selecionado
       if (episodioSelecionado[serieTitulo] === ep.numero) {
         btn.classList.add('selecionado');
       }
@@ -5905,38 +5908,15 @@ function abrirModalEpisodios(temporada, serieTitulo) {
   document.getElementById('modal').style.display = 'flex';
 }
 
-
-// Função fora da anterior
-function reaplicarSelecaoEpisodios() {
-  const episodiosSalvos = JSON.parse(localStorage.getItem('episodioSelecionado') || '{}');
-  for (let [serieTitulo, epNum] of Object.entries(episodiosSalvos)) {
-    document.querySelectorAll('.episodio-btn').forEach(btn => {
-      if (parseInt(btn.dataset.numero) === epNum) {
-        btn.classList.add('selecionado');
-      }
-    });
-  }
+function fecharModal() {
+  document.getElementById('modal').style.display = 'none';
 }
 
-
-
-function atualizarSelecionadosModal(serieTitulo) {
-  const epNum = episodioSelecionado[serieTitulo];
-  if (!epNum) return;
-
-  const list = document.getElementById('episodiosList'); // só os botões da modal atual
-  list.querySelectorAll('.episodio-btn').forEach(btn => {
-    if (parseInt(btn.dataset.numero) === epNum) {
-      btn.classList.add('selecionado');
-    }
-  });
+function fecharDescricaoModal() {
+  document.getElementById('descricaoModal').style.display = 'none';
+  mostrarSecao(secaoAtual);
 }
 
-
-
-
-function fecharModal() { document.getElementById('modal').style.display = 'none'; }
-function fecharDescricaoModal() { document.getElementById('descricaoModal').style.display = 'none'; mostrarSecao(secaoAtual); }
 
 
 // ===== Inicialização =====
