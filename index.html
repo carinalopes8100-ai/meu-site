@@ -49,6 +49,14 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 }
 
 
+.episodio-btn.selecionado {
+  background-color: black !important;
+  color: white !important;
+  border: 1px solid #e50914; /* borda vermelha Netflix */
+}
+
+
+
   
 #searchContainer input { 
   position: relative; 
@@ -5833,6 +5841,8 @@ function abrirModalEpisodios(temporada, serieTitulo) {
   temporada.episodios.forEach(ep => {
     const btn = document.createElement('button');
     btn.className = 'episodio-btn';
+    btn.dataset.numero = ep.numero; // guarda o número do episódio
+
     if(ep.link === "#" || temporada.emBreve){
       btn.textContent = `Episódio ${ep.numero} - Em Breve`;
       btn.disabled = true;
@@ -5841,13 +5851,32 @@ function abrirModalEpisodios(temporada, serieTitulo) {
     } else {
       btn.textContent = `Episódio ${ep.numero}`;
       const episodioObj = {...ep, titulo: `${serieTitulo} - Ep ${ep.numero}`};
-      btn.onclick = () => abrirEpisodio(episodioObj);
+
+      btn.onclick = () => {
+        // Remove destaque de qualquer outro episódio
+        document.querySelectorAll('.episodio-btn.selecionado').forEach(b => {
+          b.classList.remove('selecionado');
+          b.innerHTML = b.textContent; // remove seta se houver
+        });
+
+        // Marca o episódio atual
+        btn.classList.add('selecionado');
+        btn.innerHTML = `${btn.textContent} ➤`; // seta à direita
+
+        // Salva episódio selecionado (opcional, se quiser lembrar depois)
+        localStorage.setItem('ultimoEpisodio', JSON.stringify({
+          serie: serieTitulo,
+          temporada: temporada.numero,
+          episodio: ep.numero
+        }));
+
+        abrirEpisodio(episodioObj);
+      };
     }
+
     list.appendChild(btn);
   });
 
-  document.getElementById('modal').style.display = 'flex';
-}
 
 
 function fecharModal() { document.getElementById('modal').style.display = 'none'; }
