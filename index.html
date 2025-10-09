@@ -437,7 +437,7 @@ video::cue {
 <script>
 let minhaLista = [];
 let progresso = {};
-let episodioSelecionado = {};
+let episodioSelecionado = JSON.parse(localStorage.getItem('episodioSelecionado')) || {};
 
 function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
 function carregarLista() { const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
@@ -5871,21 +5871,25 @@ function abrirModalEpisodios(temporada, serieTitulo) {
       btn.textContent = `Episódio ${ep.numero}`;
       const episodioObj = { ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` };
 
-      btn.onclick = () => {
-        // Atualiza o estado global
-        episodioSelecionado[serieTitulo] = ep.numero;
+btn.onclick = () => {
+  // Atualiza o estado global
+  episodioSelecionado[serieTitulo] = ep.numero;
 
-        // Remove destaque de todos os botões da mesma série no modal atual
-        document.querySelectorAll(`.episodio-btn[data-serie="${serieTitulo}"]`).forEach(b => 
-          b.classList.remove('selecionado')
-        );
+  // Salva no localStorage
+  localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
 
-        // Marca este botão como selecionado
-        btn.classList.add('selecionado');
+  // Remove destaque de todos os botões da mesma série no modal atual
+  document.querySelectorAll(`.episodio-btn[data-serie="${serieTitulo}"]`).forEach(b => 
+    b.classList.remove('selecionado')
+  );
 
-        // Abre o episódio
-        abrirEpisodio(episodioObj);
-      };
+  // Marca este botão como selecionado
+  btn.classList.add('selecionado');
+
+  // Abre o episódio
+  abrirEpisodio(episodioObj);
+};
+
     }
 
     list.appendChild(btn);
