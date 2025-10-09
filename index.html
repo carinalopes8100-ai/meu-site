@@ -5843,27 +5843,27 @@ function abrirModalEpisodios(temporada, serieTitulo) {
     btn.className = 'episodio-btn';
     btn.dataset.numero = ep.numero; // guarda o número do episódio
 
-    if(ep.link === "#" || temporada.emBreve){
+    if (ep.link === "#" || temporada.emBreve) {
       btn.textContent = `Episódio ${ep.numero} - Em Breve`;
       btn.disabled = true;
       btn.style.backgroundColor = "#555";
       btn.style.cursor = "not-allowed";
     } else {
       btn.textContent = `Episódio ${ep.numero}`;
-      const episodioObj = {...ep, titulo: `${serieTitulo} - Ep ${ep.numero}`};
+      const episodioObj = { ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` };
 
       btn.onclick = () => {
-        // Remove destaque de qualquer outro episódio
+        // Remove destaque dos outros
         document.querySelectorAll('.episodio-btn.selecionado').forEach(b => {
           b.classList.remove('selecionado');
-          b.innerHTML = b.textContent; // remove seta se houver
+          b.innerHTML = b.textContent; // remove seta anterior
         });
 
-        // Marca o episódio atual
+        // Marca o atual
         btn.classList.add('selecionado');
         btn.innerHTML = `${btn.textContent} ➤`; // seta à direita
 
-        // Salva episódio selecionado (opcional, se quiser lembrar depois)
+        // Guarda o último episódio visto
         localStorage.setItem('ultimoEpisodio', JSON.stringify({
           serie: serieTitulo,
           temporada: temporada.numero,
@@ -5876,6 +5876,11 @@ function abrirModalEpisodios(temporada, serieTitulo) {
 
     list.appendChild(btn);
   });
+
+  // Mostra o modal
+  document.getElementById('modal').style.display = 'flex';
+}
+
 
 
 
