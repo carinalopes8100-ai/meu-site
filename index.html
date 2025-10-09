@@ -437,6 +437,7 @@ video::cue {
 <script>
 let minhaLista = [];
 let progresso = {};
+let episodioSelecionado = {};
 
 function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
 function carregarLista() { const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
@@ -5855,6 +5856,11 @@ function abrirModalEpisodios(temporada, serieTitulo) {
     btn.className = 'episodio-btn';
     btn.dataset.numero = ep.numero;
 
+    // Mantém selecionado se for o episódio já escolhido
+    if (ep.numero === episodioSelecionado[serieTitulo]) {
+      btn.classList.add('selecionado'); // deixa preto + seta
+    }
+
     if (ep.link === "#" || temporada.emBreve) {
       btn.textContent = `Episódio ${ep.numero} - Em Breve`;
       btn.disabled = true;
@@ -5864,24 +5870,27 @@ function abrirModalEpisodios(temporada, serieTitulo) {
       btn.textContent = `Episódio ${ep.numero}`;
       const episodioObj = { ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` };
 
-btn.onclick = () => {
-  // Remove destaque de outros episódios
-  list.querySelectorAll('.episodio-btn.selecionado')
-      .forEach(b => b.classList.remove('selecionado'));
+      btn.onclick = () => {
+        // Remove seleção anterior
+        const antigo = document.querySelector(`.episodio-btn.selecionado[data-serie="${serieTitulo}"]`);
+        if (antigo) antigo.classList.remove('selecionado');
 
-  // Marca este como selecionado
-  btn.classList.add('selecionado');
+        // Marca o atual como selecionado
+        btn.classList.add('selecionado');
+        btn.dataset.serie = serieTitulo;
+        episodioSelecionado[serieTitulo] = ep.numero;
 
-  // Abre o episódio, mas **não fecha o modal**
-  abrirEpisodio(episodioObj);
-};
-}
+        abrirEpisodio(episodioObj); // abre o episódio
+        // modal NÃO fecha
+      };
+    }
 
     list.appendChild(btn);
   });
 
   document.getElementById('modal').style.display = 'flex';
 }
+
 
 
 
