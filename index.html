@@ -52,8 +52,20 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .episodio-btn.selecionado {
   background-color: black !important;
   color: white !important;
-  border: 1px solid #e50914; /* borda vermelha Netflix */
+  border: 1px solid #e50914;
+  position: relative;
 }
+
+.episodio-btn.selecionado::after {
+  content: "▶";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #e50914;
+  font-size: 16px;
+}
+
 
 
 
@@ -5852,24 +5864,17 @@ function abrirModalEpisodios(temporada, serieTitulo) {
       btn.textContent = `Episódio ${ep.numero}`;
       const episodioObj = { ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` };
 
+      // 👉 É AQUI que colocas o trecho do onclick 👇
       btn.onclick = () => {
-        // Remove destaque dos outros
-        document.querySelectorAll('.episodio-btn.selecionado').forEach(b => {
-          b.classList.remove('selecionado');
-          b.innerHTML = b.textContent; // remove seta anterior
-        });
+        // Remove destaque de outros episódios
+        document.querySelectorAll('.episodio-btn.selecionado').forEach(b =>
+          b.classList.remove('selecionado')
+        );
 
-        // Marca o atual
+        // Marca este como selecionado
         btn.classList.add('selecionado');
-        btn.innerHTML = `${btn.textContent} ➤`; // seta à direita
 
-        // Guarda o último episódio visto
-        localStorage.setItem('ultimoEpisodio', JSON.stringify({
-          serie: serieTitulo,
-          temporada: temporada.numero,
-          episodio: ep.numero
-        }));
-
+        // Abre o episódio
         abrirEpisodio(episodioObj);
       };
     }
