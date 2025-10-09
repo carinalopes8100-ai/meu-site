@@ -5865,35 +5865,29 @@ function abrirModalEpisodios(temporada, serieTitulo) {
       btn.textContent = `Episódio ${ep.numero}`;
       const episodioObj = { ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` };
 
-  // Marca episódio salvo no localStorage
-  if (episodioSelecionado[serieTitulo] && episodioSelecionado[serieTitulo] === ep.numero) {
-    btn.classList.add('selecionado');
-  }
-
-btn.onclick = () => {
-  // Remove destaque de outros episódios da mesma série
-  document.querySelectorAll('.episodio-btn.selecionado').forEach(b =>
-    b.classList.remove('selecionado')
-  );
-
-  // Marca o botão clicado
-  btn.classList.add('selecionado');
-
-  // Atualiza a variável global e salva no localStorage
-  episodioSelecionado[serieTitulo] = ep.numero;
-  localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
-
-  // Abre o episódio
-  abrirEpisodio(episodioObj);
-};
-
+      btn.onclick = () => {
+        document.querySelectorAll('.episodio-btn.selecionado').forEach(b =>
+          b.classList.remove('selecionado')
+        );
+        btn.classList.add('selecionado');
+        episodioSelecionado[serieTitulo] = ep.numero;
+        localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
+        abrirEpisodio(episodioObj);
+      };
     }
 
     list.appendChild(btn);
   });
 
-    // Aqui reaplica a seleção salva
-  atualizarSelecionadosModal(serieTitulo);
+  // Reaplica a seleção SALVA no localStorage
+  const epNum = episodioSelecionado[serieTitulo];
+  if (epNum !== undefined) {
+    list.querySelectorAll('.episodio-btn').forEach(btn => {
+      if (Number(btn.dataset.numero) === Number(epNum)) {
+        btn.classList.add('selecionado');
+      }
+    });
+  }
 
   document.getElementById('modal').style.display = 'flex';
 }
