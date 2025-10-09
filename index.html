@@ -50,21 +50,28 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 
 .episodio-btn.selecionado {
-  background-color: black; /* fica preto */
-  color: white; /* texto fica visível */
-  position: relative; /* necessário para posicionar a seta */
+  background-color: black;
+  color: white;
+  position: relative;
+  padding-left: 24px; /* espaço para a seta */
 }
 
-/* seta à direita */
-.episodio-btn.selecionado::after {
-  content: '➤'; /* seta Unicode */
+.episodio-btn.selecionado::before {
+  content: '➤';
+  color: #e50914;
   position: absolute;
-  right: 10px; /* distância da borda direita */
+  left: 8px;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-50%) rotate(180deg); /* seta à esquerda */
   font-size: 16px;
-  color: white;
+  display: inline-block;
 }
+
+.episodio-btn.selecionado::after {
+  content: none; /* garante que nada apareça à direita */
+}
+
+
 
 
 
