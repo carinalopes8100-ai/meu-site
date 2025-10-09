@@ -5865,10 +5865,10 @@ function abrirModalEpisodios(temporada, serieTitulo) {
       btn.textContent = `Episódio ${ep.numero}`;
       const episodioObj = { ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` };
 
-      // ✅ Mantém seleção de localStorage
-      if (episodioSelecionado[serieTitulo] === ep.numero) {
-        btn.classList.add('selecionado');
-      }
+  // Marca episódio salvo no localStorage
+  if (episodioSelecionado[serieTitulo] && episodioSelecionado[serieTitulo] === ep.numero) {
+    btn.classList.add('selecionado');
+  }
 
 btn.onclick = () => {
   // Remove destaque de outros episódios da mesma série
@@ -5993,6 +5993,14 @@ for (let i = 0; i < NUM_PUMPKINS; i++) {
   pumpkins.push(pumpkin);
 }
 
+function atualizarSelecionadosModal() {
+  for (let [serie, epNum] of Object.entries(episodioSelecionado)) {
+    document.querySelectorAll(`.episodio-btn`).forEach(btn => {
+      if (parseInt(btn.dataset.numero) === epNum) btn.classList.add('selecionado');
+    });
+  }
+}
+  
 function animatePumpkins() {
   pumpkins.forEach(p => {
     p.y += p.speedY;
