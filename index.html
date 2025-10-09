@@ -5892,12 +5892,24 @@ btn.onclick = () => {
     list.appendChild(btn);
   });
 
+    // Aqui reaplica a seleção salva
+  atualizarSelecionadosModal(serieTitulo);
+
   document.getElementById('modal').style.display = 'flex';
 }
 
 
 
-
+// ---- Coloque esta função em nível global, fora de qualquer outra função ----
+function atualizarSelecionadosModal(serieTitulo) {
+  const epNum = episodioSelecionado[serieTitulo];
+  if (!epNum) return;
+  document.querySelectorAll('.episodio-btn').forEach(btn => {
+    if (parseInt(btn.dataset.numero) === epNum) {
+      btn.classList.add('selecionado');
+    }
+  });
+}
 
 
 
