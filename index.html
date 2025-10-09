@@ -5823,12 +5823,12 @@ function pesquisar() {
   }
 }
 
-// Variável global para salvar temporadas selecionadas
 let temporadaSelecionada = {};
+let episodioSelecionado = {};
 
-// Carrega do localStorage ao iniciar a página
 document.addEventListener('DOMContentLoaded', () => {
   temporadaSelecionada = JSON.parse(localStorage.getItem('temporadaSelecionada') || '{}');
+  episodioSelecionado = JSON.parse(localStorage.getItem('episodioSelecionado') || '{}');
 });
 
 function abrirModalTemporadas(serie) {
@@ -5841,7 +5841,6 @@ function abrirModalTemporadas(serie) {
     btn.className = 'temporada-btn';
     btn.dataset.numero = temp.numero;
 
-    // Temporada em breve
     if (temp.emBreve) {
       btn.textContent = `Temporada ${temp.numero} - Em Breve`;
       btn.disabled = true;
@@ -5850,23 +5849,14 @@ function abrirModalTemporadas(serie) {
     } else {
       btn.textContent = `Temporada ${temp.numero}` + (temp.parte ? ` – Parte ${temp.parte}` : '');
 
-      // Onclick da temporada
       btn.onclick = () => {
-        // Remove destaque das outras temporadas
         document.querySelectorAll('.temporada-btn.selecionada').forEach(b => b.classList.remove('selecionada'));
-
-        // Marca a temporada clicada
         btn.classList.add('selecionada');
-
-        // Salva no localStorage
         temporadaSelecionada[serie.titulo] = temp.numero;
         localStorage.setItem('temporadaSelecionada', JSON.stringify(temporadaSelecionada));
-
-        // Abre modal de episódios da temporada
         abrirModalEpisodios(temp, serie.titulo);
       };
 
-      // Reaplica seleção ao criar o botão
       if (temporadaSelecionada[serie.titulo] === temp.numero) {
         btn.classList.add('selecionada');
       }
@@ -5875,23 +5865,8 @@ function abrirModalTemporadas(serie) {
     list.appendChild(btn);
   });
 
-  // Exibe o modal
   document.getElementById('modal').style.display = 'flex';
 }
-
-// Função para reaplicar seleções de temporadas já salvas
-function reaplicarSelecaoTemporadas() {
-  const temporadasSalvas = JSON.parse(localStorage.getItem('temporadaSelecionada') || '{}');
-  for (let [serieTitulo, tempNum] of Object.entries(temporadasSalvas)) {
-    document.querySelectorAll('.temporada-btn').forEach(btn => {
-      if (parseInt(btn.dataset.numero) === tempNum) {
-        btn.classList.add('selecionada');
-      }
-    });
-  }
-}
-
-  
 
 function abrirModalEpisodios(temporada, serieTitulo) {
   const list = document.getElementById('episodiosList');
@@ -5912,21 +5887,13 @@ function abrirModalEpisodios(temporada, serieTitulo) {
       btn.textContent = `Episódio ${ep.numero}`;
 
       btn.onclick = () => {
-        // Remove destaque de outros episódios da mesma série
         document.querySelectorAll('.episodio-btn.selecionado').forEach(b => b.classList.remove('selecionado'));
-
-        // Marca o botão clicado
         btn.classList.add('selecionado');
-
-        // Atualiza o localStorage
         episodioSelecionado[serieTitulo] = ep.numero;
         localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
-
-        // Abre o episódio
         abrirEpisodio({ ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` });
       };
 
-      // Reaplica seleção ao criar os botões
       if (episodioSelecionado[serieTitulo] === ep.numero) {
         btn.classList.add('selecionado');
       }
@@ -5937,6 +5904,7 @@ function abrirModalEpisodios(temporada, serieTitulo) {
 
   document.getElementById('modal').style.display = 'flex';
 }
+
 
 // Função fora da anterior
 function reaplicarSelecaoEpisodios() {
