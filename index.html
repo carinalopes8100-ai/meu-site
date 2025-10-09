@@ -5870,19 +5870,23 @@ function abrirModalEpisodios(temporada, serieTitulo) {
       btn.textContent = `Episódio ${ep.numero}`;
       const episodioObj = { ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` };
 
-      btn.onclick = () => {
-        // Remove seleção anterior
-        const antigo = document.querySelector(`.episodio-btn.selecionado[data-serie="${serieTitulo}"]`);
-        if (antigo) antigo.classList.remove('selecionado');
+btn.onclick = () => {
+  // Remove seleção de TODOS os botões da mesma série
+  document.querySelectorAll(`.episodio-btn[data-serie="${serieTitulo}"]`).forEach(b => 
+    b.classList.remove('selecionado')
+  );
 
-        // Marca o atual como selecionado
-        btn.classList.add('selecionado');
-        btn.dataset.serie = serieTitulo;
-        episodioSelecionado[serieTitulo] = ep.numero;
+  // Marca o botão atual como selecionado
+  btn.classList.add('selecionado');
+  btn.dataset.serie = serieTitulo;
 
-        abrirEpisodio(episodioObj); // abre o episódio
-        // modal NÃO fecha
-      };
+  // Salva o episódio selecionado
+  episodioSelecionado[serieTitulo] = ep.numero;
+
+  abrirEpisodio(episodioObj); // abre o episódio
+  // modal permanece aberto
+};
+
     }
 
     list.appendChild(btn);
