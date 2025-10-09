@@ -5900,16 +5900,18 @@ btn.onclick = () => {
 
 
 
-// ---- Coloque esta função em nível global, fora de qualquer outra função ----
 function atualizarSelecionadosModal(serieTitulo) {
   const epNum = episodioSelecionado[serieTitulo];
   if (!epNum) return;
-  document.querySelectorAll('.episodio-btn').forEach(btn => {
+
+  const list = document.getElementById('episodiosList'); // só os botões da modal atual
+  list.querySelectorAll('.episodio-btn').forEach(btn => {
     if (parseInt(btn.dataset.numero) === epNum) {
       btn.classList.add('selecionado');
     }
   });
 }
+
 
 
 
