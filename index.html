@@ -5855,12 +5855,6 @@ function abrirModalEpisodios(temporada, serieTitulo) {
     const btn = document.createElement('button');
     btn.className = 'episodio-btn';
     btn.dataset.numero = ep.numero;
-    btn.dataset.serie = serieTitulo; // referência da série
-
-    // Verifica se já é o episódio selecionado da série
-    if (ep.numero === episodioSelecionado[serieTitulo]) {
-      btn.classList.add('selecionado');
-    }
 
     if (ep.link === "#" || temporada.emBreve) {
       btn.textContent = `Episódio ${ep.numero} - Em Breve`;
@@ -5871,25 +5865,27 @@ function abrirModalEpisodios(temporada, serieTitulo) {
       btn.textContent = `Episódio ${ep.numero}`;
       const episodioObj = { ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` };
 
-btn.onclick = () => {
-  // Atualiza o estado global
-  episodioSelecionado[serieTitulo] = ep.numero;
+      // ✅ Mantém seleção de localStorage
+      if (episodioSelecionado[serieTitulo] === ep.numero) {
+        btn.classList.add('selecionado');
+      }
 
-  // Salva no localStorage
-  localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
+      btn.onclick = () => {
+        // Remove destaque de outros episódios
+        document.querySelectorAll('.episodio-btn.selecionado').forEach(b =>
+          b.classList.remove('selecionado')
+        );
 
-  // Remove destaque de todos os botões da mesma série no modal atual
-  document.querySelectorAll(`.episodio-btn[data-serie="${serieTitulo}"]`).forEach(b => 
-    b.classList.remove('selecionado')
-  );
+        // Marca este como selecionado
+        btn.classList.add('selecionado');
 
-  // Marca este botão como selecionado
-  btn.classList.add('selecionado');
+        // Salva a seleção no localStorage
+        episodioSelecionado[serieTitulo] = ep.numero;
+        localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
 
-  // Abre o episódio
-  abrirEpisodio(episodioObj);
-};
-
+        // Abre o episódio
+        abrirEpisodio(episodioObj);
+      };
     }
 
     list.appendChild(btn);
@@ -5897,6 +5893,7 @@ btn.onclick = () => {
 
   document.getElementById('modal').style.display = 'flex';
 }
+
 
 
 
