@@ -61,7 +61,7 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   position: absolute;
   right: 10px; /* distância da borda direita */
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-50%) rotate(180deg);
   font-size: 16px;
   color: white;
 }
@@ -5861,32 +5861,37 @@ function abrirModalEpisodios(temporada, serieTitulo) {
       btn.style.cursor = "not-allowed";
     } else {
       btn.textContent = `Episódio ${ep.numero}`;
-      const episodioObj = { ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` };
 
-btn.onclick = () => {
-  // Remove destaque de outros episódios da mesma série
-  document.querySelectorAll('.episodio-btn.selecionado').forEach(b => b.classList.remove('selecionado'));
+      btn.onclick = () => {
+        // Remove destaque de outros episódios da mesma série
+        document.querySelectorAll('.episodio-btn.selecionado').forEach(b => b.classList.remove('selecionado'));
 
-  // Marca o botão clicado
-  btn.classList.add('selecionado');
+        // Marca o botão clicado
+        btn.classList.add('selecionado');
 
-  // Atualiza o localStorage
-  episodioSelecionado[serieTitulo] = ep.numero;
-  localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
+        // Atualiza o localStorage
+        episodioSelecionado[serieTitulo] = ep.numero;
+        localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
 
-  // Abre o episódio
-  abrirEpisodio({ ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` });
-};
+        // Abre o episódio
+        abrirEpisodio({ ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` });
+      };
 
+      // Reaplica seleção ao criar os botões
+      if (episodioSelecionado[serieTitulo] === ep.numero) {
+        btn.classList.add('selecionado');
+      }
     }
 
     list.appendChild(btn);
   });
 
-function reaplicarSelecaoEpisodios() {
-  // Recupera do localStorage
-  const episodiosSalvos = JSON.parse(localStorage.getItem('episodioSelecionado') || '{}');
+  document.getElementById('modal').style.display = 'flex';
+}
 
+// Função fora da anterior
+function reaplicarSelecaoEpisodios() {
+  const episodiosSalvos = JSON.parse(localStorage.getItem('episodioSelecionado') || '{}');
   for (let [serieTitulo, epNum] of Object.entries(episodiosSalvos)) {
     document.querySelectorAll('.episodio-btn').forEach(btn => {
       if (parseInt(btn.dataset.numero) === epNum) {
@@ -5894,11 +5899,6 @@ function reaplicarSelecaoEpisodios() {
       }
     });
   }
-}
-
-
-
-  document.getElementById('modal').style.display = 'flex';
 }
 
 
