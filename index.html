@@ -49,29 +49,9 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 }
 
 
-.episodio-btn.selecionado {
-  background-color: black;
-  color: white;
-  position: relative;
-  padding-left: 24px; /* espaço para a seta */
-}
+.episodio-btn.selecionado { background-color: black; /* fica preto */ color: white; /* texto fica visível */ position: relative; /* necessário para posicionar a seta */ }
 
-.episodio-btn.selecionado::before {
-  content: '➤';
-  color: #e50914;
-  position: absolute;
-  left: 8px;
-  top: 50%;
-  transform: translateY(-50%) rotate(180deg); /* seta à esquerda */
-  font-size: 16px;
-  display: inline-block;
-}
-
-.episodio-btn.selecionado::after {
-  content: none; /* garante que nada apareça à direita */
-}
-
-
+/* seta à direita */ .episodio-btn.selecionado::after { content: '➤'; /* seta Unicode */ position: absolute; right: 10px; /* distância da borda direita */ top: 50%; transform: rotate(180deg); font-size: 16px; color: white; }
 
 
 
