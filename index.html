@@ -5885,23 +5885,19 @@ btn.onclick = () => {
     list.appendChild(btn);
   });
 
-  // Reaplica a seleção SALVA no localStorage
-  const epNum = episodioSelecionado[serieTitulo];
-  if (epNum !== undefined) {
-    list.querySelectorAll('.episodio-btn').forEach(btn => {
-      if (Number(btn.dataset.numero) === Number(epNum)) {
+function reaplicarSelecaoEpisodios() {
+  // Recupera do localStorage
+  const episodiosSalvos = JSON.parse(localStorage.getItem('episodioSelecionado') || '{}');
+
+  for (let [serieTitulo, epNum] of Object.entries(episodiosSalvos)) {
+    document.querySelectorAll('.episodio-btn').forEach(btn => {
+      if (parseInt(btn.dataset.numero) === epNum) {
         btn.classList.add('selecionado');
       }
     });
   }
-
-  // Reaplica a seleção salva no localStorage
-for (let epBtn of document.querySelectorAll('.episodio-btn')) {
-  const epNum = parseInt(epBtn.dataset.numero);
-  if (episodioSelecionado[serieTitulo] === epNum) {
-    epBtn.classList.add('selecionado'); // adiciona a classe que deixa o botão preto e com a seta
-  }
 }
+
 
 
   document.getElementById('modal').style.display = 'flex';
@@ -5933,6 +5929,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
   carregarLista();
   carregarProgresso();
   mostrarSecao('inicio');
+
+    // Reaplica episódios selecionados
+  episodioSelecionado = JSON.parse(localStorage.getItem('episodioSelecionado') || '{}');
+  reaplicarSelecaoEpisodios();
 
   // Banner
   const bannerImage = document.getElementById('bannerImage');
