@@ -436,6 +436,8 @@ video::cue {
 let minhaLista = [];
 let progresso = {};
 let episodioSelecionado = JSON.parse(localStorage.getItem('episodioSelecionado')) || {};
+let temporadaSelecionada = JSON.parse(localStorage.getItem('temporadaSelecionada') || '{}');
+
 
 function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
 function carregarLista() { const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
@@ -5829,6 +5831,8 @@ function abrirModalTemporadas(serie) {
   serie.temporadas.forEach(temp => {
     const btn = document.createElement('button');
     btn.className = 'temporada-btn';
+    btn.dataset.numero = temp.numero;
+
     if(temp.emBreve) {
       btn.textContent = `Temporada ${temp.numero} - Em Breve`;
       btn.disabled = true;
@@ -5836,13 +5840,45 @@ function abrirModalTemporadas(serie) {
       btn.style.cursor = "not-allowed";
     } else {
       btn.textContent = `Temporada ${temp.numero}` + (temp.parte ? ` – Parte ${temp.parte}` : '');
-      btn.onclick = () => abrirModalEpisodios(temp, serie.titulo);
+
+      btn.onclick = () => {
+        // Remove destaque das outras temporadas
+        document.querySelectorAll('.temporada-btn.selecionada').forEach(b => b.classList.remove('selecionada'));
+
+        // Marca a temporada clicada
+        btn.classList.add('selecionada');
+
+        // Salva no localStorage
+        temporadaSelecionada[serie.titulo] = temp.numero;
+        localStorage.setItem('temporadaSelecionada', JSON.stringify(temporadaSelecionada));
+
+        // Abre modal de episódios da temporada
+        abrirModalEpisodios(temp, serie.titulo);
+      };
+
+      // Reaplica seleção ao criar os botões
+      if (temporadaSelecionada[serie.titulo] === temp.numero) {
+        btn.classList.add('selecionada');
+      }
     }
+
     list.appendChild(btn);
   });
 
   document.getElementById('modal').style.display = 'flex';
 }
+
+function reaplicarSelecaoTemporadas() {
+  const temporadasSalvas = JSON.parse(localStorage.getItem('temporadaSelecionada') || '{}');
+  for (let [serieTitulo, tempNum] of Object.entries(temporadasSalvas)) {
+    document.querySelectorAll('.temporada-btn').forEach(btn => {
+      if (parseInt(btn.dataset.numero) === tempNum) {
+        btn.classList.add('selecionada');
+      }
+    });
+  }
+}
+  
 
 function abrirModalEpisodios(temporada, serieTitulo) {
   const list = document.getElementById('episodiosList');
@@ -5930,7 +5966,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
     // Reaplica episódios selecionados
   episodioSelecionado = JSON.parse(localStorage.getItem('episodioSelecionado') || '{}');
+  temporadaSelecionada = JSON.parse(localStorage.getItem('temporadaSelecionada') || '{}');
   reaplicarSelecaoEpisodios();
+  reaplicarSelecaoTemporadas();
 
   // Banner
   const bannerImage = document.getElementById('bannerImage');
