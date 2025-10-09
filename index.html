@@ -452,8 +452,7 @@ function mostrarToast(mensagem){
 }
 
 function abrirEpisodio(episodio) {
-  // Fecha o modal de temporadas/episódios se estiver aberto
-  fecharModal();
+
 
   if (episodio.audios && episodio.audios.length > 0) {
     abrirAudioModal(episodio);
@@ -5865,18 +5864,18 @@ function abrirModalEpisodios(temporada, serieTitulo) {
       btn.textContent = `Episódio ${ep.numero}`;
       const episodioObj = { ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` };
 
-      btn.onclick = () => {
-        // Remove destaque de outros episódios no modal atual
-        list.querySelectorAll('.episodio-btn.selecionado')
-            .forEach(b => b.classList.remove('selecionado'));
+btn.onclick = () => {
+  // Remove destaque de outros episódios
+  list.querySelectorAll('.episodio-btn.selecionado')
+      .forEach(b => b.classList.remove('selecionado'));
 
-        // Marca este como selecionado
-        btn.classList.add('selecionado');
+  // Marca este como selecionado
+  btn.classList.add('selecionado');
 
-        // Abre o episódio
-        abrirEpisodio(episodioObj);
-      };
-    }
+  // Abre o episódio, mas **não fecha o modal**
+  abrirEpisodio(episodioObj);
+};
+
 
     list.appendChild(btn);
   });
