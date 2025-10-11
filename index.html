@@ -5920,161 +5920,126 @@ function fecharDescricaoModal() { document.getElementById('descricaoModal').styl
 
 
 // ===== Inicialização =====
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded', () => {
+
+  // ===== Inicializações =====
   carregarLista();
   carregarProgresso();
   mostrarSecao('inicio');
 
-    // Reaplica episódios selecionados
   episodioSelecionado = JSON.parse(localStorage.getItem('episodioSelecionado') || '{}');
   temporadaSelecionada = JSON.parse(localStorage.getItem('temporadaSelecionada') || '{}');
   reaplicarSelecaoEpisodios();
   reaplicarSelecaoTemporadas();
 
-  // Banner
+  // ===== Banner =====
   const bannerImage = document.getElementById('bannerImage');
   const bannerVideo = document.getElementById('bannerVideo');
-  bannerVideo.preload = 'auto';
-  bannerVideo.addEventListener('canplaythrough', ()=>{
-    bannerImage.style.transition = 'opacity 1s';
-    bannerImage.style.opacity = '0';
-    setTimeout(()=>{
-      bannerImage.style.display = 'none';
-      bannerVideo.style.display = 'block';
-      bannerVideo.play();
-    }, 1000);
-  });
-
-document.addEventListener('DOMContentLoaded', () => {
-
-  // --- PESQUISA FUNCIONAL ---
-
-const searchContainer = document.getElementById('searchContainer');
-const searchButton = document.getElementById('searchButton');
-const searchInput = document.getElementById('searchInput');
-
-// Alternar visibilidade da barra ao clicar no botão 🔍
-searchButton.addEventListener('click', (e) => {
-  e.stopPropagation(); // evita fechar imediatamente
-  searchInput.classList.toggle('hidden');
-  if (!searchInput.classList.contains('hidden')) {
-    searchInput.focus();
-  } else {
-    searchInput.value = '';
-    mostrarSecao('inicio');
+  if(bannerImage && bannerVideo){
+    bannerVideo.preload = 'auto';
+    bannerVideo.addEventListener('canplaythrough', () => {
+      bannerImage.style.transition = 'opacity 1s';
+      bannerImage.style.opacity = '0';
+      setTimeout(() => {
+        bannerImage.style.display = 'none';
+        bannerVideo.style.display = 'block';
+        bannerVideo.play();
+      }, 1000);
+    });
   }
-});
 
-// Fechar a barra se clicar fora dela
-document.addEventListener('click', (e) => {
-  if (!searchContainer.contains(e.target)) {
-    searchInput.classList.add('hidden');
+  // ===== Pesquisa funcional =====
+  const searchContainer = document.getElementById('searchContainer');
+  const searchButton = document.getElementById('searchButton');
+  const searchInput = document.getElementById('searchInput');
+
+  if(searchContainer && searchButton && searchInput){
+    searchButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      searchInput.classList.toggle('hidden');
+      if(!searchInput.classList.contains('hidden')) searchInput.focus();
+      else { searchInput.value=''; mostrarSecao('inicio'); }
+    });
+
+    document.addEventListener('click', (e) => {
+      if(!searchContainer.contains(e.target)) searchInput.classList.add('hidden');
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+      if(e.key==='Enter'){
+        e.preventDefault();
+        const termo = searchInput.value.trim();
+        termo ? pesquisar(termo) : mostrarSecao('inicio');
+      }
+    });
   }
-});
 
-// Procurar ao pressionar ENTER
-searchInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    const termo = searchInput.value.trim();
-    termo ? pesquisar(termo) : mostrarSecao('inicio');
-  }
-});
-
-// Função de pesquisa principal
-function pesquisar(termo) {
-  const root = document.getElementById('root');
-  const todosItens = [
-    ...filmes, ...series, ...filmesTerror, ...animes,
-    ...desenhos, ...filmesComedia, ...documentarios, ...novelas, ...filmesDc
-  ];
-
-  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo.toLowerCase()));
-  root.innerHTML = '';
-
-  if (resultados.length > 0) {
-    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
-  } else {
-    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
-  }
-}
-
-
-    // Logo volta para a página inicial
+  // ===== Logo volta para início =====
   const logo = document.getElementById('logo');
-  if (logo) {
-    logo.addEventListener('click', () => {
-      mostrarSecao('inicio');
-    });
+  if(logo){
+    logo.addEventListener('click', () => mostrarSecao('inicio'));
   }
-});
 
-const container = document.getElementById("pumpkinContainer");
-const NUM_PUMPKINS = 30;
-const pumpkinURL = "https://static.vecteezy.com/system/resources/previews/069/525/924/non_2x/halloween-pumpkin-with-witch-hat-isolated-on-transparent-background-free-png.png";
+  // ===== Pumpkins =====
+  const container = document.getElementById("pumpkinContainer");
+  if(container){
+    const NUM_PUMPKINS = 30;
+    const pumpkinURL = "https://static.vecteezy.com/system/resources/previews/069/525/924/non_2x/halloween-pumpkin-with-witch-hat-isolated-on-transparent-background-free-png.png";
+    const pumpkins = [];
 
-const pumpkins = [];
+    for (let i = 0; i < NUM_PUMPKINS; i++) {
+      const img = document.createElement("img");
+      img.src = pumpkinURL;
+      img.className = "pumpkin";
 
-for (let i = 0; i < NUM_PUMPKINS; i++) {
-  const img = document.createElement("img");
-  img.src = pumpkinURL;
-  img.className = "pumpkin";
+      const pumpkin = {
+        img,
+        x: Math.random() * window.innerWidth,
+        y: -50 - Math.random() * 200,
+        angle: Math.random() * 360,
+        speedY: 1 + Math.random() * 2,
+        speedX: (Math.random() - 0.5) * 1,
+        rotateSpeed: (Math.random() - 0.5) * 2,
+        width: 20 + Math.random() * 30
+      };
 
-  const pumpkin = {
-    img,
-    x: Math.random() * window.innerWidth,
-    y: -50 - Math.random() * 200,
-    angle: Math.random() * 360,
-    speedY: 1 + Math.random() * 2,
-    speedX: (Math.random() - 0.5) * 1,
-    rotateSpeed: (Math.random() - 0.5) * 2,
-    width: 20 + Math.random() * 30
-  };
+      img.style.left = pumpkin.x + "px";
+      img.style.top = pumpkin.y + "px";
+      img.style.width = pumpkin.width + "px";
+      img.style.transform = `rotate(${pumpkin.angle}deg)`;
 
-  img.style.left = pumpkin.x + "px";
-  img.style.top = pumpkin.y + "px";
-  img.style.width = pumpkin.width + "px";
-  img.style.transform = `rotate(${pumpkin.angle}deg)`;
-
-  container.appendChild(img);
-  pumpkins.push(pumpkin);
-}
-
-function atualizarSelecionadosModal() {
-  for (let [serie, epNum] of Object.entries(episodioSelecionado)) {
-    document.querySelectorAll(`.episodio-btn`).forEach(btn => {
-      if (parseInt(btn.dataset.numero) === epNum) btn.classList.add('selecionado');
-    });
-  }
-}
-  
-function animatePumpkins() {
-  pumpkins.forEach(p => {
-    p.y += p.speedY;
-    p.x += p.speedX;
-    p.angle += p.rotateSpeed;
-
-    if (p.y > window.innerHeight) {
-      p.y = -50;
-      p.x = Math.random() * window.innerWidth;
+      container.appendChild(img);
+      pumpkins.push(pumpkin);
     }
 
-    p.img.style.top = p.y + "px";
-    p.img.style.left = p.x + "px";
-    p.img.style.transform = `rotate(${p.angle}deg)`;
-  });
+    function animatePumpkins() {
+      pumpkins.forEach(p => {
+        p.y += p.speedY;
+        p.x += p.speedX;
+        p.angle += p.rotateSpeed;
 
-  requestAnimationFrame(animatePumpkins);
-}
+        if(p.y > window.innerHeight){
+          p.y = -50;
+          p.x = Math.random() * window.innerWidth;
+        }
 
-animatePumpkins();
+        p.img.style.top = p.y + "px";
+        p.img.style.left = p.x + "px";
+        p.img.style.transform = `rotate(${p.angle}deg)`;
+      });
+      requestAnimationFrame(animatePumpkins);
+    }
 
-window.addEventListener('resize', () => {
-  pumpkins.forEach(p => {
-    if (p.x > window.innerWidth) p.x = Math.random() * window.innerWidth;
-  });
+    animatePumpkins();
+
+    window.addEventListener('resize', () => {
+      pumpkins.forEach(p => {
+        if(p.x > window.innerWidth) p.x = Math.random() * window.innerWidth;
+      });
+    });
+  }
+
 });
-
 
 
 </script>
