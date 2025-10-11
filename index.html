@@ -5945,33 +5945,60 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }, 1000);
   });
 
-  // Pesquisa
-  const searchInput = document.getElementById('searchInput');
-  const searchButton = document.getElementById('searchButton');
 
-  searchButton.addEventListener('click', ()=>{
-    searchInput.classList.toggle('hidden');
-    if(!searchInput.classList.contains('hidden')) searchInput.focus();
-    else { searchInput.value=''; mostrarSecao('inicio'); }
-  });
 
-  // Fechar a barra se clicar fora dela
-  document.addEventListener('click', (e) => {
-    if (!searchContainer.contains(e.target)) {
-      searchInput.classList.add('hidden');
-    }
-  });
+  // --- PESQUISA FUNCIONAL ---
 
-  searchInput.addEventListener('keydown', e=>{
-    if(e.key==='Enter'){ 
-      e.preventDefault();
-      searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio'); 
-    }
-  });
+const searchContainer = document.getElementById('searchContainer');
+const searchButton = document.getElementById('searchButton');
+const searchInput = document.getElementById('searchInput');
 
-  searchInput.addEventListener('input', debounce(()=>{
-    searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
-  }, 150));
+// Alternar visibilidade da barra ao clicar no botão 🔍
+searchButton.addEventListener('click', (e) => {
+  e.stopPropagation(); // evita fechar imediatamente
+  searchInput.classList.toggle('hidden');
+  if (!searchInput.classList.contains('hidden')) {
+    searchInput.focus();
+  } else {
+    searchInput.value = '';
+    mostrarSecao('inicio');
+  }
+});
+
+// Fechar a barra se clicar fora dela
+document.addEventListener('click', (e) => {
+  if (!searchContainer.contains(e.target)) {
+    searchInput.classList.add('hidden');
+  }
+});
+
+// Procurar ao pressionar ENTER
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const termo = searchInput.value.trim();
+    termo ? pesquisar(termo) : mostrarSecao('inicio');
+  }
+});
+
+// Função de pesquisa principal
+function pesquisar(termo) {
+  const root = document.getElementById('root');
+  const todosItens = [
+    ...filmes, ...series, ...filmesTerror, ...animes,
+    ...desenhos, ...filmesComedia, ...documentarios, ...novelas, ...filmesDc
+  ];
+
+  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo.toLowerCase()));
+  root.innerHTML = '';
+
+  if (resultados.length > 0) {
+    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+  } else {
+    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+  }
+}
+
 
     // Logo volta para a página inicial
   const logo = document.getElementById('logo');
