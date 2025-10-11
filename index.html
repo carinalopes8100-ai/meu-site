@@ -107,7 +107,13 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .hidden {
   display: none;
 }
-
+#searchInput {
+  position: absolute;
+  right: 35px; /* para não sobrepor o botão */
+  top: 0;
+  width: 200px;
+  padding: 5px;
+}
 
 .banner { position: relative; width:100%; height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
 .banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
@@ -366,10 +372,11 @@ video::cue {
 <div onclick="mostrarSecao('desenhos')">Desenhos</div>
 <div onclick="mostrarSecao('lista')">A Minha Lista</div>
 </nav>
-<div id="searchContainer">
+<div id="searchContainer" style="position: relative;">
   <input type="text" id="searchInput" placeholder="Pesquisar..." class="hidden">
   <button id="searchButton">🔍︎</button>
 </div>
+
 
 </header>
 
@@ -5959,10 +5966,9 @@ const searchButton = document.getElementById('searchButton');
 const searchInput = document.getElementById('searchInput');
 
 if (searchContainer && searchButton && searchInput) {
-  
-  // Toggle do input ao clicar no botão
+  // botão da lupa abre/fecha o input
   searchButton.addEventListener('click', (e) => {
-    e.stopPropagation(); // evita que o clique feche o input
+    e.stopPropagation(); // essencial!
     searchInput.classList.toggle('hidden');
     if (!searchInput.classList.contains('hidden')) {
       searchInput.focus();
@@ -5972,23 +5978,23 @@ if (searchContainer && searchButton && searchInput) {
     }
   });
 
-  // Enter no input realiza a pesquisa
+  // Enter pesquisa
   searchInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       const termo = searchInput.value.trim();
-      if (termo) pesquisar(); // a função já pega o valor do input
-      else mostrarSecao('inicio');
+      termo ? pesquisar() : mostrarSecao('inicio');
     }
   });
 
-  // Fecha o input ao clicar fora
+  // Fecha ao clicar fora
   document.addEventListener('click', (e) => {
     if (!searchContainer.contains(e.target)) {
       searchInput.classList.add('hidden');
     }
   });
 }
+
 
 
     
