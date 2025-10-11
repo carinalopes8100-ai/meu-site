@@ -107,13 +107,7 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .hidden {
   display: none;
 }
-#searchInput {
-  position: absolute;
-  right: 35px; /* para não sobrepor o botão */
-  top: 0;
-  width: 200px;
-  padding: 5px;
-}
+
 
 .banner { position: relative; width:100%; height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
 .banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
@@ -372,11 +366,10 @@ video::cue {
 <div onclick="mostrarSecao('desenhos')">Desenhos</div>
 <div onclick="mostrarSecao('lista')">A Minha Lista</div>
 </nav>
-<div id="searchContainer" style="position: relative;">
+<div id="searchContainer">
   <input type="text" id="searchInput" placeholder="Pesquisar..." class="hidden">
   <button id="searchButton">🔍︎</button>
 </div>
-
 
 </header>
 
@@ -5571,41 +5564,38 @@ const filmesTerror = [
 ];
 
 // ===== Funções de interface =====
-function criarFila(idFila, lista, tipo, tituloFila = null) {
-  const container = document.createElement('div');
-  container.className = 'fila-container';
+function criarFila(idFila, lista, tipo, tituloFila=null){
+  const container = document.createElement('div'); 
+  container.className = 'fila-container'; 
   container.id = idFila;
 
-  const titulo = document.createElement('div');
-  titulo.className = 'fila-titulo';
-  titulo.textContent =
-    tituloFila ||
-    (tipo === 'filme' ? (idFila === 'fila3' ? 'Terror' : 'Filmes Populares') : 'Séries Populares');
+  const titulo = document.createElement('div'); 
+  titulo.className = 'fila-titulo'; 
+  titulo.textContent = tituloFila || (tipo==='filme' ? (idFila==='fila3' ? 'Terror' : 'Filmes Populares') : 'Séries Populares');
 
-  const btnLeft = document.createElement('button');
-  btnLeft.className = 'btn-scroll btn-left';
+  const btnLeft = document.createElement('button'); 
+  btnLeft.className = 'btn-scroll btn-left'; 
   btnLeft.innerHTML = '&#10094;';
 
-  const btnRight = document.createElement('button');
-  btnRight.className = 'btn-scroll btn-right';
+  const btnRight = document.createElement('button'); 
+  btnRight.className = 'btn-scroll btn-right'; 
   btnRight.innerHTML = '&#10095;';
 
-  const fila = document.createElement('div');
-  fila.className = 'fila';
+  const fila = document.createElement('div'); 
+  fila.className = 'fila'; 
   fila.id = idFila + '-content';
-
+  
   lista.forEach(item => {
-    const itemDiv = document.createElement('div');
+    const itemDiv = document.createElement('div'); 
     itemDiv.className = 'filme';
-    itemDiv.style.position = 'relative';
 
-    const img = document.createElement('img');
-    img.src = item.img;
-    img.alt = item.titulo;
+    const img = document.createElement('img'); 
+    img.src = item.img; 
+    img.alt = item.titulo; 
     itemDiv.appendChild(img);
 
     // ==== Barra de progresso ====
-    if (progresso[item.titulo] && progresso[item.titulo] > 0) {
+    if(progresso[item.titulo] && progresso[item.titulo] > 0){
       const progressoDiv = document.createElement('div');
       progressoDiv.style.position = 'absolute';
       progressoDiv.style.bottom = '0';
@@ -5625,33 +5615,33 @@ function criarFila(idFila, lista, tipo, tituloFila = null) {
         progressoInner.style.width = pct + '%';
       };
 
-      if (item.duracao) {
+      if(item.duracao){
         atualizarBarra(item.duracao);
-      } else if (item.link) {
+      } else if(item.link){
         const tempVideo = document.createElement('video');
         tempVideo.src = item.link;
         tempVideo.preload = 'metadata';
         tempVideo.addEventListener('loadedmetadata', () => {
-          item.duracao = tempVideo.duration;
+          item.duracao = tempVideo.duration; 
           atualizarBarra(tempVideo.duration);
         });
       }
 
       const observer = new MutationObserver(() => {
         const video = document.getElementById('playerVideo');
-        if (video && video.dataset.titulo === item.titulo) {
+        if(video && video.dataset.titulo === item.titulo){
           video.addEventListener('timeupdate', () => atualizarBarra(video.duration));
         }
       });
-      observer.observe(document.body, { childList: true, subtree: true });
+      observer.observe(document.body, {childList: true, subtree: true});
     }
 
     // ==== Overlay com botões (play e trailer/verão) ====
-    const overlay = document.createElement('div');
+    const overlay = document.createElement('div'); 
     overlay.className = 'filme-hover-overlay';
 
-    const btnPlay = document.createElement('button');
-    if (item.emBreve || item.link === "#") {
+    const btnPlay = document.createElement('button'); 
+    if(item.emBreve || item.link === "#") {
       btnPlay.textContent = 'Em Breve';
       btnPlay.disabled = true;
       btnPlay.style.backgroundColor = "#555";
@@ -5660,28 +5650,26 @@ function criarFila(idFila, lista, tipo, tituloFila = null) {
       btnPlay.textContent = '▶ Ver';
       btnPlay.onclick = e => {
         e.stopPropagation();
-        const s = series.find(s => s.titulo === item.titulo) ||
-                  novelas.find(n => n.titulo === item.titulo) ||
-                  animes.find(a => a.titulo === item.titulo);
-        if (s) { abrirModalTemporadas({ ...s, temporadas: s.temporadas }); return; }
-        if (item.audios && item.audios.length > 0) { abrirAudioModal(item); }
+        const s = series.find(s => s.titulo === item.titulo) || novelas.find(n => n.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
+        if(s){ abrirModalTemporadas({...s, temporadas: s.temporadas}); return; } 
+        if(item.audios && item.audios.length > 0){ abrirAudioModal(item); } 
         else { abrirVideo(item); }
       };
     }
     overlay.appendChild(btnPlay);
 
     const btnDireito = document.createElement('button');
-    if (item.titulo === 'Morangos com Açúcar' && item.verao && item.verao.length > 0) {
+    if(item.titulo === 'Morangos com Açúcar' && item.verao && item.verao.length > 0){
       btnDireito.textContent = '▶ Verão';
-      btnDireito.onclick = e => { e.stopPropagation(); abrirModalTemporadas({ ...item, temporadas: item.verao }); };
+      btnDireito.onclick = e => { e.stopPropagation(); abrirModalTemporadas({...item, temporadas: item.verao}); };
       overlay.appendChild(btnDireito);
-    } else if (item.trailer || (item.trailers && item.trailers.length > 0)) {
+    } else if(item.trailer || (item.trailers && item.trailers.length > 0)){
       btnDireito.textContent = '▶ Trailer';
       btnDireito.onclick = e => {
         e.stopPropagation();
-        let tipoTrailer = 'trailer';
-        if (item.trailers && item.trailers.some(t => t.tipo === 'teaser')) tipoTrailer = 'teaser';
-        abrirModalTrailers(item, tipoTrailer);
+        let tipo = 'trailer';
+        if(item.trailers && item.trailers.some(t => t.tipo === 'teaser')) tipo = 'teaser';
+        abrirModalTrailers(item, tipo);
       };
       overlay.appendChild(btnDireito);
     }
@@ -5696,18 +5684,18 @@ function criarFila(idFila, lista, tipo, tituloFila = null) {
     itemDiv.appendChild(btnDescricao);
 
     // ==== Botão adicionar/remover lista ====
-    const addBtn = document.createElement('button');
+    const addBtn = document.createElement('button'); 
     addBtn.className = 'add-list-btn';
     const updateButton = () => {
-      if (minhaLista.includes(item.titulo)) { addBtn.textContent = '✖'; addBtn.title = 'Remover da Minha Lista'; }
-      else { addBtn.textContent = '+'; addBtn.title = 'Adicionar à Minha Lista'; }
+      if(minhaLista.includes(item.titulo)){ addBtn.textContent='✖'; addBtn.title='Remover da Minha Lista'; } 
+      else { addBtn.textContent='+'; addBtn.title='Adicionar à Minha Lista'; }
     };
     addBtn.onclick = e => { e.stopPropagation(); adicionarMinhaLista(item.titulo); updateButton(); };
     updateButton();
     itemDiv.appendChild(addBtn);
 
     // ==== Botão remover da fila continuar ====
-    if (idFila === 'filaContinuar') {
+    if(idFila === 'filaContinuar'){
       const removeBtn = document.createElement('button');
       removeBtn.className = 'remove-continuar-btn';
       removeBtn.textContent = '✖';
@@ -5725,13 +5713,13 @@ function criarFila(idFila, lista, tipo, tituloFila = null) {
     fila.appendChild(itemDiv);
   });
 
-  container.appendChild(titulo);
-  container.appendChild(btnLeft);
-  container.appendChild(fila);
+  container.appendChild(titulo); 
+  container.appendChild(btnLeft); 
+  container.appendChild(fila); 
   container.appendChild(btnRight);
 
-  btnLeft.addEventListener('click', () => fila.scrollBy({ left: -1400, behavior: 'smooth' }));
-  btnRight.addEventListener('click', () => fila.scrollBy({ left: 1400, behavior: 'smooth' }));
+  btnLeft.addEventListener('click', ()=>fila.scrollBy({left:-1400, behavior:'smooth'}));
+  btnRight.addEventListener('click', ()=>fila.scrollBy({left:1400, behavior:'smooth'}));
 
   return container;
 }
@@ -5739,16 +5727,16 @@ function criarFila(idFila, lista, tipo, tituloFila = null) {
 // ===== Funções utilitárias =====
 function debounce(func, wait) {
   let timeout;
-  return function (...args) {
+  return function(...args){
     clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(this, args), wait);
   };
 }
 
-function shuffleArray(array) {
+function shuffleArray(array){
   const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+  for(let i=arr.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
@@ -5932,144 +5920,136 @@ function fecharDescricaoModal() { document.getElementById('descricaoModal').styl
 
 
 // ===== Inicialização =====
-document.addEventListener('DOMContentLoaded', () => {
-
-  // ===== Inicializações =====
+document.addEventListener('DOMContentLoaded', ()=>{
   carregarLista();
   carregarProgresso();
   mostrarSecao('inicio');
 
+    // Reaplica episódios selecionados
   episodioSelecionado = JSON.parse(localStorage.getItem('episodioSelecionado') || '{}');
   temporadaSelecionada = JSON.parse(localStorage.getItem('temporadaSelecionada') || '{}');
   reaplicarSelecaoEpisodios();
   reaplicarSelecaoTemporadas();
 
-  // ===== Banner =====
+  // Banner
   const bannerImage = document.getElementById('bannerImage');
   const bannerVideo = document.getElementById('bannerVideo');
-  if(bannerImage && bannerVideo){
-    bannerVideo.preload = 'auto';
-    bannerVideo.addEventListener('canplaythrough', () => {
-      bannerImage.style.transition = 'opacity 1s';
-      bannerImage.style.opacity = '0';
-      setTimeout(() => {
-        bannerImage.style.display = 'none';
-        bannerVideo.style.display = 'block';
-        bannerVideo.play();
-      }, 1000);
-    });
-  }
+  bannerVideo.preload = 'auto';
+  bannerVideo.addEventListener('canplaythrough', ()=>{
+    bannerImage.style.transition = 'opacity 1s';
+    bannerImage.style.opacity = '0';
+    setTimeout(()=>{
+      bannerImage.style.display = 'none';
+      bannerVideo.style.display = 'block';
+      bannerVideo.play();
+    }, 1000);
+  });
 
-document.addEventListener('DOMContentLoaded', () => {
-  const searchContainer = document.getElementById('searchContainer');
-  const searchButton = document.getElementById('searchButton');
+  // Pesquisa
   const searchInput = document.getElementById('searchInput');
+  const searchButton = document.getElementById('searchButton');
 
-  if (!searchContainer || !searchButton || !searchInput) {
-    console.error('Elementos da pesquisa não encontrados');
-    return;
-  }
-
-  // Clique no botão
-  searchButton.addEventListener('click', (e) => {
-    e.stopPropagation();
-
-    if (searchInput.classList.contains('hidden')) {
-      searchInput.classList.remove('hidden');
-      searchInput.focus();
-    } else {
-      const termo = searchInput.value.trim();
-      termo ? pesquisar() : mostrarSecao('inicio');
-    }
+  searchButton.addEventListener('click', ()=>{
+    searchInput.classList.toggle('hidden');
+    if(!searchInput.classList.contains('hidden')) searchInput.focus();
+    else { searchInput.value=''; mostrarSecao('inicio'); }
   });
 
-  // Enter no input
-  searchInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const termo = searchInput.value.trim();
-      termo ? pesquisar() : mostrarSecao('inicio');
-    }
-  });
-
-  // Clique fora esconde o input
+  // Fechar a barra se clicar fora dela
   document.addEventListener('click', (e) => {
     if (!searchContainer.contains(e.target)) {
       searchInput.classList.add('hidden');
     }
   });
-});
+
+  searchInput.addEventListener('keydown', e=>{
+    if(e.key==='Enter'){ 
+      e.preventDefault();
+      searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio'); 
+    }
+  });
+
+  searchInput.addEventListener('input', debounce(()=>{
+    searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
+  }, 150));
 
 
 
-
-    
-  // ===== Logo volta para início =====
+    // Logo volta para a página inicial
   const logo = document.getElementById('logo');
-  if(logo){
-    logo.addEventListener('click', () => mostrarSecao('inicio'));
-  }
-
-  // ===== Pumpkins =====
-  const container = document.getElementById("pumpkinContainer");
-  if(container){
-    const NUM_PUMPKINS = 30;
-    const pumpkinURL = "https://static.vecteezy.com/system/resources/previews/069/525/924/non_2x/halloween-pumpkin-with-witch-hat-isolated-on-transparent-background-free-png.png";
-    const pumpkins = [];
-
-    for (let i = 0; i < NUM_PUMPKINS; i++) {
-      const img = document.createElement("img");
-      img.src = pumpkinURL;
-      img.className = "pumpkin";
-
-      const pumpkin = {
-        img,
-        x: Math.random() * window.innerWidth,
-        y: -50 - Math.random() * 200,
-        angle: Math.random() * 360,
-        speedY: 1 + Math.random() * 2,
-        speedX: (Math.random() - 0.5) * 1,
-        rotateSpeed: (Math.random() - 0.5) * 2,
-        width: 20 + Math.random() * 30
-      };
-
-      img.style.left = pumpkin.x + "px";
-      img.style.top = pumpkin.y + "px";
-      img.style.width = pumpkin.width + "px";
-      img.style.transform = `rotate(${pumpkin.angle}deg)`;
-
-      container.appendChild(img);
-      pumpkins.push(pumpkin);
-    }
-
-    function animatePumpkins() {
-      pumpkins.forEach(p => {
-        p.y += p.speedY;
-        p.x += p.speedX;
-        p.angle += p.rotateSpeed;
-
-        if(p.y > window.innerHeight){
-          p.y = -50;
-          p.x = Math.random() * window.innerWidth;
-        }
-
-        p.img.style.top = p.y + "px";
-        p.img.style.left = p.x + "px";
-        p.img.style.transform = `rotate(${p.angle}deg)`;
-      });
-      requestAnimationFrame(animatePumpkins);
-    }
-
-    animatePumpkins();
-
-    window.addEventListener('resize', () => {
-      pumpkins.forEach(p => {
-        if(p.x > window.innerWidth) p.x = Math.random() * window.innerWidth;
-      });
+  if (logo) {
+    logo.addEventListener('click', () => {
+      mostrarSecao('inicio');
     });
   }
-
 });
+
+const container = document.getElementById("pumpkinContainer");
+const NUM_PUMPKINS = 30;
+const pumpkinURL = "https://static.vecteezy.com/system/resources/previews/069/525/924/non_2x/halloween-pumpkin-with-witch-hat-isolated-on-transparent-background-free-png.png";
+
+const pumpkins = [];
+
+for (let i = 0; i < NUM_PUMPKINS; i++) {
+  const img = document.createElement("img");
+  img.src = pumpkinURL;
+  img.className = "pumpkin";
+
+  const pumpkin = {
+    img,
+    x: Math.random() * window.innerWidth,
+    y: -50 - Math.random() * 200,
+    angle: Math.random() * 360,
+    speedY: 1 + Math.random() * 2,
+    speedX: (Math.random() - 0.5) * 1,
+    rotateSpeed: (Math.random() - 0.5) * 2,
+    width: 20 + Math.random() * 30
+  };
+
+  img.style.left = pumpkin.x + "px";
+  img.style.top = pumpkin.y + "px";
+  img.style.width = pumpkin.width + "px";
+  img.style.transform = `rotate(${pumpkin.angle}deg)`;
+
+  container.appendChild(img);
+  pumpkins.push(pumpkin);
+}
+
+function atualizarSelecionadosModal() {
+  for (let [serie, epNum] of Object.entries(episodioSelecionado)) {
+    document.querySelectorAll(`.episodio-btn`).forEach(btn => {
+      if (parseInt(btn.dataset.numero) === epNum) btn.classList.add('selecionado');
+    });
+  }
+}
+  
+function animatePumpkins() {
+  pumpkins.forEach(p => {
+    p.y += p.speedY;
+    p.x += p.speedX;
+    p.angle += p.rotateSpeed;
+
+    if (p.y > window.innerHeight) {
+      p.y = -50;
+      p.x = Math.random() * window.innerWidth;
+    }
+
+    p.img.style.top = p.y + "px";
+    p.img.style.left = p.x + "px";
+    p.img.style.transform = `rotate(${p.angle}deg)`;
+  });
+
+  requestAnimationFrame(animatePumpkins);
+}
+
+animatePumpkins();
+
+window.addEventListener('resize', () => {
+  pumpkins.forEach(p => {
+    if (p.x > window.innerWidth) p.x = Math.random() * window.innerWidth;
+  });
+});
+
 
 
 </script>
