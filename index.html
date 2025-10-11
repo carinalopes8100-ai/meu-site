@@ -5970,12 +5970,20 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  searchButton.addEventListener('click', (e) => {
-    e.stopPropagation();
-    searchInput.classList.toggle('hidden');
-    if (!searchInput.classList.contains('hidden')) searchInput.focus();
-    else searchInput.value = '';
-  });
+searchButton.addEventListener('click', (e) => {
+  e.stopPropagation();
+
+  // Se o input estiver escondido, mostra ele
+  if (searchInput.classList.contains('hidden')) {
+    searchInput.classList.remove('hidden');
+    searchInput.focus();
+  } else {
+    // Se já estiver visível, faz a pesquisa
+    const termo = searchInput.value.trim();
+    termo ? pesquisar() : mostrarSecao('inicio');
+  }
+});
+
 
   searchInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
