@@ -26,22 +26,21 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   margin-left: auto; 
 }
 
-  #searchInput {
+ #searchInput {
   position: absolute;
   right: 35px;
   top: 0;
   width: 0;
   padding: 5px;
   opacity: 0;
-  transition: width 0.3s, opacity 0.3s;
-  pointer-events: none; /* impede interação quando invisível */
+  transition: width 0.3s ease, opacity 0.3s ease;
 }
 
 #searchInput.show {
   width: 200px;
   opacity: 1;
-  pointer-events: auto; /* permite digitar */
 }
+
 
   #logo {
   cursor: pointer;
