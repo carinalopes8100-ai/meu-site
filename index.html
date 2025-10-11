@@ -5564,38 +5564,41 @@ const filmesTerror = [
 ];
 
 // ===== Funções de interface =====
-function criarFila(idFila, lista, tipo, tituloFila=null){
-  const container = document.createElement('div'); 
-  container.className = 'fila-container'; 
+function criarFila(idFila, lista, tipo, tituloFila = null) {
+  const container = document.createElement('div');
+  container.className = 'fila-container';
   container.id = idFila;
 
-  const titulo = document.createElement('div'); 
-  titulo.className = 'fila-titulo'; 
-  titulo.textContent = tituloFila || (tipo==='filme' ? (idFila==='fila3' ? 'Terror' : 'Filmes Populares') : 'Séries Populares');
+  const titulo = document.createElement('div');
+  titulo.className = 'fila-titulo';
+  titulo.textContent =
+    tituloFila ||
+    (tipo === 'filme' ? (idFila === 'fila3' ? 'Terror' : 'Filmes Populares') : 'Séries Populares');
 
-  const btnLeft = document.createElement('button'); 
-  btnLeft.className = 'btn-scroll btn-left'; 
+  const btnLeft = document.createElement('button');
+  btnLeft.className = 'btn-scroll btn-left';
   btnLeft.innerHTML = '&#10094;';
 
-  const btnRight = document.createElement('button'); 
-  btnRight.className = 'btn-scroll btn-right'; 
+  const btnRight = document.createElement('button');
+  btnRight.className = 'btn-scroll btn-right';
   btnRight.innerHTML = '&#10095;';
 
-  const fila = document.createElement('div'); 
-  fila.className = 'fila'; 
+  const fila = document.createElement('div');
+  fila.className = 'fila';
   fila.id = idFila + '-content';
-  
-  lista.forEach(item => {
-    const itemDiv = document.createElement('div'); 
-    itemDiv.className = 'filme';
 
-    const img = document.createElement('img'); 
-    img.src = item.img; 
-    img.alt = item.titulo; 
+  lista.forEach(item => {
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'filme';
+    itemDiv.style.position = 'relative';
+
+    const img = document.createElement('img');
+    img.src = item.img;
+    img.alt = item.titulo;
     itemDiv.appendChild(img);
 
     // ==== Barra de progresso ====
-    if(progresso[item.titulo] && progresso[item.titulo] > 0){
+    if (progresso[item.titulo] && progresso[item.titulo] > 0) {
       const progressoDiv = document.createElement('div');
       progressoDiv.style.position = 'absolute';
       progressoDiv.style.bottom = '0';
@@ -5615,33 +5618,33 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
         progressoInner.style.width = pct + '%';
       };
 
-      if(item.duracao){
+      if (item.duracao) {
         atualizarBarra(item.duracao);
-      } else if(item.link){
+      } else if (item.link) {
         const tempVideo = document.createElement('video');
         tempVideo.src = item.link;
         tempVideo.preload = 'metadata';
         tempVideo.addEventListener('loadedmetadata', () => {
-          item.duracao = tempVideo.duration; 
+          item.duracao = tempVideo.duration;
           atualizarBarra(tempVideo.duration);
         });
       }
 
       const observer = new MutationObserver(() => {
         const video = document.getElementById('playerVideo');
-        if(video && video.dataset.titulo === item.titulo){
+        if (video && video.dataset.titulo === item.titulo) {
           video.addEventListener('timeupdate', () => atualizarBarra(video.duration));
         }
       });
-      observer.observe(document.body, {childList: true, subtree: true});
+      observer.observe(document.body, { childList: true, subtree: true });
     }
 
     // ==== Overlay com botões (play e trailer/verão) ====
-    const overlay = document.createElement('div'); 
+    const overlay = document.createElement('div');
     overlay.className = 'filme-hover-overlay';
 
-    const btnPlay = document.createElement('button'); 
-    if(item.emBreve || item.link === "#") {
+    const btnPlay = document.createElement('button');
+    if (item.emBreve || item.link === "#") {
       btnPlay.textContent = 'Em Breve';
       btnPlay.disabled = true;
       btnPlay.style.backgroundColor = "#555";
@@ -5650,26 +5653,28 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
       btnPlay.textContent = '▶ Ver';
       btnPlay.onclick = e => {
         e.stopPropagation();
-        const s = series.find(s => s.titulo === item.titulo) || novelas.find(n => n.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
-        if(s){ abrirModalTemporadas({...s, temporadas: s.temporadas}); return; } 
-        if(item.audios && item.audios.length > 0){ abrirAudioModal(item); } 
+        const s = series.find(s => s.titulo === item.titulo) ||
+                  novelas.find(n => n.titulo === item.titulo) ||
+                  animes.find(a => a.titulo === item.titulo);
+        if (s) { abrirModalTemporadas({ ...s, temporadas: s.temporadas }); return; }
+        if (item.audios && item.audios.length > 0) { abrirAudioModal(item); }
         else { abrirVideo(item); }
       };
     }
     overlay.appendChild(btnPlay);
 
     const btnDireito = document.createElement('button');
-    if(item.titulo === 'Morangos com Açúcar' && item.verao && item.verao.length > 0){
+    if (item.titulo === 'Morangos com Açúcar' && item.verao && item.verao.length > 0) {
       btnDireito.textContent = '▶ Verão';
-      btnDireito.onclick = e => { e.stopPropagation(); abrirModalTemporadas({...item, temporadas: item.verao}); };
+      btnDireito.onclick = e => { e.stopPropagation(); abrirModalTemporadas({ ...item, temporadas: item.verao }); };
       overlay.appendChild(btnDireito);
-    } else if(item.trailer || (item.trailers && item.trailers.length > 0)){
+    } else if (item.trailer || (item.trailers && item.trailers.length > 0)) {
       btnDireito.textContent = '▶ Trailer';
       btnDireito.onclick = e => {
         e.stopPropagation();
-        let tipo = 'trailer';
-        if(item.trailers && item.trailers.some(t => t.tipo === 'teaser')) tipo = 'teaser';
-        abrirModalTrailers(item, tipo);
+        let tipoTrailer = 'trailer';
+        if (item.trailers && item.trailers.some(t => t.tipo === 'teaser')) tipoTrailer = 'teaser';
+        abrirModalTrailers(item, tipoTrailer);
       };
       overlay.appendChild(btnDireito);
     }
@@ -5684,18 +5689,18 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
     itemDiv.appendChild(btnDescricao);
 
     // ==== Botão adicionar/remover lista ====
-    const addBtn = document.createElement('button'); 
+    const addBtn = document.createElement('button');
     addBtn.className = 'add-list-btn';
     const updateButton = () => {
-      if(minhaLista.includes(item.titulo)){ addBtn.textContent='✖'; addBtn.title='Remover da Minha Lista'; } 
-      else { addBtn.textContent='+'; addBtn.title='Adicionar à Minha Lista'; }
+      if (minhaLista.includes(item.titulo)) { addBtn.textContent = '✖'; addBtn.title = 'Remover da Minha Lista'; }
+      else { addBtn.textContent = '+'; addBtn.title = 'Adicionar à Minha Lista'; }
     };
     addBtn.onclick = e => { e.stopPropagation(); adicionarMinhaLista(item.titulo); updateButton(); };
     updateButton();
     itemDiv.appendChild(addBtn);
 
     // ==== Botão remover da fila continuar ====
-    if(idFila === 'filaContinuar'){
+    if (idFila === 'filaContinuar') {
       const removeBtn = document.createElement('button');
       removeBtn.className = 'remove-continuar-btn';
       removeBtn.textContent = '✖';
@@ -5713,13 +5718,13 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
     fila.appendChild(itemDiv);
   });
 
-  container.appendChild(titulo); 
-  container.appendChild(btnLeft); 
-  container.appendChild(fila); 
+  container.appendChild(titulo);
+  container.appendChild(btnLeft);
+  container.appendChild(fila);
   container.appendChild(btnRight);
 
-  btnLeft.addEventListener('click', ()=>fila.scrollBy({left:-1400, behavior:'smooth'}));
-  btnRight.addEventListener('click', ()=>fila.scrollBy({left:1400, behavior:'smooth'}));
+  btnLeft.addEventListener('click', () => fila.scrollBy({ left: -1400, behavior: 'smooth' }));
+  btnRight.addEventListener('click', () => fila.scrollBy({ left: 1400, behavior: 'smooth' }));
 
   return container;
 }
@@ -5727,16 +5732,16 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
 // ===== Funções utilitárias =====
 function debounce(func, wait) {
   let timeout;
-  return function(...args){
+  return function (...args) {
     clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(this, args), wait);
   };
 }
 
-function shuffleArray(array){
+function shuffleArray(array) {
   const arr = [...array];
-  for(let i=arr.length-1; i>0; i--){
-    const j = Math.floor(Math.random()*(i+1));
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
