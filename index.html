@@ -5970,14 +5970,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if(!searchContainer.contains(e.target)) searchInput.classList.add('hidden');
     });
 
-    searchInput.addEventListener('keydown', (e) => {
-      if(e.key==='Enter'){
-        e.preventDefault();
-        const termo = searchInput.value.trim();
-        termo ? pesquisar(termo) : mostrarSecao('inicio');
-      }
-    });
+  searchInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') {
+    e.preventDefault();
+    pesquisar(); // sem passar 'termo'
   }
+});
+
 
   // ===== Logo volta para início =====
   const logo = document.getElementById('logo');
