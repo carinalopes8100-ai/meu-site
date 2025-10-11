@@ -5960,25 +5960,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-// ===== Pesquisa funcional =====
-const searchContainer = document.getElementById('searchContainer');
-const searchButton = document.getElementById('searchButton');
-const searchInput = document.getElementById('searchInput');
+document.addEventListener('DOMContentLoaded', () => {
+  const searchContainer = document.getElementById('searchContainer');
+  const searchButton = document.getElementById('searchButton');
+  const searchInput = document.getElementById('searchInput');
 
-if (searchContainer && searchButton && searchInput) {
-  // botão da lupa abre/fecha o input
+  if (!searchContainer || !searchButton || !searchInput) {
+    console.error('Elementos da pesquisa não encontrados');
+    return;
+  }
+
   searchButton.addEventListener('click', (e) => {
-    e.stopPropagation(); // essencial!
+    e.stopPropagation();
     searchInput.classList.toggle('hidden');
-    if (!searchInput.classList.contains('hidden')) {
-      searchInput.focus();
-    } else {
-      searchInput.value = '';
-      mostrarSecao('inicio');
-    }
+    if (!searchInput.classList.contains('hidden')) searchInput.focus();
+    else searchInput.value = '';
   });
 
-  // Enter pesquisa
   searchInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -5987,13 +5985,13 @@ if (searchContainer && searchButton && searchInput) {
     }
   });
 
-  // Fecha ao clicar fora
   document.addEventListener('click', (e) => {
     if (!searchContainer.contains(e.target)) {
       searchInput.classList.add('hidden');
     }
   });
-}
+});
+
 
 
 
