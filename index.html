@@ -5958,28 +5958,33 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchButton = document.getElementById('searchButton');
   const searchInput = document.getElementById('searchInput');
 
-  if(searchContainer && searchButton && searchInput){
-   searchButton.addEventListener('click', (e) => {
-  e.stopPropagation();
+// Toggle do input
+searchButton.addEventListener('click', (e) => {
+  e.stopPropagation(); // evita fechar imediatamente
   searchInput.classList.toggle('hidden');
   if(!searchInput.classList.contains('hidden')) searchInput.focus();
   else searchInput.value = '';
 });
 
-    document.addEventListener('click', (e) => {
-      if(!searchContainer.contains(e.target)) searchInput.classList.add('hidden');
-    });
-
-// Enter no input realiza a pesquisa
+// Enter no input realiza pesquisa
 searchInput.addEventListener('keydown', (e) => {
   if(e.key === 'Enter') {
     e.preventDefault();
     const termo = searchInput.value.trim();
-    termo ? pesquisar() : mostrarSecao('inicio'); // chamar pesquisar sem argumento
+    if(termo) pesquisar();
+    else mostrarSecao('inicio');
+  }
+});
+
+// Fecha ao clicar fora
+document.addEventListener('click', (e) => {
+  if(!searchContainer.contains(e.target)) {
+    searchInput.classList.add('hidden');
   }
 });
 
 
+    
   // ===== Logo volta para início =====
   const logo = document.getElementById('logo');
   if(logo){
