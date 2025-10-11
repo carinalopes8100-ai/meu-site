@@ -5970,21 +5970,20 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-searchButton.addEventListener('click', (e) => {
-  e.stopPropagation();
+  // Clique no botão
+  searchButton.addEventListener('click', (e) => {
+    e.stopPropagation();
 
-  // Se o input estiver escondido, mostra ele
-  if (searchInput.classList.contains('hidden')) {
-    searchInput.classList.remove('hidden');
-    searchInput.focus();
-  } else {
-    // Se já estiver visível, faz a pesquisa
-    const termo = searchInput.value.trim();
-    termo ? pesquisar() : mostrarSecao('inicio');
-  }
-});
+    if (searchInput.classList.contains('hidden')) {
+      searchInput.classList.remove('hidden');
+      searchInput.focus();
+    } else {
+      const termo = searchInput.value.trim();
+      termo ? pesquisar() : mostrarSecao('inicio');
+    }
+  });
 
-
+  // Enter no input
   searchInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -5993,6 +5992,7 @@ searchButton.addEventListener('click', (e) => {
     }
   });
 
+  // Clique fora esconde o input
   document.addEventListener('click', (e) => {
     if (!searchContainer.contains(e.target)) {
       searchInput.classList.add('hidden');
