@@ -5953,35 +5953,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ===== Pesquisa funcional =====
-  const searchContainer = document.getElementById('searchContainer');
-  const searchButton = document.getElementById('searchButton');
-  const searchInput = document.getElementById('searchInput');
+// ===== Pesquisa funcional =====
+const searchContainer = document.getElementById('searchContainer');
+const searchButton = document.getElementById('searchButton');
+const searchInput = document.getElementById('searchInput');
 
-// Toggle do input
-searchButton.addEventListener('click', (e) => {
-  e.stopPropagation(); // evita fechar imediatamente
-  searchInput.classList.toggle('hidden');
-  if(!searchInput.classList.contains('hidden')) searchInput.focus();
-  else searchInput.value = '';
-});
+if (searchContainer && searchButton && searchInput) {
+  
+  // Toggle do input ao clicar no botão
+  searchButton.addEventListener('click', (e) => {
+    e.stopPropagation(); // evita que o clique feche o input
+    searchInput.classList.toggle('hidden');
+    if (!searchInput.classList.contains('hidden')) {
+      searchInput.focus();
+    } else {
+      searchInput.value = '';
+      mostrarSecao('inicio');
+    }
+  });
 
-// Enter no input realiza pesquisa
-searchInput.addEventListener('keydown', (e) => {
-  if(e.key === 'Enter') {
-    e.preventDefault();
-    const termo = searchInput.value.trim();
-    if(termo) pesquisar();
-    else mostrarSecao('inicio');
-  }
-});
+  // Enter no input realiza a pesquisa
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const termo = searchInput.value.trim();
+      if (termo) pesquisar(); // a função já pega o valor do input
+      else mostrarSecao('inicio');
+    }
+  });
 
-// Fecha ao clicar fora
-document.addEventListener('click', (e) => {
-  if(!searchContainer.contains(e.target)) {
-    searchInput.classList.add('hidden');
-  }
-});
+  // Fecha o input ao clicar fora
+  document.addEventListener('click', (e) => {
+    if (!searchContainer.contains(e.target)) {
+      searchInput.classList.add('hidden');
+    }
+  });
+}
 
 
     
