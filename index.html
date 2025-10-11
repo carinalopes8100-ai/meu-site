@@ -26,6 +26,23 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   margin-left: auto; 
 }
 
+  #searchInput {
+  position: absolute;
+  right: 35px;
+  top: 0;
+  width: 0;
+  padding: 5px;
+  opacity: 0;
+  transition: width 0.3s, opacity 0.3s;
+  pointer-events: none; /* impede interação quando invisível */
+}
+
+#searchInput.show {
+  width: 200px;
+  opacity: 1;
+  pointer-events: auto; /* permite digitar */
+}
+
   #logo {
   cursor: pointer;
 }
@@ -5949,11 +5966,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const searchInput = document.getElementById('searchInput');
   const searchButton = document.getElementById('searchButton');
 
-  searchButton.addEventListener('click', ()=>{
-    searchInput.classList.toggle('hidden');
-    if(!searchInput.classList.contains('hidden')) searchInput.focus();
-    else { searchInput.value=''; mostrarSecao('inicio'); }
-  });
+searchButton.addEventListener('click', (e) => {
+  e.stopPropagation();
+  searchInput.classList.toggle('show');
+  if (searchInput.classList.contains('show')) searchInput.focus();
+  else searchInput.value = '';
+});
+
 
   // Fechar a barra se clicar fora dela
   document.addEventListener('click', (e) => {
