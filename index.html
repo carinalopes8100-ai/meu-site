@@ -5959,21 +5959,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('searchInput');
 
   if(searchContainer && searchButton && searchInput){
-    searchButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      searchInput.classList.toggle('hidden');
-      if(!searchInput.classList.contains('hidden')) searchInput.focus();
-      else { searchInput.value=''; mostrarSecao('inicio'); }
-    });
+   searchButton.addEventListener('click', (e) => {
+  e.stopPropagation();
+  searchInput.classList.toggle('hidden');
+  if(!searchInput.classList.contains('hidden')) searchInput.focus();
+  else searchInput.value = '';
+});
 
     document.addEventListener('click', (e) => {
       if(!searchContainer.contains(e.target)) searchInput.classList.add('hidden');
     });
 
-  searchInput.addEventListener('keydown', (e) => {
+// Enter no input realiza a pesquisa
+searchInput.addEventListener('keydown', (e) => {
   if(e.key === 'Enter') {
     e.preventDefault();
-    pesquisar(); // sem passar 'termo'
+    const termo = searchInput.value.trim();
+    termo ? pesquisar() : mostrarSecao('inicio'); // chamar pesquisar sem argumento
   }
 });
 
