@@ -672,33 +672,50 @@ function abrirVideo(item) {
 
   // Botão Fechar
   const fecharBtn = document.createElement('button');
-  fecharBtn.textContent = 'Fechar';
-  fecharBtn.className = 'audio-btn';
-  fecharBtn.style.position = 'absolute';
-  fecharBtn.style.top = '20px';
-  fecharBtn.style.right = '20px';
+  fecharBtn.textContent = '✖';
+  fecharBtn.style.cssText = `
+    position:absolute; top:15px; right:15px;
+    background: rgba(0,0,0,0.7); color:white;
+    border:none; padding:8px 12px;
+    cursor:pointer; border-radius:5px; z-index:10001;
+  `;
+  fecharBtn.onclick = () => videoModal.remove();
   videoModal.appendChild(fecharBtn);
 
-  let terminou = false;
+  // Botão Próximo Episódio
+  const btnProximo = document.createElement('button');
+  btnProximo.textContent = '⏭ Próximo';
+  btnProximo.style.cssText = `
+    position:absolute; top:15px; right:80px;
+    background: rgba(0,0,0,0.7); color:white;
+    border:none; padding:8px 12px;
+    cursor:pointer; border-radius:5px; z-index:10001;
+  `;
+  btnProximo.onclick = () => {
+    const serie = series.find(s => item.titulo.startsWith(s.titulo));
+    if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
+    for (const temp of serie.temporadas) {
+      const idx = temp.episodios.findIndex(ep => item.titulo.includes(`Ep ${ep.numero}`));
+      if (idx >= 0 && temp.episodios[idx+1]) {
+        abrirVideo({...temp.episodios[idx+1], titulo:`${serie.titulo} - Ep ${temp.episodios[idx+1].numero}`});
+        return;
+      }
+    }
+    mostrarToast('Último episódio da temporada!');
+  };
+  videoModal.appendChild(btnProximo);
 
-  // Adiciona automaticamente à fila "Continuar a ver"
-  if (!progresso[item.titulo]) {
-    progresso[item.titulo] = 0.1;
-    salvarProgresso();
-    mostrarSecao('inicio'); // atualiza a interface imediatamente
-  }
+  // Guarda o título do episódio
+  videoModal.dataset.titulo = item.titulo;
 
-  if (item.link.endsWith(".mp4")) {
+  // Diferencia MP4 de embed (Filemoon)
+  if (item.link.endsWith('.mp4')) {
     // Loader
     const loader = document.createElement('div');
     loader.textContent = 'Carregando...';
-    loader.style.color = '#fff';
-    loader.style.fontSize = '18px';
-    loader.style.marginTop = '10px';
-    loader.style.textAlign = 'center';
+    loader.style.cssText = 'color:#fff;font-size:18px;margin-top:10px;text-align:center;';
     videoModal.appendChild(loader);
 
-    // Elemento vídeo
     const videoEl = document.createElement('video');
     videoEl.src = item.link;
     videoEl.controls = true;
@@ -706,43 +723,6 @@ function abrirVideo(item) {
     videoEl.style.width = '80%';
     videoEl.style.height = '80%';
     videoModal.appendChild(videoEl);
-
-    // Fechar com stop
-    fecharBtn.onclick = () => {
-      if (!terminou) salvarProgresso();
-      videoEl.pause();
-      videoEl.src = '';
-      videoEl.load();
-      videoModal.remove();
-    };
-
-    // Audios alternativos
-    if (item.audios && item.audios.length > 0) {
-      const audioContainer = document.createElement('div');
-      audioContainer.style.position = 'absolute';
-      audioContainer.style.top = '20px';
-      audioContainer.style.left = '50%';
-      audioContainer.style.transform = 'translateX(-50%)';
-      audioContainer.style.display = 'flex';
-      audioContainer.style.gap = '10px';
-      audioContainer.style.flexWrap = 'wrap';
-      audioContainer.style.zIndex = '10001';
-
-      item.audios.forEach(a => {
-        const btn = document.createElement('button');
-        btn.textContent = a.label;
-        btn.className = 'audio-btn';
-        btn.onclick = () => {
-          const tempoAtual = videoEl.currentTime;
-          videoEl.src = a.src;
-          videoEl.load();
-          videoEl.currentTime = tempoAtual;
-          videoEl.play();
-        };
-        audioContainer.appendChild(btn);
-      });
-      videoModal.appendChild(audioContainer);
-    }
 
     // Legendas
     if (item.legendas) {
@@ -757,7 +737,32 @@ function abrirVideo(item) {
       });
     }
 
-    // Eventos
+    // Audios alternativos
+    if (item.audios && item.audios.length) {
+      const audioContainer = document.createElement('div');
+      audioContainer.style.cssText = `
+        position:absolute; top:20px; left:50%;
+        transform:translateX(-50%);
+        display:flex; gap:10px; flex-wrap:wrap; z-index:10001;
+      `;
+      item.audios.forEach(a => {
+        const btn = document.createElement('button');
+        btn.textContent = a.label;
+        btn.className = 'audio-btn';
+        btn.onclick = () => {
+          const t = videoEl.currentTime;
+          videoEl.src = a.src;
+          videoEl.load();
+          videoEl.currentTime = t;
+          videoEl.play();
+        };
+        audioContainer.appendChild(btn);
+      });
+      videoModal.appendChild(audioContainer);
+    }
+
+    // Eventos do vídeo
+    let terminou = false;
     videoEl.addEventListener('loadedmetadata', () => {
       if (progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
     });
@@ -774,7 +779,7 @@ function abrirVideo(item) {
       delete progresso[item.titulo];
       salvarProgresso();
       videoModal.remove();
-      mostrarSecao('inicio'); // atualiza a fila "Continuar a ver"
+      mostrarSecao('inicio');
     };
 
     videoEl.oncanplaythrough = () => {
@@ -782,47 +787,25 @@ function abrirVideo(item) {
       videoEl.play();
     };
 
-function abrirVideo(item) {
-  const videoModal = document.createElement('div');
-  videoModal.className = 'video-modal';
-  videoModal.style = `position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);
-                      display:flex;align-items:center;justify-content:center;z-index:10000;`;
-
-  // Botão fechar
-  const fecharBtn = document.createElement('button');
-  fecharBtn.textContent = '✖';
-  fecharBtn.style = `position:absolute;top:15px;right:15px;background:rgba(0,0,0,0.7);
-                     color:white;border:none;padding:8px 12px;cursor:pointer;border-radius:5px;z-index:10001;`;
-  fecharBtn.onclick = () => videoModal.remove();
-  videoModal.appendChild(fecharBtn);
-
-  // Botão Próximo
-  const btnProximo = document.createElement('button');
-  btnProximo.textContent = '⏭ Próximo';
-  btnProximo.style = `position:absolute;top:15px;right:80px;background:rgba(0,0,0,0.7);
-                       color:white;border:none;padding:8px 12px;cursor:pointer;border-radius:5px;z-index:10001;`;
-  btnProximo.onclick = () => {
-    const serie = series.find(s => item.titulo.startsWith(s.titulo));
-    if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
-    for (const temp of serie.temporadas) {
-      const idx = temp.episodios.findIndex(ep => item.titulo.includes(`Ep ${ep.numero}`));
-      if (idx >= 0 && temp.episodios[idx+1]) {
-        abrirVideo({...temp.episodios[idx+1], titulo:`${serie.titulo} - Ep ${temp.episodios[idx+1].numero}`});
-      } else mostrarToast('Último episódio da temporada!');
-    }
-  };
-  videoModal.appendChild(btnProximo);
-
-  // iframe do Filemoon
-  const iframe = document.createElement('iframe');
-  iframe.src = item.link;
-  iframe.width = '90%';
-  iframe.height = '90%';
-  iframe.allowFullscreen = true;
-  iframe.frameBorder = '0';
-  iframe.style.borderRadius = '10px';
-  iframe.style.boxShadow = '0 0 20px rgba(0,0,0,0.7)';
-  videoModal.appendChild(iframe);
+    fecharBtn.onclick = () => {
+      if (!terminou) salvarProgresso();
+      videoEl.pause();
+      videoEl.src = '';
+      videoEl.load();
+      videoModal.remove();
+    };
+  } else {
+    // Embed (Filemoon)
+    const iframe = document.createElement('iframe');
+    iframe.src = item.link;
+    iframe.width = '90%';
+    iframe.height = '90%';
+    iframe.allowFullscreen = true;
+    iframe.frameBorder = '0';
+    iframe.style.borderRadius = '10px';
+    iframe.style.boxShadow = '0 0 20px rgba(0,0,0,0.7)';
+    videoModal.appendChild(iframe);
+  }
 
   document.body.appendChild(videoModal);
 }
