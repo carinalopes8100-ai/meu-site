@@ -721,6 +721,12 @@ if (serie) {
       // Copia fonte e padding do botão Fechar
   btnProximo.style.font = window.getComputedStyle(fecharBtn).font;
   btnProximo.style.padding = window.getComputedStyle(fecharBtn).padding;
+
+    // Mantém ícone e texto na mesma linha
+  btnProximo.style.display = 'flex';
+  btnProximo.style.alignItems = 'center';
+  btnProximo.style.justifyContent = 'center';
+  btnProximo.style.gap = '5px';  
   }, 0);
 
  btnProximo.onclick = () => {
