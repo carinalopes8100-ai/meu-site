@@ -741,38 +741,37 @@ btnProximo.onclick = () => {
   }
   videoModal.remove();
 
-  for (let t = 0; t < serie.temporadas.length; t++) {
-    const temp = serie.temporadas[t];
-    const epNumeroAtual = parseInt(item.titulo.match(/Ep (\d+)/)[1]);
+  for (const temp of serie.temporadas) {
+    // pega só o número do episódio atual
+    const epNumeroAtual = parseInt(item.titulo.match(/Ep (\d+)/)[1]); 
+
+    // encontra o índice correto na temporada
     const idx = temp.episodios.findIndex(ep => ep.numero === epNumeroAtual);
 
-    if (idx >= 0) {
-      // Próximo episódio na mesma temporada
-      if (temp.episodios[idx + 1]) {
-        const proximo = temp.episodios[idx + 1];
-        episodioSelecionado[serie.titulo] = proximo.numero;
-        localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
-        abrirVideo({...proximo, titulo:`${serie.titulo} - Ep ${proximo.numero}`});
-        atualizarModal(proximo.numero); // função que atualiza a marcação no modal
-        return;
-      } 
-      // Próxima temporada
-      else if (serie.temporadas[t + 1] && serie.temporadas[t + 1].episodios.length > 0) {
-        const proximo = serie.temporadas[t + 1].episodios[0];
-        episodioSelecionado[serie.titulo] = proximo.numero;
-        localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
-        abrirVideo({...proximo, titulo:`${serie.titulo} - Ep ${proximo.numero}`});
-        atualizarModal(proximo.numero);
-        return;
-      } 
-      // Último episódio da última temporada
-      else {
-        mostrarToast('Último episódio da série!');
-        return;
+    if (idx >= 0 && temp.episodios[idx+1]) {
+      const proximo = temp.episodios[idx+1];
+
+      // salva o episódio atual
+      episodioSelecionado[serie.titulo] = proximo.numero;
+      localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
+
+      abrirVideo({...proximo, titulo:`${serie.titulo} - Ep ${proximo.numero}`});
+
+      // atualiza modal se estiver aberto
+      const modalAberto = document.getElementById('modal').style.display === 'flex';
+      if (modalAberto) {
+        document.querySelectorAll('.episodio-btn.selecionado').forEach(btn => btn.classList.remove('selecionado'));
+        const btnProx = Array.from(document.querySelectorAll('.episodio-btn'))
+                              .find(btn => parseInt(btn.dataset.numero) === proximo.numero);
+        if (btnProx) btnProx.classList.add('selecionado');
       }
+
+      return;
     }
   }
+  mostrarToast('Último episódio da temporada!');
 };
+
 
 
   videoModal.appendChild(btnProximo);
