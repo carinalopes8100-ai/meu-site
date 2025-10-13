@@ -6292,37 +6292,43 @@ const observerPlayerIframe = new MutationObserver(() => {
 btnProximo.addEventListener('click', () => {
     if (!playerContainer.dataset.titulo) return;
 
-    const tituloAtual = playerContainer.dataset.titulo;
+    let tituloAtual = playerContainer.dataset.titulo;
     const serie = series.find(s => tituloAtual.startsWith(s.titulo));
     if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
 
-    for (const temporada of serie.temporadas) {
-        const idx = temporada.episodios.findIndex(ep => tituloAtual.includes(`Ep ${ep.numero}`));
+    let achou = false;
+
+    // Percorre todas as temporadas
+    for (let t = 0; t < serie.temporadas.length; t++) {
+        const temp = serie.temporadas[t];
+        const epNumeroAtual = parseInt(tituloAtual.match(/Ep (\d+)/)[1]);
+        const idx = temp.episodios.findIndex(ep => ep.numero === epNumeroAtual);
+
         if (idx >= 0) {
-            const proximo = temporada.episodios[idx + 1];
-            if (!proximo) {
-                mostrarToast('Último episódio da temporada!');
+            achou = true;
+
+            // Próximo episódio na mesma temporada
+            if (temp.episodios[idx + 1]) {
+                const proximo = temp.episodios[idx + 1];
+                abrirEpisodioNoModal(serie, proximo);
+                return;
+            } 
+            // Próxima temporada
+            else if (serie.temporadas[t + 1] && serie.temporadas[t + 1].episodios.length > 0) {
+                const proximo = serie.temporadas[t + 1].episodios[0];
+                abrirEpisodioNoModal(serie, proximo);
+                return;
+            } 
+            // Último episódio da última temporada
+            else {
+                mostrarToast('Último episódio da série!');
                 return;
             }
-
-            // Atualiza o episódio selecionado
-            episodioSelecionado[serie.titulo] = proximo.numero;
-            localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
-
-            // Abre o próximo episódio
-            abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
-
-            // Se o modal estiver aberto, atualiza o botão selecionado
-            const modal = document.getElementById('modal');
-            if (modal && modal.style.display !== 'none') {
-                document.querySelectorAll('.episodio-btn.selecionado').forEach(btn => btn.classList.remove('selecionado'));
-                const btnProx = Array.from(document.querySelectorAll('.episodio-btn'))
-                                      .find(btn => parseInt(btn.dataset.numero) === proximo.numero);
-                if (btnProx) btnProx.classList.add('selecionado');
-            }
-
-            return;
         }
+    }
+
+    if (!achou) {
+        mostrarToast('Episódio não encontrado na série.');
     }
 });
 
