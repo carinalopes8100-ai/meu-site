@@ -713,21 +713,23 @@ if (serie) {
   btnProximo.style.height = 'auto';
 
   // Ajusta posição do topo depois de o botão Fechar estar no DOM
-  setTimeout(() => {
-    btnProximo.style.top = (fecharBtn.offsetTop + fecharBtn.offsetHeight + 8) + 'px';
-    btnProximo.style.height = fecharBtn.offsetHeight + 'px';
-    btnProximo.style.width = fecharBtn.offsetWidth + 'px';
+setTimeout(() => {
+  btnProximo.style.top = (fecharBtn.offsetTop + fecharBtn.offsetHeight + 8) + 'px';
+  btnProximo.style.height = fecharBtn.offsetHeight + 'px';
 
-      // Copia fonte e padding do botão Fechar
+  // Copia fonte e padding
   btnProximo.style.font = window.getComputedStyle(fecharBtn).font;
   btnProximo.style.padding = window.getComputedStyle(fecharBtn).padding;
 
-    // Mantém ícone e texto na mesma linha
+  // Mantém ícone e texto na mesma linha
   btnProximo.style.display = 'flex';
   btnProximo.style.alignItems = 'center';
   btnProximo.style.justifyContent = 'center';
   btnProximo.style.gap = '5px';  
-  }, 0);
+
+  // Largura automática para caber ícone + texto
+  btnProximo.style.width = 'auto';
+}, 0);
 
  btnProximo.onclick = () => {
   if (videoEl) {
