@@ -670,23 +670,20 @@ function abrirVideo(item) {
     z-index:10000;
   `;
 
-  // Botão Fechar
+  // Botão Fechar (do jeito antigo)
   const fecharBtn = document.createElement('button');
-  fecharBtn.textContent = '✖';
-  fecharBtn.style.cssText = `
-    position:absolute; top:15px; right:15px;
-    background: rgba(0,0,0,0.7); color:white;
-    border:none; padding:8px 12px;
-    cursor:pointer; border-radius:5px; z-index:10001;
-  `;
-  fecharBtn.onclick = () => videoModal.remove();
+  fecharBtn.textContent = 'Fechar';
+  fecharBtn.className = 'audio-btn';
+  fecharBtn.style.position = 'absolute';
+  fecharBtn.style.top = '20px';
+  fecharBtn.style.right = '20px';
   videoModal.appendChild(fecharBtn);
 
   // Botão Próximo Episódio
   const btnProximo = document.createElement('button');
   btnProximo.textContent = '⏭ Próximo';
   btnProximo.style.cssText = `
-    position:absolute; top:15px; right:80px;
+    position:absolute; top:20px; right:90px;
     background: rgba(0,0,0,0.7); color:white;
     border:none; padding:8px 12px;
     cursor:pointer; border-radius:5px; z-index:10001;
@@ -705,12 +702,10 @@ function abrirVideo(item) {
   };
   videoModal.appendChild(btnProximo);
 
-  // Guarda o título do episódio
+  // Guarda título do episódio
   videoModal.dataset.titulo = item.titulo;
 
-  // Diferencia MP4 de embed (Filemoon)
   if (item.link.endsWith('.mp4')) {
-    // Loader
     const loader = document.createElement('div');
     loader.textContent = 'Carregando...';
     loader.style.cssText = 'color:#fff;font-size:18px;margin-top:10px;text-align:center;';
@@ -737,11 +732,11 @@ function abrirVideo(item) {
       });
     }
 
-    // Audios alternativos
+    // Áudios alternativos
     if (item.audios && item.audios.length) {
       const audioContainer = document.createElement('div');
       audioContainer.style.cssText = `
-        position:absolute; top:20px; left:50%;
+        position:absolute; top:60px; left:50%;
         transform:translateX(-50%);
         display:flex; gap:10px; flex-wrap:wrap; z-index:10001;
       `;
@@ -761,7 +756,6 @@ function abrirVideo(item) {
       videoModal.appendChild(audioContainer);
     }
 
-    // Eventos do vídeo
     let terminou = false;
     videoEl.addEventListener('loadedmetadata', () => {
       if (progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
@@ -787,6 +781,7 @@ function abrirVideo(item) {
       videoEl.play();
     };
 
+    // Fechar
     fecharBtn.onclick = () => {
       if (!terminou) salvarProgresso();
       videoEl.pause();
@@ -794,8 +789,9 @@ function abrirVideo(item) {
       videoEl.load();
       videoModal.remove();
     };
+
   } else {
-    // Embed (Filemoon)
+    // Embed Filemoon
     const iframe = document.createElement('iframe');
     iframe.src = item.link;
     iframe.width = '90%';
@@ -809,9 +805,6 @@ function abrirVideo(item) {
 
   document.body.appendChild(videoModal);
 }
-
-
-
 
 
 
