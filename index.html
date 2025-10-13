@@ -6235,6 +6235,8 @@ const observerPlayer = new MutationObserver(() => {
       }
     });
 
+    btnProximo.style.marginRight = '10px';
+    
     // Insere o botão antes do botão Fechar (se existir)
     if (fecharBtn) fecharBtn.insertAdjacentElement('beforebegin', btnProximo);
     else playerContainer.appendChild(btnProximo);
