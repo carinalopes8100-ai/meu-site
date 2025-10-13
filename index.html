@@ -6268,15 +6268,8 @@ btnProximo.addEventListener('click', () => {
                 // Abre o próximo episódio
                 abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
 
-                // Atualiza o botão selecionado no modal
-                setTimeout(() => {
-                    // Remove seleção antiga
-                    document.querySelectorAll('.episodio-btn.selecionado').forEach(btn => btn.classList.remove('selecionado'));
-                    // Marca o próximo episódio
-                    const btnProx = Array.from(document.querySelectorAll('.episodio-btn'))
-                                          .find(btn => parseInt(btn.dataset.numero) === proximo.numero);
-                    if (btnProx) btnProx.classList.add('selecionado');
-                }, 50); // pequeno delay para garantir que o modal e os botões estão renderizados
+                // Reabre o modal da temporada para atualizar o botão selecionado
+                abrirModalEpisodios(temporada, serie.titulo);
 
             } else {
                 mostrarToast('Último episódio da temporada!');
