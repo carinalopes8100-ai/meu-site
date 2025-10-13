@@ -693,15 +693,21 @@ function abrirVideo(item) {
   };
   videoModal.appendChild(fecharBtn);
 
-  // Botão Próximo Episódio
-  const btnProximo = document.createElement('button');
-  btnProximo.textContent = '⏭ Próximo';
-  btnProximo.style.cssText = `
-    position:absolute; top:20px; right:90px;
-    background: rgba(0,0,0,0.7); color:white;
-    border:none; padding:8px 12px;
-    cursor:pointer; border-radius:5px; z-index:10001;
-  `;
+// Botão Próximo Episódio (igual ao Fechar, mas branco)
+const btnProximo = document.createElement('button');
+btnProximo.textContent = '⏭ Próximo';
+btnProximo.className = 'audio-btn';
+btnProximo.style.position = 'absolute';
+btnProximo.style.top = '20px';              // mesmo alinhamento vertical que Fechar
+btnProximo.style.right = '90px';            // distância horizontal do Fechar
+btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)'; // mesmo fundo do Fechar
+btnProximo.style.color = 'white';           // texto branco
+btnProximo.style.border = 'none';
+btnProximo.style.padding = '8px 12px';
+btnProximo.style.cursor = 'pointer';
+btnProximo.style.borderRadius = '5px';
+btnProximo.style.zIndex = '10001';
+  
   btnProximo.onclick = () => {
     // Fecha modal atual antes de abrir próximo
     if (videoEl) {
