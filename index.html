@@ -696,6 +696,8 @@ fecharBtn.onclick = () => {
 videoModal.appendChild(fecharBtn);
 
 // Botão Próximo Episódio
+const serie = series.find(s => item.titulo.startsWith(s.titulo));
+if (serie) {
 const btnProximo = document.createElement('button');
 btnProximo.textContent = '⏭ Próximo';
 btnProximo.className = 'audio-btn';
