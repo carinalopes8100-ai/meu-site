@@ -716,6 +716,7 @@ if (serie) {
 setTimeout(() => {
   btnProximo.style.top = (fecharBtn.offsetTop + fecharBtn.offsetHeight + 8) + 'px';
   btnProximo.style.height = fecharBtn.offsetHeight + 'px';
+  btnProximo.style.width = fecharBtn.offsetWidth + 'px'; // mesma largura do fechar
 
   // Copia fonte e padding
   btnProximo.style.font = window.getComputedStyle(fecharBtn).font;
@@ -727,9 +728,10 @@ setTimeout(() => {
   btnProximo.style.justifyContent = 'center';
   btnProximo.style.gap = '5px';  
 
-  // Largura automática para caber ícone + texto
-  btnProximo.style.width = 'auto';
+  // Evita quebra de linha
+  btnProximo.style.whiteSpace = 'nowrap';
 }, 0);
+
 
  btnProximo.onclick = () => {
   if (videoEl) {
