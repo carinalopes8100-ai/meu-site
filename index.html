@@ -670,13 +670,23 @@ function abrirVideo(item) {
     z-index:10000;
   `;
 
-  // Botão Fechar (do jeito antigo)
+  let videoEl; // <--- aqui
+
+  // Botão Fechar
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
   fecharBtn.className = 'audio-btn';
   fecharBtn.style.position = 'absolute';
   fecharBtn.style.top = '20px';
   fecharBtn.style.right = '20px';
+  fecharBtn.onclick = () => {
+      if (videoEl) {
+          videoEl.pause();
+          videoEl.src = '';
+          videoEl.load();
+      }
+      videoModal.remove();
+  };
   videoModal.appendChild(fecharBtn);
 
   // Botão Próximo Episódio
@@ -702,7 +712,6 @@ function abrirVideo(item) {
   };
   videoModal.appendChild(btnProximo);
 
-  // Guarda título do episódio
   videoModal.dataset.titulo = item.titulo;
 
   if (item.link.endsWith('.mp4')) {
@@ -711,7 +720,7 @@ function abrirVideo(item) {
     loader.style.cssText = 'color:#fff;font-size:18px;margin-top:10px;text-align:center;';
     videoModal.appendChild(loader);
 
-    const videoEl = document.createElement('video');
+    videoEl = document.createElement('video');
     videoEl.src = item.link;
     videoEl.controls = true;
     videoEl.preload = 'auto';
@@ -779,15 +788,6 @@ function abrirVideo(item) {
     videoEl.oncanplaythrough = () => {
       loader.remove();
       videoEl.play();
-    };
-
-    // Fechar
-    fecharBtn.onclick = () => {
-      if (!terminou) salvarProgresso();
-      videoEl.pause();
-      videoEl.src = '';
-      videoEl.load();
-      videoModal.remove();
     };
 
   } else {
