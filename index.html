@@ -676,32 +676,33 @@ function abrirVideo(item) {
   let videoEl = null; // só será usado se for MP4
   let terminou = false;
 
-  // Botão Fechar
-  const fecharBtn = document.createElement('button');
-  fecharBtn.textContent = 'Fechar';
-  fecharBtn.className = 'audio-btn';
-  fecharBtn.style.position = 'absolute';
-  fecharBtn.style.top = '20px';
-  fecharBtn.style.right = '20px';
-  fecharBtn.onclick = () => {
-    if (videoEl) {
-      videoEl.pause();
-      videoEl.src = '';
-      videoEl.load();
-    }
-    videoModal.remove();
-  };
-  videoModal.appendChild(fecharBtn);
+document.body.appendChild(videoModal); // adiciona o modal ao DOM primeiro
 
-// Botão Próximo Episódio (igual ao Fechar, mas branco)
+// Botão Fechar
+const fecharBtn = document.createElement('button');
+fecharBtn.textContent = 'Fechar';
+fecharBtn.className = 'audio-btn';
+fecharBtn.style.position = 'absolute';
+fecharBtn.style.top = '20px';
+fecharBtn.style.right = '20px';
+fecharBtn.onclick = () => {
+  if (videoEl) {
+    videoEl.pause();
+    videoEl.src = '';
+    videoEl.load();
+  }
+  videoModal.remove();
+};
+videoModal.appendChild(fecharBtn);
+
+// Botão Próximo Episódio
 const btnProximo = document.createElement('button');
 btnProximo.textContent = '⏭ Próximo';
 btnProximo.className = 'audio-btn';
 btnProximo.style.position = 'absolute';
-btnProximo.style.top = '20px';              // mesmo alinhamento vertical que Fechar
-btnProximo.style.right = '50px';            // distância horizontal do Fechar
-btnProximo.style.backgroundColor = 'white'; // mesmo fundo do Fechar
-btnProximo.style.color = 'black';           // texto preto
+btnProximo.style.right = fecharBtn.style.right;
+btnProximo.style.backgroundColor = 'white';
+btnProximo.style.color = 'black';
 btnProximo.style.border = 'none';
 btnProximo.style.padding = '8px 12px';
 btnProximo.style.cursor = 'pointer';
@@ -710,32 +711,31 @@ btnProximo.style.zIndex = '10001';
 btnProximo.style.font = 'inherit';
 btnProximo.style.height = 'auto';
 
-// **Ajuste de alinhamento relativo ao botão Fechar**
-btnProximo.style.right = fecharBtn.style.right; 
-btnProximo.style.top = (fecharBtn.offsetTop + fecharBtn.offsetHeight + 8) + 'px'; // 8px abaixo do Fechar
-  
-  btnProximo.onclick = () => {
-    // Fecha modal atual antes de abrir próximo
-    if (videoEl) {
-      videoEl.pause();
-      videoEl.src = '';
-      videoEl.load();
-    }
-    videoModal.remove();
+// Aqui é o truque: pegar altura do Fechar **depois de estar no DOM**
+btnProximo.style.top = (fecharBtn.offsetTop + fecharBtn.offsetHeight + 8) + 'px';
 
-    const serie = series.find(s => item.titulo.startsWith(s.titulo));
-    if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
+btnProximo.onclick = () => {
+  if (videoEl) {
+    videoEl.pause();
+    videoEl.src = '';
+    videoEl.load();
+  }
+  videoModal.remove();
 
-    for (const temp of serie.temporadas) {
-      const idx = temp.episodios.findIndex(ep => item.titulo.includes(`Ep ${ep.numero}`));
-      if (idx >= 0 && temp.episodios[idx+1]) {
-        abrirVideo({...temp.episodios[idx+1], titulo:`${serie.titulo} - Ep ${temp.episodios[idx+1].numero}`});
-        return;
-      }
+  const serie = series.find(s => item.titulo.startsWith(s.titulo));
+  if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
+
+  for (const temp of serie.temporadas) {
+    const idx = temp.episodios.findIndex(ep => item.titulo.includes(`Ep ${ep.numero}`));
+    if (idx >= 0 && temp.episodios[idx+1]) {
+      abrirVideo({...temp.episodios[idx+1], titulo:`${serie.titulo} - Ep ${temp.episodios[idx+1].numero}`});
+      return;
     }
-    mostrarToast('Último episódio da temporada!');
-  };
-  videoModal.appendChild(btnProximo);
+  }
+  mostrarToast('Último episódio da temporada!');
+};
+videoModal.appendChild(btnProximo);
+
 
   // Verifica tipo de link
   if (item.link.endsWith('.mp4')) {
