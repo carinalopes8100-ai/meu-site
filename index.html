@@ -717,6 +717,10 @@ if (serie) {
     btnProximo.style.top = (fecharBtn.offsetTop + fecharBtn.offsetHeight + 8) + 'px';
     btnProximo.style.height = fecharBtn.offsetHeight + 'px';
     btnProximo.style.width = fecharBtn.offsetWidth + 'px';
+
+      // Copia fonte e padding do botão Fechar
+  btnProximo.style.font = window.getComputedStyle(fecharBtn).font;
+  btnProximo.style.padding = window.getComputedStyle(fecharBtn).padding;
   }, 0);
 
  btnProximo.onclick = () => {
