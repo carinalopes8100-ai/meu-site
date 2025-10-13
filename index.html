@@ -710,9 +710,9 @@ btnProximo.style.zIndex = '10001';
 btnProximo.style.font = 'inherit';
 btnProximo.style.height = 'auto';
 
-  // **Ajuste de alinhamento relativo ao botão Fechar**
-btnProximo.style.right = fecharBtn.style.right; // mesma coluna que Fechar
-btnProximo.style.top = (parseInt(fecharBtn.style.top) + fecharBtn.offsetHeight + 8) + 'px'; 
+// **Ajuste de alinhamento relativo ao botão Fechar**
+btnProximo.style.right = fecharBtn.style.right; 
+btnProximo.style.top = (fecharBtn.offsetTop + fecharBtn.offsetHeight + 8) + 'px'; // 8px abaixo do Fechar
   
   btnProximo.onclick = () => {
     // Fecha modal atual antes de abrir próximo
