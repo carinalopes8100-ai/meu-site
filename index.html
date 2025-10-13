@@ -6265,13 +6265,9 @@ btnProximo.addEventListener('click', () => {
                 localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
 
                 // Atualiza os botões do modal
-                document.querySelectorAll('.episodio-btn').forEach(btn => btn.classList.remove('selecionado'));
-                document.querySelectorAll('.episodio-btn').forEach(btn => {
-                    if (parseInt(btn.dataset.numero) === proximo.numero) {
-                        btn.classList.add('selecionado');
-                    }
-                });
+                atualizarSelecionadosModal();
 
+                // Abre o próximo episódio
                 abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
             } else {
                 mostrarToast('Último episódio da temporada!');
