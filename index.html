@@ -670,7 +670,11 @@ function abrirVideo(item) {
     z-index:10000;
   `;
 
-  let videoEl; // <--- aqui
+  // Guarda título do episódio
+  videoModal.dataset.titulo = item.titulo;
+
+  let videoEl = null; // só será usado se for MP4
+  let terminou = false;
 
   // Botão Fechar
   const fecharBtn = document.createElement('button');
@@ -680,12 +684,12 @@ function abrirVideo(item) {
   fecharBtn.style.top = '20px';
   fecharBtn.style.right = '20px';
   fecharBtn.onclick = () => {
-      if (videoEl) {
-          videoEl.pause();
-          videoEl.src = '';
-          videoEl.load();
-      }
-      videoModal.remove();
+    if (videoEl) {
+      videoEl.pause();
+      videoEl.src = '';
+      videoEl.load();
+    }
+    videoModal.remove();
   };
   videoModal.appendChild(fecharBtn);
 
@@ -699,8 +703,17 @@ function abrirVideo(item) {
     cursor:pointer; border-radius:5px; z-index:10001;
   `;
   btnProximo.onclick = () => {
+    // Fecha modal atual antes de abrir próximo
+    if (videoEl) {
+      videoEl.pause();
+      videoEl.src = '';
+      videoEl.load();
+    }
+    videoModal.remove();
+
     const serie = series.find(s => item.titulo.startsWith(s.titulo));
     if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
+
     for (const temp of serie.temporadas) {
       const idx = temp.episodios.findIndex(ep => item.titulo.includes(`Ep ${ep.numero}`));
       if (idx >= 0 && temp.episodios[idx+1]) {
@@ -712,14 +725,14 @@ function abrirVideo(item) {
   };
   videoModal.appendChild(btnProximo);
 
-  videoModal.dataset.titulo = item.titulo;
-
+  // Verifica tipo de link
   if (item.link.endsWith('.mp4')) {
     const loader = document.createElement('div');
     loader.textContent = 'Carregando...';
     loader.style.cssText = 'color:#fff;font-size:18px;margin-top:10px;text-align:center;';
     videoModal.appendChild(loader);
 
+    // Cria vídeo
     videoEl = document.createElement('video');
     videoEl.src = item.link;
     videoEl.controls = true;
@@ -765,7 +778,7 @@ function abrirVideo(item) {
       videoModal.appendChild(audioContainer);
     }
 
-    let terminou = false;
+    // Eventos do vídeo
     videoEl.addEventListener('loadedmetadata', () => {
       if (progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
     });
@@ -791,7 +804,7 @@ function abrirVideo(item) {
     };
 
   } else {
-    // Embed Filemoon
+    // Embed (ex: Filemoon)
     const iframe = document.createElement('iframe');
     iframe.src = item.link;
     iframe.width = '90%';
