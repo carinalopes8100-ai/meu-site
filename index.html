@@ -729,8 +729,16 @@ if (serie) {
     const idx = temp.episodios.findIndex(ep => item.titulo.includes(`Ep ${ep.numero}`));
     if (idx >= 0 && temp.episodios[idx+1]) {
       const proximo = temp.episodios[idx+1];
+
+      
+      // Salva o episódio atual
+      episodioSelecionado[serie.titulo] = proximo.numero;
+      localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
+      
       abrirVideo({...proximo, titulo:`${serie.titulo} - Ep ${proximo.numero}`});
 
+
+      
       // Atualiza o modal de episódios se estiver aberto
       const modalAberto = document.getElementById('modal').style.display === 'flex';
       if (modalAberto) {
