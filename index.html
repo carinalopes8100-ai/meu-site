@@ -6268,11 +6268,15 @@ btnProximo.addEventListener('click', () => {
                 // Abre o próximo episódio
                 abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
 
-                // Reabre o modal de episódios da temporada atual e atualiza a seleção
-                const modalAberto = document.getElementById('modal')?.style.display !== 'none';
-                if (modalAberto) {
-                    abrirModalEpisodios(temporada, serie.titulo);
-                }
+                // Atualiza o botão selecionado no modal
+                setTimeout(() => {
+                    // Remove seleção antiga
+                    document.querySelectorAll('.episodio-btn.selecionado').forEach(btn => btn.classList.remove('selecionado'));
+                    // Marca o próximo episódio
+                    const btnProx = Array.from(document.querySelectorAll('.episodio-btn'))
+                                          .find(btn => parseInt(btn.dataset.numero) === proximo.numero);
+                    if (btnProx) btnProx.classList.add('selecionado');
+                }, 50); // pequeno delay para garantir que o modal e os botões estão renderizados
 
             } else {
                 mostrarToast('Último episódio da temporada!');
@@ -6281,6 +6285,7 @@ btnProximo.addEventListener('click', () => {
         }
     }
 });
+
 
 
         // Adiciona o botão ao lado do fechar
