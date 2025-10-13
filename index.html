@@ -695,46 +695,47 @@ fecharBtn.onclick = () => {
 };
 videoModal.appendChild(fecharBtn);
 
-// Botão Próximo Episódio
-const serie = series.find(s => item.titulo.startsWith(s.titulo));
 if (serie) {
-const btnProximo = document.createElement('button');
-btnProximo.textContent = '⏭ Próximo';
-btnProximo.className = 'audio-btn';
-btnProximo.style.position = 'absolute';
-btnProximo.style.right = fecharBtn.style.right;
-btnProximo.style.backgroundColor = 'white';
-btnProximo.style.color = 'black';
-btnProximo.style.border = 'none';
-btnProximo.style.padding = '8px 12px';
-btnProximo.style.cursor = 'pointer';
-btnProximo.style.borderRadius = '5px';
-btnProximo.style.zIndex = '10001';
-btnProximo.style.font = 'inherit';
-btnProximo.style.height = 'auto';
+  const btnProximo = document.createElement('button');
+  btnProximo.textContent = '⏭ Próximo';
+  btnProximo.className = 'audio-btn';
+  btnProximo.style.position = 'absolute';
+  btnProximo.style.right = fecharBtn.style.right;
+  btnProximo.style.backgroundColor = 'white';
+  btnProximo.style.color = 'black';
+  btnProximo.style.border = 'none';
+  btnProximo.style.padding = '8px 12px';
+  btnProximo.style.cursor = 'pointer';
+  btnProximo.style.borderRadius = '5px';
+  btnProximo.style.zIndex = '10001';
+  btnProximo.style.font = 'inherit';
+  btnProximo.style.height = 'auto';
 
-// Aqui é o truque: pegar altura do Fechar **depois de estar no DOM**
-btnProximo.style.top = (fecharBtn.offsetTop + fecharBtn.offsetHeight + 8) + 'px';
+  // Ajusta posição do topo depois de o botão Fechar estar no DOM
+  setTimeout(() => {
+    btnProximo.style.top = (fecharBtn.offsetTop + fecharBtn.offsetHeight + 8) + 'px';
+  }, 0);
 
-btnProximo.onclick = () => {
-  if (videoEl) {
-    videoEl.pause();
-    videoEl.src = '';
-    videoEl.load();
-  }
-  videoModal.remove();
-
-  // Reaproveita a variável já existente
-  for (const temp of serie.temporadas) {
-    const idx = temp.episodios.findIndex(ep => item.titulo.includes(`Ep ${ep.numero}`));
-    if (idx >= 0 && temp.episodios[idx+1]) {
-      abrirVideo({...temp.episodios[idx+1], titulo:`${serie.titulo} - Ep ${temp.episodios[idx+1].numero}`});
-      return;
+  btnProximo.onclick = () => {
+    if (videoEl) {
+      videoEl.pause();
+      videoEl.src = '';
+      videoEl.load();
     }
-  }
-  mostrarToast('Último episódio da temporada!');
-};
-videoModal.appendChild(btnProximo);
+    videoModal.remove();
+
+    for (const temp of serie.temporadas) {
+      const idx = temp.episodios.findIndex(ep => item.titulo.includes(`Ep ${ep.numero}`));
+      if (idx >= 0 && temp.episodios[idx+1]) {
+        abrirVideo({...temp.episodios[idx+1], titulo:`${serie.titulo} - Ep ${temp.episodios[idx+1].numero}`});
+        return;
+      }
+    }
+    mostrarToast('Último episódio da temporada!');
+  };
+
+  videoModal.appendChild(btnProximo);
+}
 
 
   // Verifica tipo de link
