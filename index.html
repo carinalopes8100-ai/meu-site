@@ -782,60 +782,91 @@ function abrirVideo(item) {
       videoEl.play();
     };
 
-// Antes de adicionar o iframe ao modal
-videoModal.dataset.titulo = item.titulo; // guarda o episódio atual
+function abrirVideo(item) {
+    // Cria o modal
+    const videoModal = document.createElement('div');
+    videoModal.className = 'video-modal';
+    videoModal.style.position = 'fixed';
+    videoModal.style.top = '0';
+    videoModal.style.left = '0';
+    videoModal.style.width = '100%';
+    videoModal.style.height = '100%';
+    videoModal.style.backgroundColor = 'rgba(0,0,0,0.9)';
+    videoModal.style.display = 'flex';
+    videoModal.style.alignItems = 'center';
+    videoModal.style.justifyContent = 'center';
+    videoModal.style.zIndex = '10000';
 
-// Cria o iframe
-const iframe = document.createElement('iframe');
-iframe.src = item.link;
-iframe.width = "100%";
-iframe.height = "100%";
-iframe.allowFullscreen = true;
-iframe.frameBorder = "0";
-iframe.allow = "autoplay";
-iframe.style.borderRadius = "10px";
-iframe.style.boxShadow = "0 0 20px rgba(0,0,0,0.7)";
-videoModal.appendChild(iframe);
+    // Cria botão fechar
+    const fecharBtn = document.createElement('button');
+    fecharBtn.textContent = '✖';
+    fecharBtn.style.position = 'absolute';
+    fecharBtn.style.top = '15px';
+    fecharBtn.style.right = '15px';
+    fecharBtn.style.backgroundColor = 'rgba(0,0,0,0.7)';
+    fecharBtn.style.color = 'white';
+    fecharBtn.style.border = 'none';
+    fecharBtn.style.padding = '8px 12px';
+    fecharBtn.style.cursor = 'pointer';
+    fecharBtn.style.borderRadius = '5px';
+    fecharBtn.style.zIndex = '10001';
+    videoModal.appendChild(fecharBtn);
 
-// Botão Próximo episódio
-const btnProximo = document.createElement('button');
-btnProximo.textContent = '⏭ Próximo';
-btnProximo.style.position = 'absolute';
-btnProximo.style.top = '15px';
-btnProximo.style.right = '60px';
-btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)';
-btnProximo.style.color = 'white';
-btnProximo.style.border = 'none';
-btnProximo.style.padding = '8px 12px';
-btnProximo.style.cursor = 'pointer';
-btnProximo.style.borderRadius = '5px';
-btnProximo.style.zIndex = '10000';
+    // Guarda o título do episódio atual
+    videoModal.dataset.titulo = item.titulo;
 
-btnProximo.onclick = () => {
-    const tituloAtual = videoModal.dataset.titulo;
-    const serie = series.find(s => tituloAtual.startsWith(s.titulo));
-    if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
+    // Cria o iframe
+    const iframe = document.createElement('iframe');
+    iframe.src = item.link;
+    iframe.width = "90%";
+    iframe.height = "90%";
+    iframe.allowFullscreen = true;
+    iframe.frameBorder = "0";
+    iframe.allow = "autoplay";
+    iframe.style.borderRadius = "10px";
+    iframe.style.boxShadow = "0 0 20px rgba(0,0,0,0.7)";
+    videoModal.appendChild(iframe);
 
-    for (const temporada of serie.temporadas) {
-        const idx = temporada.episodios.findIndex(ep => tituloAtual.includes(`Ep ${ep.numero}`));
-        if (idx >= 0) {
-            const proximo = temporada.episodios[idx + 1];
-            if (proximo) {
-                abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
-            } else {
-                mostrarToast('Último episódio da temporada!');
+    // Botão Próximo episódio
+    const btnProximo = document.createElement('button');
+    btnProximo.textContent = '⏭ Próximo';
+    btnProximo.style.position = 'absolute';
+    btnProximo.style.top = '15px';
+    btnProximo.style.right = '80px'; // próximo do fechar
+    btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)';
+    btnProximo.style.color = 'white';
+    btnProximo.style.border = 'none';
+    btnProximo.style.padding = '8px 12px';
+    btnProximo.style.cursor = 'pointer';
+    btnProximo.style.borderRadius = '5px';
+    btnProximo.style.zIndex = '10001';
+
+    btnProximo.onclick = () => {
+        const tituloAtual = videoModal.dataset.titulo;
+        const serie = series.find(s => tituloAtual.startsWith(s.titulo));
+        if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
+
+        for (const temporada of serie.temporadas) {
+            const idx = temporada.episodios.findIndex(ep => tituloAtual.includes(`Ep ${ep.numero}`));
+            if (idx >= 0) {
+                const proximo = temporada.episodios[idx + 1];
+                if (proximo) {
+                    abrirVideo({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
+                } else {
+                    mostrarToast('Último episódio da temporada!');
+                }
+                return;
             }
-            return;
         }
-    }
-};
+    };
+    videoModal.appendChild(btnProximo);
 
-videoModal.appendChild(btnProximo);
+    // Fecha o modal
+    fecharBtn.onclick = () => videoModal.remove();
 
-// Botão fechar
-fecharBtn.onclick = () => videoModal.remove();
+    document.body.appendChild(videoModal);
+}
 
-document.body.appendChild(videoModal);
 
 
 
