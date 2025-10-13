@@ -5930,11 +5930,6 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
   return container;
 }
 
-
-
-
-
-  
 // ===== Funções utilitárias =====
 function debounce(func, wait) {
   let timeout;
@@ -6087,22 +6082,20 @@ function abrirModalEpisodios(temporada, serieTitulo) {
     } else {
       btn.textContent = `Episódio ${ep.numero}`;
 
-btn.onclick = () => {
-    // Remove destaque de outros episódios
-    document.querySelectorAll('.episodio-btn.selecionado').forEach(b => b.classList.remove('selecionado'));
+      btn.onclick = () => {
+        // Remove destaque de outros episódios da mesma série
+        document.querySelectorAll('.episodio-btn.selecionado').forEach(b => b.classList.remove('selecionado'));
 
-    // Marca o botão clicado
-    btn.classList.add('selecionado');
+        // Marca o botão clicado
+        btn.classList.add('selecionado');
 
-    // Atualiza localStorage
-    episodioSelecionado[serieTitulo] = ep.numero;
-    localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
+        // Atualiza o localStorage
+        episodioSelecionado[serieTitulo] = ep.numero;
+        localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
 
-    // Abre o episódio corretamente
-    abrirEpisodio(serieTitulo, temporada.numero, ep.numero);
-};
-
-
+        // Abre o episódio
+        abrirEpisodio({ ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` });
+      };
 
       // Reaplica seleção ao criar os botões
       if (episodioSelecionado[serieTitulo] === ep.numero) {
@@ -6271,61 +6264,58 @@ const observerPlayerIframe = new MutationObserver(() => {
     const fecharBtn = document.getElementById('fecharPlayer');
 
     if (playerContainer && playerContainer.style.display !== 'none' && !document.getElementById('btnProximo')) {
- function abrirEpisodio(serieTitulo, temporadaNum, episodioNum) {
-    const serie = series.find(s => s.titulo === serieTitulo);
-    if (!serie) return mostrarToast('Série não encontrada');
+        // Criar botão Próximo
+        const btnProximo = document.createElement('button');
+        btnProximo.id = 'btnProximo';
+        btnProximo.textContent = '⏭ Próximo';
+        btnProximo.className = 'btn-proximo';
 
-    const temporada = serie.temporadas.find(t => t.numero === temporadaNum);
-    if (!temporada) return mostrarToast('Temporada não encontrada');
+        // Estilo do botão
+        btnProximo.style.position = 'absolute';
+        btnProximo.style.top = '15px';
+        btnProximo.style.right = '60px'; // ao lado do fechar
+        btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)';
+        btnProximo.style.color = 'white';
+        btnProximo.style.border = 'none';
+        btnProximo.style.padding = '8px 12px';
+        btnProximo.style.fontSize = '16px';
+        btnProximo.style.borderRadius = '5px';
+        btnProximo.style.cursor = 'pointer';
+        btnProximo.style.zIndex = '10000';
 
-    const episodio = temporada.episodios.find(e => e.numero === episodioNum);
-    if (!episodio) return mostrarToast('Episódio não encontrado');
+        btnProximo.onmouseenter = () => btnProximo.style.backgroundColor = 'rgba(229,9,20,0.9)';
+        btnProximo.onmouseleave = () => btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)';
 
-    const playerContainer = document.getElementById('playerContainer');
-    const video = document.getElementById('playerVideo');
+        // Lógica do próximo episódio
+        btnProximo.addEventListener('click', () => {
+            if (!playerContainer.dataset.titulo) return;
 
-    video.src = episodio.link;
+            const tituloAtual = playerContainer.dataset.titulo;
+            const serie = series.find(s => tituloAtual.startsWith(s.titulo));
+            if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
 
-    // Atualizar dataset
-    playerContainer.dataset.serie = serie.titulo;       
-    playerContainer.dataset.temporada = temporada.numero;
-    playerContainer.dataset.episodio = episodio.numero;
+            for (const temporada of serie.temporadas) {
+                const idx = temporada.episodios.findIndex(ep => tituloAtual.includes(`Ep ${ep.numero}`));
+                if (idx >= 0) {
+                    const proximo = temporada.episodios[idx + 1];
+                    if (proximo) {
+                        abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
+                    } else {
+                        mostrarToast('Último episódio da temporada!');
+                    }
+                    return;
+                }
+            }
+        });
 
-    playerContainer.style.display = 'block';
-    video.play();
-}
-
-// Botão Próximo
-const btnProximo = document.createElement('button');
-btnProximo.id = 'btnProximo';
-btnProximo.textContent = '⏭ Próximo';
-btnProximo.className = 'btn-proximo';
-btnProximo.onclick = () => {
-    const playerContainer = document.getElementById('playerContainer');
-    const serieTitulo = playerContainer.dataset.serie;
-    const numTemporada = parseInt(playerContainer.dataset.temporada);
-    const numEpisodio = parseInt(playerContainer.dataset.episodio);
-
-    const serie = series.find(s => s.titulo === serieTitulo);
-    if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
-
-    const temporadaAtual = serie.temporadas.find(t => t.numero === numTemporada);
-    const idx = temporadaAtual.episodios.findIndex(ep => ep.numero === numEpisodio);
-    const proximo = temporadaAtual.episodios[idx + 1];
-
-    if (proximo) {
-        abrirEpisodio(serie.titulo, numTemporada, proximo.numero);
-    } else {
-        const idxTemp = serie.temporadas.findIndex(t => t.numero === numTemporada);
-        const proximaTemp = serie.temporadas[idxTemp + 1];
-        if (proximaTemp) {
-            abrirEpisodio(serie.titulo, proximaTemp.numero, proximaTemp.episodios[0].numero);
-        } else {
-            mostrarToast('Último episódio da última temporada!');
-        }
+        // Adiciona o botão ao lado do fechar
+        if (fecharBtn) fecharBtn.parentElement.appendChild(btnProximo);
+        else playerContainer.appendChild(btnProximo);
     }
-};
+});
 
+// Observa o body para quando o player é exibido
+observerPlayerIframe.observe(document.body, { childList: true, subtree: true });
 
 
 
