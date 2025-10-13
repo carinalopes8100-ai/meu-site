@@ -6264,11 +6264,11 @@ btnProximo.addEventListener('click', () => {
                 episodioSelecionado[serie.titulo] = proximo.numero;
                 localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
 
-                // Atualiza os botões do modal
-                atualizarSelecionadosModal();
-
                 // Abre o próximo episódio
                 abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
+
+                // Atualiza o modal visualmente
+                atualizarSelecionadosModal();
             } else {
                 mostrarToast('Último episódio da temporada!');
             }
