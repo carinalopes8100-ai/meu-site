@@ -668,13 +668,67 @@ function abrirVideo(item) {
   `;
 
   // Botão Fechar
+  // Botão Fechar
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
   fecharBtn.className = 'audio-btn';
   fecharBtn.style.position = 'absolute';
   fecharBtn.style.top = '20px';
   fecharBtn.style.right = '20px';
-  videoModal.appendChild(fecharBtn);
+  fecharBtn.onclick = () => {
+    if (videoEl) {
+      videoEl.pause();
+      videoEl.src = '';
+      videoEl.load();
+    }
+    videoModal.remove();
+  };
+videoModal.appendChild(fecharBtn); // primeiro adiciona o Fechar ao DOM
+
+// Botão Próximo Episódio
+const btnProximo = document.createElement('button');
+btnProximo.textContent = '⏭ Próximo';
+btnProximo.className = 'audio-btn';
+btnProximo.style.position = 'absolute';
+btnProximo.style.right = fecharBtn.style.right; // mesma coluna
+// usa offsetTop + offsetHeight depois de o botão Fechar estar no DOM
+btnProximo.style.top = (fecharBtn.offsetTop + fecharBtn.offsetHeight + 8) + 'px';
+btnProximo.style.backgroundColor = 'white';
+btnProximo.style.color = 'black';
+btnProximo.style.border = 'none';
+btnProximo.style.padding = '8px 12px';
+btnProximo.style.cursor = 'pointer';
+btnProximo.style.borderRadius = '5px';
+btnProximo.style.zIndex = '10001';
+btnProximo.style.font = 'inherit';
+btnProximo.style.height = 'auto';
+
+// **Ajuste de alinhamento relativo ao botão Fechar**
+btnProximo.style.right = fecharBtn.style.right; 
+btnProximo.style.top = (fecharBtn.offsetTop + fecharBtn.offsetHeight + 8) + 'px'; // 8px abaixo do Fechar
+  
+  btnProximo.onclick = () => {
+    // Fecha modal atual antes de abrir próximo
+    if (videoEl) {
+      videoEl.pause();
+      videoEl.src = '';
+      videoEl.load();
+    }
+    videoModal.remove();
+
+    const serie = series.find(s => item.titulo.startsWith(s.titulo));
+    if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
+
+    for (const temp of serie.temporadas) {
+      const idx = temp.episodios.findIndex(ep => item.titulo.includes(`Ep ${ep.numero}`));
+      if (idx >= 0 && temp.episodios[idx+1]) {
+        abrirVideo({...temp.episodios[idx+1], titulo:`${serie.titulo} - Ep ${temp.episodios[idx+1].numero}`});
+        return;
+      }
+    }
+    mostrarToast('Último episódio da temporada!');
+  };
+  videoModal.appendChild(btnProximo);
 
   let terminou = false;
 
