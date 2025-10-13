@@ -6184,67 +6184,63 @@ window.addEventListener('resize', () => {
   });
 });
 
-// === Botão Próximo Episódio Dinâmico ===
-const observerPlayer = new MutationObserver(() => {
-  const playerContainer = document.getElementById('playerContainer');
-  const fecharBtn = document.getElementById('fecharPlayer');
-  
-  // Só cria o botão se o player estiver visível e ainda não tiver o botão
-  if (playerContainer && playerContainer.style.display !== 'none' && !document.getElementById('btnProximo')) {
-    const btnProximo = document.createElement('button');
-    btnProximo.id = 'btnProximo';
-    btnProximo.textContent = '⏭ Próximo';
-    btnProximo.className = 'btn-proximo';
+// Observa quando o player aparece
+const observerPlayerIframe = new MutationObserver(() => {
+    const playerContainer = document.getElementById('playerContainer');
+    const fecharBtn = document.getElementById('fecharPlayer');
 
-    // Estilo direto (caso o CSS do player não possa ser alterado)
-    btnProximo.style.position = 'absolute';
-    btnProximo.style.top = '15px';
-    btnProximo.style.left = '20px';
-    btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)';
-    btnProximo.style.color = 'white';
-    btnProximo.style.border = 'none';
-    btnProximo.style.padding = '8px 12px';
-    btnProximo.style.fontSize = '16px';
-    btnProximo.style.borderRadius = '5px';
-    btnProximo.style.cursor = 'pointer';
-    btnProximo.style.zIndex = '10000';
+    if(playerContainer && playerContainer.style.display !== 'none' && !document.getElementById('btnProximoIframe')){
+        const btnProximo = document.createElement('button');
+        btnProximo.id = 'btnProximoIframe';
+        btnProximo.textContent = '⏭ Próximo';
+        btnProximo.className = 'btn-proximo';
 
-    btnProximo.onmouseenter = () => btnProximo.style.backgroundColor = 'rgba(229,9,20,0.9)';
-    btnProximo.onmouseleave = () => btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)';
+        // Estilo básico
+        btnProximo.style.position = 'absolute';
+        btnProximo.style.top = '15px';
+        btnProximo.style.left = '20px';
+        btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)';
+        btnProximo.style.color = 'white';
+        btnProximo.style.border = 'none';
+        btnProximo.style.padding = '8px 12px';
+        btnProximo.style.fontSize = '16px';
+        btnProximo.style.borderRadius = '5px';
+        btnProximo.style.cursor = 'pointer';
+        btnProximo.style.zIndex = '10000';
 
-    // === Lógica de ir para o próximo episódio ===
-    btnProximo.addEventListener('click', () => {
-      const video = document.getElementById('playerVideo');
-      if (!video || !video.dataset.titulo) return;
+        btnProximo.onmouseenter = () => btnProximo.style.backgroundColor = 'rgba(229,9,20,0.9)';
+        btnProximo.onmouseleave = () => btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)';
 
-      const serie = series.find(s => video.dataset.titulo.startsWith(s.titulo));
-      if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
+        // Lógica do próximo episódio
+        btnProximo.addEventListener('click', () => {
+            if(!playerContainer.dataset.titulo) return;
 
-      // Acha o episódio atual e abre o próximo
-      for (const temporada of serie.temporadas) {
-        const idx = temporada.episodios.findIndex(ep => video.dataset.titulo.includes(`Ep ${ep.numero}`));
-        if (idx >= 0) {
-          const proximo = temporada.episodios[idx + 1];
-          if (proximo) {
-            abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
-          } else {
-            mostrarToast('Último episódio da temporada!');
-          }
-          return;
-        }
-      }
-    });
+            const tituloAtual = playerContainer.dataset.titulo; // você precisa setar isso quando abrir o embed
+            const serie = series.find(s => tituloAtual.startsWith(s.titulo));
+            if(!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
 
-    btnProximo.style.marginRight = '10px';
-    
-    // Insere o botão antes do botão Fechar (se existir)
-    if (fecharBtn) fecharBtn.insertAdjacentElement('beforebegin', btnProximo);
-    else playerContainer.appendChild(btnProximo);
-  }
+            for(const temporada of serie.temporadas){
+                const idx = temporada.episodios.findIndex(ep => tituloAtual.includes(`Ep ${ep.numero}`));
+                if(idx >= 0){
+                    const proximo = temporada.episodios[idx + 1];
+                    if(proximo){
+                        abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
+                    } else {
+                        mostrarToast('Último episódio da temporada!');
+                    }
+                    return;
+                }
+            }
+        });
+
+        if(fecharBtn) fecharBtn.insertAdjacentElement('beforebegin', btnProximo);
+        else playerContainer.appendChild(btnProximo);
+    }
 });
 
-// Observa o body inteiro — detecta quando o player é adicionado
-observerPlayer.observe(document.body, { childList: true, subtree: true });
+// Observa o body para quando o player é exibido
+observerPlayerIframe.observe(document.body, {childList: true, subtree: true});
+
 
 
 </script>
