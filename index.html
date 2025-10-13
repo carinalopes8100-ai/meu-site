@@ -742,7 +742,12 @@ setTimeout(() => {
   videoModal.remove();
 
   for (const temp of serie.temporadas) {
-    const idx = temp.episodios.findIndex(ep => item.titulo.includes(`Ep ${ep.numero}`));
+        // pega só o número do episódio atual
+    const epNumeroAtual = parseInt(item.titulo.match(/Ep (\d+)/)[1]); 
+
+    // encontra o índice correto na temporada
+    const idx = temp.episodios.findIndex(ep => ep.numero === epNumeroAtual);
+    
     if (idx >= 0 && temp.episodios[idx+1]) {
       const proximo = temp.episodios[idx+1];
 
