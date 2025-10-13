@@ -6255,27 +6255,34 @@ btnProximo.addEventListener('click', () => {
     const serie = series.find(s => tituloAtual.startsWith(s.titulo));
     if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
 
-    for (const temporada of serie.temporadas) {
-        const idx = temporada.episodios.findIndex(ep => tituloAtual.includes(`Ep ${ep.numero}`));
-        if (idx >= 0) {
-            const proximo = temporada.episodios[idx + 1];
-            if (proximo) {
-                // Atualiza o episódio selecionado
-                episodioSelecionado[serie.titulo] = proximo.numero;
-                localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
+for (const temporada of serie.temporadas) {
+    const idx = temporada.episodios.findIndex(ep => tituloAtual.includes(`Ep ${ep.numero}`));
+    if (idx >= 0) {
+        const proximo = temporada.episodios[idx + 1];
+        if (proximo) {
+            // Atualiza o episódio selecionado
+            episodioSelecionado[serie.titulo] = proximo.numero;
+            localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
 
-                // Abre o próximo episódio
-                abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
+            // Atualiza o botão selecionado no modal
+            // Remove seleção antiga
+            document.querySelectorAll('.episodio-btn.selecionado').forEach(btn => btn.classList.remove('selecionado'));
 
-                // Atualiza o modal visualmente
-                atualizarSelecionadosModal();
-            } else {
-                mostrarToast('Último episódio da temporada!');
-            }
-            return;
+            // Seleciona o próximo episódio
+            const btnProx = Array.from(document.querySelectorAll('.episodio-btn'))
+                                  .find(btn => parseInt(btn.dataset.numero) === proximo.numero);
+            if (btnProx) btnProx.classList.add('selecionado');
+
+            // Abre o próximo episódio
+            abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
+
+        } else {
+            mostrarToast('Último episódio da temporada!');
         }
+        return;
     }
-});
+}
+
 
 
         // Adiciona o botão ao lado do fechar
