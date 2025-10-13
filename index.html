@@ -715,6 +715,8 @@ if (serie) {
   // Ajusta posição do topo depois de o botão Fechar estar no DOM
   setTimeout(() => {
     btnProximo.style.top = (fecharBtn.offsetTop + fecharBtn.offsetHeight + 8) + 'px';
+    btnProximo.style.height = fecharBtn.offsetHeight + 'px';
+    btnProximo.style.width = fecharBtn.offsetWidth + 'px';
   }, 0);
 
  btnProximo.onclick = () => {
