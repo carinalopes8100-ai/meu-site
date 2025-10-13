@@ -6266,6 +6266,7 @@ const observerPlayerIframe = new MutationObserver(() => {
 
     // Se o player está visível e ainda não existe o botão Próximo
     if (playerContainer && playerContainer.style.display !== 'none' && !document.getElementById('btnProximo')) {
+
         // Criar botão Próximo
         const btnProximo = document.createElement('button');
         btnProximo.id = 'btnProximo';
@@ -6273,75 +6274,75 @@ const observerPlayerIframe = new MutationObserver(() => {
         btnProximo.className = 'btn-proximo';
 
         // Estilo do botão
-        btnProximo.style.position = 'absolute';
-        btnProximo.style.top = '15px';
-        btnProximo.style.right = '60px';
-        btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)';
-        btnProximo.style.color = 'white';
-        btnProximo.style.border = 'none';
-        btnProximo.style.padding = '8px 12px';
-        btnProximo.style.fontSize = '16px';
-        btnProximo.style.borderRadius = '5px';
-        btnProximo.style.cursor = 'pointer';
-        btnProximo.style.zIndex = '10000';
+        Object.assign(btnProximo.style, {
+            position: 'absolute',
+            top: '15px',
+            right: '60px',
+            backgroundColor: 'rgba(0,0,0,0.7)',
+            color: 'white',
+            border: 'none',
+            padding: '8px 12px',
+            fontSize: '16px',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            zIndex: '10000'
+        });
 
         btnProximo.onmouseenter = () => btnProximo.style.backgroundColor = 'rgba(229,9,20,0.9)';
         btnProximo.onmouseleave = () => btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)';
 
         // Lógica do próximo episódio
-btnProximo.addEventListener('click', () => {
-    const tituloAtual = playerContainer.dataset.titulo; // título atual do player
-    const serie = series.find(s => tituloAtual.startsWith(s.titulo));
-    if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
+        btnProximo.addEventListener('click', () => {
+            const videoModal = document.querySelector('div[data-titulo]');
+            if (!videoModal) return;
 
-    let epAtualNum, tempAtualIdx;
-    
-    // encontra temporada e episódio atual
-    for (let t = 0; t < serie.temporadas.length; t++) {
-        const temp = serie.temporadas[t];
-        const idx = temp.episodios.findIndex(ep => tituloAtual.includes(`Ep ${ep.numero}`));
-        if (idx >= 0) {
-            epAtualNum = idx;
-            tempAtualIdx = t;
-            break;
-        }
-    }
+            const tituloAtual = videoModal.dataset.titulo;
+            const serie = series.find(s => tituloAtual.startsWith(s.titulo));
+            if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
 
-    if (epAtualNum === undefined) return mostrarToast('Episódio não encontrado.');
+            let tempAtualIdx, epAtualIdx;
 
-    const tempAtual = serie.temporadas[tempAtualIdx];
+            // Encontra temporada e episódio atual
+            for (let t = 0; t < serie.temporadas.length; t++) {
+                const temp = serie.temporadas[t];
+                const idx = temp.episodios.findIndex(ep => tituloAtual.includes(`Ep ${ep.numero}`));
+                if (idx >= 0) {
+                    tempAtualIdx = t;
+                    epAtualIdx = idx;
+                    break;
+                }
+            }
 
-    // Próximo episódio na mesma temporada
-    if (tempAtual.episodios[epAtualNum + 1]) {
-        const proximo = tempAtual.episodios[epAtualNum + 1];
-        abrirEpisodioNoModal(serie, proximo);
-        return;
-    }
-    // Próxima temporada
-    else if (serie.temporadas[tempAtualIdx + 1] && serie.temporadas[tempAtualIdx + 1].episodios.length > 0) {
-        const proximo = serie.temporadas[tempAtualIdx + 1].episodios[0];
-        abrirEpisodioNoModal(serie, proximo);
-        return;
-    } 
-    // Último episódio da série
-    else {
-        mostrarToast('Último episódio da série!');
-        return;
-    }
-});
+            if (tempAtualIdx === undefined || epAtualIdx === undefined) return mostrarToast('Episódio não encontrado.');
 
+            const tempAtual = serie.temporadas[tempAtualIdx];
 
-
-
+            // Próximo episódio na mesma temporada
+            if (tempAtual.episodios[epAtualIdx + 1]) {
+                abrirEpisodioNoModal(serie, tempAtual.episodios[epAtualIdx + 1]);
+                return;
+            }
+            // Próxima temporada
+            else if (serie.temporadas[tempAtualIdx + 1] && serie.temporadas[tempAtualIdx + 1].episodios.length > 0) {
+                abrirEpisodioNoModal(serie, serie.temporadas[tempAtualIdx + 1].episodios[0]);
+                return;
+            }
+            // Último episódio da série
+            else {
+                mostrarToast('Último episódio da série!');
+                return;
+            }
+        });
 
         // Adiciona o botão ao lado do fechar
-        if (fecharBtn) fecharBtn.parentElement.appendChild(btnProximo);
+        if (fecharBtn && fecharBtn.parentElement) fecharBtn.parentElement.appendChild(btnProximo);
         else playerContainer.appendChild(btnProximo);
     }
 });
 
 // Observa o body para quando o player é exibido
 observerPlayerIframe.observe(document.body, { childList: true, subtree: true });
+
 
 
 
