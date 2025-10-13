@@ -6291,24 +6291,26 @@ btnProximo.addEventListener('click', () => {
     const playerContainer = document.getElementById('playerContainer');
     if (!playerContainer.dataset.titulo) return;
 
-    const tituloAtual = playerContainer.dataset.titulo;
-    const serie = series.find(s => tituloAtual.startsWith(s.titulo));
+    const serieTitulo = playerContainer.dataset.serie; // a série atual
+    const temporadaNum = parseInt(playerContainer.dataset.temporada); // temporada atual
+    const episodioNum = parseInt(playerContainer.dataset.episodio);   // episódio atual
+
+    const serie = series.find(s => s.titulo === serieTitulo);
     if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
 
-    for (const temporada of serie.temporadas) {
-        const idx = temporada.episodios.findIndex(ep => tituloAtual.includes(`Ep ${ep.numero}`));
-        if (idx >= 0) {
-            const proximo = temporada.episodios[idx + 1];
-            if (proximo) {
-                // Chamada correta da função que você já tem
-                abrirEpisodio(serie.titulo, temporada.numero, proximo.numero);
-            } else {
-                mostrarToast('Último episódio da temporada!');
-            }
-            return;
-        }
+    const temporadaAtual = serie.temporadas.find(t => t.numero === temporadaNum);
+    if (!temporadaAtual) return mostrarToast('Temporada não encontrada.');
+
+    const idx = temporadaAtual.episodios.findIndex(ep => ep.numero === episodioNum);
+    const proximo = temporadaAtual.episodios[idx + 1];
+
+    if (proximo) {
+        abrirEpisodio(serieTitulo, temporadaNum, proximo.numero);
+    } else {
+        mostrarToast('Último episódio desta temporada!');
     }
 });
+
 
 
         // Adiciona o botão ao lado do fechar
