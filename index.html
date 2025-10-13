@@ -6260,24 +6260,32 @@ btnProximo.addEventListener('click', () => {
         const idx = temporada.episodios.findIndex(ep => tituloAtual.includes(`Ep ${ep.numero}`));
         if (idx >= 0) {
             const proximo = temporada.episodios[idx + 1];
-            if (proximo) {
-                // Atualiza o episódio selecionado
-                episodioSelecionado[serie.titulo] = proximo.numero;
-                localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
-
-                // Abre o próximo episódio
-                abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
-
-                // Reabre o modal da temporada para atualizar o botão selecionado
-                abrirModalEpisodios(temporada, serie.titulo);
-
-            } else {
+            if (!proximo) {
                 mostrarToast('Último episódio da temporada!');
+                return;
             }
+
+            // Atualiza o episódio selecionado
+            episodioSelecionado[serie.titulo] = proximo.numero;
+            localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
+
+            // Abre o próximo episódio
+            abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
+
+            // Se o modal estiver aberto, atualiza o botão selecionado
+            const modal = document.getElementById('modal');
+            if (modal && modal.style.display !== 'none') {
+                document.querySelectorAll('.episodio-btn.selecionado').forEach(btn => btn.classList.remove('selecionado'));
+                const btnProx = Array.from(document.querySelectorAll('.episodio-btn'))
+                                      .find(btn => parseInt(btn.dataset.numero) === proximo.numero);
+                if (btnProx) btnProx.classList.add('selecionado');
+            }
+
             return;
         }
     }
 });
+
 
 
 
