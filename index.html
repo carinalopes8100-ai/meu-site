@@ -717,23 +717,35 @@ if (serie) {
     btnProximo.style.top = (fecharBtn.offsetTop + fecharBtn.offsetHeight + 8) + 'px';
   }, 0);
 
-  btnProximo.onclick = () => {
-    if (videoEl) {
-      videoEl.pause();
-      videoEl.src = '';
-      videoEl.load();
-    }
-    videoModal.remove();
+ btnProximo.onclick = () => {
+  if (videoEl) {
+    videoEl.pause();
+    videoEl.src = '';
+    videoEl.load();
+  }
+  videoModal.remove();
 
-    for (const temp of serie.temporadas) {
-      const idx = temp.episodios.findIndex(ep => item.titulo.includes(`Ep ${ep.numero}`));
-      if (idx >= 0 && temp.episodios[idx+1]) {
-        abrirVideo({...temp.episodios[idx+1], titulo:`${serie.titulo} - Ep ${temp.episodios[idx+1].numero}`});
-        return;
+  for (const temp of serie.temporadas) {
+    const idx = temp.episodios.findIndex(ep => item.titulo.includes(`Ep ${ep.numero}`));
+    if (idx >= 0 && temp.episodios[idx+1]) {
+      const proximo = temp.episodios[idx+1];
+      abrirVideo({...proximo, titulo:`${serie.titulo} - Ep ${proximo.numero}`});
+
+      // Atualiza o modal de episódios se estiver aberto
+      const modalAberto = document.getElementById('modal').style.display === 'flex';
+      if (modalAberto) {
+        document.querySelectorAll('.episodio-btn.selecionado').forEach(btn => btn.classList.remove('selecionado'));
+        const btnProx = Array.from(document.querySelectorAll('.episodio-btn'))
+                              .find(btn => parseInt(btn.dataset.numero) === proximo.numero);
+        if (btnProx) btnProx.classList.add('selecionado');
       }
+
+      return;
     }
-    mostrarToast('Último episódio da temporada!');
-  };
+  }
+  mostrarToast('Último episódio da temporada!');
+};
+
 
   videoModal.appendChild(btnProximo);
 }
