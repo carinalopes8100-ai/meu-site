@@ -695,6 +695,7 @@ fecharBtn.onclick = () => {
 };
 videoModal.appendChild(fecharBtn);
 
+const serie = series.find(s => item.titulo.startsWith(s.titulo));  
 if (serie) {
   const btnProximo = document.createElement('button');
   btnProximo.textContent = '⏭ Próximo';
