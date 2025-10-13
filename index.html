@@ -6269,26 +6269,29 @@ const observerPlayerIframe = new MutationObserver(() => {
         btnProximo.id = 'btnProximo';
         btnProximo.textContent = '⏭ Próximo';
         btnProximo.className = 'btn-proximo';
-
-        // Estilo do botão
-        btnProximo.style.position = 'absolute';
-        btnProximo.style.top = '15px';
-        btnProximo.style.right = '60px'; // ao lado do fechar
-        btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)';
-        btnProximo.style.color = 'white';
-        btnProximo.style.border = 'none';
-        btnProximo.style.padding = '8px 12px';
-        btnProximo.style.fontSize = '16px';
-        btnProximo.style.borderRadius = '5px';
-        btnProximo.style.cursor = 'pointer';
-        btnProximo.style.zIndex = '10000';
-
+        btnProximo.style.cssText = `
+            position: absolute;
+            top: 15px;
+            right: 60px;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 10000;
+        `;
         btnProximo.onmouseenter = () => btnProximo.style.backgroundColor = 'rgba(229,9,20,0.9)';
         btnProximo.onmouseleave = () => btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)';
 
-        // Lógica do próximo episódio
-        btnProximo.addEventListener('click', () => {
-            if (!playerContainer.dataset.titulo) return;
+        btnProximo.onclick = () => {
+            const videoEl = playerContainer.querySelector('video');
+            if (videoEl) {
+                videoEl.pause();
+                videoEl.src = '';
+                videoEl.load();
+            }
 
             const tituloAtual = playerContainer.dataset.titulo;
             const serie = series.find(s => tituloAtual.startsWith(s.titulo));
@@ -6298,15 +6301,12 @@ const observerPlayerIframe = new MutationObserver(() => {
                 const idx = temporada.episodios.findIndex(ep => tituloAtual.includes(`Ep ${ep.numero}`));
                 if (idx >= 0) {
                     const proximo = temporada.episodios[idx + 1];
-                    if (proximo) {
-                        abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
-                    } else {
-                        mostrarToast('Último episódio da temporada!');
-                    }
+                    if (proximo) abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
+                    else mostrarToast('Último episódio da temporada!');
                     return;
                 }
             }
-        });
+        };
 
         // Adiciona o botão ao lado do fechar
         if (fecharBtn) fecharBtn.parentElement.appendChild(btnProximo);
@@ -6316,6 +6316,7 @@ const observerPlayerIframe = new MutationObserver(() => {
 
 // Observa o body para quando o player é exibido
 observerPlayerIframe.observe(document.body, { childList: true, subtree: true });
+
 
 
 
