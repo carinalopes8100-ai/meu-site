@@ -6264,17 +6264,20 @@ for (const temporada of serie.temporadas) {
             episodioSelecionado[serie.titulo] = proximo.numero;
             localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
 
-            // Atualiza o botão selecionado no modal
-            // Remove seleção antiga
-            document.querySelectorAll('.episodio-btn.selecionado').forEach(btn => btn.classList.remove('selecionado'));
-
-            // Seleciona o próximo episódio
-            const btnProx = Array.from(document.querySelectorAll('.episodio-btn'))
-                                  .find(btn => parseInt(btn.dataset.numero) === proximo.numero);
-            if (btnProx) btnProx.classList.add('selecionado');
-
             // Abre o próximo episódio
             abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
+
+            // Atualiza o modal visualmente se ele estiver aberto
+            setTimeout(() => {
+                const btnProx = Array.from(document.querySelectorAll('.episodio-btn'))
+                                      .find(btn => parseInt(btn.dataset.numero) === proximo.numero);
+                if (btnProx) {
+                    // Remove seleção antiga
+                    document.querySelectorAll('.episodio-btn.selecionado').forEach(btn => btn.classList.remove('selecionado'));
+                    // Marca o próximo episódio
+                    btnProx.classList.add('selecionado');
+                }
+            }, 50); // pequeno delay para garantir que os botões foram renderizados
 
         } else {
             mostrarToast('Último episódio da temporada!');
@@ -6282,6 +6285,7 @@ for (const temporada of serie.temporadas) {
         return;
     }
 }
+
 
 
 
