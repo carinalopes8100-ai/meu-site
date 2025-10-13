@@ -724,9 +724,7 @@ btnProximo.onclick = () => {
   }
   videoModal.remove();
 
-  const serie = series.find(s => item.titulo.startsWith(s.titulo));
-  if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
-
+  // Reaproveita a variável já existente
   for (const temp of serie.temporadas) {
     const idx = temp.episodios.findIndex(ep => item.titulo.includes(`Ep ${ep.numero}`));
     if (idx >= 0 && temp.episodios[idx+1]) {
