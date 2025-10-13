@@ -6273,7 +6273,7 @@ const observerPlayerIframe = new MutationObserver(() => {
         // Estilo do botão
         btnProximo.style.position = 'absolute';
         btnProximo.style.top = '15px';
-        btnProximo.style.right = '60px'; // ao lado do fechar
+        btnProximo.style.right = '60px';
         btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)';
         btnProximo.style.color = 'white';
         btnProximo.style.border = 'none';
@@ -6286,24 +6286,42 @@ const observerPlayerIframe = new MutationObserver(() => {
         btnProximo.onmouseenter = () => btnProximo.style.backgroundColor = 'rgba(229,9,20,0.9)';
         btnProximo.onmouseleave = () => btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)';
 
-        // Lógica do próximo episódio
+        // Lógica do próximo episódio (avança de temporada se necessário)
         btnProximo.addEventListener('click', () => {
-            if (!playerContainer.dataset.titulo) return;
-
             const tituloAtual = playerContainer.dataset.titulo;
-            const serie = series.find(s => tituloAtual.startsWith(s.titulo));
+            const numTemporada = parseInt(playerContainer.dataset.temporada);
+            const numEpisodio = parseInt(playerContainer.dataset.episodio);
+
+            const serie = series.find(s => s.titulo === tituloAtual);
             if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
 
-            for (const temporada of serie.temporadas) {
-                const idx = temporada.episodios.findIndex(ep => tituloAtual.includes(`Ep ${ep.numero}`));
-                if (idx >= 0) {
-                    const proximo = temporada.episodios[idx + 1];
-                    if (proximo) {
-                        abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
-                    } else {
-                        mostrarToast('Último episódio da temporada!');
-                    }
-                    return;
+            let temporadaAtual = serie.temporadas.find(t => t.numero === numTemporada);
+            if (!temporadaAtual) return mostrarToast('Temporada não encontrada!');
+
+            let idx = temporadaAtual.episodios.findIndex(ep => ep.numero === numEpisodio);
+            let proximo = temporadaAtual.episodios[idx + 1];
+
+            if (proximo) {
+                // Próximo episódio na mesma temporada
+                abrirEpisodio({ 
+                    ...proximo, 
+                    titulo: `${serie.titulo} - Ep ${proximo.numero}`, 
+                    temporada: numTemporada 
+                });
+            } else {
+                // Verifica se existe próxima temporada
+                const idxTemp = serie.temporadas.findIndex(t => t.numero === numTemporada);
+                const proximaTemp = serie.temporadas[idxTemp + 1];
+
+                if (proximaTemp) {
+                    const primeiroEp = proximaTemp.episodios[0];
+                    abrirEpisodio({ 
+                        ...primeiroEp, 
+                        titulo: `${serie.titulo} - Ep ${primeiroEp.numero}`, 
+                        temporada: proximaTemp.numero 
+                    });
+                } else {
+                    mostrarToast('Último episódio da última temporada!');
                 }
             }
         });
@@ -6314,7 +6332,6 @@ const observerPlayerIframe = new MutationObserver(() => {
     }
 });
 
-// Observa o body para quando o player é exibido
 observerPlayerIframe.observe(document.body, { childList: true, subtree: true });
 
 
