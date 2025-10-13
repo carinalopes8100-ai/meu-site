@@ -6224,6 +6224,7 @@ const observerPlayerIframe = new MutationObserver(() => {
     const playerContainer = document.getElementById('playerContainer');
     const fecharBtn = document.getElementById('fecharPlayer');
 
+    // Se o player está visível e ainda não existe o botão Próximo
     if (playerContainer && playerContainer.style.display !== 'none' && !document.getElementById('btnProximo')) {
         // Criar botão Próximo
         const btnProximo = document.createElement('button');
@@ -6234,7 +6235,7 @@ const observerPlayerIframe = new MutationObserver(() => {
         // Estilo do botão
         btnProximo.style.position = 'absolute';
         btnProximo.style.top = '15px';
-        btnProximo.style.right = '60px'; // ao lado do fechar
+        btnProximo.style.right = '60px';
         btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)';
         btnProximo.style.color = 'white';
         btnProximo.style.border = 'none';
@@ -6248,46 +6249,38 @@ const observerPlayerIframe = new MutationObserver(() => {
         btnProximo.onmouseleave = () => btnProximo.style.backgroundColor = 'rgba(0,0,0,0.7)';
 
         // Lógica do próximo episódio
-btnProximo.addEventListener('click', () => {
-    if (!playerContainer.dataset.titulo) return;
+        btnProximo.addEventListener('click', () => {
+            if (!playerContainer.dataset.titulo) return;
 
-    const tituloAtual = playerContainer.dataset.titulo;
-    const serie = series.find(s => tituloAtual.startsWith(s.titulo));
-    if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
+            const tituloAtual = playerContainer.dataset.titulo;
+            const serie = series.find(s => tituloAtual.startsWith(s.titulo));
+            if (!serie) return mostrarToast('Este vídeo não faz parte de uma série.');
 
-for (const temporada of serie.temporadas) {
-    const idx = temporada.episodios.findIndex(ep => tituloAtual.includes(`Ep ${ep.numero}`));
-    if (idx >= 0) {
-        const proximo = temporada.episodios[idx + 1];
-        if (proximo) {
-            // Atualiza o episódio selecionado
-            episodioSelecionado[serie.titulo] = proximo.numero;
-            localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
+            for (const temporada of serie.temporadas) {
+                const idx = temporada.episodios.findIndex(ep => tituloAtual.includes(`Ep ${ep.numero}`));
+                if (idx >= 0) {
+                    const proximo = temporada.episodios[idx + 1];
+                    if (proximo) {
+                        // Atualiza o episódio selecionado
+                        episodioSelecionado[serie.titulo] = proximo.numero;
+                        localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
 
-            // Abre o próximo episódio
-            abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
+                        // Abre o próximo episódio
+                        abrirEpisodio({ ...proximo, titulo: `${serie.titulo} - Ep ${proximo.numero}` });
 
-            // Atualiza o modal visualmente se ele estiver aberto
-            setTimeout(() => {
-                const btnProx = Array.from(document.querySelectorAll('.episodio-btn'))
-                                      .find(btn => parseInt(btn.dataset.numero) === proximo.numero);
-                if (btnProx) {
-                    // Remove seleção antiga
-                    document.querySelectorAll('.episodio-btn.selecionado').forEach(btn => btn.classList.remove('selecionado'));
-                    // Marca o próximo episódio
-                    btnProx.classList.add('selecionado');
+                        // Atualiza o modal apenas se ele estiver aberto
+                        const modalAberto = document.getElementById('modal')?.style.display !== 'none';
+                        if (modalAberto) {
+                            atualizarSelecionadosModal();
+                        }
+
+                    } else {
+                        mostrarToast('Último episódio da temporada!');
+                    }
+                    return;
                 }
-            }, 50); // pequeno delay para garantir que os botões foram renderizados
-
-        } else {
-            mostrarToast('Último episódio da temporada!');
-        }
-        return;
-    }
-}
-
-
-
+            }
+        });
 
         // Adiciona o botão ao lado do fechar
         if (fecharBtn) fecharBtn.parentElement.appendChild(btnProximo);
@@ -6297,6 +6290,7 @@ for (const temporada of serie.temporadas) {
 
 // Observa o body para quando o player é exibido
 observerPlayerIframe.observe(document.body, { childList: true, subtree: true });
+
 
 
 
