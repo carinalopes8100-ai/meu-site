@@ -792,6 +792,67 @@ function abrirVideo(item) {
     iframe.style.boxShadow = "0 0 20px rgba(0,0,0,0.7)";
     videoModal.appendChild(iframe);
 
+// Botão Anterior
+const btnPrev = document.createElement("button");
+btnPrev.textContent = "◀ Anterior";
+btnPrev.className = "control-btn";
+btnPrev.style.position = 'absolute';
+btnPrev.style.top = '20px';
+btnPrev.style.left = '20px';
+
+// Adiciona z-index e padding
+btnPrev.style.zIndex = '1000';
+btnPrev.style.padding = '10px';
+    
+videoModal.appendChild(btnPrev);
+
+    
+
+// Botão Próximo
+const btnNext = document.createElement("button");
+btnNext.textContent = "▶ Próximo";
+btnNext.className = "control-btn";
+btnNext.style.position = 'absolute';
+btnNext.style.top = '20px';
+btnNext.style.right = '80px'; // um pouco afastado do fechar
+
+// Adiciona z-index e padding
+btnNext.style.zIndex = '1000';
+btnNext.style.padding = '10px';
+    
+videoModal.appendChild(btnNext);
+
+
+    // === Episódios e índice ===
+  let episodioIndex = 0;
+  const episodios = item.temporadas[temporadaSelecionada].episodios; // pega a lista de episódios
+
+  function atualizarIframe() {
+    const episodioAtual = episodios[episodioIndex];
+    iframe.src = episodioAtual.link;
+
+    // Opcional: desabilita os botões se estiver no início/fim
+    btnPrev.disabled = episodioIndex === 0;
+    btnNext.disabled = episodioIndex === episodios.length - 1;
+  }
+
+  // Inicializa iframe
+  atualizarIframe();
+
+  btnPrev.onclick = () => {
+    if (episodioIndex > 0) {
+      episodioIndex--;
+      atualizarIframe();
+    }
+  };
+
+  btnNext.onclick = () => {
+    if (episodioIndex < episodios.length - 1) {
+      episodioIndex++;
+      atualizarIframe();
+    }
+  };
+    
     fecharBtn.onclick = () => videoModal.remove();
   }
 
