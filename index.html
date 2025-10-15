@@ -770,13 +770,16 @@ if (serie) {
     videoModal.appendChild(loader);
 
     // Cria vídeo
-    videoEl = document.createElement('video');
-    videoEl.src = item.link;
-    videoEl.controls = true;
-    videoEl.preload = 'auto';
-    videoEl.style.width = '100%';
-    videoEl.style.height = '100%';
-    videoModal.appendChild(videoEl);
+videoModal.style.position = 'fixed';
+videoModal.style.top = '0';
+videoModal.style.left = '0';
+videoModal.style.width = '100%';
+videoModal.style.height = '100%';
+videoModal.style.background = 'rgba(0,0,0,0.9)';
+videoModal.style.display = 'flex';
+videoModal.style.justifyContent = 'center';
+videoModal.style.alignItems = 'center';
+videoModal.style.zIndex = '10000';
 
     // Legendas
     if (item.legendas) {
