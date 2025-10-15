@@ -6190,9 +6190,14 @@ function abrirModalEpisodios(temporada, serieTitulo, serie) {
         // Marca o botão clicado
         btn.classList.add('selecionado');
 
+
+    // Atualiza temporada e episódio
+    temporadaSelecionada[serieTitulo] = temporada.numero;
+    episodioSelecionado[serieTitulo] = ep.numero;
+        
         // Atualiza o localStorage
-        episodioSelecionado[serieTitulo] = ep.numero;
-        localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
+    localStorage.setItem('temporadaSelecionada', JSON.stringify(temporadaSelecionada));
+    localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
 
         // Abre o vídeo usando abrirVideo
         const temporadaIndex = serie.temporadas.findIndex(t => t.numero === temporada.numero);
@@ -6204,6 +6209,7 @@ if (episodioSelecionado[serieTitulo] === ep.numero && temporada.numero === tempo
     btn.classList.add('selecionado');
       }
     }
+
     
     list.appendChild(btn);
   });
