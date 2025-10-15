@@ -6184,7 +6184,7 @@ function abrirModalEpisodios(temporada, serieTitulo, serie) {
 
       btn.onclick = () => {
         // Remove destaque de outros episódios da mesma série
-        document.querySelectorAll('.episodio-btn.selecionado')
+        list.querySelectorAll('.episodio-btn.selecionado')
                 .forEach(b => b.classList.remove('selecionado'));
 
         // Marca o botão clicado
