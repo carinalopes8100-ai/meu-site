@@ -6200,8 +6200,8 @@ function abrirModalEpisodios(temporada, serieTitulo, serie) {
       };
 
       // Reaplica seleção ao criar os botões
-      if (episodioSelecionado[serieTitulo] === ep.numero) {
-        btn.classList.add('selecionado');
+if (episodioSelecionado[serieTitulo] === ep.numero && temporada.numero === temporadaSelecionada[serieTitulo]) {
+    btn.classList.add('selecionado');
       }
     }
     
