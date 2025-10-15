@@ -6131,7 +6131,7 @@ function abrirModalTemporadas(serie) {
       btn.style.cursor = "not-allowed";
     } else {
       btn.textContent = `Temporada ${temp.numero}` + (temp.parte ? ` – Parte ${temp.parte}` : '');
-      btn.onclick = () => abrirModalEpisodios(temp, serie.titulo);
+      btn.onclick = () => abrirModalEpisodios(temp, serie.titulo, serie);
     }
     list.appendChild(btn);
   });
