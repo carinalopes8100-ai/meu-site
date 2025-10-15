@@ -113,6 +113,21 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   display: none;
 }
 
+ .control-btn {
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+.control-btn:hover {
+  background-color: #ddd; /* escurece quando passa o mouse */
+} 
 
 .banner { position: relative; width:100%; height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
 .banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
@@ -6370,7 +6385,7 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
     // Botões Próximo/Anterior
     const btnPrev = document.createElement('button');
     btnPrev.textContent = '◀ Anterior';
-    btnPrev.className = 'audio-btn';
+    btnPrev.className = 'control-btn';
     btnPrev.style.position = 'absolute';
     btnPrev.style.top = '';
     btnPrev.style.left = '20px';
@@ -6380,7 +6395,7 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
 
     const btnNext = document.createElement('button');
     btnNext.textContent = '▶ Próximo';
-    btnNext.className = 'audio-btn';
+    btnNext.className = 'control-btn';
     btnNext.style.position = 'absolute';
     btnNext.style.top = '';
     btnNext.style.right = '80px';
