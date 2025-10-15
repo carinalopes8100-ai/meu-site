@@ -6459,8 +6459,6 @@ btnNext.onclick = () => {
   episodioSelecionado[serie.titulo] = temporadas[temporadaAtualIndex].episodios[episodioAtualIndex].numero;
   localStorage.setItem('temporadaSelecionada', JSON.stringify(temporadaSelecionada));
   localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
-
-  atualizarIframe(); // abre o vídeo no iframe
 };
 
 atualizarIframe();
