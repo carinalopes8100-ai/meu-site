@@ -6443,17 +6443,27 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
       atualizarIframe();
     };
 
-    btnNext.onclick = () => {
-      if (episodioAtualIndex < temporadas[temporadaAtualIndex].episodios.length - 1) {
-        episodioAtualIndex++;
-      } else if (temporadaAtualIndex < temporadas.length - 1) {
-        temporadaAtualIndex++;
-        episodioAtualIndex = 0;
-      }
-      atualizarIframe();
-    };
+btnNext.onclick = () => {
+  if (episodioAtualIndex < temporadas[temporadaAtualIndex].episodios.length - 1) {
+    episodioAtualIndex++;
+  } else if (temporadaAtualIndex < temporadas.length - 1) {
+    temporadaAtualIndex++;
+    episodioAtualIndex = 0;
+  } else {
+    mostrarToast('Último episódio da última temporada!');
+    return;
+  }
 
-    atualizarIframe();
+  // Atualiza o localStorage para lembrar a seleção
+  temporadaSelecionada[serie.titulo] = temporadas[temporadaAtualIndex].numero;
+  episodioSelecionado[serie.titulo] = temporadas[temporadaAtualIndex].episodios[episodioAtualIndex].numero;
+  localStorage.setItem('temporadaSelecionada', JSON.stringify(temporadaSelecionada));
+  localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
+
+  atualizarIframe(); // abre o vídeo no iframe
+};
+
+
   } else {
     // Se não for série, apenas link simples
     const iframe = document.createElement('iframe');
