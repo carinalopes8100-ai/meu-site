@@ -769,17 +769,32 @@ if (serie) {
     loader.style.cssText = 'color:#fff;font-size:18px;margin-top:10px;text-align:center;';
     videoModal.appendChild(loader);
 
-    // Cria vídeo
-videoModal.style.position = 'fixed';
-videoModal.style.top = '0';
-videoModal.style.left = '0';
-videoModal.style.width = '100%';
-videoModal.style.height = '100%';
-videoModal.style.background = 'rgba(0,0,0,0.9)';
-videoModal.style.display = 'flex';
-videoModal.style.justifyContent = 'center';
-videoModal.style.alignItems = 'center';
-videoModal.style.zIndex = '10000';
+// Cria vídeo
+videoEl = document.createElement('video');
+videoEl.src = item.link;
+videoEl.controls = true;
+videoEl.preload = 'auto';
+
+// Wrapper responsivo
+const wrapper = document.createElement('div');
+wrapper.style.cssText = `
+  width: 80%;
+  max-width: 1000px;
+  height: 0;
+  padding-top: 56.25%; /* mantém proporção 16:9 */
+  position: relative;
+`;
+
+videoEl.style.position = 'absolute';
+videoEl.style.top = '0';
+videoEl.style.left = '0';
+videoEl.style.width = '100%';
+videoEl.style.height = '100%';
+videoEl.style.objectFit = 'contain';
+
+wrapper.appendChild(videoEl);
+videoModal.appendChild(wrapper);
+
 
     // Legendas
     if (item.legendas) {
