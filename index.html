@@ -6139,11 +6139,11 @@ function abrirModalTemporadas(serie) {
   document.getElementById('modal').style.display = 'flex';
 }
 
-function abrirModalEpisodios(temporada, serieTitulo) {
+function abrirModalEpisodios(temporada, serieTitulo, serie) {
   const list = document.getElementById('episodiosList');
   document.getElementById('modalTitle').textContent = `Escolha o episódio - ${serieTitulo} (Temporada ${temporada.numero})`;
   list.innerHTML = '';
-
+  
   temporada.episodios.forEach(ep => {
     const btn = document.createElement('button');
     btn.className = 'episodio-btn';
@@ -6159,7 +6159,8 @@ function abrirModalEpisodios(temporada, serieTitulo) {
 
       btn.onclick = () => {
         // Remove destaque de outros episódios da mesma série
-        document.querySelectorAll('.episodio-btn.selecionado').forEach(b => b.classList.remove('selecionado'));
+        document.querySelectorAll('.episodio-btn.selecionado')
+                .forEach(b => b.classList.remove('selecionado'));
 
         // Marca o botão clicado
         btn.classList.add('selecionado');
@@ -6168,8 +6169,9 @@ function abrirModalEpisodios(temporada, serieTitulo) {
         episodioSelecionado[serieTitulo] = ep.numero;
         localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
 
-        // Abre o episódio
-        abrirEpisodio({ ...ep, titulo: `${serieTitulo} - Ep ${ep.numero}` });
+        // Abre o vídeo usando abrirVideo
+        const temporadaIndex = serie.temporadas.findIndex(t => t.numero === temporada.numero);
+        abrirVideo(serie, temporadaIndex, ep.numero - 1);
       };
 
       // Reaplica seleção ao criar os botões
@@ -6177,12 +6179,13 @@ function abrirModalEpisodios(temporada, serieTitulo) {
         btn.classList.add('selecionado');
       }
     }
-
+    
     list.appendChild(btn);
   });
 
   document.getElementById('modal').style.display = 'flex';
 }
+
 
 // Função fora da anterior
 function reaplicarSelecaoEpisodios() {
