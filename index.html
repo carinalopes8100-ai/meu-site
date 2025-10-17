@@ -141,13 +141,15 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 }
 
 .banner-highlight {
-  font-size: 29px !important;
+  font-size: 4vw !important;
+  max-font-size: 29px
   font-weight: 900 !important;
   color: #fff;
   text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
   margin-left: -15px;
+  margin-bottom: 0.5em;
   display: inline-block;
-  padding: 8px 18px;
+  padding: 0.5em 1em;
   border-radius: 6px;
   letter-spacing: 1px;
   align-self: flex-start;
@@ -160,7 +162,7 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   
 .banner { position: relative; width:100%; height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
 .banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
-.banner-content { position:relative; top: -20vh; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:10px; }
+.banner-content { position:relative; top: -20vh; z-index:2; max-width:90%; margin-left: 2vw; margin-bottom: 5vh; display:flex; flex-direction:column; gap:1em; }
 .banner h1 { font-size:48px; margin-bottom:10px; }
 .banner p { font-size:18px; margin-bottom:20px; }
 .banner-content button { width:230px; padding:16px 0; font-size:21px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; transition: background .2s; }
@@ -174,15 +176,16 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   flex-wrap: wrap;    /* se a tela for pequena, quebra a linha */
 } 
 .banner-content button.play {
-  width: 123px;           /* largura do botão */
-  padding: 6px 0;         /* altura do botão */
+  width: 25vw;           /* largura do botão */
+  max-width: 150px;
+  padding: 0.5em 1em;         /* altura do botão */
   background: #fff;
   color: #000;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
-  font-size: 21px;        /* tamanho do texto Ver */
+  font-size: 3vw;        /* tamanho do texto Ver */
   display: flex;           /* ativa flexbox */
   align-items: center;     /* alinha verticalmente */
   justify-content: center; /* centraliza horizontalmente */
@@ -190,7 +193,7 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   transition: background 0.2s;
 }
 .banner-description {
-  font-size: 16px;
+  font-size: 2vw;
   color: #fff;
   margin-top: -20px;
   max-width: 450px;  /* limita a largura da frase */
@@ -465,7 +468,7 @@ video::cue {
   <!-- Conteúdo do banner -->
   <div class="banner-content">
     <!-- Logo -->
-    <img src="https://archive.org/download/fy_20251017/AAAABSGWvAdyw2Ds3AGfqgzLVpWSln1lTW4q6OVDT8GY53MfsBlpje9L8FYsJjlxyvPJ3bVoIXwtkQeBwlKMJUg2vDC9FpU9N6FcHTW0hsv2b0fH5t6rDRbPIqVXnPF9vLKCVmh9_13JF8cIrsmOCr5CAYpSbqAB_b0_uytTXk0Ngb0Az7VJy7s5ZA.png" alt="Rabo De Peixe" class="banner-title" style="width:700px; height:auto; position:absolute; top:-200px;">
+    <img src="https://archive.org/download/fy_20251017/AAAABSGWvAdyw2Ds3AGfqgzLVpWSln1lTW4q6OVDT8GY53MfsBlpje9L8FYsJjlxyvPJ3bVoIXwtkQeBwlKMJUg2vDC9FpU9N6FcHTW0hsv2b0fH5t6rDRbPIqVXnPF9vLKCVmh9_13JF8cIrsmOCr5CAYpSbqAB_b0_uytTXk0Ngb0Az7VJy7s5ZA.png" alt="Rabo De Peixe" class="banner-title" style="width:60vw; max-width:700px; height:auto; position:reative; top:-0px;">
 
 <p class="banner-highlight">Ver agora a temporada 2</p>
     
