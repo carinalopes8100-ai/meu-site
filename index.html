@@ -156,7 +156,9 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .banner { position: relative; width:100%; height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
 .banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
 .banner-content { position:relative; top: -200px; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:10px; }
-.banner h1 { font-size:48px; margin-bottom:10px; }
+.banner h1 {
+  font-size: 4vw;  /* aumenta/reduz conforme a largura da tela */
+}
 .banner p { font-size:18px; margin-bottom:20px; }
 .banner-content button { width:230px; padding:16px 0; font-size:21px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; transition: background .2s; }
 .banner-content button.play { background:#fff; color:#000; }
@@ -203,37 +205,6 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   top: -2px;             /* move 2px para cima */
 }
 
-
-  /* ===== MEDIA QUERY PARA MOBILE ===== */
-@media (max-width: 768px) {
-  .banner-content {
-    top: 5%;      /* substitui -200px */
-    left: 5%;
-    right: 5%;
-    max-width: 90%;
-  }
-
-  .banner h1 {
-    font-size: 6vw;
-    margin-bottom: 8px;
-  }
-
-  .banner-description {
-    font-size: 3.5vw;
-    margin-top: 0;
-  }
-
-  .banner-buttons {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .banner-content button {
-    width: 100%;
-    padding: 10px 0;
-    font-size: 4vw;
-  }
-}
   
 
 
