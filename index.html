@@ -221,8 +221,12 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   pointer-events: auto;
 }
 
+  .fila-container {
+  position: relative;   /* necessário para z-index funcionar */
+  z-index: 5;           /* maior que o banner */
+  margin: 20px 50px;
+}
   
-.fila-container { margin:20px 50px; position:relative; }
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
 .fila { display:flex; overflow-x:auto; gap:12px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
 .fila::-webkit-scrollbar { display:none; }
