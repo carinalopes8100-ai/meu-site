@@ -606,22 +606,35 @@ function adicionarMinhaLista(titulo){
 }
 
 function adicionarMinhaLista(titulo) {
-  const botao = document.querySelector('.banner-content .lista');
+  const index = minhaLista.indexOf(titulo);
 
-  if (!minhaLista.includes(titulo)) {
+  if (index === -1) {
     minhaLista.push(titulo);
-    salvarLista(); // garante que a lista fique salva
-    botao.textContent = "Remover da Lista"; // atualiza o botão
     mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
   } else {
-    minhaLista = minhaLista.filter(t => t !== titulo);
-    salvarLista();
-    botao.textContent = "+ Minha Lista"; // atualiza o botão
+    minhaLista.splice(index, 1);
     mostrarToast(`"${titulo}" removido da Minha Lista!`);
   }
 
-  mostrarSecao('inicio'); // se você quiser voltar à seção inicial
+  salvarLista(); // salva no localStorage
+
+  // Atualiza todos os botões da página que correspondem a esse item
+  document.querySelectorAll('.add-list-btn').forEach(btn => {
+    if (btn.closest('.filme').querySelector('img').alt === titulo) {
+      if (minhaLista.includes(titulo)) {
+        btn.textContent = '✖';
+        btn.title = 'Remover da Minha Lista';
+      } else {
+        btn.textContent = '+';
+        btn.title = 'Adicionar à Minha Lista';
+      }
+    }
+  });
+
+  // Atualiza a seção atual (opcional)
+  mostrarSecao(secaoAtual);
 }
+
 
 // <<< AQUI: adicionar o código para oncanplaythrough >>>
 const bannerVideo = document.getElementById('bannerVideo');
