@@ -157,11 +157,11 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .banner {
   position: relative;
   width: 100%;
-  height: 100vh; /* ocupa toda a altura da viewport */
+  height: calc(100vh - 60px); /* subtrai a altura do header */
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* conteúdo em baixo */
+  justify-content: flex-end;
   padding: 40px;
 }
 
@@ -172,9 +172,10 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* cobre toda a área sem distorcer */
+  object-fit: cover;
   z-index: 0;
 }
+
 
 .banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
 .banner-content {
@@ -6722,20 +6723,12 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
 }
 
 function ajustarBannerAltura() {
-  const banner = document.querySelector('.banner');
-  if (!banner) return;
-
-  // Usa a altura visível real (sem barras do navegador)
-  const alturaVisivel = window.innerHeight;
-
-  // aplica a altura exata
-  banner.style.height = `${alturaVisivel}px`;
-  banner.style.minHeight = `${alturaVisivel}px`;
+  const headerHeight = document.querySelector('header').offsetHeight;
+  document.querySelector('.banner').style.height = `${window.innerHeight - headerHeight}px`;
 }
-
-// Chama ao carregar e ao redimensionar
-window.addEventListener('load', ajustarBannerAltura);
 window.addEventListener('resize', ajustarBannerAltura);
+window.addEventListener('load', ajustarBannerAltura);
+
 
 
   
