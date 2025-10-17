@@ -6692,6 +6692,19 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
   document.body.appendChild(videoModal);
 }
 
+  function ajustarBannerAltura() {
+  const banner = document.querySelector('.banner');
+  if (banner) {
+    banner.style.height = `${window.innerHeight}px`;
+  }
+}
+
+// Atualiza sempre que a janela é redimensionada
+window.addEventListener('resize', ajustarBannerAltura);
+
+// Ajusta logo ao carregar
+ajustarBannerAltura();
+
 
 </script>
 </body>
