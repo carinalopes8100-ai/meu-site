@@ -157,12 +157,12 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .banner {
   position: relative;
   width: 100%;
-  height: calc(100vh - 60px); /* subtrai a altura do header */
-  overflow: hidden;
+  height: 100dvh; /* usa a altura real da viewport, sem cortar */
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: 40px;
+  overflow: hidden;
 }
 
 .banner img,
@@ -6723,9 +6723,10 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
 }
 
 function ajustarBannerAltura() {
-  const headerHeight = document.querySelector('header').offsetHeight;
-  document.querySelector('.banner').style.height = `${window.innerHeight - headerHeight}px`;
+  const banner = document.querySelector('.banner');
+  banner.style.height = `${window.innerHeight}px`; // não subtrai header
 }
+
 window.addEventListener('resize', ajustarBannerAltura);
 window.addEventListener('load', ajustarBannerAltura);
 
