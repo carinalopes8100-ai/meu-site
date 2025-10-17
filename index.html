@@ -161,6 +161,31 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .banner { position: relative; width:100%; height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
 .banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
 .banner-content { position:relative; top: -200px; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:10px; }
+  /* Estilo para portáteis (telas até 768px) */
+@media (max-width: 768px) {
+  .banner-content {
+    top: -10vh; /* desce o conteúdo em portáteis */
+  }
+
+  .banner-title {
+    width: 80vw; /* logo proporcional */
+    max-width: none;
+  }
+
+  .banner-highlight {
+    font-size: 5vw; /* frase menor em portáteis */
+  }
+
+  .banner-description {
+    font-size: 3.5vw; /* descrição menor */
+    max-width: 90%;
+  }
+
+  .banner-buttons button {
+    width: 35vw; /* botões menores */
+    font-size: 4vw;
+  }
+}
 .banner h1 { font-size:48px; margin-bottom:10px; }
 .banner p { font-size:18px; margin-bottom:20px; }
 .banner-content button { width:230px; padding:16px 0; font-size:21px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; transition: background .2s; }
