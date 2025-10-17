@@ -6277,11 +6277,24 @@ function shuffleArray(array){
 
   
 function mostrarSecao(secao) {
+    secaoAtual = secao; // guarda a seção atual
     const root = document.getElementById('root');
     root.innerHTML = '';
 
     const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel];
 
+  if (secao === 'lista') {
+    const itens = minhaLista.map(titulo => {
+      const item = filmes.concat(series).find(i => i.titulo === titulo);
+      return item;
+    }).filter(Boolean);
+
+        if(itens.length > 0){
+      root.appendChild(criarFila('filaMinhaLista', itens, 'filme', 'Minha Lista'));
+    } else {
+      root.innerHTML = '<p style="margin:50px;">Sua lista está vazia.</p>';
+    }
+  
     if(secao === 'inicio'){
         const continuar = todosItens.filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
         if(continuar.length > 0){
