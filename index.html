@@ -180,7 +180,7 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 .banner-content {
   position: relative;
-  top: 10vh;
+  top: 0;           /* padrão desktop */
   z-index: 2;
   max-width: 600px;
   display: flex;
@@ -188,38 +188,31 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   gap: 10px;
 }
 
-.banner-title {
-  width: 60vw;
-  max-width: 700px;
-  position: relative;
-  top: 0;
-}
-
-/* Media query para portáteis */
+/* Apenas para portáteis */
 @media (max-width: 768px) {
   .banner-content {
-    top: -10vh; /* desce o conteúdo */
+    top: 10vh; /* desce o conteúdo só em portáteis */
   }
 
   .banner-title {
     width: 80vw;
-    top: 0;
   }
 
   .banner-highlight {
-    font-size: 5vw; /* frase menor */
+    font-size: 5vw;
   }
 
   .banner-description {
-    font-size: 3.5vw; /* descrição menor */
+    font-size: 3.5vw;
     max-width: 90%;
   }
 
   .banner-buttons button {
-    width: 35vw; /* botões menores */
+    width: 35vw;
     font-size: 4vw;
   }
 }
+
 
 .banner h1 { font-size:48px; margin-bottom:10px; }
 .banner p { font-size:18px; margin-bottom:20px; }
