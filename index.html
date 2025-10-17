@@ -153,7 +153,6 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 
   
-/* ESTILOS PARA DESKTOP - SEM ALTERAÇÕES */
 .banner { position: relative; width:100%; height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
 .banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
 .banner-content { position:relative; top: -200px; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:10px; }
@@ -203,32 +202,6 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   position: relative;     
   top: -2px;             /* move 2px para cima */
 }
-
-  .banner-title {
-  width: 700px;       /* desktop */
-  height: auto;
-  position: absolute;
-  top: -200px;
-  transition: all 0.3s ease;
-}
-
-/* === ESTILOS PARA PORTÁTIL === */
-@media (max-width: 768px) {
-  .banner h1 {
-    font-size: 28px;  /* tamanho fixo para portátil */
-  }
-  .banner-description {
-    font-size: 16px;  /* tamanho fixo para portátil */
-    margin-top: 0;
-  }
-  .banner-content button.play,
-  .banner-content button.lista {
-    width: 45%;       /* proporcional no portátil */
-    font-size: 16px;  
-    padding: 6px 0;
-  }
-}
-
 
   
 
@@ -467,6 +440,7 @@ video::cue {
   <!-- Conteúdo do banner -->
   <div class="banner-content">
     <!-- Logo -->
+    <img src="https://archive.org/download/fy_20251017/AAAABSGWvAdyw2Ds3AGfqgzLVpWSln1lTW4q6OVDT8GY53MfsBlpje9L8FYsJjlxyvPJ3bVoIXwtkQeBwlKMJUg2vDC9FpU9N6FcHTW0hsv2b0fH5t6rDRbPIqVXnPF9vLKCVmh9_13JF8cIrsmOCr5CAYpSbqAB_b0_uytTXk0Ngb0Az7VJy7s5ZA.png" alt="Rabo De Peixe" class="banner-title" style="width:700px; height:auto; position:absolute; top:-200px;">
 
 <p class="banner-highlight">Ver agora a temporada 2</p>
     
