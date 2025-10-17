@@ -6275,24 +6275,6 @@ function shuffleArray(array){
   return arr;
 }
 
-function mostrarSecao(secao) {
-  secaoAtual = secao; // guarda a seção atual
-  const root = document.getElementById('root');
-  root.innerHTML = '';
-
-  if (secao === 'lista') {
-    const itens = minhaLista.map(titulo => {
-      const item = filmes.concat(series).find(i => i.titulo === titulo);
-      return item;
-    }).filter(Boolean);
-
-    if(itens.length > 0){
-      root.appendChild(criarFila('filaMinhaLista', itens, 'filme', 'Minha Lista'));
-    } else {
-      root.innerHTML = '<p style="margin:50px;">Sua lista está vazia.</p>';
-    }
-  }
-
   
 function mostrarSecao(secao) {
     const root = document.getElementById('root');
