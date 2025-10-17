@@ -137,19 +137,20 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 .banner-highlight {
   font-size: 32px !important;
-  font-weight: 900 !important; /* 🔹 letras bem mais grossas */
+  font-weight: 900 !important;
   color: #fff;
   text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
   margin-left: -15px;
-  margin-top: 5px;
-  margin-bottom: -15px;
   display: inline-block;
   padding: 8px 18px;
   border-radius: 6px;
   letter-spacing: 1px;
   align-self: flex-start;
-  /* text-transform: uppercase; //////// opcional — deixa em maiúsculas */
+
+  position: relative; /* permite deslocar só este elemento */
+  top: 20px;          /* ajusta a distância para baixo */
 }
+
 
   
 .banner { position: relative; width:100%; height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
