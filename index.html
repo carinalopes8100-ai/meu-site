@@ -6277,36 +6277,26 @@ function shuffleArray(array){
 
   
 function mostrarSecao(secao) {
-  secaoAtual = secao; // guarda a seção atual
+    secaoAtual = secao;
     const root = document.getElementById('root');
     root.innerHTML = '';
 
     const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel];
 
-
-  if (secao === 'lista') {
-    const itens = minhaLista.map(titulo => {
-      const item = filmes.concat(series).find(i => i.titulo === titulo);
-      return item;
-    }).filter(Boolean);
-
-       if(itens.length > 0){
-      root.appendChild(criarFila('filaMinhaLista', itens, 'filme', 'Minha Lista'));
-    } else {
-      root.innerHTML = '<p style="margin:50px;">Sua lista está vazia.</p>';
-
-  
-    if(secao === 'inicio'){
+    if(secao === 'inicio') {
+        // Continuar a ver
         const continuar = todosItens.filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
-        if(continuar.length > 0){
+        if (continuar.length > 0) {
             root.appendChild(criarFila('filaContinuar', continuar, 'filme', 'Continuar a ver'));
         }
 
-        if(minhaLista.length > 0){
+        // Minha Lista
+        if(minhaLista.length > 0) {
             const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
-            root.appendChild(criarFila('fila0', itensLista, 'filme', 'Minha Lista'));
+            root.appendChild(criarFila('filaMinhaLista', itensLista, 'filme', 'Minha Lista'));
         }
 
+        // Outras seções
         root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
         root.appendChild(criarFila('fila2', shuffleArray(series), 'serie'));
         root.appendChild(criarFila('fila3', shuffleArray(filmesTerror), 'filme'));
@@ -6317,43 +6307,9 @@ function mostrarSecao(secao) {
         root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
         root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
         root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
-   }
-else if(secao === 'novelas'){
-  root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
-}
+    }
 
-else if(secao === 'documentarios'){
-    root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
-}
-
-else if(secao === 'filmes'){
-    root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
-}
-
-  else if(secao === 'marvel'){
-  root.appendChild(criarFila('filaMarvel', shuffleArray(filmesMarvel), 'filme', 'Filmes Marvel'));
-}
-
-else if(secao === 'dc'){
-  root.appendChild(criarFila('filaDc', shuffleArray(filmesDc), 'filme', 'DC Comics'));
-}
-
-else if(secao === 'series'){
-    root.appendChild(criarFila('fila2', shuffleArray(series), 'serie'));
-}
-else if(secao === 'terror'){
-    root.appendChild(criarFila('fila3', shuffleArray(filmesTerror), 'filme'));
-}
-else if(secao === 'animes'){
-    root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
-}
-  else if(secao === 'comedia'){
-    root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
-  }
-else if(secao === 'desenhos'){
-    root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
-}
-    else if(secao === 'lista'){
+    else if(secao === 'lista') {
         const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
         if(itensLista.length > 0){
             root.appendChild(criarFila('filaMinhaLista', itensLista, 'filme', 'Minha Lista'));
@@ -6361,7 +6317,48 @@ else if(secao === 'desenhos'){
             root.innerHTML = `<div style="margin:50px; font-size:18px;">Você não adicionou nenhum item à Minha Lista.</div>`;
         }
     }
+
+    else if(secao === 'filmes'){
+        root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
+    }
+
+    else if(secao === 'series'){
+        root.appendChild(criarFila('fila2', shuffleArray(series), 'serie'));
+    }
+
+    else if(secao === 'terror'){
+        root.appendChild(criarFila('fila3', shuffleArray(filmesTerror), 'filme'));
+    }
+
+    else if(secao === 'marvel'){
+        root.appendChild(criarFila('filaMarvel', shuffleArray(filmesMarvel), 'filme', 'Filmes Marvel'));
+    }
+
+    else if(secao === 'dc'){
+        root.appendChild(criarFila('filaDc', shuffleArray(filmesDc), 'filme', 'DC Comics'));
+    }
+
+    else if(secao === 'comedia'){
+        root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
+    }
+
+    else if(secao === 'novelas'){
+        root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
+    }
+
+    else if(secao === 'documentarios'){
+        root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
+    }
+
+    else if(secao === 'desenhos'){
+        root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
+    }
+
+    else if(secao === 'animes'){
+        root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
+    }
 }
+
 
 function pesquisar() {
   const termo = document.getElementById('searchInput').value.toLowerCase().trim();
