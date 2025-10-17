@@ -151,6 +151,30 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   top: 7px;          /* ajusta a distância para baixo */
 }
 
+@media (max-width: 768px) {
+  .banner-content {
+    top: 5%;
+    left: 5%;
+    right: 5%;
+  }
+
+  .banner-title {
+    width: 90%;
+  }
+
+  .banner-highlight {
+    font-size: 4vw;
+  }
+
+  .banner-description {
+    font-size: 2.5vw;
+  }
+
+  .banner-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
 
   
 .banner { position: relative; width:100%; height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
