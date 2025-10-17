@@ -494,6 +494,8 @@ let progresso = {};
 let episodioSelecionado = JSON.parse(localStorage.getItem('episodioSelecionado')) || {};
 let temporadaSelecionada = JSON.parse(localStorage.getItem('temporadaSelecionada') || '{}');
 
+  let secaoAtual = 'inicio'; // guarda a seção atual
+
 
 function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
 function carregarLista() { const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
@@ -623,6 +625,8 @@ function adicionarMinhaLista(titulo) {
   }
 
   salvarLista(); 
+
+  
   mostrarSecao(secaoAtual); // <-- aqui atualiza imediatamente a seção
  
 
