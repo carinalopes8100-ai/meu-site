@@ -7251,6 +7251,40 @@ window.addEventListener('resize', () => {
   });
 });
 
+
+
+  // === Bruxa Halloween ===
+const witch = document.querySelector('.halloween-witch');
+
+function mostrarBruxa() {
+  witch.classList.add('show');
+}
+
+function esconderBruxa() {
+  witch.classList.remove('show');
+}
+
+// IDs dos modals onde a bruxa deve aparecer
+const modais = ['modal', 'descricaoModal', 'audioModal', 'trailerModal'];
+
+
+// Observa cada modal e mostra/esconde a bruxa conforme o estado
+modais.forEach(id => {
+  const modal = document.getElementById(id);
+  if (!modal) return;
+
+  const observer = new MutationObserver(() => {
+    const visivel = modal.style.display === 'flex' || modal.style.display === 'block';
+    if (visivel) mostrarBruxa();
+    else esconderBruxa();
+  });
+
+  observer.observe(modal, { attributes: true, attributeFilter: ['style'] });
+});
+
+
+  
+
 function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
   const videoModal = document.createElement('div');
   videoModal.style.cssText = `
@@ -7354,34 +7388,7 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
   document.body.appendChild(videoModal);
 }
 
-// === Bruxa Halloween ===
-const witch = document.querySelector('.halloween-witch');
 
-function mostrarBruxa() {
-  witch.classList.add('show');
-}
-
-function esconderBruxa() {
-  witch.classList.remove('show');
-}
-
-// IDs dos modals onde a bruxa deve aparecer
-const modais = ['modal', 'descricaoModal', 'audioModal', 'trailerModal'];
-
-
-// Observa cada modal e mostra/esconde a bruxa conforme o estado
-modais.forEach(id => {
-  const modal = document.getElementById(id);
-  if (!modal) return;
-
-  const observer = new MutationObserver(() => {
-    const visivel = modal.style.display === 'flex' || modal.style.display === 'block';
-    if (visivel) mostrarBruxa();
-    else esconderBruxa();
-  });
-
-  observer.observe(modal, { attributes: true, attributeFilter: ['style'] });
-});
 
   
 
