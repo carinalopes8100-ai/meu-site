@@ -18,30 +18,22 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 
 
-      .pendurado {
-      position: fixed;
-      top: 50px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 9999;
-      animation: balancar 3s ease-in-out infinite;
-      transform-origin: top center;
-    }
+.halloween-witch {
+  position: fixed;        /* Fixa a imagem na tela */
+  top: 10px;              /* Distância do topo */
+  right: 20px;            /* Distância da lateral */
+  width: 220px;           /* Tamanho da imagem */
+  z-index: 99999;         /* Garante que fique acima dos modals */
+  pointer-events: none;   /* Permite clicar em elementos por baixo */
+  animation: float 3s ease-in-out infinite; /* Efeito de flutuar opcional */
+}
 
+/* Efeito de flutuar */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
 
-    .pendurado img {
-      width: 70px;
-      display: block;
-      filter: drop-shadow(0 0 15px rgba(229,9,20,0.8));
-    }
-
-    @keyframes balancar {
-      0% { transform: translateX(-50%) rotate(0deg); }
-      25% { transform: translateX(-50%) rotate(5deg); }
-      50% { transform: translateX(-50%) rotate(0deg); }
-      75% { transform: translateX(-50%) rotate(-5deg); }
-      100% { transform: translateX(-50%) rotate(0deg); }
-    }
 
 
 /* Barra de pesquisa */
@@ -7358,10 +7350,11 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
 
 </script>
 
-<div class="pendurado">
-  <div class="fio"></div>
-  <img src="https://archive.org/download/vecteezy_spider-clipart-design-illustration_9381394/vecteezy_spider-clipart-design-illustration_9381394.png" alt="Ícone pendurado">
-</div>
+  <img 
+    src="https://png.pngtree.com/png-vector/20241216/ourmid/pngtree-happy-halloween-witch-sitting-on-pumpkin-png-image_14734675.png" 
+    alt="Bruxa de Halloween" 
+    class="halloween-witch"
+  />
   
 </body>
 </html>
