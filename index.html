@@ -7011,7 +7011,7 @@ function abrirModalTemporadas(serie) {
       btn.style.backgroundColor = "#555";
       btn.style.cursor = "not-allowed";
     } else {
-      btn.textContent = `Temporada ${temp.numero}` + (temp.parte ? ` – Parte ${temp.parte}` : '');
+      btn.textContent = `Temporada ${temp.numero}` + (temp.parte ? ` - Parte ${temp.parte}` : '');
       btn.onclick = () => abrirModalEpisodios(temp, serie.titulo, serie);
     }
     list.appendChild(btn);
