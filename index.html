@@ -7024,6 +7024,14 @@ function abrirModalEpisodios(temporada, serieTitulo, serie) {
   const list = document.getElementById('episodiosList');
   document.getElementById('modalTitle').textContent = `Escolha o episódio - ${serieTitulo} (Temporada ${temporada.numero})`;
   list.innerHTML = '';
+
+    // Verifica se a temporada tem partes
+  if (temporada.parts) {
+    // Criar select para partes
+    const partSelect = document.createElement('select');
+    partSelect.id = 'partSelect';
+    partSelect.innerHTML = '<option value="">Escolha a parte</option>';
+
   
   temporada.episodios.forEach(ep => {
     const btn = document.createElement('button');
