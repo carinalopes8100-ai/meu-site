@@ -7055,7 +7055,8 @@ function abrirModalEpisodios(temporada, serieTitulo, serie, parteNome = null) {
     return; // sai da função para não mostrar os episódios ainda
   }
 
-  // Se já estamos em uma parte ou temporada normal
+
+  
   temporada.episodios.forEach(ep => {
     const btn = document.createElement('button');
     btn.className = 'episodio-btn';
@@ -7068,31 +7069,41 @@ function abrirModalEpisodios(temporada, serieTitulo, serie, parteNome = null) {
       btn.style.cursor = "not-allowed";
     } else {
       btn.textContent = `Episódio ${ep.numero}`;
+
       btn.onclick = () => {
-        list.querySelectorAll('.episodio-btn.selecionado').forEach(b => b.classList.remove('selecionado'));
+        // Remove destaque de outros episódios da mesma série
+        list.querySelectorAll('.episodio-btn.selecionado')
+                .forEach(b => b.classList.remove('selecionado'));
+
+        // Marca o botão clicado
         btn.classList.add('selecionado');
 
-        temporadaSelecionada[serieTitulo] = temporada.numero;
-        episodioSelecionado[serieTitulo] = ep.numero;
 
-        localStorage.setItem('temporadaSelecionada', JSON.stringify(temporadaSelecionada));
-        localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
+    // Atualiza temporada e episódio
+    temporadaSelecionada[serieTitulo] = temporada.numero;
+    episodioSelecionado[serieTitulo] = ep.numero;
+        
+        // Atualiza o localStorage
+    localStorage.setItem('temporadaSelecionada', JSON.stringify(temporadaSelecionada));
+    localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
 
+        // Abre o vídeo usando abrirVideo
         const temporadaIndex = serie.temporadas.findIndex(t => t.numero === temporada.numero);
         abrirVideo(serie, temporadaIndex, ep.numero - 1);
       };
 
-      if (episodioSelecionado[serieTitulo] === ep.numero && temporada.numero === temporadaSelecionada[serieTitulo]) {
-        btn.classList.add('selecionado');
+      // Reaplica seleção ao criar os botões
+if (episodioSelecionado[serieTitulo] === ep.numero && temporada.numero === temporadaSelecionada[serieTitulo]) {
+    btn.classList.add('selecionado');
       }
     }
 
+    
     list.appendChild(btn);
   });
 
   document.getElementById('modal').style.display = 'flex';
 }
-
 
 
 // Função fora da anterior
