@@ -7022,7 +7022,7 @@ function abrirModalTemporadas(serie) {
 
 function abrirModalEpisodios(temporada, serieTitulo, serie) {
   const list = document.getElementById('episodiosList');
-  document.getElementById('modalTitle').textContent = `Escolha o episódio - ${serieTitulo} (Temporada ${temporada.numero}${temporada.parte ? ' parte ' + temporada.parte : ''})`;
+  document.getElementById('modalTitle').textContent = `Escolha o episódio - ${serieTitulo} (Temporada ${temporada.numero}${temporada.parte ? ' - Parte ' + temporada.parte : ''})`;
   list.innerHTML = '';
 
 
