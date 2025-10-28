@@ -20,23 +20,25 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 .halloween-witch {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 180px;
-  z-index: -1; /* escondida por defeito */
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;
   opacity: 0;
+  z-index: -1;
+  pointer-events: none;
   transition: opacity 0.5s ease;
-  pointer-events: none; /* para não bloquear cliques */
-}
-.halloween-witch.show {
-  z-index: 12000; /* acima dos modals */
-  opacity: 1;
+  animation: float 3s ease-in-out infinite;
 }
 
-/* Efeito de flutuar */
+.halloween-witch.show {
+  opacity: 1;
+  z-index: 12000;
+}
+
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-10px); }
 }
 
 
@@ -7352,6 +7354,7 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
   document.body.appendChild(videoModal);
 }
 
+// === Bruxa Halloween ===
 const witch = document.querySelector('.halloween-witch');
 
 function mostrarBruxa() {
@@ -7362,29 +7365,38 @@ function esconderBruxa() {
   witch.classList.remove('show');
 }
 
-// sempre que abres um modal:
-const modais = ['modal', 'descricaoModal']; // adiciona aqui outros IDs de modais que tiveres
+// IDs dos modals onde a bruxa deve aparecer
+const modais = [
+  'modal',             // temporadas e episódios
+  'descricaoModal',    // descrições
+  'audioModal',        // escolha de áudio
+  'trailerModal'       // trailers
+];
 
+// Observa cada modal e mostra/esconde a bruxa conforme o estado
 modais.forEach(id => {
   const modal = document.getElementById(id);
-  if (modal) {
-    const observer = new MutationObserver(() => {
-      const visivel = modal.style.display === 'flex';
-      if (visivel) mostrarBruxa();
-      else esconderBruxa();
-    });
-    observer.observe(modal, { attributes: true, attributeFilter: ['style'] });
-  }
+  if (!modal) return;
+
+  const observer = new MutationObserver(() => {
+    const visivel = modal.style.display === 'flex' || modal.style.display === 'block';
+    if (visivel) mostrarBruxa();
+    else esconderBruxa();
+  });
+
+  observer.observe(modal, { attributes: true, attributeFilter: ['style'] });
 });
+
   
 
 </script>
 
-  <img 
-    src="https://png.pngtree.com/png-vector/20241216/ourmid/pngtree-happy-halloween-witch-sitting-on-pumpkin-png-image_14734675.png" 
-    alt="Bruxa de Halloween" 
-    class="halloween-witch"
-  />
+<img 
+  src="https://png.pngtree.com/png-vector/20241216/ourmid/pngtree-happy-halloween-witch-sitting-on-pumpkin-png-image_14734675.png" 
+  alt="Bruxa de Halloween" 
+  class="halloween-witch"
+/>
+
   
 </body>
 </html>
