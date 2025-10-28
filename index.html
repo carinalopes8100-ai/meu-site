@@ -17,6 +17,40 @@ nav div { cursor:pointer; transition:color .2s; }
 nav div:hover { color:#e50914; text-decoration:underline; }
 
 
+
+      .pendurado {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      animation: balancar 3s ease-in-out infinite;
+      transform-origin: top center;
+    }
+
+    .pendurado .fio {
+      width: 2px;
+      height: 60px;
+      background: #e50914; /* fio vermelho */
+      margin: 0 auto;
+      box-shadow: 0 0 8px #e50914; /* brilho */
+    }
+
+    .pendurado img {
+      width: 70px;
+      display: block;
+      filter: drop-shadow(0 0 15px rgba(229,9,20,0.8));
+    }
+
+    @keyframes balancar {
+      0% { transform: translateX(-50%) rotate(0deg); }
+      25% { transform: translateX(-50%) rotate(5deg); }
+      50% { transform: translateX(-50%) rotate(0deg); }
+      75% { transform: translateX(-50%) rotate(-5deg); }
+      100% { transform: translateX(-50%) rotate(0deg); }
+    }
+
+
 /* Barra de pesquisa */
 #searchContainer { 
   display: flex; 
@@ -7330,5 +7364,11 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
 
 
 </script>
+
+<div class="pendurado">
+  <div class="fio"></div>
+  <img src="https://cdn-icons-png.flaticon.com/512/12/12304.png" alt="Ícone pendurado">
+</div>
+  
 </body>
 </html>
