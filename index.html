@@ -19,13 +19,18 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 
 .halloween-witch {
-  position: fixed;        /* Fixa a imagem na tela */
-  top: 10px;              /* Distância do topo */
-  right: 20px;            /* Distância da lateral */
-  width: 220px;           /* Tamanho da imagem */
-  z-index: 99999;         /* Garante que fique acima dos modals */
-  pointer-events: none;   /* Permite clicar em elementos por baixo */
-  animation: float 3s ease-in-out infinite; /* Efeito de flutuar opcional */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 180px;
+  z-index: -1; /* escondida por defeito */
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none; /* para não bloquear cliques */
+}
+.halloween-witch.show {
+  z-index: 12000; /* acima dos modals */
+  opacity: 1;
 }
 
 /* Efeito de flutuar */
@@ -7347,6 +7352,31 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
   document.body.appendChild(videoModal);
 }
 
+const witch = document.querySelector('.halloween-witch');
+
+function mostrarBruxa() {
+  witch.classList.add('show');
+}
+
+function esconderBruxa() {
+  witch.classList.remove('show');
+}
+
+// sempre que abres um modal:
+const modais = ['modal', 'descricaoModal']; // adiciona aqui outros IDs de modais que tiveres
+
+modais.forEach(id => {
+  const modal = document.getElementById(id);
+  if (modal) {
+    const observer = new MutationObserver(() => {
+      const visivel = modal.style.display === 'flex';
+      if (visivel) mostrarBruxa();
+      else esconderBruxa();
+    });
+    observer.observe(modal, { attributes: true, attributeFilter: ['style'] });
+  }
+});
+  
 
 </script>
 
