@@ -6906,23 +6906,41 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
     const overlay = document.createElement('div'); 
     overlay.className = 'filme-hover-overlay';
 
-    const btnPlay = document.createElement('button'); 
-    if(item.emBreve || item.link === "#") {
-      btnPlay.textContent = 'Em Breve';
-      btnPlay.disabled = true;
-      btnPlay.style.backgroundColor = "#555";
-      btnPlay.style.cursor = "not-allowed";
-    } else {
-      btnPlay.textContent = '▶ Ver';
-      btnPlay.onclick = e => {
-        e.stopPropagation();
-        const s = series.find(s => s.titulo === item.titulo) || novelas.find(n => n.titulo === item.titulo) || animes.find(a => a.titulo === item.titulo);
-        if(s){ abrirModalTemporadas({...s, temporadas: s.temporadas}); return; } 
-        if(item.audios && item.audios.length > 0){ abrirAudioModal(item); } 
-        else { abrirVideo(item); }
-      };
+ const btnPlay = document.createElement('button'); 
+if (item.emBreve || item.link === "#") {
+  btnPlay.textContent = 'Em Breve';
+  btnPlay.disabled = true;
+  btnPlay.style.backgroundColor = "#555";
+  btnPlay.style.cursor = "not-allowed";
+} else {
+  btnPlay.textContent = '▶ Ver';
+  btnPlay.onclick = e => {
+    e.stopPropagation();
+
+    // 🔍 Procura o item nas listas de séries, novelas, animes e documentários
+    const s =
+      series.find(s => s.titulo === item.titulo) ||
+      novelas.find(n => n.titulo === item.titulo) ||
+      animes.find(a => a.titulo === item.titulo) ||
+      documentarios.find(d => d.titulo === item.titulo) ||
+      (item.temporadas && item.temporadas.length > 0 ? item : null);
+
+    // 🎬 Se for série/documentário com temporadas → abre o modal de temporadas
+    if (s && s.temporadas && s.temporadas.length > 0) {
+      abrirModalTemporadas({ ...s, temporadas: s.temporadas });
     }
-    overlay.appendChild(btnPlay);
+    // 🔊 Se tiver múltiplos áudios → abre o seletor de áudio
+    else if (item.audios && item.audios.length > 0) {
+      abrirAudioModal(item);
+    }
+    // ▶ Caso contrário → vídeo normal
+    else {
+      abrirVideo(item);
+    }
+  };
+}
+overlay.appendChild(btnPlay);
+
 
     const btnDireito = document.createElement('button');
     if(item.titulo === 'Morangos com Açúcar' && item.verao && item.verao.length > 0){
