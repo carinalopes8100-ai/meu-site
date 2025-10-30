@@ -7085,9 +7085,10 @@ function mostrarSecao(secao) {
         root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
     }
 
-    else if(secao === 'documentarios'){
-        root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'filme', 'Documentários'));
-    }
+else if(secao === 'documentarios'){
+  root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'misto', 'Documentários'));
+}
+
 
     else if(secao === 'desenhos'){
         root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
