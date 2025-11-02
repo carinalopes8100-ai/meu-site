@@ -465,21 +465,8 @@ video::cue {
   </video>
 
 
-<button id="muteBtn" style="
-  position:absolute;
-  top:20px;
-  right:20px;
-  z-index:10;
-  background:rgba(0,0,0,0.5);
-  color:white;
-  border:none;
-  border-radius:50%;
-  font-size:20px;
-  width:45px;
-  height:45px;
-  cursor:pointer;
-  display:none; /* 🔥 Isto é importante */
-">🔇</button>
+<button id="muteBtn" class="mute-btn">🔇</button>
+
 
 
   
@@ -7658,41 +7645,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  const video = document.getElementById('bannerVideo');
-  const bannerImage = document.getElementById('bannerImage');
-  const muteBtn = document.getElementById('muteBtn');
+const video = document.getElementById('bannerVideo');
+const bannerImage = document.getElementById('bannerImage');
+const muteBtn = document.getElementById('muteBtn');
 
-  if (video && bannerImage && muteBtn) {
-    // Esconde o botão até o vídeo começar mesmo
-    muteBtn.style.display = 'none';
+if (video && bannerImage && muteBtn) {
+  // Esconde o botão até o vídeo realmente começar
+  muteBtn.style.display = 'none';
 
-    // Quando o vídeo começar MESMO a tocar (evento mais confiável)
-    video.addEventListener('play', () => {
-      muteBtn.style.display = 'block';
-    });
+  // Quando o vídeo estiver pronto para ser reproduzido
+  video.addEventListener('canplay', () => {
+    bannerImage.style.transition = 'opacity 1s';
+    bannerImage.style.opacity = '0';
 
-    // Transição da imagem para o vídeo
-    video.addEventListener('canplay', () => {
-      bannerImage.style.transition = 'opacity 1s';
-      bannerImage.style.opacity = '0';
+    setTimeout(() => {
+      bannerImage.style.display = 'none';
+      video.style.display = 'block';
 
-      setTimeout(() => {
-        bannerImage.style.display = 'none';
-        video.style.display = 'block';
-        video.play().catch(() => {
-          // Caso o autoplay falhe (por causa do som), mostra o botão
-          muteBtn.style.display = 'block';
-        });
-      }, 1000);
-    });
+      // Tenta dar play automaticamente
+      video.play().then(() => {
+        // Quando começar a tocar, mostra o botão
+        muteBtn.style.display = 'block';
+      }).catch(() => {
+        // Caso o autoplay falhe (por causa do som bloqueado)
+        // mostra o botão mesmo assim
+        muteBtn.style.display = 'block';
+      });
+    }, 1000);
+  });
 
-    // Alternar som ao clicar no botão
-    muteBtn.addEventListener('click', () => {
-      video.muted = !video.muted;
-      muteBtn.textContent = video.muted ? '🔇' : '🔊';
-    });
-  }
-});
+  // Alternar som ao clicar
+  muteBtn.addEventListener('click', () => {
+    video.muted = !video.muted;
+    muteBtn.textContent = video.muted ? '🔇' : '🔊';
+  });
+}
 
   
 
