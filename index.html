@@ -7398,20 +7398,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ===== Botão de som =====
-  if (bannerSoundBtn && bannerVideo) {
-    bannerSoundBtn.addEventListener('click', () => {
-      if (bannerVideo.readyState >= 2) {
-        bannerVideo.muted = !bannerVideo.muted;
-        bannerSoundBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
-      } else {
-        bannerVideo.addEventListener('canplay', () => {
-          bannerVideo.muted = !bannerVideo.muted;
-          bannerSoundBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
-        }, { once: true });
-      }
-    });
-  }
+ bannerSoundBtn.addEventListener('click', () => {
+  bannerVideo.muted = !bannerVideo.muted;
+  bannerSoundBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
+  bannerVideo.play().catch(err => console.warn('Reprodução bloqueada:', err));
+});
 
   // ===== Pesquisa =====
   const searchInput = document.getElementById('searchInput');
