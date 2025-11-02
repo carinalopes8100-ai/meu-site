@@ -466,7 +466,10 @@ video::cue {
   </video>
 
 
-<button id="muteBtn" class="mute-btn">https://png.pngtree.com/png-clipart/20190903/original/pngtree-mute-icon-png-image_4419502.jpg</button>
+<button id="muteBtn" class="mute-btn" aria-label="Ativar/Desativar som">
+  <img id="muteIcon" src="URL_IMAGEM_SOM_LIGADO.png" alt="Som" style="width:24px; height:24px;">
+</button>
+
 
 
 
@@ -7647,15 +7650,42 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 const video = document.getElementById('bannerVideo');
+const bannerImage = document.getElementById('bannerImage');
 const muteBtn = document.getElementById('muteBtn');
-const muteIcon = document.getElementById('muteIcon');
+const muteIcon = document.getElementById('muteIcon'); // imagem dentro do botão
 
-muteBtn.addEventListener('click', () => {
-  video.muted = !video.muted;
-  muteIcon.src = video.muted 
-    ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4Duuw9_aN-cTf659Ag5VuAWOwpkxfVt15lg&s'  // som desligado
-    : 'https://w7.pngwing.com/pngs/407/322/png-transparent-computer-icons-loudspeaker-sound-on-angle-text-logo-thumbnail.png';    // som ligado
-});
+if (video && bannerImage && muteBtn && muteIcon) {
+  // Esconde o botão até o vídeo realmente começar
+  muteBtn.style.display = 'none';
+
+  // Quando o vídeo estiver pronto para ser reproduzido
+  video.addEventListener('canplay', () => {
+    bannerImage.style.transition = 'opacity 1s';
+    bannerImage.style.opacity = '0';
+
+    setTimeout(() => {
+      bannerImage.style.display = 'none';
+      video.style.display = 'block';
+
+      // Tenta dar play automaticamente
+      video.play().then(() => {
+        muteBtn.style.display = 'block';
+      }).catch(() => {
+        muteBtn.style.display = 'block';
+      });
+    }, 1000);
+  });
+
+  // Alternar som ao clicar
+  muteBtn.addEventListener('click', () => {
+    video.muted = !video.muted;
+    // muda a imagem do botão
+    muteIcon.src = video.muted 
+      ? 'https://png.pngtree.com/png-clipart/20190629/original/pngtree-volume-off-glyph-black-icon-png-image_4071616.jpg'  // quando mutado
+      : 'https://w7.pngwing.com/pngs/407/322/png-transparent-computer-icons-loudspeaker-sound-on-angle-text-logo-thumbnail.png';    // quando com som
+  });
+}
+
 
   
 
