@@ -7398,7 +7398,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
   // Banner
   const bannerImage = document.getElementById('bannerImage');
   const bannerVideo = document.getElementById('bannerVideo');
+  const bannerSoundBtn = document.getElementById('bannerSoundBtn');
   const banner = document.querySelector('.banner');
+
   bannerVideo.preload = 'auto';
   bannerVideo.addEventListener('canplaythrough', ()=>{
     bannerImage.style.transition = 'opacity 1s';
@@ -7410,16 +7412,15 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }, 1000);
   });
 
-  // Cria o botão de som
-const soundBtn = document.createElement('button');
-soundBtn.id = 'bannerSoundBtn';
-soundBtn.textContent = '🔇'; // Começa mudo
-banner.appendChild(soundBtn);
 
-  // Alterna som
-soundBtn.addEventListener('click', () => {
-  bannerVideo.muted = !bannerVideo.muted;
-  soundBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
+bannerSoundBtn.addEventListener('click', () => {
+  if (bannerVideo.muted) {
+    bannerVideo.muted = false;
+    bannerSoundBtn.textContent = '🔊';
+  } else {
+    bannerVideo.muted = true;
+    bannerSoundBtn.textContent = '🔇';
+  }
 });
 
 
