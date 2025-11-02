@@ -7298,7 +7298,7 @@ function abrirModalEpisodios(temporada, serieTitulo, serie) {
     btn.className = 'episodio-btn';
     btn.dataset.numero = ep.numero;
 
-if (ep.novosTodosOsDias || temporada.novosTodosOsDias) {
+if (ep.novosTodosOsDias) {
   btn.textContent = `Episódios novos todos os dias`;
   btn.disabled = true;
   btn.style.backgroundColor = "#444";
