@@ -6316,6 +6316,7 @@ const desenhos = [
   "temporadas": [
     {
       "numero": 1,
+      novosTodosOsDias: true
       "episodios": [
         { "numero": 1, "link": "https://filemoon.sx/e/x3fe99u0s82h" },
         { "numero": 2, "link": "https://filemoon.sx/e/ah9rn0x4w88e" },
@@ -7298,13 +7299,21 @@ function abrirModalEpisodios(temporada, serieTitulo, serie) {
     btn.className = 'episodio-btn';
     btn.dataset.numero = ep.numero;
 
-    if (ep.link === "#" || temporada.emBreve) {
-      btn.textContent = `Episódio ${ep.numero} - Vai estrear outra temporada`;
-      btn.disabled = true;
-      btn.style.backgroundColor = "#555";
-      btn.style.cursor = "not-allowed";
-    } else {
-      btn.textContent = `Episódio ${ep.numero}`;
+if (ep.link === "#" || temporada.emBreve) {
+  btn.textContent = `Episódio ${ep.numero} - Em Breve`;
+  btn.disabled = true;
+  btn.style.backgroundColor = "#555";
+  btn.style.cursor = "not-allowed";
+} 
+else if (ep.novosTodosOsDias) {
+  btn.textContent = `Episódios novos todos os dias`;
+  btn.disabled = true;
+  btn.style.backgroundColor = "#444";
+  btn.style.cursor = "default";
+} 
+else {
+  btn.textContent = `Episódio ${ep.numero}`;
+}
 
       btn.onclick = () => {
         // Remove destaque de outros episódios da mesma série
