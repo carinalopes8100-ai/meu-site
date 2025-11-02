@@ -489,7 +489,9 @@ video::cue {
       <button class="play" onclick="abrirModalTemporadas(series.find(s => s.titulo === 'Rabo De Peixe'))">
         <span class="play-symbol">▶</span> Ver
       </button>
-      <button class="lista" onclick="adicionarMinhaLista('Rabo De Peixe')">+ Minha Lista</button>
+      <button id="btnMinhaLista" class="lista" data-titulo="Rabo De Peixe" onclick="adicionarMinhaLista('Rabo De Peixe')">
+  + Minha Lista
+</button>
     </div>
   </div>
 </div>
@@ -648,21 +650,7 @@ function adicionarMinhaLista(titulo) {
     mostrarToast(`"${titulo}" removido da Minha Lista!`);
   }
 
-  salvarLista();
-
-  // Atualiza todos os botões da página que correspondem a esse item
-  document.querySelectorAll('.add-list-btn').forEach(btn => {
-    const img = btn.closest('.filme')?.querySelector('img');
-    if (img && img.alt === titulo) {
-      if (minhaLista.includes(titulo)) {
-        btn.textContent = '✖';
-        btn.title = 'Remover da Minha Lista';
-      } else {
-        btn.textContent = '+';
-        btn.title = 'Adicionar à Minha Lista';
-      }
-    }
-  });
+  salvarLista(); // salva no localStorage
 
   // Atualiza o botão do banner se houver
   const btnBanner = document.getElementById('btnMinhaLista');
@@ -670,6 +658,7 @@ function adicionarMinhaLista(titulo) {
     btnBanner.textContent = minhaLista.includes(titulo) ? 'Remover da Minha Lista' : '+ Minha Lista';
   }
 
+  // Atualiza a seção atual (para atualizar os botões nas filas)
   mostrarSecao(secaoAtual);
 }
 
