@@ -465,21 +465,22 @@ video::cue {
   </video>
 
 
-  <!-- 🔈 Botão de som -->
-  <button id="muteBtn" style="
-    position:absolute;
-    top:20px;
-    right:20px;
-    z-index:10;
-    background:rgba(0,0,0,0.5);
-    color:white;
-    border:none;
-    border-radius:50%;
-    font-size:20px;
-    width:45px;
-    height:45px;
-    cursor:pointer;
-  ">🔇</button>
+<button id="muteBtn" style="
+  position:absolute;
+  top:20px;
+  right:20px;
+  z-index:10;
+  background:rgba(0,0,0,0.5);
+  color:white;
+  border:none;
+  border-radius:50%;
+  font-size:20px;
+  width:45px;
+  height:45px;
+  cursor:pointer;
+  display:none; /* 🔥 Isto é importante */
+">🔇</button>
+
 
   
 
@@ -7659,19 +7660,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   const video = document.getElementById('bannerVideo');
-  const muteBtn = document.getElementById('muteBtn');
   const bannerImage = document.getElementById('bannerImage');
+  const muteBtn = document.getElementById('muteBtn');
 
-  if (video && muteBtn && bannerImage) {
-    // Começa com o botão escondido
+  if (video && bannerImage && muteBtn) {
+    // Garante que começa escondido
     muteBtn.style.display = 'none';
 
-    // Quando o vídeo estiver pronto para ser mostrado
+    // Quando o vídeo estiver pronto para começar
     video.addEventListener('canplaythrough', () => {
-      // Espera um pequeno tempo para garantir que a imagem já sumiu
+      // Quando a imagem do banner for ocultada, mostramos o botão
+      bannerImage.style.transition = 'opacity 1s';
+      bannerImage.style.opacity = '0';
+
       setTimeout(() => {
+        bannerImage.style.display = 'none';
+        video.style.display = 'block';
+        video.play();
+
+        // ✅ Só aqui mostramos o botão de som
         muteBtn.style.display = 'block';
-      }, 1200); // mesmo tempo que a transição da imagem (1s + margem)
+      }, 1000);
     });
 
     // Alternar som ao clicar
