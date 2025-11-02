@@ -7410,19 +7410,30 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
           bannerImage.style.display = 'none';
           bannerVideo.style.display = 'block';
-          bannerVideo.play();
+          bannerVideo.play().catch(err => console.warn('Autoplay bloqueado:', err));
         }, 1000);
       }
     });
   }
 
-  // Botão de som do banner
+  // ===== Botão de som =====
   if (bannerSoundBtn && bannerVideo) {
     bannerSoundBtn.addEventListener('click', () => {
-      bannerVideo.muted = !bannerVideo.muted;
-      bannerSoundBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
+      // Garante que o vídeo está pronto
+      if (bannerVideo.readyState >= 2) {
+        bannerVideo.muted = !bannerVideo.muted;
+        bannerSoundBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
+      } else {
+        // Se ainda não estiver pronto, espera carregar
+        bannerVideo.addEventListener('canplay', () => {
+          bannerVideo.muted = !bannerVideo.muted;
+          bannerSoundBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
+        }, { once: true });
+      }
     });
   }
+});
+
 
 
 
