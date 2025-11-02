@@ -489,9 +489,7 @@ video::cue {
       <button class="play" onclick="abrirModalTemporadas(series.find(s => s.titulo === 'Rabo De Peixe'))">
         <span class="play-symbol">▶</span> Ver
       </button>
-      <button id="btnMinhaLista" class="lista" data-titulo="Rabo De Peixe" onclick="adicionarMinhaLista('Rabo De Peixe')">
-  + Minha Lista
-</button>
+      <button class="lista" onclick="adicionarMinhaLista('Rabo De Peixe')">+ Minha Lista</button>
     </div>
   </div>
 </div>
@@ -638,6 +636,14 @@ function abrirDescricaoModal(item) {
 
   
 
+function adicionarMinhaLista(titulo){
+  if(!minhaLista.includes(titulo)){
+    minhaLista.push(titulo); salvarLista(); mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
+  } else {
+    minhaLista = minhaLista.filter(t => t!==titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`);
+  }
+  mostrarSecao('inicio');
+}
 
 function adicionarMinhaLista(titulo) {
   const index = minhaLista.indexOf(titulo);
@@ -650,18 +656,29 @@ function adicionarMinhaLista(titulo) {
     mostrarToast(`"${titulo}" removido da Minha Lista!`);
   }
 
-  salvarLista(); // salva no localStorage
+  salvarLista(); 
 
-  // Atualiza o botão do banner se houver
-const btnBanner = document.getElementById('btnMinhaLista');
-if (btnBanner && btnBanner.dataset.titulo === titulo) {
-  btnBanner.textContent = minhaLista.includes(titulo) ? 'Remover da Lista' : '+ Minha Lista';
-}
+  
+  mostrarSecao(secaoAtual); // <-- aqui atualiza imediatamente a seção
+ 
 
-  // Atualiza a seção atual (para atualizar os botões nas filas)
+
+  // Atualiza todos os botões da página que correspondem a esse item
+  document.querySelectorAll('.add-list-btn').forEach(btn => {
+    if (btn.closest('.filme').querySelector('img').alt === titulo) {
+      if (minhaLista.includes(titulo)) {
+        btn.textContent = '✖';
+        btn.title = 'Remover da Minha Lista';
+      } else {
+        btn.textContent = '+';
+        btn.title = 'Adicionar à Minha Lista';
+      }
+    }
+  });
+
+  // Atualiza a seção atual (opcional)
   mostrarSecao(secaoAtual);
 }
-
 
 
 // <<< AQUI: adicionar o código para oncanplaythrough >>>
@@ -7245,31 +7262,16 @@ overlay.appendChild(btnPlay);
     btnDescricao.onclick = e => { e.stopPropagation(); abrirDescricaoModal(item); };
     itemDiv.appendChild(btnDescricao);
 
-// ==== Botão adicionar/remover lista ====
-const addBtn = document.createElement('button'); 
-addBtn.className = 'add-list-btn';
-
-const updateButton = () => {
-  if(minhaLista.includes(item.titulo)){ 
-    addBtn.textContent='✖'; 
-    addBtn.title='Remover da Lista'; 
-  } else { 
-    addBtn.textContent='+'; 
-    addBtn.title='Adicionar à Minha Lista'; 
-  }
-};
-
-addBtn.onclick = e => { 
-  e.stopPropagation(); 
-  adicionarMinhaLista(item.titulo); 
-  updateButton(); // atualiza imediatamente
-};
-
-// **Chamada inicial para refletir o estado real da lista**
-updateButton(); 
-
-itemDiv.appendChild(addBtn);
-
+    // ==== Botão adicionar/remover lista ====
+    const addBtn = document.createElement('button'); 
+    addBtn.className = 'add-list-btn';
+    const updateButton = () => {
+      if(minhaLista.includes(item.titulo)){ addBtn.textContent='✖'; addBtn.title='Remover da Minha Lista'; } 
+      else { addBtn.textContent='+'; addBtn.title='Adicionar à Minha Lista'; }
+    };
+    addBtn.onclick = e => { e.stopPropagation(); adicionarMinhaLista(item.titulo); updateButton(); };
+    updateButton();
+    itemDiv.appendChild(addBtn);
 
     // ==== Botão remover da fila continuar ====
     if(idFila === 'filaContinuar'){
