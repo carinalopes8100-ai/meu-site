@@ -489,7 +489,7 @@ video::cue {
       <button class="play" onclick="abrirModalTemporadas(series.find(s => s.titulo === 'Rabo De Peixe'))">
         <span class="play-symbol">▶</span> Ver
       </button>
-      <button id="bannerAddBtn" class="lista" onclick="adicionarMinhaLista('Rabo De Peixe')">+ Minha Lista</button>
+      <button id="bannerAddBtn" class="lista">+ Minha Lista</button>
     </div>
   </div>
 </div>
@@ -7323,7 +7323,7 @@ function shuffleArray(array){
 
   // ===== Função que atualiza botão do banner =====
 function atualizarBannerBtn() {
-  const bannerAddBtn = document.getElementById('bannerAddBtn');
+  const bannerAddBtn = document.getElementById('bannerAddBtn') || document.querySelector('.banner .lista');
   if (!bannerAddBtn) return;
 
   if (minhaLista.includes('Rabo De Peixe')) {
@@ -7334,6 +7334,7 @@ function atualizarBannerBtn() {
     bannerAddBtn.title = 'Adicionar à Minha Lista';
   }
 }
+
 
 
   
@@ -7839,8 +7840,8 @@ document.addEventListener('DOMContentLoaded', () => {
   
     // ... seu código existente
 
-    const bannerAddBtn = document.getElementById('bannerAddBtn');
-  bannerAddBtn.addEventListener('click', () => {
+const bannerAddBtn = document.querySelector('.banner .lista');
+bannerAddBtn.addEventListener('click', () => {
   adicionarMinhaLista('Rabo De Peixe');
   atualizarBannerBtn();
 });
