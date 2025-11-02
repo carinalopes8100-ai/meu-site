@@ -7415,15 +7415,10 @@ if (bannerVideo) {
   });
 }
 
-if (bannerSoundBtn && bannerVideo) {
+if (bannerSoundBtn && bannerVideo) {  // ← verifica se os dois existem
   bannerSoundBtn.addEventListener('click', () => {
-    if (bannerVideo.muted) {
-      bannerVideo.muted = false;
-      bannerSoundBtn.textContent = '🔊';
-    } else {
-      bannerVideo.muted = true;
-      bannerSoundBtn.textContent = '🔇';
-    }
+    bannerVideo.muted = !bannerVideo.muted;
+    bannerSoundBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
   });
 }
 
