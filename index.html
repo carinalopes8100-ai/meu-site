@@ -655,7 +655,7 @@ function adicionarMinhaLista(titulo) {
   // Atualiza o botão do banner se houver
   const btnBanner = document.getElementById('btnMinhaLista');
   if (btnBanner && btnBanner.dataset.titulo === titulo) {
-    btnBanner.textContent = minhaLista.includes(titulo) ? 'Remover da Minha Lista' : '+ Minha Lista';
+    btnBanner.textContent = minhaLista.includes(titulo) ? 'Remover da Lista' : '+ Minha Lista';
   }
 
   // Atualiza a seção atual (para atualizar os botões nas filas)
@@ -7249,7 +7249,7 @@ overlay.appendChild(btnPlay);
     const addBtn = document.createElement('button'); 
     addBtn.className = 'add-list-btn';
     const updateButton = () => {
-      if(minhaLista.includes(item.titulo)){ addBtn.textContent='✖'; addBtn.title='Remover da Minha Lista'; } 
+      if(minhaLista.includes(item.titulo)){ addBtn.textContent='✖'; addBtn.title='Remover da Lista'; } 
       else { addBtn.textContent='+'; addBtn.title='Adicionar à Minha Lista'; }
     };
     addBtn.onclick = e => { e.stopPropagation(); adicionarMinhaLista(item.titulo); updateButton(); };
