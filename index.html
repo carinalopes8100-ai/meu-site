@@ -29,9 +29,6 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
 
 
-
-
-
   #logo {
   cursor: pointer;
 }
@@ -164,26 +161,6 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 
   
 .banner { position: relative; width:100%; height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
-
-  #bannerSoundBtn {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  background: rgba(0,0,0,0.5);
-  border: none;
-  color: white;
-  padding: 10px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 18px;
-  z-index: 5;
-  transition: background 0.3s;
-}
-
-#bannerSoundBtn:hover {
-  background: rgba(0,0,0,0.8);
-}
-  
 .banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
 .banner-content { position:relative; top: -200px; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:10px; }
 .banner h1 { font-size:48px; margin-bottom:10px; }
@@ -465,8 +442,6 @@ video::cue {
     <source src="https://archive.org/serve/1_20251017_20251017_1709/V%C3%ADdeo%20sem%20t%C3%ADtulo%20-%20Feito%20com%20Clipchamp%20%281%29.mp4" type="video/mp4">
   </video>
 
-<button id="bannerSoundBtn">🔊</button>
-
   <!-- Conteúdo do banner -->
   <div class="banner-content">
     <!-- Logo -->
@@ -676,6 +651,24 @@ function adicionarMinhaLista(titulo) {
 }
 
 
+// <<< AQUI: adicionar o código para oncanplaythrough >>>
+const bannerVideo = document.getElementById('bannerVideo');
+const bannerImage = document.getElementById('bannerImage');
+
+bannerVideo.preload = 'auto';  // garante que o navegador carregue todo o vídeo
+
+bannerVideo.addEventListener('canplaythrough', () => {
+  // Fade out da imagem de banner
+  bannerImage.style.transition = 'opacity 1s ease';
+  bannerImage.style.opacity = '0';
+
+  // Após o fade, esconder a imagem e mostrar o vídeo
+  setTimeout(() => {
+    bannerImage.style.display = 'none';
+    bannerVideo.style.display = 'block';
+    bannerVideo.play();  // garante autoplay
+  }, 1000);
+});
 
 
 function abrirAudioModal(item) {
@@ -7366,84 +7359,71 @@ function fecharDescricaoModal() { document.getElementById('descricaoModal').styl
 
 
 // ===== Inicialização =====
-document.addEventListener('DOMContentLoaded', () => {
-  // Carrega listas e progresso
+document.addEventListener('DOMContentLoaded', ()=>{
   carregarLista();
   carregarProgresso();
   mostrarSecao('inicio');
 
-  // Reaplica episódios e temporadas selecionados
+    // Reaplica episódios selecionados
   episodioSelecionado = JSON.parse(localStorage.getItem('episodioSelecionado') || '{}');
   temporadaSelecionada = JSON.parse(localStorage.getItem('temporadaSelecionada') || '{}');
   reaplicarSelecaoEpisodios();
   reaplicarSelecaoTemporadas();
 
-  // ===== Banner =====
+  // Banner
   const bannerImage = document.getElementById('bannerImage');
   const bannerVideo = document.getElementById('bannerVideo');
-  const bannerSoundBtn = document.getElementById('bannerSoundBtn');
+  bannerVideo.preload = 'auto';
+  bannerVideo.addEventListener('canplaythrough', ()=>{
+    bannerImage.style.transition = 'opacity 1s';
+    bannerImage.style.opacity = '0';
+    setTimeout(()=>{
+      bannerImage.style.display = 'none';
+      bannerVideo.style.display = 'block';
+      bannerVideo.play();
+    }, 1000);
+  });
 
-  if (bannerVideo) {
-    bannerVideo.preload = 'auto';
-    bannerVideo.addEventListener('canplaythrough', () => {
-      if (bannerImage) {
-        bannerImage.style.transition = 'opacity 1s';
-        bannerImage.style.opacity = '0';
-        setTimeout(() => {
-          bannerImage.style.display = 'none';
-          bannerVideo.style.display = 'block';
-          bannerVideo.play().catch(err => console.warn('Autoplay bloqueado:', err));
-        }, 1000);
-      }
-    });
-  }
-
- bannerSoundBtn.addEventListener('click', () => {
-  bannerVideo.muted = !bannerVideo.muted;
-  bannerSoundBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
-  bannerVideo.play().catch(err => console.warn('Reprodução bloqueada:', err));
-});
-
-  // ===== Pesquisa =====
+  // Pesquisa
   const searchInput = document.getElementById('searchInput');
   const searchButton = document.getElementById('searchButton');
-  const searchContainer = document.getElementById('searchContainer'); // <-- ESTA LINHA FALTAVA
 
-  if (searchButton && searchInput) {
-    searchButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      searchInput.classList.toggle('show');
-      if (searchInput.classList.contains('show')) searchInput.focus();
-      else searchInput.value = '';
-    });
-  }
+searchButton.addEventListener('click', (e) => {
+  e.stopPropagation();
+  searchInput.classList.toggle('show');
+  if (searchInput.classList.contains('show')) searchInput.focus();
+  else searchInput.value = '';
+});
 
+
+  // Fechar a barra se clicar fora dela
   document.addEventListener('click', (e) => {
-    if (searchContainer && !searchContainer.contains(e.target)) {
+    if (!searchContainer.contains(e.target)) {
       searchInput.classList.add('hidden');
     }
   });
 
-  if (searchInput) {
-    searchInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
-      }
-    });
+  searchInput.addEventListener('keydown', e=>{
+    if(e.key==='Enter'){ 
+      e.preventDefault();
+      searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio'); 
+    }
+  });
 
-    searchInput.addEventListener('input', debounce(() => {
-      searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
-    }, 150));
-  }
+  searchInput.addEventListener('input', debounce(()=>{
+    searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
+  }, 150));
 
-  // ===== Logo volta ao início =====
+
+
+    // Logo volta para a página inicial
   const logo = document.getElementById('logo');
   if (logo) {
-    logo.addEventListener('click', () => mostrarSecao('inicio'));
+    logo.addEventListener('click', () => {
+      mostrarSecao('inicio');
+    });
   }
 });
-
 
 const container = document.getElementById("pumpkinContainer");
 const NUM_PUMPKINS = 30;
@@ -7613,7 +7593,6 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
   fecharBtn.onclick = () => videoModal.remove();
   document.body.appendChild(videoModal);
 }
-
 
 
 </script>
