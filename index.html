@@ -7594,6 +7594,22 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
   document.body.appendChild(videoModal);
 }
 
+  document.addEventListener('DOMContentLoaded', () => {
+  const logo = document.querySelector('.logo');
+  if (logo) {
+    logo.style.cursor = 'pointer';
+    logo.addEventListener('click', () => {
+      if (typeof mostrarSecao === 'function') {
+        // Volta à página inicial
+        mostrarSecao('inicio');
+      } else {
+        // Caso a função não exista, apenas rola para o topo
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  }
+});
+
 
 </script>
 </body>
