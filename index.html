@@ -653,10 +653,10 @@ function adicionarMinhaLista(titulo) {
   salvarLista(); // salva no localStorage
 
   // Atualiza o botão do banner se houver
-  const btnBanner = document.getElementById('btnMinhaLista');
-  if (btnBanner && btnBanner.dataset.titulo === titulo) {
-    btnBanner.textContent = minhaLista.includes(titulo) ? 'Remover da Lista' : '+ Minha Lista';
-  }
+const btnBanner = document.getElementById('btnMinhaLista');
+if (btnBanner && btnBanner.dataset.titulo === titulo) {
+  btnBanner.textContent = minhaLista.includes(titulo) ? 'Remover da Lista' : '+ Minha Lista';
+}
 
   // Atualiza a seção atual (para atualizar os botões nas filas)
   mostrarSecao(secaoAtual);
@@ -7245,21 +7245,31 @@ overlay.appendChild(btnPlay);
     btnDescricao.onclick = e => { e.stopPropagation(); abrirDescricaoModal(item); };
     itemDiv.appendChild(btnDescricao);
 
-    // ==== Botão adicionar/remover lista ====
-    const addBtn = document.createElement('button'); 
-    addBtn.className = 'add-list-btn';
+// ==== Botão adicionar/remover lista ====
+const addBtn = document.createElement('button'); 
+addBtn.className = 'add-list-btn';
+
 const updateButton = () => {
-  if (minhaLista.includes(item.titulo)) { 
-    addBtn.textContent = '✖'; 
-    addBtn.title = 'Remover da Lista'; 
+  if(minhaLista.includes(item.titulo)){ 
+    addBtn.textContent='✖'; 
+    addBtn.title='Remover da Lista'; 
   } else { 
-    addBtn.textContent = '+ Minha Lista'; 
-    addBtn.title = 'Adicionar à Minha Lista'; 
+    addBtn.textContent='+'; 
+    addBtn.title='Adicionar à Minha Lista'; 
   }
 };
-    addBtn.onclick = e => { e.stopPropagation(); adicionarMinhaLista(item.titulo); updateButton(); };
-    updateButton();
-    itemDiv.appendChild(addBtn);
+
+addBtn.onclick = e => { 
+  e.stopPropagation(); 
+  adicionarMinhaLista(item.titulo); 
+  updateButton(); // atualiza imediatamente
+};
+
+// **Chamada inicial para refletir o estado real da lista**
+updateButton(); 
+
+itemDiv.appendChild(addBtn);
+
 
     // ==== Botão remover da fila continuar ====
     if(idFila === 'filaContinuar'){
