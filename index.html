@@ -7419,12 +7419,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== Botão de som =====
   if (bannerSoundBtn && bannerVideo) {
     bannerSoundBtn.addEventListener('click', () => {
-      // Garante que o vídeo está pronto
       if (bannerVideo.readyState >= 2) {
         bannerVideo.muted = !bannerVideo.muted;
         bannerSoundBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
       } else {
-        // Se ainda não estiver pronto, espera carregar
         bannerVideo.addEventListener('canplay', () => {
           bannerVideo.muted = !bannerVideo.muted;
           bannerSoundBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
@@ -7433,51 +7431,46 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-
-
-
-  // Pesquisa
+  // ===== Pesquisa =====
   const searchInput = document.getElementById('searchInput');
   const searchButton = document.getElementById('searchButton');
+  const searchContainer = document.getElementById('searchContainer'); // <-- ESTA LINHA FALTAVA
 
-searchButton.addEventListener('click', (e) => {
-  e.stopPropagation();
-  searchInput.classList.toggle('show');
-  if (searchInput.classList.contains('show')) searchInput.focus();
-  else searchInput.value = '';
-});
+  if (searchButton && searchInput) {
+    searchButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      searchInput.classList.toggle('show');
+      if (searchInput.classList.contains('show')) searchInput.focus();
+      else searchInput.value = '';
+    });
+  }
 
-  
-
-
-  // Fechar a barra se clicar fora dela
   document.addEventListener('click', (e) => {
-    if (!searchContainer.contains(e.target)) {
+    if (searchContainer && !searchContainer.contains(e.target)) {
       searchInput.classList.add('hidden');
     }
   });
 
-  searchInput.addEventListener('keydown', e=>{
-    if(e.key==='Enter'){ 
-      e.preventDefault();
-      searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio'); 
-    }
-  });
+  if (searchInput) {
+    searchInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
+      }
+    });
 
-  searchInput.addEventListener('input', debounce(()=>{
-    searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
-  }, 150));
+    searchInput.addEventListener('input', debounce(() => {
+      searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
+    }, 150));
+  }
 
-
-
-    // Logo volta para a página inicial
+  // ===== Logo volta ao início =====
   const logo = document.getElementById('logo');
   if (logo) {
-    logo.addEventListener('click', () => {
-      mostrarSecao('inicio');
-    });
+    logo.addEventListener('click', () => mostrarSecao('inicio'));
   }
 });
+
 
 const container = document.getElementById("pumpkinContainer");
 const NUM_PUMPKINS = 30;
