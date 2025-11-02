@@ -7672,12 +7672,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 1000);
     });
 
-    // Alternar som ao clicar
-    muteBtn.addEventListener('click', () => {
-      video.muted = !video.muted;
-      muteBtn.textContent = video.muted ? 'https://png.pngtree.com/png-clipart/20190903/original/pngtree-mute-icon-png-image_4419502.jpg' : '🔊';
-    });
-  }
+   muteBtn.addEventListener('click', () => {
+  video.muted = !video.muted;
+  muteIcon.src = video.muted 
+    ? 'https://png.pngtree.com/png-clipart/20190903/original/pngtree-mute-icon-png-image_4419502.jpg'  // som desligado
+    : 'URL_IMAGEM_SOM_LIGADO.png';    // som ligado
 });
 
   
