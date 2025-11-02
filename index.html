@@ -28,6 +28,26 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 }
 
 
+  #bannerSoundBtn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  z-index: 5;
+  transition: background 0.3s;
+}
+
+#bannerSoundBtn:hover {
+  background: rgba(0,0,0,0.8);
+}
+
+
 
   #logo {
   cursor: pointer;
@@ -7384,6 +7404,21 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }, 1000);
   });
 
+  const bannerVideo = document.getElementById('bannerVideo');
+const banner = document.getElementById('banner');
+
+// Cria o botão
+const soundBtn = document.createElement('button');
+soundBtn.id = 'bannerSoundBtn';
+soundBtn.textContent = '🔇'; // Começa mudo
+banner.appendChild(soundBtn);
+
+// Função para alternar som
+soundBtn.addEventListener('click', () => {
+  bannerVideo.muted = !bannerVideo.muted;
+  soundBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
+});
+
   // Pesquisa
   const searchInput = document.getElementById('searchInput');
   const searchButton = document.getElementById('searchButton');
@@ -7394,6 +7429,8 @@ searchButton.addEventListener('click', (e) => {
   if (searchInput.classList.contains('show')) searchInput.focus();
   else searchInput.value = '';
 });
+
+  
 
 
   // Fechar a barra se clicar fora dela
