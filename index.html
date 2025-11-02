@@ -7650,7 +7650,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (logo) {
     logo.style.cursor = 'pointer';
     logo.addEventListener('click', e => {
-      e.preventDefault(); // evita reload se for <a>
+      e.preventDefault();
       e.stopPropagation();
       if (typeof mostrarSecao === 'function') {
         mostrarSecao('inicio');
@@ -7658,38 +7658,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-
   const video = document.getElementById('bannerVideo');
   const bannerImage = document.getElementById('bannerImage');
   const muteBtn = document.getElementById('muteBtn');
 
   if (video && bannerImage && muteBtn) {
-    // Garante que começa escondido
+    // Esconde o botão até o vídeo começar mesmo
     muteBtn.style.display = 'none';
 
-    // Quando o vídeo estiver pronto para começar
-    video.addEventListener('loadeddata', () => {
-      // Quando a imagem do banner for ocultada, mostramos o botão
+    // Quando o vídeo começar MESMO a tocar (evento mais confiável)
+    video.addEventListener('play', () => {
+      muteBtn.style.display = 'block';
+    });
+
+    // Transição da imagem para o vídeo
+    video.addEventListener('canplay', () => {
       bannerImage.style.transition = 'opacity 1s';
       bannerImage.style.opacity = '0';
 
       setTimeout(() => {
         bannerImage.style.display = 'none';
         video.style.display = 'block';
-        video.play();
-
-        // ✅ Só aqui mostramos o botão de som
-        muteBtn.style.display = 'block';
+        video.play().catch(() => {
+          // Caso o autoplay falhe (por causa do som), mostra o botão
+          muteBtn.style.display = 'block';
+        });
       }, 1000);
     });
 
-    // Alternar som ao clicar
+    // Alternar som ao clicar no botão
     muteBtn.addEventListener('click', () => {
       video.muted = !video.muted;
       muteBtn.textContent = video.muted ? '🔇' : '🔊';
     });
   }
 });
+
   
 
 </script>
