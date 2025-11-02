@@ -7298,21 +7298,22 @@ function abrirModalEpisodios(temporada, serieTitulo, serie) {
     btn.className = 'episodio-btn';
     btn.dataset.numero = ep.numero;
 
-if (ep.link === "#" || temporada.emBreve) {
-  btn.textContent = `Episódio ${ep.numero} - Em Breve`;
-  btn.disabled = true;
-  btn.style.backgroundColor = "#555";
-  btn.style.cursor = "not-allowed";
-} 
-else if (ep.novosTodosOsDias) {
+if (ep.novosTodosOsDias || temporada.novosTodosOsDias) {
   btn.textContent = `Episódios novos todos os dias`;
   btn.disabled = true;
   btn.style.backgroundColor = "#444";
   btn.style.cursor = "default";
 } 
+else if (ep.link === "#" || temporada.emBreve) {
+  btn.textContent = `Episódio ${ep.numero} - Em Breve`;
+  btn.disabled = true;
+  btn.style.backgroundColor = "#555";
+  btn.style.cursor = "not-allowed";
+} 
 else {
   btn.textContent = `Episódio ${ep.numero}`;
 }
+
 
       btn.onclick = () => {
         // Remove destaque de outros episódios da mesma série
