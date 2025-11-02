@@ -7668,7 +7668,7 @@ document.addEventListener('DOMContentLoaded', () => {
     muteBtn.style.display = 'none';
 
     // Quando o vídeo estiver pronto para começar
-    video.addEventListener('canplaythrough', () => {
+    video.addEventListener('loadeddata', () => {
       // Quando a imagem do banner for ocultada, mostramos o botão
       bannerImage.style.transition = 'opacity 1s';
       bannerImage.style.opacity = '0';
