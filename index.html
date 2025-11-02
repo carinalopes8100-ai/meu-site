@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -51,35 +52,26 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   transform: rotate(0deg);
 }
 
-/* CSS para o botão estilo Netflix */
-.netflix-audio-toggle {
+.mute-btn {
   position: absolute;
-  bottom: 90px;    /* ajusta conforme teu layout */
-  right: 16px;  /* idem */
-  width: 40px;
-  height: 40px;
+  bottom: 110px;
+  right: 20px;
   background: rgba(0, 0, 0, 0.6);
+  color: #fff;
   border: none;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 50px;
+  height: 50px;
+  font-size: 22px;
   cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
   z-index: 10;
-  transition: background 0.3s ease;
 }
 
-.netflix-audio-toggle:hover {
+.mute-btn:hover {
   background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
 }
-
-.audio-icon {
-  width: 24px;
-  height: 24px;
-  pointer-events: none;
-  color: white;
-}
-
 
   
 
@@ -474,21 +466,7 @@ video::cue {
   </video>
 
 
-<!-- Botão de som estilo Netflix -->
-<button id="muteBtn" class="netflix-audio-toggle" aria-label="Ativar/Desativar som">
-  <div class="icon-wrapper">
-    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" class="audio-icon">
-      <g class="icon-on">
-        <path d="M3 9v6h4l5 5V4L7 9H3z"/>
-      </g>
-      <g class="icon-off" style="display:none">
-        <path d="M16.5 12l3.5 3.5-1.4 1.4L15 13.4l-3.5 3.5-1.4-1.4L13.6 12l-3.5-3.5 1.4-1.4L15 10.6l3.5-3.5 1.4 1.4L16.5 12z"/>
-      </g>
-    </svg>
-  </div>
-</button>
-
-
+<button id="muteBtn" class="mute-btn">🔇</button>
 
 
 
@@ -7669,21 +7647,39 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const video = document.getElementById('bannerVideo');
-  const btn = document.getElementById('muteBtn');
-  const iconOn = btn.querySelector('.icon-on');
-  const iconOff = btn.querySelector('.icon-off');
+  const bannerImage = document.getElementById('bannerImage');
+  const muteBtn = document.getElementById('muteBtn');
 
-  btn.addEventListener('click', () => {
-    video.muted = !video.muted;
-    if (video.muted) {
-      iconOn.style.display = 'none';
-      iconOff.style.display = 'block';
-    } else {
-      iconOn.style.display = 'block';
-      iconOff.style.display = 'none';
-    }
-  });
+  if (video && bannerImage && muteBtn) {
+    // Esconde o botão até o vídeo realmente começar
+    muteBtn.style.display = 'none';
+
+    // Quando o vídeo estiver pronto para ser reproduzido
+    video.addEventListener('canplay', () => {
+      bannerImage.style.transition = 'opacity 1s';
+      bannerImage.style.opacity = '0';
+
+      setTimeout(() => {
+        bannerImage.style.display = 'none';
+        video.style.display = 'block';
+
+        // Tenta dar play automaticamente
+        video.play().then(() => {
+          muteBtn.style.display = 'block';
+        }).catch(() => {
+          muteBtn.style.display = 'block';
+        });
+      }, 1000);
+    });
+
+    // Alternar som ao clicar
+    muteBtn.addEventListener('click', () => {
+      video.muted = !video.muted;
+      muteBtn.textContent = video.muted ? '🔇' : '🔊';
+    });
+  }
 });
+
   
 
 </script>
