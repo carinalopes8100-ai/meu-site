@@ -636,14 +636,6 @@ function abrirDescricaoModal(item) {
 
   
 
-function adicionarMinhaLista(titulo){
-  if(!minhaLista.includes(titulo)){
-    minhaLista.push(titulo); salvarLista(); mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
-  } else {
-    minhaLista = minhaLista.filter(t => t!==titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`);
-  }
-  mostrarSecao('inicio');
-}
 
 function adicionarMinhaLista(titulo) {
   const index = minhaLista.indexOf(titulo);
