@@ -7646,37 +7646,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  const video = document.getElementById('bannerVideo');
-  const bannerImage = document.getElementById('bannerImage');
-  const muteBtn = document.getElementById('muteBtn');
+const video = document.getElementById('bannerVideo');
+const muteBtn = document.getElementById('muteBtn');
+const muteIcon = document.getElementById('muteIcon');
 
-  if (video && bannerImage && muteBtn) {
-    // Esconde o botão até o vídeo realmente começar
-    muteBtn.style.display = 'none';
-
-    // Quando o vídeo estiver pronto para ser reproduzido
-    video.addEventListener('canplay', () => {
-      bannerImage.style.transition = 'opacity 1s';
-      bannerImage.style.opacity = '0';
-
-      setTimeout(() => {
-        bannerImage.style.display = 'none';
-        video.style.display = 'block';
-
-        // Tenta dar play automaticamente
-        video.play().then(() => {
-          muteBtn.style.display = 'block';
-        }).catch(() => {
-          muteBtn.style.display = 'block';
-        });
-      }, 1000);
-    });
-
-   muteBtn.addEventListener('click', () => {
+muteBtn.addEventListener('click', () => {
   video.muted = !video.muted;
   muteIcon.src = video.muted 
-    ? 'https://png.pngtree.com/png-clipart/20190903/original/pngtree-mute-icon-png-image_4419502.jpg'  // som desligado
-    : 'https://w7.pngwing.com/pngs/407/322/png-transparent-computer-icons-loudspeaker-sound-on-angle-text-logo-thumbnail.png';    // som ligado
+    ? 'URL_IMAGEM_SOM_DESLIGADO.png'  // som desligado
+    : 'URL_IMAGEM_SOM_LIGADO.png';    // som ligado
 });
 
   
