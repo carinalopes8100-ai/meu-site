@@ -7272,7 +7272,7 @@ function abrirModalTemporadas(serie) {
     const btn = document.createElement('button');
     btn.className = 'temporada-btn';
     if(temp.emBreve) {
-      btn.textContent = `Temporada ${temp.numero} - Em Breve`;
+      btn.textContent = `Temporada ${temp.numero} - Vai estrear outra temporada`;
       btn.disabled = true;
       btn.style.backgroundColor = "#555";
       btn.style.cursor = "not-allowed";
@@ -7299,7 +7299,7 @@ function abrirModalEpisodios(temporada, serieTitulo, serie) {
     btn.dataset.numero = ep.numero;
 
     if (ep.link === "#" || temporada.emBreve) {
-      btn.textContent = `Episódio ${ep.numero} - Em Breve`;
+      btn.textContent = `Episódio ${ep.numero} - Vai estrear outra temporada`;
       btn.disabled = true;
       btn.style.backgroundColor = "#555";
       btn.style.cursor = "not-allowed";
