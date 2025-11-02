@@ -465,8 +465,21 @@ video::cue {
   </video>
 
 
-<!-- Botão de som -->
-<button id="muteBtn" class="mute-btn">🔇</button>
+  <!-- 🔈 Botão de som -->
+  <button id="muteBtn" style="
+    position:absolute;
+    top:20px;
+    right:20px;
+    z-index:10;
+    background:rgba(0,0,0,0.5);
+    color:white;
+    border:none;
+    border-radius:50%;
+    font-size:20px;
+    width:45px;
+    height:45px;
+    cursor:pointer;
+  ">🔇</button>
 
   
 
@@ -7645,20 +7658,23 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // === Botão de som do vídeo do banner ===
   const video = document.getElementById('bannerVideo');
   const muteBtn = document.getElementById('muteBtn');
+  const bannerImage = document.getElementById('bannerImage');
 
-  if (video && muteBtn) {
+  if (video && muteBtn && bannerImage) {
+    // Começa com o botão escondido
+    muteBtn.style.display = 'none';
 
-    // 👉 Aqui: mostra ou esconde o botão conforme o vídeo estar visível ou não
-    if (video.style.display === 'none') {
-      muteBtn.style.display = 'none';
-    } else {
-      muteBtn.style.display = 'block';
-    }
+    // Quando o vídeo estiver pronto para ser mostrado
+    video.addEventListener('canplaythrough', () => {
+      // Espera um pequeno tempo para garantir que a imagem já sumiu
+      setTimeout(() => {
+        muteBtn.style.display = 'block';
+      }, 1200); // mesmo tempo que a transição da imagem (1s + margem)
+    });
 
-    // evento de clique
+    // Alternar som ao clicar
     muteBtn.addEventListener('click', () => {
       video.muted = !video.muted;
       muteBtn.textContent = video.muted ? '🔇' : '🔊';
