@@ -465,6 +465,8 @@ video::cue {
     <source src="https://archive.org/serve/1_20251017_20251017_1709/V%C3%ADdeo%20sem%20t%C3%ADtulo%20-%20Feito%20com%20Clipchamp%20%281%29.mp4" type="video/mp4">
   </video>
 
+  <button id="bannerSoundBtn" onclick="toggleBannerSound()">🔊</button>
+
   <!-- Conteúdo do banner -->
   <div class="banner-content">
     <!-- Logo -->
@@ -7631,6 +7633,19 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
 
   fecharBtn.onclick = () => videoModal.remove();
   document.body.appendChild(videoModal);
+}
+
+  const bannerVideo = document.getElementById('bannerVideo');
+const bannerSoundBtn = document.getElementById('bannerSoundBtn');
+
+function toggleBannerSound() {
+  if (bannerVideo.muted) {
+    bannerVideo.muted = false;
+    bannerSoundBtn.textContent = '🔊'; // som ligado
+  } else {
+    bannerVideo.muted = true;
+    bannerSoundBtn.textContent = '🔇'; // som desligado
+  }
 }
 
 
