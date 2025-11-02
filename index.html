@@ -465,7 +465,7 @@ video::cue {
     <source src="https://archive.org/serve/1_20251017_20251017_1709/V%C3%ADdeo%20sem%20t%C3%ADtulo%20-%20Feito%20com%20Clipchamp%20%281%29.mp4" type="video/mp4">
   </video>
 
-
+<button id="bannerSoundBtn">🔊</button>
 
   <!-- Conteúdo do banner -->
   <div class="banner-content">
@@ -7384,43 +7384,45 @@ function fecharDescricaoModal() { document.getElementById('descricaoModal').styl
 
 
 // ===== Inicialização =====
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded', () => {
+  // Carrega listas e progresso
   carregarLista();
   carregarProgresso();
   mostrarSecao('inicio');
 
-    // Reaplica episódios selecionados
+  // Reaplica episódios e temporadas selecionados
   episodioSelecionado = JSON.parse(localStorage.getItem('episodioSelecionado') || '{}');
   temporadaSelecionada = JSON.parse(localStorage.getItem('temporadaSelecionada') || '{}');
   reaplicarSelecaoEpisodios();
   reaplicarSelecaoTemporadas();
 
-// Banner
-const bannerImage = document.getElementById('bannerImage');
-const bannerVideo = document.getElementById('bannerVideo');
-const bannerSoundBtn = document.getElementById('bannerSoundBtn');
+  // ===== Banner =====
+  const bannerImage = document.getElementById('bannerImage');
+  const bannerVideo = document.getElementById('bannerVideo');
+  const bannerSoundBtn = document.getElementById('bannerSoundBtn');
 
-if (bannerVideo) {
-  bannerVideo.preload = 'auto';
-  bannerVideo.addEventListener('canplaythrough', () => {
-    if (bannerImage) {
-      bannerImage.style.transition = 'opacity 1s';
-      bannerImage.style.opacity = '0';
-      setTimeout(() => {
-        bannerImage.style.display = 'none';
-        bannerVideo.style.display = 'block';
-        bannerVideo.play();
-      }, 1000);
-    }
-  });
-}
+  if (bannerVideo) {
+    bannerVideo.preload = 'auto';
+    bannerVideo.addEventListener('canplaythrough', () => {
+      if (bannerImage) {
+        bannerImage.style.transition = 'opacity 1s';
+        bannerImage.style.opacity = '0';
+        setTimeout(() => {
+          bannerImage.style.display = 'none';
+          bannerVideo.style.display = 'block';
+          bannerVideo.play();
+        }, 1000);
+      }
+    });
+  }
 
-if (bannerSoundBtn && bannerVideo) {  // ← verifica se os dois existem
-  bannerSoundBtn.addEventListener('click', () => {
-    bannerVideo.muted = !bannerVideo.muted;
-    bannerSoundBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
-  });
-}
+  // Botão de som do banner
+  if (bannerSoundBtn && bannerVideo) {
+    bannerSoundBtn.addEventListener('click', () => {
+      bannerVideo.muted = !bannerVideo.muted;
+      bannerSoundBtn.textContent = bannerVideo.muted ? '🔇' : '🔊';
+    });
+  }
 
 
 
