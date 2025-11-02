@@ -676,24 +676,6 @@ function adicionarMinhaLista(titulo) {
 }
 
 
-// <<< AQUI: adicionar o código para oncanplaythrough >>>
-const bannerVideo = document.getElementById('bannerVideo');
-const bannerImage = document.getElementById('bannerImage');
-
-bannerVideo.preload = 'auto';  // garante que o navegador carregue todo o vídeo
-
-bannerVideo.addEventListener('canplaythrough', () => {
-  // Fade out da imagem de banner
-  bannerImage.style.transition = 'opacity 1s ease';
-  bannerImage.style.opacity = '0';
-
-  // Após o fade, esconder a imagem e mostrar o vídeo
-  setTimeout(() => {
-    bannerImage.style.display = 'none';
-    bannerVideo.style.display = 'block';
-    bannerVideo.play();  // garante autoplay
-  }, 1000);
-});
 
 
 function abrirAudioModal(item) {
