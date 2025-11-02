@@ -51,6 +51,28 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   transform: rotate(0deg);
 }
 
+.mute-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 22px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  z-index: 10;
+}
+
+.mute-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+  
 
 .episodio-btn.selecionado {
   background-color: black; /* fica preto */
@@ -441,6 +463,12 @@ video::cue {
   <video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay muted loop>
     <source src="https://archive.org/serve/1_20251017_20251017_1709/V%C3%ADdeo%20sem%20t%C3%ADtulo%20-%20Feito%20com%20Clipchamp%20%281%29.mp4" type="video/mp4">
   </video>
+
+
+<!-- Botão de som -->
+<button id="muteBtn" class="mute-btn">🔇</button>
+
+  
 
   <!-- Conteúdo do banner -->
   <div class="banner-content">
@@ -7615,8 +7643,29 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-});
 
+
+  // === Botão de som do vídeo do banner ===
+  const video = document.getElementById('bannerVideo');
+  const muteBtn = document.getElementById('muteBtn');
+
+  if (video && muteBtn) {
+
+    // 👉 Aqui: mostra ou esconde o botão conforme o vídeo estar visível ou não
+    if (video.style.display === 'none') {
+      muteBtn.style.display = 'none';
+    } else {
+      muteBtn.style.display = 'block';
+    }
+
+    // evento de clique
+    muteBtn.addEventListener('click', () => {
+      video.muted = !video.muted;
+      muteBtn.textContent = video.muted ? '🔇' : '🔊';
+    });
+  }
+});
+  
 
 </script>
 </body>
