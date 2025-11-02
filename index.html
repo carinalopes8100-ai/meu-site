@@ -648,16 +648,12 @@ function adicionarMinhaLista(titulo) {
     mostrarToast(`"${titulo}" removido da Minha Lista!`);
   }
 
-  salvarLista(); 
-
-  
-  mostrarSecao(secaoAtual); // <-- aqui atualiza imediatamente a seção
- 
-
+  salvarLista();
 
   // Atualiza todos os botões da página que correspondem a esse item
   document.querySelectorAll('.add-list-btn').forEach(btn => {
-    if (btn.closest('.filme').querySelector('img').alt === titulo) {
+    const img = btn.closest('.filme')?.querySelector('img');
+    if (img && img.alt === titulo) {
       if (minhaLista.includes(titulo)) {
         btn.textContent = '✖';
         btn.title = 'Remover da Minha Lista';
@@ -668,9 +664,15 @@ function adicionarMinhaLista(titulo) {
     }
   });
 
-  // Atualiza a seção atual (opcional)
+  // Atualiza o botão do banner se houver
+  const btnBanner = document.getElementById('btnMinhaLista');
+  if (btnBanner && btnBanner.dataset.titulo === titulo) {
+    btnBanner.textContent = minhaLista.includes(titulo) ? 'Remover da Minha Lista' : '+ Minha Lista';
+  }
+
   mostrarSecao(secaoAtual);
 }
+
 
 
 // <<< AQUI: adicionar o código para oncanplaythrough >>>
