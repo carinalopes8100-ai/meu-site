@@ -7395,33 +7395,38 @@ document.addEventListener('DOMContentLoaded', ()=>{
   reaplicarSelecaoEpisodios();
   reaplicarSelecaoTemporadas();
 
-  // Banner
-  const bannerImage = document.getElementById('bannerImage');
-  const bannerVideo = document.getElementById('bannerVideo');
-  const bannerSoundBtn = document.getElementById('bannerSoundBtn');
-  const banner = document.querySelector('.banner');
+// Banner
+const bannerImage = document.getElementById('bannerImage');
+const bannerVideo = document.getElementById('bannerVideo');
+const bannerSoundBtn = document.getElementById('bannerSoundBtn');
 
+if (bannerVideo) {
   bannerVideo.preload = 'auto';
-  bannerVideo.addEventListener('canplaythrough', ()=>{
-    bannerImage.style.transition = 'opacity 1s';
-    bannerImage.style.opacity = '0';
-    setTimeout(()=>{
-      bannerImage.style.display = 'none';
-      bannerVideo.style.display = 'block';
-      bannerVideo.play();
-    }, 1000);
+  bannerVideo.addEventListener('canplaythrough', () => {
+    if (bannerImage) {
+      bannerImage.style.transition = 'opacity 1s';
+      bannerImage.style.opacity = '0';
+      setTimeout(() => {
+        bannerImage.style.display = 'none';
+        bannerVideo.style.display = 'block';
+        bannerVideo.play();
+      }, 1000);
+    }
   });
+}
 
+if (bannerSoundBtn && bannerVideo) {
+  bannerSoundBtn.addEventListener('click', () => {
+    if (bannerVideo.muted) {
+      bannerVideo.muted = false;
+      bannerSoundBtn.textContent = '🔊';
+    } else {
+      bannerVideo.muted = true;
+      bannerSoundBtn.textContent = '🔇';
+    }
+  });
+}
 
-bannerSoundBtn.addEventListener('click', () => {
-  if (bannerVideo.muted) {
-    bannerVideo.muted = false;
-    bannerSoundBtn.textContent = '🔊';
-  } else {
-    bannerVideo.muted = true;
-    bannerSoundBtn.textContent = '🔇';
-  }
-});
 
 
   // Pesquisa
