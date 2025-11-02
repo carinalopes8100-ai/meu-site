@@ -7321,6 +7321,18 @@ function shuffleArray(array){
   return arr;
 }
 
+  // ===== Função que atualiza botão do banner =====
+function atualizarBannerBtn() {
+    const bannerAddBtn = document.getElementById('bannerAddBtn');
+    if (minhaLista.includes(bannerItem.titulo)) {
+        bannerAddBtn.textContent = '✖ Remover da Lista';
+        bannerAddBtn.title = 'Remover da Minha Lista';
+    } else {
+        bannerAddBtn.textContent = '+ Minha Lista';
+        bannerAddBtn.title = 'Adicionar à Minha Lista';
+    }
+}
+
   
 function mostrarSecao(secao) {
     secaoAtual = secao;
@@ -7820,7 +7832,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-  
+  document.addEventListener('DOMContentLoaded', () => {
+    // ... seu código existente
+
+    const bannerAddBtn = document.getElementById('bannerAddBtn');
+    bannerAddBtn.addEventListener('click', () => {
+        adicionarMinhaLista(bannerItem.titulo); // função que você já tem
+        atualizarBannerBtn(); // atualiza o texto do botão
+    });
+
+    atualizarBannerBtn(); // inicializa o botão correto quando o banner carregar
+});
+
 
 </script>
 </body>
