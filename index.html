@@ -7754,10 +7754,10 @@ function abrirDescricaoModal(item) {
     const ano = matchAno[1];
     const restante = matchAno[2];
 
-    // Mostra o título e o ano abaixo dele
+    // Mantém o título e o ano, sem estilo inline
+    titulo.innerHTML = `${item.titulo}<br><small>${ano}</small>`;
     texto.textContent = restante;
   } else {
-    // Caso não tenha ano no início
     titulo.textContent = item.titulo || 'Sem título';
     texto.textContent = item.descricao || 'Descrição indisponível.';
   }
@@ -7766,6 +7766,7 @@ function abrirDescricaoModal(item) {
   modal.style.display = 'flex';
   requestAnimationFrame(() => modal.classList.add('show'));
 }
+
 
 function fecharDescricaoModal() {
   const modal = document.getElementById('descricaoModal');
