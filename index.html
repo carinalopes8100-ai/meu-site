@@ -218,15 +218,22 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .banner-description {
   font-size: 16px;
   color: #fff;
-  margin-top: -20px;
-  max-width: 450px;  /* limita a largura da frase */
+  max-width: 450px;
   line-height: 1.4;
+
+  opacity: 0;         /* invisível */
+  max-height: 0;      /* altura zero */
+  overflow: hidden;   /* esconde tudo */
+  transition: max-height 0.5s ease, opacity 0.5s ease;
+  pointer-events: none; /* não atrapalha mouse */
 }
-.banner-description {
-  word-wrap: break-word;   /* quebra palavras longas */
-  white-space: normal;     /* permite quebra de linha */
-  margin-top: -20px;
+
+.banner-content:hover .banner-description {
+  opacity: 1;         /* aparece */
+  max-height: 500px;  /* altura suficiente para o texto */
+  pointer-events: auto; /* agora recebe hover normal */
 }
+
 
 .play-symbol {
   font-size: 28px;       /* tamanho do símbolo */
