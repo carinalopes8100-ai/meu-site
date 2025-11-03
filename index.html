@@ -221,19 +221,21 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   max-width: 450px;
   line-height: 1.4;
 
-  display: -webkit-box;          /* habilita box para truncamento */
-  -webkit-box-orient: vertical;  /* direção das linhas */
-  -webkit-line-clamp: 3;         /* mostra 3 linhas e depois ... */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;  /* mostra 3 linhas com ... */
   overflow: hidden;
   text-overflow: ellipsis;
   transition: all 0.3s ease;
+  cursor: pointer;          /* indica que é interativo */
 }
 
-.banner-content:hover .banner-description {
-  -webkit-line-clamp: unset;     /* remove o truncamento */
-  white-space: normal;           /* deixa quebrar linhas normalmente */
-  overflow: visible;             /* mostra tudo */
+.banner-description:hover {
+  -webkit-line-clamp: unset; /* remove o truncamento */
+  white-space: normal;       /* permite quebrar linha */
+  overflow: visible;         /* mostra todo o texto */
 }
+
 
 
 
