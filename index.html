@@ -215,33 +215,18 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   gap: 10px;                  /* sem espaço entre símbolo e texto */
   transition: background 0.2s;
 }
-.banner-description-wrapper {
-  max-width: 450px;
-  height: 20px;       /* altura mínima visível para hover */
-  overflow: hidden;
-  cursor: pointer;
-}
-
-/* descrição retraída */
 .banner-description {
-  margin: 0;
   font-size: 16px;
-  line-height: 1.4;
   color: #fff;
-  max-height: 20px;   /* altura inicial */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  transition: max-height 0.5s ease, white-space 0.5s ease;
+  margin-top: -20px;
+  max-width: 450px;  /* limita a largura da frase */
+  line-height: 1.4;
 }
-
-/* quando o mouse estiver sobre o wrapper */
-.banner-description-wrapper:hover .banner-description {
-  max-height: 500px;   /* altura suficiente para todo o texto */
-  white-space: normal;
+.banner-description {
+  word-wrap: break-word;   /* quebra palavras longas */
+  white-space: normal;     /* permite quebra de linha */
+  margin-top: -20px;
 }
-
-
 
 .play-symbol {
   font-size: 28px;       /* tamanho do símbolo */
@@ -478,7 +463,7 @@ video::cue {
 
   <!-- Vídeo de fundo (inicialmente escondido) -->
   <video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay muted loop>
-    <source src="https://ia800702.us.archive.org/35/items/rabo-de-peixe-legenda-queimada/RaboDePeixe_LegendaQueimada.ia.mp4" type="video/mp4">
+    <source src="https://ia801006.us.archive.org/24/items/rabo-de-peixe-legenda-queimada_202511/RaboDePeixe_LegendaQueimada.ia.mp4" type="video/mp4">
   </video>
 
 
@@ -495,11 +480,10 @@ video::cue {
 
 <p class="banner-highlight">Ver agora a temporada 2</p>
     
-<div class="banner-description-wrapper">
-  <p class="banner-description">
+    <!-- Descrição -->
+    <p class="banner-description">
       Quando um barco cheio de cocaína se afunda na costa da ilha onde mora, Eduardo vê uma oportunidade para ganhar dinheiro que tem tanto de emocionantecomo de arriscado.
-   </p>
-</div>
+    </p>
 
     <!-- Botões lado a lado -->
     <div class="banner-buttons">
