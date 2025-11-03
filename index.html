@@ -77,6 +77,29 @@ nav div.ativo {
   transform: scale(1.1);
 }
 
+.close-btn {
+  transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+  transform: scale(1.05);
+  background-color: #e50914; /* vermelho Netflix */
+  color: white;
+}
+
+
+  .modal {
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.modal.show {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+}
   
 
 .episodio-btn.selecionado {
@@ -7567,7 +7590,10 @@ function abrirModalTemporadas(serie) {
 if (fecharBtn) fecharBtn.textContent = 'Fechar';
 
 
-  document.getElementById('modal').style.display = 'flex';
+  const modal = document.getElementById('modal');
+modal.style.display = 'flex';
+setTimeout(() => modal.classList.add('show'), 10);
+
 }
 
 function abrirModalEpisodios(temporada, serieTitulo, serie) {
@@ -7640,7 +7666,10 @@ if (fecharBtn) fecharBtn.textContent = 'Voltar';
 
 
 
-  document.getElementById('modal').style.display = 'flex';
+  const modal = document.getElementById('modal');
+modal.style.display = 'flex';
+setTimeout(() => modal.classList.add('show'), 10);
+
 }
 
 
@@ -7669,13 +7698,16 @@ function fecharModal() {
       abrirModalTemporadas(serie);
     }
     modal.dataset.episodiosAtivos = 'false';
-
-    
   } else {
-    // Caso contrário, fecha o modal totalmente
-    modal.style.display = 'none';
-    delete modal.dataset.serieTitulo;
-    delete modal.dataset.episodiosAtivos;
+    // 👇 Novo comportamento com fade-out
+    modal.classList.remove('show'); // começa o efeito de desaparecer
+
+        // espera a transição CSS terminar antes de esconder
+    setTimeout(() => {
+      modal.style.display = 'none';
+      delete modal.dataset.serieTitulo;
+      delete modal.dataset.episodiosAtivos;
+    }, 400); // deve bater com o transition: opacity 0.4s no CSS
   }
 }
 
