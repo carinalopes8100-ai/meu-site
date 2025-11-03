@@ -7536,6 +7536,10 @@ function abrirModalTemporadas(serie) {
   document.getElementById('modalTitle').textContent = `Escolha a temporada de "${serie.titulo}"`;
   list.innerHTML = '';
 
+  
+  // marca que o modal está mostrando temporadas
+  modal.dataset.episodiosAtivos = 'false';
+
   serie.temporadas.forEach(temp => {
     const btn = document.createElement('button');
     btn.className = 'temporada-btn';
@@ -7560,6 +7564,9 @@ function abrirModalEpisodios(temporada, serieTitulo, serie) {
   list.innerHTML = '';
 
 
+  // Marca que estamos nos episódios
+  modal.dataset.serieTitulo = serieTitulo;
+  modal.dataset.episodiosAtivos = 'true';
   
   temporada.episodios.forEach(ep => {
     const btn = document.createElement('button');
@@ -7631,7 +7638,27 @@ function reaplicarSelecaoEpisodios() {
   }
 }
 
-function fecharModal() { document.getElementById('modal').style.display = 'none'; }
+function fecharModal() {
+  const modal = document.getElementById('modal');
+  const list = document.getElementById('episodiosList');
+
+  // Se atualmente estiver nos episódios (baseado no título do modal)
+  if (modal.dataset.episodiosAtivos === 'true') {
+    // Volta para a lista de temporadas
+    const serieTitulo = modal.dataset.serieTitulo;
+    const serie = [...series, ...novelas, ...animes, ...documentarios].find(s => s.titulo === serieTitulo);
+    if (serie) {
+      abrirModalTemporadas(serie);
+    }
+    modal.dataset.episodiosAtivos = 'false';
+  } else {
+    // Caso contrário, fecha o modal totalmente
+    modal.style.display = 'none';
+    delete modal.dataset.serieTitulo;
+    delete modal.dataset.episodiosAtivos;
+  }
+}
+
 function fecharDescricaoModal() { document.getElementById('descricaoModal').style.display = 'none'; mostrarSecao(secaoAtual); }
 
 
