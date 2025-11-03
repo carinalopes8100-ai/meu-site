@@ -415,7 +415,6 @@ video::cue {
 </head>
 <body>
 
-<script src="https://www.youtube.com/iframe_api"></script>
   
 <div id="pumpkinContainer"></div>
   
@@ -459,7 +458,7 @@ video::cue {
 </header>
 
   
-<div id="playerContainer"></div>
+
   
 
 
@@ -7970,32 +7969,8 @@ if (logo) {
   });
 }
 
-  let player;
 
-  function onYouTubeIframeAPIReady() {
-    player = new YT.Player('playerContainer', {
-      height: '480',
-      width: '854',
-      videoId: 'upR4il0ztcE', // apenas o ID
-      playerVars: {
-        autoplay: 1,
-        rel: 0
-      },
-      events: {
-        'onReady': (event) => {
-          // Define qualidade máxima disponível
-          const qualities = event.target.getAvailableQualityLevels();
-          if (qualities.includes('hd1080')) {
-            event.target.setPlaybackQuality('hd1080');
-          } else {
-            // Se não tiver 1080p, pega a mais alta disponível
-            event.target.setPlaybackQuality(qualities[0]);
-          }
-          event.target.playVideo();
-        }
-      }
-    });
-  }
+
 
 </script>
 </body>
