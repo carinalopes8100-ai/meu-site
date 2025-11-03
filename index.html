@@ -101,15 +101,28 @@ nav div.ativo {
   pointer-events: auto;
 }
 
-/* --- Outros modais (descricao, áudio, trailer) abrem normalmente --- */
 #descricaoModal {
-  display: none;         /* 👈 adiciona isto */
-  opacity: 0;            /* 👈 começa invisível */
+  display: none;
+  opacity: 0;
+  pointer-events: none;
   transition: opacity 0.3s ease;
 }
+
 #descricaoModal.show {
+  display: flex;
   opacity: 1;
+  pointer-events: auto;
 }
+
+#descricaoModal .modal-content {
+  background-color: #111;
+  color: #fff;
+  max-width: 500px;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+}
+
 
 #audioModal,
 #modalTrailer {
@@ -7719,9 +7732,17 @@ function fecharModal() {
   }
 }
 
-  // 👇 Coloca logo aqui:
 function abrirDescricaoModal(item) {
   const modal = document.getElementById('descricaoModal');
+
+  // 🧩 Preenche o conteúdo do modal
+  const titulo = modal.querySelector('#descricaoTitulo');
+  const texto = modal.querySelector('#descricaoTexto');
+
+  if (titulo) titulo.textContent = item.titulo || 'Sem título';
+  if (texto) texto.textContent = item.descricao || 'Descrição indisponível.';
+
+  // ✨ Mostra o modal com o efeito suave
   modal.style.display = 'flex';
   requestAnimationFrame(() => modal.classList.add('show'));
 }
@@ -7732,8 +7753,9 @@ function fecharDescricaoModal() {
   setTimeout(() => {
     modal.style.display = 'none';
     mostrarSecao(secaoAtual);
-  }, 300);
+  }, 300); // mesmo tempo do transition no CSS
 }
+
 
 
 
