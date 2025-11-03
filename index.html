@@ -88,18 +88,36 @@ nav div.ativo {
 }
 
 
-  .modal {
+#modal {
   display: none;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s ease;
 }
 
-.modal.show {
+#modal.show {
   display: flex;
   opacity: 1;
   pointer-events: auto;
 }
+
+/* --- Outros modais (descricao, áudio, trailer) abrem normalmente --- */
+#descricaoModal {
+  display: none;         /* 👈 adiciona isto */
+  opacity: 0;            /* 👈 começa invisível */
+  transition: opacity 0.3s ease;
+}
+#descricaoModal.show {
+  opacity: 1;
+}
+
+#audioModal,
+#modalTrailer {
+  display: none;
+  opacity: 1;
+  pointer-events: auto;
+}
+
   
 
 .episodio-btn.selecionado {
@@ -7701,7 +7719,22 @@ function fecharModal() {
   }
 }
 
-function fecharDescricaoModal() { document.getElementById('descricaoModal').style.display = 'none'; mostrarSecao(secaoAtual); }
+  // 👇 Coloca logo aqui:
+function abrirDescricaoModal(item) {
+  const modal = document.getElementById('descricaoModal');
+  modal.style.display = 'flex';
+  requestAnimationFrame(() => modal.classList.add('show'));
+}
+
+function fecharDescricaoModal() {
+  const modal = document.getElementById('descricaoModal');
+  modal.classList.remove('show');
+  setTimeout(() => {
+    modal.style.display = 'none';
+    mostrarSecao(secaoAtual);
+  }, 300);
+}
+
 
 
 // ===== Inicialização =====
