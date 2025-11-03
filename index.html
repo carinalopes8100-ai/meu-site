@@ -7589,11 +7589,10 @@ function abrirModalTemporadas(serie) {
   const fecharBtn = document.getElementById('fecharModalBtn');
 if (fecharBtn) fecharBtn.textContent = 'Fechar';
 
-const modal = document.getElementById('modal');
-modal.style.display = 'flex';        // mostra o modal
-requestAnimationFrame(() => {
-  modal.classList.add('show');       // ativa o fade-in suave
-});
+  // ✅ Mantém aqui o fade-in
+  modal.style.display = 'flex';
+  requestAnimationFrame(() => modal.classList.add('show'));
+}
 
 
 
