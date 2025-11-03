@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -214,31 +215,18 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   gap: 10px;                  /* sem espaço entre símbolo e texto */
   transition: background 0.2s;
 }
-.banner-description-container {
-  display: inline-block;   /* só ocupa o tamanho do texto */
-}
-
 .banner-description {
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: max-height 0.5s ease, opacity 0.5s ease;
+  font-size: 16px;
+  color: #fff;
+  margin-top: -20px;
+  max-width: 450px;  /* limita a largura da frase */
+  line-height: 1.4;
 }
-
-/* Expande somente quando o mouse estiver sobre o container */
-.banner-description-container:hover .banner-description {
-  max-height: 500px;  /* altura suficiente para o texto */
-  opacity: 1;
+.banner-description {
+  word-wrap: break-word;   /* quebra palavras longas */
+  white-space: normal;     /* permite quebra de linha */
+  margin-top: -20px;
 }
-
-
-
-
-
-
-
-
-
 
 .play-symbol {
   font-size: 28px;       /* tamanho do símbolo */
@@ -492,12 +480,10 @@ video::cue {
 
 <p class="banner-highlight">Ver agora a temporada 2</p>
     
-<div class="banner-description-container">
-  <p class="banner-description">
-    Quando um barco cheio de cocaína se afunda na costa da ilha onde mora, Eduardo vê uma oportunidade para ganhar dinheiro que tem tanto de emocionante como de arriscado.
-  </p>
-</div>
-
+    <!-- Descrição -->
+    <p class="banner-description">
+      Quando um barco cheio de cocaína se afunda na costa da ilha onde mora, Eduardo vê uma oportunidade para ganhar dinheiro que tem tanto de emocionantecomo de arriscado.
+    </p>
 
     <!-- Botões lado a lado -->
     <div class="banner-buttons">
