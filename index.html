@@ -7967,6 +7967,27 @@ if (logo) {
   });
 }
 
+    let player;
+
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+      height: '360',
+      width: '640',
+      videoId: 'upR4il0ztcE',  // só o ID do vídeo
+      playerVars: { autoplay: 1, rel: 0 },
+      events: {
+        'onReady': (event) => {
+          // Tenta definir a qualidade máxima
+          const availableQualities = event.target.getAvailableQualityLevels();
+          if (availableQualities && availableQualities.length > 0) {
+            event.target.setPlaybackQuality(availableQualities[0]); // normalmente é a mais alta
+          }
+          event.target.playVideo();
+        }
+      }
+    });
+  }
+
 </script>
 </body>
 </html>
