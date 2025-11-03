@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -20,6 +18,10 @@ header h1 { color:#e50914; font-size:27px; cursor:pointer; }
 nav { display:flex; gap:15px; margin-left: 15px; }
 nav div { cursor:pointer; transition:color .2s; }
 nav div:hover { color:#e50914; text-decoration:underline; }
+nav div.ativo {
+  color: red; /* item ativo vermelho */
+  font-weight: bold;
+}
 
 
 /* Barra de pesquisa */
@@ -443,7 +445,7 @@ video::cue {
 <div onclick="mostrarSecao('series')">Séries</div>
 <div onclick="mostrarSecao('filmes')">Filmes</div>
 <div onclick="mostrarSecao('terror')">Terror</div>
-<div onclick="mostrarSecao('desenhos')">Desenhos</div>
+<div onclick="mostrarSecao('desenhos')">Animação</div>
 <div onclick="mostrarSecao('lista')">A Minha Lista</div>
 </nav>
 <div id="searchContainer">
@@ -7884,6 +7886,26 @@ bannerAddBtn.addEventListener('click', () => {
     atualizarBannerBtn(); // inicializa o botão correto quando o banner carregar
 });
 
+
+  // Seleciona todos os itens do nav
+const navItems = document.querySelectorAll('header nav div');
+
+function setAtivo(element) {
+  navItems.forEach(item => item.classList.remove('ativo'));
+  element.classList.add('ativo');
+}
+
+// Adiciona click listeners para cada item
+navItems.forEach(item => {
+  item.addEventListener('click', (e) => {
+    setAtivo(e.target);
+  });
+});
+
+// Inicialmente deixa "Página Inicial" ativo
+window.addEventListener('DOMContentLoaded', () => {
+  navItems[0].classList.add('ativo');
+});
 
 </script>
 </body>
