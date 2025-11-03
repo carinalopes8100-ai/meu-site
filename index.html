@@ -7630,6 +7630,12 @@ if (episodioSelecionado[serieTitulo] === ep.numero && temporada.numero === tempo
     list.appendChild(btn);
   });
 
+// Atualiza texto do botão para "Voltar" quando está no modal de episódios
+const fecharBtn = document.getElementById('fecharModalBtn');
+if (fecharBtn) fecharBtn.textContent = 'Voltar';
+
+
+
   document.getElementById('modal').style.display = 'flex';
 }
 
@@ -7659,6 +7665,11 @@ function fecharModal() {
       abrirModalTemporadas(serie);
     }
     modal.dataset.episodiosAtivos = 'false';
+
+    // 🔁 Quando voltar às temporadas, muda o texto do botão para "Fechar"
+    const fecharBtn = document.getElementById('fecharModalBtn');
+    if (fecharBtn) fecharBtn.textContent = 'Fechar';
+    
   } else {
     // Caso contrário, fecha o modal totalmente
     modal.style.display = 'none';
