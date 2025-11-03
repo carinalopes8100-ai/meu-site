@@ -7590,9 +7590,9 @@ function abrirModalTemporadas(serie) {
 if (fecharBtn) fecharBtn.textContent = 'Fechar';
 
 
-  const modal = document.getElementById('modal');
-modal.style.display = 'flex';
-setTimeout(() => modal.classList.add('show'), 10);
+const modal = document.getElementById('modal');
+modal.style.display = 'flex'; // mostra o modal
+requestAnimationFrame(() => modal.classList.add('show')); // ativa o fade-in
 
 }
 
@@ -7666,9 +7666,9 @@ if (fecharBtn) fecharBtn.textContent = 'Voltar';
 
 
 
-  const modal = document.getElementById('modal');
-modal.style.display = 'flex';
-setTimeout(() => modal.classList.add('show'), 10);
+const modal = document.getElementById('modal');
+modal.style.display = 'flex'; // mostra o modal
+requestAnimationFrame(() => modal.classList.add('show')); // ativa o fade-in
 
 }
 
@@ -7691,23 +7691,17 @@ function fecharModal() {
 
   // Se atualmente estiver nos episódios (baseado no título do modal)
   if (modal.dataset.episodiosAtivos === 'true') {
-    // Volta para a lista de temporadas
     const serieTitulo = modal.dataset.serieTitulo;
     const serie = [...series, ...novelas, ...animes, ...documentarios].find(s => s.titulo === serieTitulo);
-    if (serie) {
-      abrirModalTemporadas(serie);
-    }
+    if (serie) abrirModalTemporadas(serie);
     modal.dataset.episodiosAtivos = 'false';
   } else {
-    // 👇 Novo comportamento com fade-out
-    modal.classList.remove('show'); // começa o efeito de desaparecer
-
-        // espera a transição CSS terminar antes de esconder
+    modal.classList.remove('show'); // começa o fade-out
     setTimeout(() => {
-      modal.style.display = 'none';
+      modal.style.display = 'none'; // esconde após a animação
       delete modal.dataset.serieTitulo;
       delete modal.dataset.episodiosAtivos;
-    }, 400); // deve bater com o transition: opacity 0.4s no CSS
+    }, 400); // mesmo tempo que o transition do CSS
   }
 }
 
