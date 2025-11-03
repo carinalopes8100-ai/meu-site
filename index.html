@@ -217,24 +217,21 @@ nav div:hover { color:#e50914; text-decoration:underline; }
 .banner-description {
   font-size: 16px;
   color: #fff;
-  margin-top: -20px;
   max-width: 450px;
   line-height: 1.4;
 
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;  /* mostra 3 linhas com ... */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: all 0.3s ease;
-  cursor: pointer;          /* indica que é interativo */
+  opacity: 0;              /* começa invisível */
+  max-height: 0;           /* altura zero */
+  overflow: hidden;        /* esconde todo o conteúdo */
+  transition: max-height 0.5s ease, opacity 0.5s ease; 
+  cursor: pointer;
 }
 
 .banner-description:hover {
-  -webkit-line-clamp: unset; /* remove o truncamento */
-  white-space: normal;       /* permite quebrar linha */
-  overflow: visible;         /* mostra todo o texto */
+  opacity: 1;              /* fica visível */
+  max-height: 1000px;      /* altura suficiente para todo o texto */
 }
+
 
 
 
