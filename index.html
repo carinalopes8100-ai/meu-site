@@ -105,7 +105,7 @@ nav div.ativo {
   display: none;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease;
 }
 
 #descricaoModal.show {
@@ -7770,11 +7770,14 @@ function abrirDescricaoModal(item) {
 
 function fecharDescricaoModal() {
   const modal = document.getElementById('descricaoModal');
+  
+  // Remove a classe "show" para iniciar o fade-out
   modal.classList.remove('show');
+
+  // Espera o tempo da transição do CSS antes de esconder completamente
   setTimeout(() => {
     modal.style.display = 'none';
-    mostrarSecao(secaoAtual);
-  }, 300); // mesmo tempo do transition no CSS
+  }, 400); // 400ms para combinar com "transition: opacity 0.4s" no CSS
 }
 
 
