@@ -7887,7 +7887,7 @@ bannerAddBtn.addEventListener('click', () => {
 });
 
 
-  // Seleciona todos os itens do nav
+// Seleciona todos os itens do nav
 const navItems = document.querySelectorAll('header nav div');
 
 function setAtivo(element) {
@@ -7899,6 +7899,14 @@ function setAtivo(element) {
 navItems.forEach(item => {
   item.addEventListener('click', (e) => {
     setAtivo(e.target);
+    // Chama a função mostrarSecao correspondente
+    const secao = item.textContent.toLowerCase() === 'a minha lista' ? 'lista' :
+                  item.textContent.toLowerCase() === 'séries' ? 'series' :
+                  item.textContent.toLowerCase() === 'filmes' ? 'filmes' :
+                  item.textContent.toLowerCase() === 'terror' ? 'terror' :
+                  item.textContent.toLowerCase() === 'animação' ? 'desenhos' :
+                  'inicio';
+    mostrarSecao(secao);
   });
 });
 
@@ -7906,6 +7914,15 @@ navItems.forEach(item => {
 window.addEventListener('DOMContentLoaded', () => {
   navItems[0].classList.add('ativo');
 });
+
+// Faz o logo ativar a Página Inicial
+const logo = document.getElementById('logo');
+if (logo) {
+  logo.addEventListener('click', () => {
+    mostrarSecao('inicio');         // mostra a página inicial
+    setAtivo(navItems[0]);          // deixa "Página Inicial" vermelho
+  });
+}
 
 </script>
 </body>
