@@ -218,14 +218,22 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   font-size: 16px;
   color: #fff;
   margin-top: -20px;
-  max-width: 450px;  /* limita a largura da frase */
+  max-width: 450px;      /* largura máxima */
   line-height: 1.4;
+  word-wrap: break-word;  
+  white-space: normal;
+  
+  max-height: 60px;       /* altura retraída */
+  overflow: hidden;
+  transition: max-height 0.5s ease, opacity 0.5s ease;
+  opacity: 0.9;
 }
-.banner-description {
-  word-wrap: break-word;   /* quebra palavras longas */
-  white-space: normal;     /* permite quebra de linha */
-  margin-top: -20px;
+
+  .banner-content:hover .banner-description {
+  max-height: 300px;      /* altura expandida */
+  opacity: 1;
 }
+
 
 .play-symbol {
   font-size: 28px;       /* tamanho do símbolo */
