@@ -123,6 +123,14 @@ nav div.ativo {
   text-align: center;
 }
 
+ #descricaoTitulo small {
+  display: block;
+  margin-top: 5px;
+  color: #aaa;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+ 
 
 #audioModal,
 #modalTrailer {
@@ -7734,15 +7742,26 @@ function fecharModal() {
 
 function abrirDescricaoModal(item) {
   const modal = document.getElementById('descricaoModal');
-
-  // 🧩 Preenche o conteúdo do modal
   const titulo = modal.querySelector('#descricaoTitulo');
   const texto = modal.querySelector('#descricaoTexto');
 
-  if (titulo) titulo.textContent = item.titulo || 'Sem título';
-  if (texto) texto.textContent = item.descricao || 'Descrição indisponível.';
+  // Detecta se a descrição começa com 4 dígitos (ex: "2013 ")
+  const matchAno = item.descricao ? item.descricao.match(/^(\d{4})\s+(.*)/) : null;
 
-  // ✨ Mostra o modal com o efeito suave
+  if (matchAno) {
+    const ano = matchAno[1];
+    const restante = matchAno[2];
+
+    // Mostra o título e o ano abaixo dele
+    titulo.innerHTML = `${item.titulo}<br><small style="font-weight:normal; color:#bbb; font-size:14px;">${ano}</small>`;
+    texto.textContent = restante;
+  } else {
+    // Caso não tenha ano no início
+    titulo.textContent = item.titulo || 'Sem título';
+    texto.textContent = item.descricao || 'Descrição indisponível.';
+  }
+
+  // Mostra o modal com efeito suave
   modal.style.display = 'flex';
   requestAnimationFrame(() => modal.classList.add('show'));
 }
