@@ -215,23 +215,32 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   gap: 10px;                  /* sem espaço entre símbolo e texto */
   transition: background 0.2s;
 }
-.banner-description {
-  font-size: 16px;
-  color: #fff;
+.banner-description-wrapper {
   max-width: 450px;
+  height: 20px;       /* altura mínima visível para hover */
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* descrição retraída */
+.banner-description {
+  margin: 0;
+  font-size: 16px;
   line-height: 1.4;
-
-  opacity: 0;         /* invisível */
-  max-height: 0;      /* altura zero */
-  overflow: hidden;   /* esconde tudo */
-  transition: max-height 0.5s ease, opacity 0.5s ease;
-  pointer-events: none; /* não atrapalha mouse */
+  color: #fff;
+  max-height: 20px;   /* altura inicial */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: max-height 0.5s ease, white-space 0.5s ease;
 }
 
-.banner-description:hover {
-  opacity: 1;
-  max-height: 500px; /* altura suficiente para o texto */
+/* quando o mouse estiver sobre o wrapper */
+.banner-description-wrapper:hover .banner-description {
+  max-height: 500px;   /* altura suficiente para todo o texto */
+  white-space: normal;
 }
+
 
 
 .play-symbol {
@@ -486,10 +495,11 @@ video::cue {
 
 <p class="banner-highlight">Ver agora a temporada 2</p>
     
-    <!-- Descrição -->
-    <p class="banner-description">
+<div class="banner-description-wrapper">
+  <p class="banner-description">
       Quando um barco cheio de cocaína se afunda na costa da ilha onde mora, Eduardo vê uma oportunidade para ganhar dinheiro que tem tanto de emocionantecomo de arriscado.
-    </p>
+   </p>
+</div>
 
     <!-- Botões lado a lado -->
     <div class="banner-buttons">
