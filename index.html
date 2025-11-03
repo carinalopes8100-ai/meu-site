@@ -220,18 +220,20 @@ nav div:hover { color:#e50914; text-decoration:underline; }
   max-width: 450px;
   line-height: 1.4;
 
-  opacity: 0;         /* invisível por padrão */
-  max-height: 0;      /* altura zero */
-  overflow: hidden;   /* esconde tudo */
+  max-height: 0;       /* altura zero */
+  overflow: hidden;    /* esconde todo o conteúdo */
   transition: max-height 0.5s ease, opacity 0.5s ease;
-  cursor: default;    /* opcional, só visual */
+  opacity: 0;          /* invisível */
+  padding-top: 2px;    /* pequena área para hover */
+  cursor: default;
 }
 
 /* Aparece apenas quando o mouse está sobre a própria descrição */
 .banner-description:hover {
-  opacity: 1;         
-  max-height: 500px;  /* altura suficiente para o texto completo */
+  max-height: 500px;   /* altura suficiente para o texto completo */
+  opacity: 1;
 }
+
 
 
 
