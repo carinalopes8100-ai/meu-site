@@ -806,6 +806,12 @@ function abrirModalTrailers(item) {
   const trailerList = document.getElementById('trailerList');
   const titulo = document.getElementById('modalTrailerTitle');
 
+   // Se houver só um trailer → abre direto e sai
+  if (item.trailer && (!item.trailers || item.trailers.length === 0)) {
+    abrirVideo({ titulo: item.titulo + ' - Trailer', link: item.trailer });
+    return;
+  }
+
   // Define o título
   titulo.textContent = `Trailers de "${item.titulo}"`;
   trailerList.innerHTML = '';
