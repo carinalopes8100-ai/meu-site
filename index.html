@@ -130,11 +130,17 @@ nav div.ativo {
 #audioModal,
 #modalTrailer {
   display: none;
-  opacity: 1;
-  pointer-events: auto;
+  opacity: 0;                /* começa invisível */
+  pointer-events: none;      /* impede cliques enquanto invisível */
+  transition: opacity 0.4s ease; /* animação suave */
 }
 
-  
+#modalTrailer.show {
+  display: flex;             /* mostra o modal */
+  opacity: 1;                /* visível */
+  pointer-events: auto;      /* reativa cliques */
+}
+ 
 
 .episodio-btn.selecionado {
   background-color: black; /* fica preto */
@@ -795,38 +801,49 @@ function fecharAudioModal() {
 }
 
   
-function abrirModalTrailers(item){
+function abrirModalTrailers(item) {
   const modal = document.getElementById('modalTrailer');
   const trailerList = document.getElementById('trailerList');
   const titulo = document.getElementById('modalTrailerTitle');
 
-  // O título do modal sempre "Trailers"
+  // Define o título
   titulo.textContent = `Trailers de "${item.titulo}"`;
   trailerList.innerHTML = '';
 
-  if(item.trailers && item.trailers.length > 0){
+  // Lista de trailers (vários ou único)
+  if (item.trailers && item.trailers.length > 0) {
     item.trailers.forEach((tr, idx) => {
       const btn = document.createElement('button');
       btn.className = 'episodio-btn';
-      // Exibe o título do vídeo ou um fallback
-      btn.textContent = tr.titulo || `Trailer ${idx+1}`;
-      btn.onclick = () => abrirVideo({ titulo: `${item.titulo} - ${tr.titulo || 'Trailer'}`, link: tr.link });
+      btn.textContent = tr.titulo || `Trailer ${idx + 1}`;
+      btn.onclick = () =>
+        abrirVideo({ titulo: `${item.titulo} - ${tr.titulo || 'Trailer'}`, link: tr.link });
       trailerList.appendChild(btn);
     });
-  } else if(item.trailer){ // fallback para trailer único
+  } else if (item.trailer) {
     const btn = document.createElement('button');
     btn.className = 'episodio-btn';
     btn.textContent = 'Trailer Oficial';
-    btn.onclick = () => abrirVideo({ titulo: item.titulo + ' - Trailer', link: item.trailer });
+    btn.onclick = () =>
+      abrirVideo({ titulo: item.titulo + ' - Trailer', link: item.trailer });
     trailerList.appendChild(btn);
   }
 
+  // 🎬 Fade-in
   modal.style.display = 'flex';
+  requestAnimationFrame(() => modal.classList.add('show'));
 }
 
-function fecharModalTrailer(){
-  document.getElementById('modalTrailer').style.display = 'none';
+function fecharModalTrailer() {
+  const modal = document.getElementById('modalTrailer');
+
+  // 🎬 Fade-out
+  modal.classList.remove('show');
+  setTimeout(() => {
+    modal.style.display = 'none';
+  }, 400); // mesmo tempo que o transition do CSS
 }
+
 
 
 
