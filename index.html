@@ -341,20 +341,12 @@ nav div.ativo {
 .filme img { width:100%; height:auto; object-fit: cover; object-fit:contain; display:block; }
 
 .filme-hover-overlay {
-  position: absolute;
-  bottom: 0;          /* fixa embaixo do card */
+  bottom: 0;        /* garante que vai até a base do card */
+  top: 0;           /* cobre desde o topo */
   left: 0;
   width: 100%;
-  height: 40%;        /* altura do overlay - ajuste como quiser */
+  height: 100%;
   background: rgba(20, 20, 20, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  opacity: 0;
-  transition: opacity 0.3s, transform 0.3s;
-  border-radius: 0 0 10px 10px; /* só arredonda embaixo */
-  z-index: 5;
 }
 .filme:hover .filme-hover-overlay {
   opacity: 1;
