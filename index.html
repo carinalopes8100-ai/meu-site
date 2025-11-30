@@ -326,54 +326,14 @@ nav div.ativo {
 .fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
 .fila { display:flex; overflow-x:auto; gap:12px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
 .fila::-webkit-scrollbar { display:none; }
-.filme {
-  position: relative;
-  transition: transform 0.3s ease;
-  cursor: pointer;
-}
-.filme:hover {
-  transform: scale(1.3);
-  z-index: 10;
-}
+.filme { width:310px; height:170px; border-radius:15px; overflow:hidden; cursor:pointer; position:relative; flex-shrink:0; transition: transform 0.3s ease; }
+.filme:hover { transform: scale(1.05); z-index:2; }
 .filme img { width:100%; height:auto; object-fit:contain; display:block; }
 
-.filme-hover-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 10px;
-  display: flex;
-  justify-content: space-around; /* botoes lado a lado */
-  align-items: center;
-  background: rgba(0,0,0,0.6); /* leve fundo escuro */
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-.filme:hover .filme-hover-overlay {
-  opacity: 1;
-}
-
-.filme-hover-overlay button {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 4px;
-  background-color: rgba(255,255,255,0.9);
-  color: #000;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  gap: 4px; /* espaço entre ícone e texto */
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-.filme-hover-overlay button:hover {
-  background-color: #fff;
-  transform: scale(1.05);
-}
+.filme-hover-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background: rgba(20, 20, 20, 0.8); display:flex; justify-content:center; align-items:center; gap:8px; opacity:0; transition:opacity 0.3s, transform 0.3s; box-shadow: 0 0 15px rgba(0,0,0,0.5); flex-direction:column; border-radius:4px; z-index:5; }
+.filme:hover .filme-hover-overlay { opacity:1; transform: translateY(-5px); }
+.filme-hover-overlay button { width:100px; padding:8px 0; background:#e50914; border:none; color:#fff; font-weight:bold; cursor:pointer; border-radius:4px; transition: background .2s; }
+.filme-hover-overlay button:hover { background:#b20710; }
 
 .add-list-btn { position:absolute; bottom:5px; right:5px; width:30px; height:30px; border-radius:50%; border:none; background:#e50914; color:#fff; font-weight:bold; cursor:pointer; font-size:18px; z-index:6; transition: background .2s; opacity:0; }
 .filme:hover .add-list-btn { opacity:1; }
@@ -7715,7 +7675,47 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
     img.alt = item.titulo; 
     itemDiv.appendChild(img);
 
-  
+    // ==== Barra de progresso ====
+    if(progresso[item.titulo] && progresso[item.titulo] > 0){
+      const progressoDiv = document.createElement('div');
+      progressoDiv.style.position = 'absolute';
+      progressoDiv.style.bottom = '0';
+      progressoDiv.style.left = '0';
+      progressoDiv.style.width = '100%';
+      progressoDiv.style.height = '5px';
+      progressoDiv.style.backgroundColor = 'rgba(255,255,255,0.3)';
+
+      const progressoInner = document.createElement('div');
+      progressoInner.style.height = '100%';
+      progressoInner.style.backgroundColor = '#e50914';
+      progressoDiv.appendChild(progressoInner);
+      itemDiv.appendChild(progressoDiv);
+
+      const atualizarBarra = duracao => {
+        const pct = Math.min((progresso[item.titulo] / duracao) * 100, 100);
+        progressoInner.style.width = pct + '%';
+      };
+
+      if(item.duracao){
+        atualizarBarra(item.duracao);
+      } else if(item.link){
+        const tempVideo = document.createElement('video');
+        tempVideo.src = item.link;
+        tempVideo.preload = 'metadata';
+        tempVideo.addEventListener('loadedmetadata', () => {
+          item.duracao = tempVideo.duration; 
+          atualizarBarra(tempVideo.duration);
+        });
+      }
+
+      const observer = new MutationObserver(() => {
+        const video = document.getElementById('playerVideo');
+        if(video && video.dataset.titulo === item.titulo){
+          video.addEventListener('timeupdate', () => atualizarBarra(video.duration));
+        }
+      });
+      observer.observe(document.body, {childList: true, subtree: true});
+    }
 
     // ==== Overlay com botões (play e trailer/verão) ====
     const overlay = document.createElement('div'); 
