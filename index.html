@@ -331,7 +331,7 @@ nav div.ativo {
 .filme img { width:100%; height:auto; object-fit:contain; display:block; }
 
 .filme-hover-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background: rgba(20, 20, 20, 0.8); display:flex; justify-content:center; align-items:center; gap:8px; opacity:0; transition:opacity 0.3s, transform 0.3s; box-shadow: 0 0 15px rgba(0,0,0,0.5); flex-direction:column; border-radius:4px; z-index:5; }
-.filme:hover .filme-hover-overlay { opacity:1; }
+.filme:hover .filme-hover-overlay { opacity:1; transform: }
 .filme-hover-overlay button { width:100px; padding:8px 0; background:#e50914; border:none; color:#fff; font-weight:bold; cursor:pointer; border-radius:4px; transition: background .2s; }
 .filme-hover-overlay button:hover { background:#b20710; }
 
@@ -8414,38 +8414,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-const video = document.getElementById('bannerVideo');
-const muteBtn = document.getElementById('muteBtn');
-const bannerImage = document.getElementById('bannerImage');
+  const video = document.getElementById('bannerVideo');
+  const bannerImage = document.getElementById('bannerImage');
+  const muteBtn = document.getElementById('muteBtn');
 
-if(video && muteBtn && bannerImage) {
-  video.muted = true;      // começa sem som
-  video.autoplay = false;  // não toca sozinho
-  video.loop = true;
-  video.playsInline = true;
-  video.crossOrigin = "anonymous"; // essencial para vídeos externos
+  if (video && bannerImage && muteBtn) {
+    // Esconde o botão até o vídeo realmente começar
+    muteBtn.style.display = 'none';
 
-  muteBtn.style.display = 'block';
-  muteBtn.textContent = '🔇';
+    // Quando o vídeo estiver pronto para ser reproduzido
+    video.addEventListener('canplay', () => {
+      bannerImage.style.transition = 'opacity 1s';
+      bannerImage.style.opacity = '0';
 
-  muteBtn.addEventListener('click', () => {
-    // Toca o vídeo se ainda estiver pausado
-    if(video.paused) {
-      video.play().catch(err => console.log('Erro ao tocar vídeo:', err));
-    }
+      setTimeout(() => {
+        bannerImage.style.display = 'none';
+        video.style.display = 'block';
 
-    // Alterna o som
-    video.muted = !video.muted;
-    muteBtn.textContent = video.muted ? '🔇' : '🔊';
+        // Tenta dar play automaticamente
+        video.play().then(() => {
+          muteBtn.style.display = 'block';
+        }).catch(() => {
+          muteBtn.style.display = 'block';
+        });
+      }, 1000);
+    });
 
-    // Esconde a imagem do banner com fade
-    bannerImage.style.transition = 'opacity 1s';
-    bannerImage.style.opacity = 0;
-    setTimeout(() => bannerImage.style.display = 'none', 1000);
-  });
-}
-
-
+    // Alternar som ao clicar
+    muteBtn.addEventListener('click', () => {
+      video.muted = !video.muted;
+      muteBtn.textContent = video.muted ? '🔇' : '🔊';
+    });
+  }
+});
 
   document.addEventListener('DOMContentLoaded', () => {
   
