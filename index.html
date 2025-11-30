@@ -7954,7 +7954,6 @@ const searchInput = document.getElementById('searchInput');
 const banner = document.getElementById('banner');
 const root = document.getElementById('root');
 
-// Função debounce
 function debounce(fn, delay) {
   let timeout;
   return function(...args) {
@@ -7963,7 +7962,6 @@ function debounce(fn, delay) {
   };
 }
 
-// Função de pesquisa
 function pesquisar() {
   const termo = searchInput.value.toLowerCase().trim();
   const todosItens = [
@@ -7971,21 +7969,18 @@ function pesquisar() {
     ...filmesMarvel, ...novelas, ...documentarios, ...filmesDc
   ];
 
-  // Se campo vazio → mostra banner e volta ao início
-  if (termo === "") {
-    if (banner) banner.style.display = 'block';
-    mostrarSecao('inicio');
+  root.innerHTML = ''; // limpa resultados antes de tudo
+
+  if (!termo) {
+    if (banner) banner.style.display = 'block'; // mostra banner se vazio
     return;
   }
 
-  // Esconde o banner durante a pesquisa
-  if (banner) banner.style.display = 'none';
+  if (banner) banner.style.display = 'none'; // esconde banner durante a pesquisa
 
-  const resultados = todosItens.filter(item => 
+  const resultados = todosItens.filter(item =>
     item.titulo.toLowerCase().includes(termo)
   );
-
-  root.innerHTML = "";
 
   if (resultados.length > 0) {
     root.appendChild(
@@ -8015,10 +8010,11 @@ searchInput.addEventListener('keydown', e => {
   }
 });
 
-// Pesquisa em tempo real (debounce)
+// Pesquisa em tempo real
 searchInput.addEventListener('input', debounce(() => {
   pesquisar();
 }, 200));
+
 
 
 
