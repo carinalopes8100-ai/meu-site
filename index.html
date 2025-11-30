@@ -7949,10 +7949,29 @@ else if(secao === 'documentarios'){
 }
 
 
+// Função debounce para não disparar pesquisa a cada tecla imediatamente
+function debounce(fn, delay) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+const searchInput = document.getElementById('searchInput');
+const banner = document.getElementById('banner');
+
+// Pesquisa principal
 function pesquisar() {
-  const termo = document.getElementById('searchInput').value.toLowerCase().trim();
+  const termo = searchInput.value.toLowerCase().trim();
   const root = document.getElementById('root');
-  const banner = document.getElementById('banner');
+  const todosItens = [
+    ...filmes, ...series, ...filmesTerror, ...animes, ...desenhos,
+    ...filmesMarvel, ...novelas, ...documentarios, ...filmesDc
+  ];
+
+  // Sempre esconde o banner durante a pesquisa
+  if (banner) banner.style.display = 'none';
 
   // Se campo vazio → volta ao início + mostra banner
   if (termo === "") {
@@ -7960,14 +7979,6 @@ function pesquisar() {
     mostrarSecao('inicio');
     return;
   }
-
-  // Esconde banner durante a pesquisa
-  if (banner) banner.style.display = 'none';
-
-  const todosItens = [
-    ...filmes, ...series, ...filmesTerror, ...animes, ...desenhos,
-    ...filmesMarvel, ...novelas, ...documentarios, ...filmesDc
-  ];
 
   const resultados = todosItens.filter(i =>
     i.titulo.toLowerCase().includes(termo)
@@ -7995,6 +8006,20 @@ function pesquisar() {
     `;
   }
 }
+
+// Pesquisa ao apertar Enter
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    pesquisar();
+  }
+});
+
+// Pesquisa em tempo real (com debounce)
+searchInput.addEventListener('input', debounce(() => {
+  pesquisar();
+}, 200)); // 200ms é um bom valor para debounce
+
 
 
 
