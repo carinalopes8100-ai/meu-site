@@ -7839,6 +7839,19 @@ function atualizarBannerBtn() {
 }
 
 
+  // Função que controla o banner
+function atualizarBanner(secao) {
+    const banner = document.querySelector('.banner');
+
+    if (secao === 'inicio') {
+        if (banner) banner.style.display = 'flex'; // mostra o banner
+    } else {
+        if (banner) banner.style.display = 'none'; // esconde o banner inteiro
+        const bannerVideo = document.getElementById('bannerVideo');
+        if (bannerVideo) bannerVideo.pause();
+    }
+}
+
 
   
 function mostrarSecao(secao) {
@@ -7846,22 +7859,8 @@ function mostrarSecao(secao) {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
-    const bannerImage = document.getElementById('bannerImage');
-    const bannerVideo = document.getElementById('bannerVideo');
-
-    // ===== Controle do banner =====
-    if (secao !== 'inicio') {
-        // Se não for a página inicial, esconde banner
-        if (bannerImage) bannerImage.style.display = 'none';
-        if (bannerVideo) {
-            bannerVideo.pause();
-            bannerVideo.style.display = 'none';
-        }
-    } else {
-        // Página inicial: mostra banner
-        if (bannerImage) bannerImage.style.display = 'block';
-        if (bannerVideo) bannerVideo.style.display = 'block';
-    }
+    // Atualiza o banner automaticamente
+    atualizarBanner(secao);
 
     const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel];
 
