@@ -8432,11 +8432,10 @@ document.addEventListener('DOMContentLoaded', () => {
         video.style.display = 'block';
 
         // Tenta dar play automaticamente
-        video.play().then(() => {
-          muteBtn.style.display = 'block';
-        }).catch(() => {
-          muteBtn.style.display = 'block';
-        });
+video.muted = true; // começa sem som
+video.play().then(() => {
+  muteBtn.style.display = 'block';
+});
       }, 1000);
     });
 
