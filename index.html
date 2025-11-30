@@ -636,7 +636,7 @@ const searchInput = document.getElementById('searchInput');
 searchInput.addEventListener('input', debounce(() => {
   const termo = searchInput.value.toLowerCase().trim();
   const root = document.getElementById('root');
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...documentarios, ...novelas, ...filmesDc,  ...filmesMarvel,  ...realityShows];
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...documentarios, ...novelas, ...filmesDc,  ...filmesMarvel,  ...realityShows, ...filmesParaTodaAFamilia];
 
   if (termo === "") {
     mostrarSecao('inicio'); 
@@ -6538,6 +6538,13 @@ const desenhos = [
 },
 ];
 
+  const filmesParaTodaAFamilia = [
+  { titulo: "Toy Story", img: "link_da_imagem1.jpg", link: "link_do_video1.mp4" },
+  { titulo: "Divertida Mente", img: "link_da_imagem2.jpg", link: "link_do_video2.mp4" },
+  { titulo: "Procurando Nemo", img: "link_da_imagem3.jpg", link: "link_do_video3.mp4" },
+  // ...adicione mais filmes familiares aqui
+];
+
   const filmesComedia = [
       {
   titulo: "7 Pecados Rurais",
@@ -7863,7 +7870,7 @@ function mostrarSecao(secao) {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
-    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel];
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel, ...filmesParaTodaAFamilia];
 
     if(secao === 'inicio') {
         // Continuar a ver
@@ -7880,6 +7887,7 @@ function mostrarSecao(secao) {
 
         // Outras seções
         root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
+        root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filmesParaTodaAFamilia'));
         root.appendChild(criarFila('fila2', shuffleArray(series), 'serie'));
         root.appendChild(criarFila('fila3', shuffleArray(filmesTerror), 'filme'));
         root.appendChild(criarFila('filaMarvel', shuffleArray(filmesMarvel), 'filme', 'Marvel'));
@@ -7903,6 +7911,10 @@ function mostrarSecao(secao) {
 
     else if(secao === 'filmes'){
         root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
+    }
+
+          else if(secao === 'filmes'){
+        root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filmesParaTodaAFamilia'));
     }
 
     else if(secao === 'series'){
@@ -7952,7 +7964,7 @@ else if(secao === 'documentarios'){
 function pesquisar() {
   const termo = document.getElementById('searchInput').value.toLowerCase().trim();
   const root = document.getElementById('root');
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesMarvel, ...novelas, ...documentarios , ...filmesDc];
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesMarvel, ...novelas, ...documentarios , ...filmesDc, ...filmesParaTodaAFamilia];
 
   if (termo === "") {
     mostrarSecao('inicio');
@@ -8107,7 +8119,9 @@ function fecharModal() {
   ...filmesDc,
   ...filmesComedia,
   ...desenhos,
-  ...realityShows
+  ...realityShows,
+  ...filmesParaTodaAFamilia
+      
 ];
 
 const serie = todasAsListas.find(s => s.titulo === serieTitulo);
