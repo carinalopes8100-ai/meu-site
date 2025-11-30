@@ -7863,6 +7863,23 @@ function mostrarSecao(secao) {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
+    const bannerImage = document.getElementById('bannerImage');
+    const bannerVideo = document.getElementById('bannerVideo');
+
+    // ===== Controle do banner =====
+    if (secao !== 'inicio') {
+        // Se não for a página inicial, esconde banner
+        if (bannerImage) bannerImage.style.display = 'none';
+        if (bannerVideo) {
+            bannerVideo.pause();
+            bannerVideo.style.display = 'none';
+        }
+    } else {
+        // Página inicial: mostra banner
+        if (bannerImage) bannerImage.style.display = 'block';
+        if (bannerVideo) bannerVideo.style.display = 'block';
+    }
+
     const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel];
 
     if(secao === 'inicio') {
