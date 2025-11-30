@@ -7887,7 +7887,7 @@ function mostrarSecao(secao) {
 
         // Outras seções
         root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
-        root.appendChild(criarFila('fila2', shuffleArray(filmes), 'filme', 'filmesParaTodaAFamilia'));
+        root.appendChild(criarFila('fila2', shuffleArray(filmesParaTodaAFamilia), 'filme', 'filmesParaTodaAFamilia'));
         root.appendChild(criarFila('fila3', shuffleArray(series), 'serie'));
         root.appendChild(criarFila('fila4', shuffleArray(filmesTerror), 'filme'));
         root.appendChild(criarFila('filaMarvel', shuffleArray(filmesMarvel), 'filme', 'Marvel'));
@@ -7913,8 +7913,8 @@ function mostrarSecao(secao) {
         root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
     }
 
-          else if(secao === 'filmes'){
-        root.appendChild(criarFila('fila2', shuffleArray(filmes), 'filme', 'filmesParaTodaAFamilia'));
+          else if(secao === 'filmesParaTodaAFamilia'){
+        root.appendChild(criarFila('fila2', shuffleArray(filmesParaTodaAFamilia), 'filme', 'filmesParaTodaAFamilia'));
     }
 
     else if(secao === 'series'){
