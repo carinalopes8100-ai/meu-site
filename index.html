@@ -7949,7 +7949,12 @@ else if(secao === 'documentarios'){
 }
 
 
-// Função debounce para não disparar pesquisa a cada tecla imediatamente
+
+const searchInput = document.getElementById('searchInput');
+const banner = document.getElementById('banner');
+const root = document.getElementById('root');
+
+// Função debounce
 function debounce(fn, delay) {
   let timeout;
   return function(...args) {
@@ -7958,30 +7963,26 @@ function debounce(fn, delay) {
   };
 }
 
-const searchInput = document.getElementById('searchInput');
-const banner = document.getElementById('banner');
-
-// Pesquisa principal
+// Função de pesquisa
 function pesquisar() {
   const termo = searchInput.value.toLowerCase().trim();
-  const root = document.getElementById('root');
   const todosItens = [
     ...filmes, ...series, ...filmesTerror, ...animes, ...desenhos,
     ...filmesMarvel, ...novelas, ...documentarios, ...filmesDc
   ];
 
-  // Sempre esconde o banner durante a pesquisa
-  if (banner) banner.style.display = 'none';
-
-  // Se campo vazio → volta ao início + mostra banner
+  // Se campo vazio → mostra banner e volta ao início
   if (termo === "") {
     if (banner) banner.style.display = 'block';
     mostrarSecao('inicio');
     return;
   }
 
-  const resultados = todosItens.filter(i =>
-    i.titulo.toLowerCase().includes(termo)
+  // Esconde o banner durante a pesquisa
+  if (banner) banner.style.display = 'none';
+
+  const resultados = todosItens.filter(item => 
+    item.titulo.toLowerCase().includes(termo)
   );
 
   root.innerHTML = "";
@@ -7999,15 +8000,14 @@ function pesquisar() {
         color: #ddd;
         font-weight: 400;
       ">
-        ❌ Nenhum resultado encontrado para <strong>"${termo}"</strong>
-        <br><br>
+        ❌ Nenhum resultado encontrado para <strong>"${termo}"</strong><br><br>
         Tente pesquisar outro título.
       </div>
     `;
   }
 }
 
-// Pesquisa ao apertar Enter
+// Enter no campo de pesquisa
 searchInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') {
     e.preventDefault();
@@ -8015,10 +8015,11 @@ searchInput.addEventListener('keydown', e => {
   }
 });
 
-// Pesquisa em tempo real (com debounce)
+// Pesquisa em tempo real (debounce)
 searchInput.addEventListener('input', debounce(() => {
   pesquisar();
-}, 200)); // 200ms é um bom valor para debounce
+}, 200));
+
 
 
 
