@@ -632,9 +632,26 @@ function abrirEpisodio(episodio) {
   };
 }
 
+const searchInput = document.getElementById('searchInput');
 searchInput.addEventListener('input', debounce(() => {
-  pesquisar();
-}, 150));
+  const termo = searchInput.value.toLowerCase().trim();
+  const root = document.getElementById('root');
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...documentarios, ...novelas, ...filmesDc,  ...filmesMarvel,  ...realityShows];
+
+  if (termo === "") {
+    mostrarSecao('inicio'); 
+    return;
+  }
+
+  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
+  root.innerHTML = '';
+
+  if (resultados.length > 0) {
+    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+  } else {
+    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+  }
+}, 150)); // 150ms de atraso
 
 
 
@@ -7839,28 +7856,12 @@ function atualizarBannerBtn() {
 }
 
 
-  // Função que controla o banner
-function atualizarBanner(secao) {
-    const banner = document.querySelector('.banner');
-
-    if (secao === 'inicio') {
-        if (banner) banner.style.display = 'flex'; // mostra o banner
-    } else {
-        if (banner) banner.style.display = 'none'; // esconde o banner inteiro
-        const bannerVideo = document.getElementById('bannerVideo');
-        if (bannerVideo) bannerVideo.pause();
-    }
-}
-
 
   
 function mostrarSecao(secao) {
     secaoAtual = secao;
     const root = document.getElementById('root');
     root.innerHTML = '';
-
-    // Atualiza o banner automaticamente
-    atualizarBanner(secao);
 
     const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel];
 
@@ -7951,7 +7952,7 @@ else if(secao === 'documentarios'){
 function pesquisar() {
   const termo = document.getElementById('searchInput').value.toLowerCase().trim();
   const root = document.getElementById('root');
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel, ...filmesDc];
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesMarvel, ...novelas, ...documentarios , ...filmesDc];
 
   if (termo === "") {
     mostrarSecao('inicio');
@@ -7959,28 +7960,14 @@ function pesquisar() {
   }
 
   const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
-
-  // Tratar como seção de pesquisa
-  secaoAtual = 'pesquisa';
-
-  // Esconder banner
-  const bannerImage = document.getElementById('bannerImage');
-  const bannerVideo = document.getElementById('bannerVideo');
-  if (bannerImage) bannerImage.style.display = 'none';
-  if (bannerVideo) {
-    bannerVideo.pause();
-    bannerVideo.style.display = 'none';
-  }
-
   root.innerHTML = '';
+
   if (resultados.length > 0) {
     root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
   } else {
     root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
   }
 }
-
-
 
 function abrirModalTemporadas(serie) {
   const list = document.getElementById('episodiosList');
@@ -8230,24 +8217,9 @@ searchButton.addEventListener('click', (e) => {
     }
   });
 
-searchInput.addEventListener('input', debounce(()=>{
-  if(searchInput.value.trim()){
-    pesquisar();
-    
-    // esconder banner instantaneamente
-    const bannerImage = document.getElementById('bannerImage');
-    const bannerVideo = document.getElementById('bannerVideo');
-    if(bannerImage) bannerImage.style.display = 'none';
-    if(bannerVideo){
-      bannerVideo.pause();
-      bannerVideo.style.display = 'none';
-    }
-
-  } else {
-    mostrarSecao('inicio');
-  }
-}, 150));
-
+  searchInput.addEventListener('input', debounce(()=>{
+    searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
+  }, 150));
 
 
 
@@ -8527,32 +8499,6 @@ if (logo) {
   });
 }
 
-
-const searchInput = document.getElementById('searchInput');
-
-searchInput.addEventListener('input', () => {
-    const termo = searchInput.value.trim();
-
-    // Atualiza o banner para esconder enquanto pesquisa
-    if (termo !== '') {
-        atualizarBanner('pesquisa'); // qualquer nome que não seja 'inicio'
-    } else {
-        atualizarBanner('inicio'); // mostra novamente se a pesquisa estiver vazia
-    }
-
-    // Filtra os itens
-    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel];
-    const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo.toLowerCase()));
-
-    const root = document.getElementById('root');
-    root.innerHTML = '';
-
-    if (resultados.length > 0) {
-        root.appendChild(criarFila('filaPesquisa', resultados, 'filme', 'Resultados da pesquisa'));
-    } else {
-        root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado.</div>`;
-    }
-});
 
 
 
