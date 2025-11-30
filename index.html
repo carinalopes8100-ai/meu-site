@@ -7954,11 +7954,6 @@ function pesquisar() {
   const root = document.getElementById('root');
   const banner = document.getElementById('banner');
 
-  const todosItens = [
-    ...filmes, ...series, ...filmesTerror, ...animes, ...desenhos,
-    ...filmesMarvel, ...novelas, ...documentarios, ...filmesDc
-  ];
-
   // Se campo vazio → volta ao início + mostra banner
   if (termo === "") {
     if (banner) banner.style.display = 'block';
@@ -7968,6 +7963,11 @@ function pesquisar() {
 
   // Esconde banner durante a pesquisa
   if (banner) banner.style.display = 'none';
+
+  const todosItens = [
+    ...filmes, ...series, ...filmesTerror, ...animes, ...desenhos,
+    ...filmesMarvel, ...novelas, ...documentarios, ...filmesDc
+  ];
 
   const resultados = todosItens.filter(i =>
     i.titulo.toLowerCase().includes(termo)
@@ -7995,6 +7995,7 @@ function pesquisar() {
     `;
   }
 }
+
 
 
 function abrirModalTemporadas(serie) {
