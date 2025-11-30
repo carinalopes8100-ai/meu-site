@@ -8414,48 +8414,48 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+document.addEventListener('DOMContentLoaded', () => {
   const video = document.getElementById('bannerVideo');
   const bannerImage = document.getElementById('bannerImage');
   const muteBtn = document.getElementById('muteBtn');
 
   if (!video || !bannerImage || !muteBtn) return;
 
-  // Configurações iniciais para autoplay funcionar
-  video.muted = true;          // começa sem som
-  video.playsInline = true;    // importante para mobile
+  // Configurações
+  video.muted = true;        // começa sem som
+  video.playsInline = true;
   video.autoplay = true;
   video.preload = 'auto';
-  video.style.display = 'block'; // precisa estar visível para autoplay
+  video.style.display = 'block';
 
-  // Esconde o botão de som até o vídeo estar pronto
-  muteBtn.style.display = 'none';
+  // Tenta tocar o vídeo imediatamente
+  const playPromise = video.play();
+  if (playPromise !== undefined) {
+    playPromise.then(() => {
+      console.log('Vídeo começou a tocar');
+      muteBtn.style.display = 'block';
+      muteBtn.textContent = '🔇';
 
-  // Quando o vídeo estiver pronto
-  video.addEventListener('canplay', () => {
-    // Transição suave da imagem para o vídeo
-    bannerImage.style.transition = 'opacity 1s';
-    bannerImage.style.opacity = '0';
+      // Transição suave
+      bannerImage.style.transition = 'opacity 1s';
+      bannerImage.style.opacity = '0';
+      setTimeout(() => {
+        bannerImage.style.display = 'none';
+      }, 1000);
 
-    setTimeout(() => {
-      bannerImage.style.display = 'none';
-      video.style.display = 'block';
+    }).catch(err => {
+      console.log('Autoplay bloqueado, precisa de interação do usuário:', err);
+      // Aqui você pode mostrar um botão "Clique para reproduzir"
+    });
+  }
 
-      video.play().then(() => {
-        // Mostra o botão de som depois de começar a tocar
-        muteBtn.style.display = 'block';
-        muteBtn.textContent = '🔇';
-      }).catch(err => {
-        console.log('Erro ao tentar autoplay:', err);
-      });
-    }, 1000);
-  });
-
-  // Alternar som ao clicar
+  // Botão de som
   muteBtn.addEventListener('click', () => {
     video.muted = !video.muted;
     muteBtn.textContent = video.muted ? '🔇' : '🔊';
   });
 });
+
 
   document.addEventListener('DOMContentLoaded', () => {
   
