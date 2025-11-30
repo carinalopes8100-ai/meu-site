@@ -8095,7 +8095,23 @@ function fecharModal() {
   // Se atualmente estiver nos episódios (baseado no título do modal)
   if (modal.dataset.episodiosAtivos === 'true') {
     const serieTitulo = modal.dataset.serieTitulo;
-    const serie = [...series, ...novelas, ...animes, ...documentarios].find(s => s.titulo === serieTitulo);
+
+    // Inclui TODAS as listas existentes
+    const todasAsListas = [
+  ...series,
+  ...novelas,
+  ...animes,
+  ...documentarios,
+  ...filmesTerror,
+  ...filmesMarvel,
+  ...filmesDc,
+  ...filmesComedia,
+  ...desenhos,
+  ...realityShows
+];
+
+const serie = todasAsListas.find(s => s.titulo === serieTitulo);
+    
     if (serie) abrirModalTemporadas(serie);
     modal.dataset.episodiosAtivos = 'false';
   } else {
