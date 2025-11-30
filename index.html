@@ -7967,24 +7967,35 @@ else if(secao === 'documentarios'){
 
 
 function pesquisar() {
-  const termo = document.getElementById('searchInput').value.toLowerCase().trim();
-  const root = document.getElementById('root');
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesMarvel, ...novelas, ...documentarios , ...filmesDc];
+    const termo = document.getElementById('searchInput').value.toLowerCase().trim();
+    const root = document.getElementById('root');
+    root.innerHTML = '';
 
-  if (termo === "") {
-    mostrarSecao('inicio');
-    return;
-  }
+    // Esconde o banner ao pesquisar
+    const bannerImage = document.getElementById('bannerImage');
+    const bannerVideo = document.getElementById('bannerVideo');
+    if (bannerImage) bannerImage.style.display = 'none';
+    if (bannerVideo) {
+        bannerVideo.pause();
+        bannerVideo.style.display = 'none';
+    }
 
-  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
-  root.innerHTML = '';
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel, ...filmesDc];
 
-  if (resultados.length > 0) {
-    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
-  } else {
-    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
-  }
+    if (termo === "") {
+        mostrarSecao('inicio');
+        return;
+    }
+
+    const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
+
+    if (resultados.length > 0) {
+        root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+    } else {
+        root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+    }
 }
+
 
 function abrirModalTemporadas(serie) {
   const list = document.getElementById('episodiosList');
