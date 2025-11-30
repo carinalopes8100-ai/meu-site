@@ -7952,22 +7952,50 @@ else if(secao === 'documentarios'){
 function pesquisar() {
   const termo = document.getElementById('searchInput').value.toLowerCase().trim();
   const root = document.getElementById('root');
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesMarvel, ...novelas, ...documentarios , ...filmesDc];
+  const banner = document.getElementById('banner');
 
+  const todosItens = [
+    ...filmes, ...series, ...filmesTerror, ...animes, ...desenhos,
+    ...filmesMarvel, ...novelas, ...documentarios, ...filmesDc
+  ];
+
+  // Se campo vazio → volta ao início + mostra banner
   if (termo === "") {
+    if (banner) banner.style.display = 'block';
     mostrarSecao('inicio');
     return;
   }
 
-  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
-  root.innerHTML = '';
+  // Esconde banner durante a pesquisa
+  if (banner) banner.style.display = 'none';
+
+  const resultados = todosItens.filter(i =>
+    i.titulo.toLowerCase().includes(termo)
+  );
+
+  root.innerHTML = "";
 
   if (resultados.length > 0) {
-    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+    root.appendChild(
+      criarFila("filaPesquisa", resultados, "filme", `Resultados para "${termo}"`)
+    );
   } else {
-    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+    root.innerHTML = `
+      <div style="
+        margin-top: 120px;
+        text-align: center;
+        font-size: 22px;
+        color: #ddd;
+        font-weight: 400;
+      ">
+        ❌ Nenhum resultado encontrado para <strong>"${termo}"</strong>
+        <br><br>
+        Tente pesquisar outro título.
+      </div>
+    `;
   }
 }
+
 
 function abrirModalTemporadas(serie) {
   const list = document.getElementById('episodiosList');
