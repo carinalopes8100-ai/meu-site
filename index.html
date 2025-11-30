@@ -7949,66 +7949,25 @@ else if(secao === 'documentarios'){
 }
 
 
-
-const searchInput = document.getElementById('searchInput');
-const banner = document.getElementById('banner');
-const root = document.getElementById('root');
-
-function debounce(fn, delay) {
-  let timeout;
-  return function(...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => fn.apply(this, args), delay);
-  };
-}
-
 function pesquisar() {
-  const termo = searchInput.value.toLowerCase().trim();
-  const todosItens = [
-    ...filmes, ...series, ...filmesTerror, ...animes, ...desenhos,
-    ...filmesMarvel, ...novelas, ...documentarios, ...filmesDc
-  ];
+  const termo = document.getElementById('searchInput').value.toLowerCase().trim();
+  const root = document.getElementById('root');
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesMarvel, ...novelas, ...documentarios , ...filmesDc];
 
-  root.innerHTML = ''; // limpa resultados
-
-  if (!termo) {
-    if (banner) banner.style.display = 'block';
+  if (termo === "") {
+    mostrarSecao('inicio');
     return;
   }
 
-  if (banner) banner.style.display = 'none';
-
-  const resultados = todosItens.filter(item => item.titulo.toLowerCase().includes(termo));
+  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
+  root.innerHTML = '';
 
   if (resultados.length > 0) {
-    root.appendChild(criarFila("filaPesquisa", resultados, "misto", `Resultados para "${termo}"`));
+    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
   } else {
-    root.innerHTML = `
-      <div style="margin-top:120px; text-align:center; font-size:22px; color:#ddd; font-weight:400;">
-        ❌ Nenhum resultado encontrado para <strong>"${termo}"</strong><br><br>
-        Tente pesquisar outro título.
-      </div>
-    `;
+    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
   }
 }
-
-// Enter no campo de pesquisa
-searchInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    pesquisar();
-  }
-});
-
-// Pesquisa em tempo real
-searchInput.addEventListener('input', debounce(() => {
-  pesquisar();
-}, 200));
-
-
-
-
-
 
 function abrirModalTemporadas(serie) {
   const list = document.getElementById('episodiosList');
