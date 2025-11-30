@@ -7846,33 +7846,24 @@ function mostrarSecao(secao) {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
-    const bannerImage = document.getElementById('bannerImage');
-    const bannerVideo = document.getElementById('bannerVideo');
-
     // ===== Controle do banner =====
-    if (secao !== 'inicio') {
-        // Se não for a página inicial, esconde banner
-        if (bannerImage) bannerImage.style.display = 'none';
-        if (bannerVideo) {
-            bannerVideo.pause();
-            bannerVideo.style.display = 'none';
+    const banner = document.querySelector('.banner');
+    if (banner) {
+        if (secao !== 'inicio') {
+            banner.style.display = 'none'; // Esconde tudo: logo, texto, botões, vídeo e imagem
+        } else {
+            banner.style.display = 'flex'; // ou 'block', dependendo do CSS
         }
-    } else {
-        // Página inicial: mostra banner
-        if (bannerImage) bannerImage.style.display = 'block';
-        if (bannerVideo) bannerVideo.style.display = 'block';
     }
 
     const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel];
 
     if(secao === 'inicio') {
-        // Continuar a ver
         const continuar = todosItens.filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
         if (continuar.length > 0) {
             root.appendChild(criarFila('filaContinuar', continuar, 'filme', 'Continuar a ver'));
         }
 
-        // Minha Lista
         if(minhaLista.length > 0) {
             const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
             root.appendChild(criarFila('filaMinhaLista', itensLista, 'filme', 'Minha Lista'));
