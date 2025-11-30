@@ -7914,15 +7914,15 @@ function mostrarSecao(secao) {
     }
 
           else if(secao === 'filmes'){
-        root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filmesParaTodaAFamilia'));
+        root.appendChild(criarFila('fila2', shuffleArray(filmes), 'filmesParaTodaAFamilia'));
     }
 
     else if(secao === 'series'){
-        root.appendChild(criarFila('fila2', shuffleArray(series), 'serie'));
+        root.appendChild(criarFila('fila3', shuffleArray(series), 'serie'));
     }
 
     else if(secao === 'terror'){
-        root.appendChild(criarFila('fila3', shuffleArray(filmesTerror), 'filme'));
+        root.appendChild(criarFila('fila4', shuffleArray(filmesTerror), 'filme'));
     }
 
     else if(secao === 'marvel'){
