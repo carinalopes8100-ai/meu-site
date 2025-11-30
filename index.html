@@ -7969,32 +7969,22 @@ function pesquisar() {
     ...filmesMarvel, ...novelas, ...documentarios, ...filmesDc
   ];
 
-  root.innerHTML = ''; // limpa resultados antes de tudo
+  root.innerHTML = ''; // limpa resultados
 
   if (!termo) {
-    if (banner) banner.style.display = 'block'; // mostra banner se vazio
+    if (banner) banner.style.display = 'block';
     return;
   }
 
-  if (banner) banner.style.display = 'none'; // esconde banner durante a pesquisa
+  if (banner) banner.style.display = 'none';
 
-  const resultados = todosItens.filter(item =>
-    item.titulo.toLowerCase().includes(termo)
-  );
+  const resultados = todosItens.filter(item => item.titulo.toLowerCase().includes(termo));
 
   if (resultados.length > 0) {
-    root.appendChild(
-      criarFila("filaPesquisa", resultados, "filme", `Resultados para "${termo}"`)
-    );
+    root.appendChild(criarFila("filaPesquisa", resultados, "misto", `Resultados para "${termo}"`));
   } else {
     root.innerHTML = `
-      <div style="
-        margin-top: 120px;
-        text-align: center;
-        font-size: 22px;
-        color: #ddd;
-        font-weight: 400;
-      ">
+      <div style="margin-top:120px; text-align:center; font-size:22px; color:#ddd; font-weight:400;">
         ❌ Nenhum resultado encontrado para <strong>"${termo}"</strong><br><br>
         Tente pesquisar outro título.
       </div>
