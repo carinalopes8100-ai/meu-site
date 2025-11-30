@@ -8418,33 +8418,43 @@ document.addEventListener('DOMContentLoaded', () => {
   const bannerImage = document.getElementById('bannerImage');
   const muteBtn = document.getElementById('muteBtn');
 
-  if (video && bannerImage && muteBtn) {
-    // Esconde o botão até o vídeo realmente começar
-    muteBtn.style.display = 'none';
+  if (!video || !bannerImage || !muteBtn) return;
 
-    // Quando o vídeo estiver pronto para ser reproduzido
-    video.addEventListener('canplay', () => {
-      bannerImage.style.transition = 'opacity 1s';
-      bannerImage.style.opacity = '0';
+  // Configurações iniciais para autoplay funcionar
+  video.muted = true;          // começa sem som
+  video.playsInline = true;    // importante para mobile
+  video.autoplay = true;
+  video.preload = 'auto';
+  video.style.display = 'block'; // precisa estar visível para autoplay
 
-      setTimeout(() => {
-        bannerImage.style.display = 'none';
-        video.style.display = 'block';
+  // Esconde o botão de som até o vídeo estar pronto
+  muteBtn.style.display = 'none';
 
-        // Tenta dar play automaticamente
-video.muted = true; // começa sem som
-video.play().then(() => {
-  muteBtn.style.display = 'block';
-});
-      }, 1000);
-    });
+  // Quando o vídeo estiver pronto
+  video.addEventListener('canplay', () => {
+    // Transição suave da imagem para o vídeo
+    bannerImage.style.transition = 'opacity 1s';
+    bannerImage.style.opacity = '0';
 
-    // Alternar som ao clicar
-    muteBtn.addEventListener('click', () => {
-      video.muted = !video.muted;
-      muteBtn.textContent = video.muted ? '🔇' : '🔊';
-    });
-  }
+    setTimeout(() => {
+      bannerImage.style.display = 'none';
+      video.style.display = 'block';
+
+      video.play().then(() => {
+        // Mostra o botão de som depois de começar a tocar
+        muteBtn.style.display = 'block';
+        muteBtn.textContent = '🔇';
+      }).catch(err => {
+        console.log('Erro ao tentar autoplay:', err);
+      });
+    }, 1000);
+  });
+
+  // Alternar som ao clicar
+  muteBtn.addEventListener('click', () => {
+    video.muted = !video.muted;
+    muteBtn.textContent = video.muted ? '🔇' : '🔊';
+  });
 });
 
   document.addEventListener('DOMContentLoaded', () => {
