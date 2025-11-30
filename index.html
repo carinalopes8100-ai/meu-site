@@ -8245,9 +8245,24 @@ searchButton.addEventListener('click', (e) => {
     }
   });
 
-  searchInput.addEventListener('input', debounce(()=>{
-    searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
-  }, 150));
+searchInput.addEventListener('input', debounce(()=>{
+  if(searchInput.value.trim()){
+    pesquisar();
+    
+    // esconder banner instantaneamente
+    const bannerImage = document.getElementById('bannerImage');
+    const bannerVideo = document.getElementById('bannerVideo');
+    if(bannerImage) bannerImage.style.display = 'none';
+    if(bannerVideo){
+      bannerVideo.pause();
+      bannerVideo.style.display = 'none';
+    }
+
+  } else {
+    mostrarSecao('inicio');
+  }
+}, 150));
+
 
 
 
