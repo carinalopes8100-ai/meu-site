@@ -8414,41 +8414,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  const video = document.getElementById('bannerVideo');
+    const video = document.getElementById('bannerVideo');
   const bannerImage = document.getElementById('bannerImage');
   const muteBtn = document.getElementById('muteBtn');
 
   if (!video || !bannerImage || !muteBtn) return;
 
-  // Configurações
-  video.muted = true;        // começa sem som
+  // 1️⃣ Coloca o vídeo no DOM e visível
+  video.style.display = 'block';
+  video.muted = true;   // ✅ antes do play
   video.playsInline = true;
   video.autoplay = true;
   video.preload = 'auto';
-  video.style.display = 'block';
 
-  // Tenta tocar o vídeo imediatamente
-  const playPromise = video.play();
-  if (playPromise !== undefined) {
-    playPromise.then(() => {
-      console.log('Vídeo começou a tocar');
-      muteBtn.style.display = 'block';
-      muteBtn.textContent = '🔇';
+  // 2️⃣ Tenta tocar imediatamente
+  video.play().then(() => {
+    console.log('Vídeo tocando em Chrome/Brave');
+    muteBtn.style.display = 'block';
+    muteBtn.textContent = '🔇';
 
-      // Transição suave
-      bannerImage.style.transition = 'opacity 1s';
-      bannerImage.style.opacity = '0';
-      setTimeout(() => {
-        bannerImage.style.display = 'none';
-      }, 1000);
+    // Transição suave da imagem
+    bannerImage.style.transition = 'opacity 1s';
+    bannerImage.style.opacity = 0;
+    setTimeout(() => bannerImage.style.display = 'none', 1000);
+  }).catch(err => {
+    console.log('Autoplay bloqueado, precisa de clique do usuário', err);
+    // Mostre um botão "Clique para reproduzir"
+  });
 
-    }).catch(err => {
-      console.log('Autoplay bloqueado, precisa de interação do usuário:', err);
-      // Aqui você pode mostrar um botão "Clique para reproduzir"
-    });
-  }
-
-  // Botão de som
+  // 3️⃣ Botão de som
   muteBtn.addEventListener('click', () => {
     video.muted = !video.muted;
     muteBtn.textContent = video.muted ? '🔇' : '🔊';
