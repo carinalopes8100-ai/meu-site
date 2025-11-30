@@ -8528,6 +8528,32 @@ if (logo) {
 }
 
 
+const searchInput = document.getElementById('searchInput');
+
+searchInput.addEventListener('input', () => {
+    const termo = searchInput.value.trim();
+
+    // Atualiza o banner para esconder enquanto pesquisa
+    if (termo !== '') {
+        atualizarBanner('pesquisa'); // qualquer nome que não seja 'inicio'
+    } else {
+        atualizarBanner('inicio'); // mostra novamente se a pesquisa estiver vazia
+    }
+
+    // Filtra os itens
+    const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel];
+    const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo.toLowerCase()));
+
+    const root = document.getElementById('root');
+    root.innerHTML = '';
+
+    if (resultados.length > 0) {
+        root.appendChild(criarFila('filaPesquisa', resultados, 'filme', 'Resultados da pesquisa'));
+    } else {
+        root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado.</div>`;
+    }
+});
+
 
 
 </script>
