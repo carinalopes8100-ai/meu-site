@@ -8191,36 +8191,16 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }, 1000);
   });
 
-// Pesquisa
-const searchInput = document.getElementById('searchInput');
-const searchButton = document.getElementById('searchButton');
-const bannerVideo = document.getElementById('bannerVideo');
-const bannerImage = document.getElementById('bannerImage');
+  // Pesquisa
+  const searchInput = document.getElementById('searchInput');
+  const searchButton = document.getElementById('searchButton');
 
 searchButton.addEventListener('click', (e) => {
   e.stopPropagation();
   searchInput.classList.toggle('show');
-  if (searchInput.classList.contains('show')) {
-    searchInput.focus();
-  } else {
-    searchInput.value = '';
-    // Se limpar a barra, volta a mostrar o banner
-    if (bannerVideo) bannerVideo.style.display = 'block';
-    if (bannerImage) bannerImage.style.display = 'block';
-  }
+  if (searchInput.classList.contains('show')) searchInput.focus();
+  else searchInput.value = '';
 });
-
-// Ao digitar na barra de pesquisa
-searchInput.addEventListener('input', () => {
-  if (searchInput.value.trim() !== "") {
-    if (bannerVideo) bannerVideo.style.display = 'none';
-    if (bannerImage) bannerImage.style.display = 'none';
-  } else {
-    if (bannerVideo) bannerVideo.style.display = 'block';
-    if (bannerImage) bannerImage.style.display = 'block';
-  }
-});
-
 
 
   // Fechar a barra se clicar fora dela
