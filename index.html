@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>Tugaflix</title>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
   
 <link rel="icon" href="https://i.postimg.cc/rpJ9YSm2/4f829e85866bd52d062ca58b4e1ecef5.png" sizes="64x64">
   
@@ -857,67 +860,132 @@ function fecharModalTrailer() {
 
 
 function abrirVideo(item) {
-const videoModal = document.createElement('div');
-videoModal.style.cssText = `
-  position: fixed; top:0; left:0; width:100%; height:100%;
-  background: rgba(0,0,0,0.9); display:flex; flex-direction:column;
-  justify-content:center; align-items:center; z-index:10000;
-  overflow:auto;
-`;
+  const videoModal = document.createElement('div');
+  videoModal.style.cssText = `
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.9); display:flex;
+    justify-content:center; align-items:center; flex-direction:column;
+    z-index:10000;
+  `;
+  videoModal.dataset.titulo = item.titulo;
 
-const wrapper = document.createElement('div');
-wrapper.style.cssText = `
-  width: 80%; max-width:1000px; height:0; padding-top:56.25%; position:relative;
-`;
-videoModal.appendChild(wrapper);
+  // Botão fechar
+  const fecharBtn = document.createElement('button');
+  fecharBtn.textContent = 'Fechar';
+  fecharBtn.className = 'audio-btn';
+  fecharBtn.style.position = 'absolute';
+  fecharBtn.style.top = '20px';
+  fecharBtn.style.right = '20px';
+  fecharBtn.onclick = () => {
+    if (videoEl) {
+      videoEl.pause();
+      videoEl.src = '';
+      videoEl.load();
+    }
+    videoModal.remove();
+  };
+  videoModal.appendChild(fecharBtn);
 
-let videoEl = document.createElement('video');
-videoEl.controls = true;
-videoEl.autoplay = true;
-videoEl.style.cssText = `
-  position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain;
-`;
-wrapper.appendChild(videoEl);
+  // Wrapper responsivo
+  const wrapper = document.createElement('div');
+  wrapper.style.cssText = `
+    width: 80%; max-width:1000px; height:0; padding-top:56.25%; position:relative;
+  `;
+  videoModal.appendChild(wrapper);
 
-// Função para carregar HLS ou MP4
-function carregarVideo(url) {
-  if (url.endsWith('.m3u8')) {
+  let videoEl = document.createElement('video');
+  videoEl.controls = true;
+  videoEl.style.cssText = `
+    position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain;
+  `;
+  wrapper.appendChild(videoEl);
+
+  // Determina se é HLS ou MP4
+  if (item.link.endsWith('.m3u8')) {
     if (Hls.isSupported()) {
       const hls = new Hls();
-      hls.loadSource(url);
+      hls.loadSource(item.link);
       hls.attachMedia(videoEl);
       hls.on(Hls.Events.MANIFEST_PARSED, () => videoEl.play());
     } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
-      videoEl.src = url;
+      videoEl.src = item.link;
       videoEl.addEventListener('loadedmetadata', () => videoEl.play());
+    } else {
+      mostrarToast('HLS não suportado neste navegador.');
     }
   } else {
-    videoEl.src = url;
+    videoEl.src = item.link;
     videoEl.load();
     videoEl.play();
   }
+
+  // Legendas
+  if (item.legendas) {
+    item.legendas.forEach(l => {
+      const track = document.createElement('track');
+      track.kind = 'subtitles';
+      track.label = l.label;
+      track.srclang = l.lang;
+      track.src = l.src;
+      track.default = l.default || false;
+      videoEl.appendChild(track);
+    });
+  }
+
+  // Áudios alternativos
+  if (item.audios && item.audios.length) {
+    const audioContainer = document.createElement('div');
+    audioContainer.style.cssText = `
+      position:absolute; top:60px; left:50%;
+      transform:translateX(-50%);
+      display:flex; gap:10px; flex-wrap:wrap; z-index:10001;
+    `;
+    item.audios.forEach(a => {
+      const btn = document.createElement('button');
+      btn.textContent = a.label;
+      btn.className = 'audio-btn';
+      btn.onclick = () => {
+        const t = videoEl.currentTime;
+        if (a.src.endsWith('.m3u8')) {
+          if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(a.src);
+            hls.attachMedia(videoEl);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+              videoEl.currentTime = t;
+              videoEl.play();
+            });
+          }
+        } else {
+          videoEl.src = a.src;
+          videoEl.currentTime = t;
+          videoEl.load();
+          videoEl.play();
+        }
+      };
+      audioContainer.appendChild(btn);
+    });
+    videoModal.appendChild(audioContainer);
+  }
+
+  // Atualiza progresso
+  let terminou = false;
+  videoEl.ontimeupdate = () => {
+    if (!terminou) {
+      progresso[item.titulo] = videoEl.currentTime;
+      salvarProgresso();
+    }
+  };
+  videoEl.onended = () => {
+    terminou = true;
+    delete progresso[item.titulo];
+    salvarProgresso();
+    videoModal.remove();
+    mostrarSecao('inicio');
+  };
+
+  document.body.appendChild(videoModal);
 }
-
-// Carrega o primeiro vídeo da lista
-carregarVideo(videos[0].link);
-
-// Botões para trocar vídeos
-videos.forEach(v => {
-  const btn = document.createElement('button');
-  btn.textContent = v.titulo;
-  btn.className = 'episodio-btn';
-  btn.onclick = () => carregarVideo(v.link);
-  videoModal.appendChild(btn);
-});
-
-// Botão de fechar
-const fecharBtn = document.createElement('button');
-fecharBtn.textContent = 'Fechar';
-fecharBtn.className = 'audio-btn';
-fecharBtn.onclick = () => videoModal.remove();
-videoModal.appendChild(fecharBtn);
-
-document.body.appendChild(videoModal);
 
 
 
