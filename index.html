@@ -9707,6 +9707,7 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
   // === Série (iframe) ===
   if (item.temporadas && item.temporadas.length > 0) {
     const iframe = document.createElement('iframe');
+    iframe.src = item.link;
     iframe.width = '80%';
     iframe.height = '80%';
     iframe.allowFullscreen = true;
@@ -9777,6 +9778,7 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
   } else {
     // Se não for série, apenas link simples
     const iframe = document.createElement('iframe');
+    
     iframe.src = item.link;
     iframe.width = '80%';
     iframe.height = '80%';
