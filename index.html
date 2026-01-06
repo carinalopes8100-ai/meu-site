@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {<!DOCTYPE html>
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
@@ -9686,6 +9686,31 @@ window.addEventListener('resize', () => {
     if (p.x > window.innerWidth) p.x = Math.random() * window.innerWidth;
   });
 });
+
+  function abrirVideo(item) {
+  const videoModal = document.createElement('div');
+  videoModal.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;justify-content:center;align-items:center;flex-direction:column;z-index:10000;";
+
+  const fecharBtn = document.createElement('button');
+  fecharBtn.textContent = "Fechar";
+  fecharBtn.style.position = "absolute";
+  fecharBtn.style.top = "20px";
+  fecharBtn.style.right = "20px";
+  videoModal.appendChild(fecharBtn);
+
+  const video = document.createElement('video');
+  video.src = item.link;
+  video.width = 800;
+  video.height = 450;
+  video.controls = true;
+  video.autoplay = true;
+
+  videoModal.appendChild(video);
+  document.body.appendChild(videoModal);
+
+  fecharBtn.onclick = () => videoModal.remove();
+}
+
 
 function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
   const videoModal = document.createElement('div');
