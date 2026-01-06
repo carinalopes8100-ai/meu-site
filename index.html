@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Tugaflix</title>
-
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
   
 <link rel="icon" href="https://i.postimg.cc/rpJ9YSm2/4f829e85866bd52d062ca58b4e1ecef5.png" sizes="64x64">
   
@@ -13,8 +10,6 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
-
-  
 
 
 
@@ -867,110 +862,209 @@ function abrirVideo(item) {
     justify-content:center; align-items:center; flex-direction:column;
     z-index:10000;
   `;
+
+  // Guarda título do episódio
   videoModal.dataset.titulo = item.titulo;
 
-  // Botão fechar
-  const fecharBtn = document.createElement('button');
-  fecharBtn.textContent = 'Fechar';
-  fecharBtn.className = 'audio-btn';
-  fecharBtn.style.position = 'absolute';
-  fecharBtn.style.top = '20px';
-  fecharBtn.style.right = '20px';
-  fecharBtn.onclick = () => {
+  let videoEl = null; // só será usado se for MP4
+  let terminou = false;
+
+document.body.appendChild(videoModal); // adiciona o modal ao DOM primeiro
+
+// Botão Fechar
+const fecharBtn = document.createElement('button');
+fecharBtn.textContent = 'Fechar';
+fecharBtn.className = 'audio-btn';
+fecharBtn.style.position = 'absolute';
+fecharBtn.style.top = '20px';
+fecharBtn.style.right = '20px';
+fecharBtn.onclick = () => {
+  if (videoEl) {
+    videoEl.pause();
+    videoEl.src = '';
+    videoEl.load();
+  }
+  videoModal.remove();
+};
+videoModal.appendChild(fecharBtn);
+
+const serie = series.find(s => item.titulo.startsWith(s.titulo));  
+if (serie) {
+  const btnProximo = document.createElement('button');
+  btnProximo.textContent = '⏭ Próximo';
+  btnProximo.className = 'audio-btn';
+  btnProximo.style.position = 'absolute';
+  btnProximo.style.right = fecharBtn.style.right;
+  btnProximo.style.backgroundColor = 'white';
+  btnProximo.style.color = 'black';
+  btnProximo.style.border = 'none';
+  btnProximo.style.padding = '8px 12px';
+  btnProximo.style.cursor = 'pointer';
+  btnProximo.style.borderRadius = '5px';
+  btnProximo.style.zIndex = '10001';
+  btnProximo.style.font = 'inherit';
+  btnProximo.style.height = 'auto';
+
+  // Ajusta posição do topo depois de o botão Fechar estar no DOM
+  setTimeout(() => {
+    btnProximo.style.top = (fecharBtn.offsetTop + fecharBtn.offsetHeight + 8) + 'px';
+  }, 0);
+
+  btnProximo.onclick = () => {
     if (videoEl) {
       videoEl.pause();
       videoEl.src = '';
       videoEl.load();
     }
     videoModal.remove();
-  };
-  videoModal.appendChild(fecharBtn);
 
-  // Wrapper responsivo
-  const wrapper = document.createElement('div');
-  wrapper.style.cssText = `
-    width: 80%; max-width:1000px; height:0; padding-top:56.25%; position:relative;
-  `;
-  videoModal.appendChild(wrapper);
-
-  // Elemento vídeo
-  const videoEl = document.createElement('video');
-  videoEl.controls = true;
-  videoEl.style.cssText = `
-    position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain;
-  `;
-  wrapper.appendChild(videoEl);
-
-  // Define o src usando caminho relativo
-  if (item.local) {
-    // Para vídeos locais na pasta 'videos' dentro do site
-    videoEl.src = `videos/${item.link.split('/').pop()}`;
-  } else {
-    // Para vídeos remotos
-    videoEl.src = item.link;
-  }
-
-  videoEl.load();
-  videoEl.play().catch(() => {
-    console.log("Erro ao tentar reproduzir o vídeo automaticamente.");
-  });
-
-  // Legendas
-  if (item.legendas) {
-    item.legendas.forEach(l => {
-      const track = document.createElement('track');
-      track.kind = 'subtitles';
-      track.label = l.label;
-      track.srclang = l.lang;
-      track.src = l.src;
-      track.default = l.default || false;
-      videoEl.appendChild(track);
-    });
-  }
-
-  // Áudios alternativos
-  if (item.audios && item.audios.length) {
-    const audioContainer = document.createElement('div');
-    audioContainer.style.cssText = `
-      position:absolute; top:60px; left:50%;
-      transform:translateX(-50%);
-      display:flex; gap:10px; flex-wrap:wrap; z-index:10001;
-    `;
-    item.audios.forEach(a => {
-      const btn = document.createElement('button');
-      btn.textContent = a.label;
-      btn.className = 'audio-btn';
-      btn.onclick = () => {
-        const t = videoEl.currentTime;
-        videoEl.src = a.src;
-        videoEl.currentTime = t;
-        videoEl.load();
-        videoEl.play();
-      };
-      audioContainer.appendChild(btn);
-    });
-    videoModal.appendChild(audioContainer);
-  }
-
-  // Atualiza progresso
-  let terminou = false;
-  videoEl.ontimeupdate = () => {
-    if (!terminou) {
-      progresso[item.titulo] = videoEl.currentTime;
-      salvarProgresso();
+    for (const temp of serie.temporadas) {
+      const idx = temp.episodios.findIndex(ep => item.titulo.includes(`Ep ${ep.numero}`));
+      if (idx >= 0 && temp.episodios[idx+1]) {
+        abrirVideo({...temp.episodios[idx+1], titulo:`${serie.titulo} - Ep ${temp.episodios[idx+1].numero}`});
+        return;
+      }
     }
+    mostrarToast('Último episódio da temporada!');
   };
 
-  videoEl.onended = () => {
-    terminou = true;
-    delete progresso[item.titulo];
-    salvarProgresso();
-    videoModal.remove();
-    mostrarSecao('inicio');
-  };
+  videoModal.appendChild(btnProximo);
+}
+
+
+  // Verifica tipo de link
+  if (item.link.endsWith('.mp4')) {
+    const loader = document.createElement('div');
+    loader.textContent = 'Carregando...';
+    loader.style.cssText = 'color:#fff;font-size:18px;margin-top:10px;text-align:center;';
+    videoModal.appendChild(loader);
+
+// Cria vídeo
+videoEl = document.createElement('video');
+videoEl.src = item.link;
+videoEl.controls = true;
+videoEl.preload = 'auto';
+
+// Wrapper responsivo
+const videoModal = document.createElement('div');
+videoModal.style.cssText = `
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.9);
+  z-index: 10000;
+  overflow: auto; /* permite scroll se o vídeo for grande */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const wrapper = document.createElement('div');
+wrapper.style.cssText = `
+  width: 80%;
+  max-width: 1000px;
+  height: 0;
+  padding-top: 56.25%; /* proporção 16:9 */
+  position: relative;
+`;
+
+videoEl = document.createElement('video'); // ou iframe
+videoEl.src = item.link;
+videoEl.controls = true;
+videoEl.style.position = 'absolute';
+videoEl.style.top = '0';
+videoEl.style.left = '0';
+videoEl.style.width = '100%';
+videoEl.style.height = '100%';
+videoEl.style.objectFit = 'contain';
+
+wrapper.appendChild(videoEl);
+videoModal.appendChild(wrapper);
+document.body.appendChild(videoModal);
+
+
+    // Legendas
+    if (item.legendas) {
+      item.legendas.forEach(l => {
+        const track = document.createElement('track');
+        track.kind = 'subtitles';
+        track.label = l.label;
+        track.srclang = l.lang;
+        track.src = l.src;
+        track.default = l.default || false;
+        videoEl.appendChild(track);
+      });
+    }
+
+    // Áudios alternativos
+    if (item.audios && item.audios.length) {
+      const audioContainer = document.createElement('div');
+      audioContainer.style.cssText = `
+        position:absolute; top:60px; left:50%;
+        transform:translateX(-50%);
+        display:flex; gap:10px; flex-wrap:wrap; z-index:10001;
+      `;
+      item.audios.forEach(a => {
+        const btn = document.createElement('button');
+        btn.textContent = a.label;
+        btn.className = 'audio-btn';
+        btn.onclick = () => {
+          const t = videoEl.currentTime;
+          videoEl.src = a.src;
+          videoEl.load();
+          videoEl.currentTime = t;
+          videoEl.play();
+        };
+        audioContainer.appendChild(btn);
+      });
+      videoModal.appendChild(audioContainer);
+    }
+
+    // Eventos do vídeo
+    videoEl.addEventListener('loadedmetadata', () => {
+      if (progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
+    });
+
+    videoEl.ontimeupdate = () => {
+      if (!terminou) {
+        progresso[item.titulo] = videoEl.currentTime;
+        salvarProgresso();
+      }
+    };
+
+    videoEl.onended = () => {
+      terminou = true;
+      delete progresso[item.titulo];
+      salvarProgresso();
+      videoModal.remove();
+      mostrarSecao('inicio');
+    };
+
+    videoEl.oncanplaythrough = () => {
+      loader.remove();
+      videoEl.play();
+    };
+
+  } else {
+    // Embed (ex: Filemoon)
+    const iframe = document.createElement('iframe');
+    iframe.src = item.link;
+    iframe.allowFullscreen = true;
+    iframe.frameBorder = '0';
+  iframe.style.maxWidth = '1000px';
+iframe.style.maxHeight = '600px';
+iframe.style.width = '80%';
+iframe.style.height = '80%';
+iframe.style.borderRadius = '10px';
+iframe.style.boxShadow = '0 0 20px rgba(0,0,0,0.7)';
+    videoModal.appendChild(iframe);
+  }
 
   document.body.appendChild(videoModal);
 }
+
 
 
 
@@ -7129,9 +7223,8 @@ const desenhos = [
   titulo: "A Idade Do Gelo: O Big Bang (2016)",
   img: "https://m.media-amazon.com/images/S/pv-target-images/d86c72679a105f0b5bda5927ac9869f1bceac8be8223a67732058a25a4378cb5.jpg",
   trailer: "https://www.youtube.com/embed/WHPK_eKpvOk?autoplay=1",
-  link: "C:\xampp\htdocs\site\videos\T5_Ep7_StrangerThings_A_Ponte.mp4", // este é o padrão inicial
+  link: "http://localhost/site/videos/T5_Ep7_StrangerThings_A_Ponte.mp4", // este é o padrão inicial
   descricao: "2016 Quando Scrat despoleta acontecimentos cósmicos que ameaçam o seu mundo, Buck, Manny, Ellie, Sid, Diego e o resto da manada embarcam numa missão hilariante para sobreviver à Scatástrofe global!",
-  local: true,                     
 },
 
 
@@ -9594,31 +9687,6 @@ window.addEventListener('resize', () => {
   });
 });
 
-  function abrirVideo(item) {
-  const videoModal = document.createElement('div');
-  videoModal.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;justify-content:center;align-items:center;flex-direction:column;z-index:10000;";
-
-  const fecharBtn = document.createElement('button');
-  fecharBtn.textContent = "Fechar";
-  fecharBtn.style.position = "absolute";
-  fecharBtn.style.top = "20px";
-  fecharBtn.style.right = "20px";
-  videoModal.appendChild(fecharBtn);
-
-  const video = document.createElement('video');
-  video.src = item.link;
-  video.width = 800;
-  video.height = 450;
-  video.controls = true;
-  video.autoplay = true;
-
-  videoModal.appendChild(video);
-  document.body.appendChild(videoModal);
-
-  fecharBtn.onclick = () => videoModal.remove();
-}
-
-
 function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
   const videoModal = document.createElement('div');
   videoModal.style.cssText = `
@@ -9639,7 +9707,6 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
   // === Série (iframe) ===
   if (item.temporadas && item.temporadas.length > 0) {
     const iframe = document.createElement('iframe');
-    iframe.src = item.link;
     iframe.width = '80%';
     iframe.height = '80%';
     iframe.allowFullscreen = true;
@@ -9710,7 +9777,6 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
   } else {
     // Se não for série, apenas link simples
     const iframe = document.createElement('iframe');
-    
     iframe.src = item.link;
     iframe.width = '80%';
     iframe.height = '80%';
