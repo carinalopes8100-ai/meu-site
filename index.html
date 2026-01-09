@@ -939,37 +939,6 @@ if (serie) {
 }
 
 
-function abrirAudioModal(item) {
-  const modal = document.getElementById('audioModal'); // um modal já existente no HTML
-  const list = modal.querySelector('#audioList');
-  list.innerHTML = '';
-
-  item.audios.forEach(audio => {
-    const btn = document.createElement('button');
-    btn.textContent = audio.nome;
-    btn.onclick = () => {
-      // muda o áudio do vídeo
-      const video = document.getElementById('playerVideo');
-      if (video) {
-        video.src = audio.link;
-        video.play();
-      }
-      fecharAudioModal();
-    };
-    list.appendChild(btn);
-  });
-
-  modal.style.display = 'flex';
-  requestAnimationFrame(() => modal.classList.add('show'));
-}
-
-function fecharAudioModal() {
-  const modal = document.getElementById('audioModal');
-  modal.classList.remove('show');
-  setTimeout(() => modal.style.display = 'none', 400);
-}
-
-  
 
   // Verifica tipo de link
   if (item.link.endsWith('.mp4')) {
