@@ -7193,7 +7193,10 @@ const desenhos = [
                {
   titulo: "A Idade Do Gelo 2: Descongelados (2006)",
   img: "https://m.media-amazon.com/images/S/pv-target-images/006a0129d4bf749cc7df4de2a6e8dce33b61a5d11331778c808111f25c0f1030.jpg",
-  link: "https://strmup.cc/2369b0096c75f", // este é o padrão inicial
+    players: [
+    { nome: "Player 1", url: "https://filemoon.sx/e/kj9k86ttfscf" },
+    { nome: "Player 2", url: "https://streamtape.com/e/xxxxx" }
+  ],
   descricao: "2006 Manny, Sid, Diego e Scrat regressam para mais gargalhadas pré-histéricas e unem forças com novos amigos: Ellie e os seus irmãos opossum, Crash e Eddie, para salvar o vale de um dilúvio épico.",
 },
 
@@ -9204,7 +9207,43 @@ overlay.appendChild(btnPlay);
 
   return container;
 }
+  
 
+function abrirVideo(item) {
+  const modal = document.getElementById("playerModal");
+  const titulo = document.getElementById("modalTitulo");
+  const buttons = document.getElementById("playerButtons");
+  const videoContainer = document.getElementById("videoContainer");
+
+  titulo.textContent = item.titulo;
+  buttons.innerHTML = "";
+  videoContainer.innerHTML = "";
+
+  item.players.forEach(player => {
+    const btn = document.createElement("button");
+    btn.textContent = player.nome;
+
+    btn.onclick = () => carregarPlayer(player.url);
+
+    buttons.appendChild(btn);
+  });
+
+  modal.style.display = "flex";
+}
+
+
+  function fecharModal() {
+  const modal = document.getElementById("playerModal");
+  const videoContainer = document.getElementById("videoContainer");
+
+  modal.style.display = "none";
+  videoContainer.innerHTML = ""; // para parar o vídeo
+}
+
+
+
+
+  
 // ===== Funções utilitárias =====
 function debounce(func, wait) {
   let timeout;
@@ -9593,6 +9632,7 @@ searchButton.addEventListener('click', (e) => {
 
 
   // Fechar a barra se clicar fora dela
+  const searchContainer = document.getElementById('searchContainer');
   document.addEventListener('click', (e) => {
     if (!searchContainer.contains(e.target)) {
       searchInput.classList.add('hidden');
@@ -9889,6 +9929,17 @@ if (logo) {
 }
 
 
+<div id="playerModal" class="modal">
+  <div class="modal-content">
+    <h2 id="modalTitulo"></h2>
+
+    <div id="playerButtons"></div>
+
+    <div id="videoContainer"></div>
+
+    <button onclick="fecharModal()">Fechar</button>
+  </div>
+</div>
 
 
 </script>
