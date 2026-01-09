@@ -128,13 +128,13 @@ nav div.ativo {
  <div id="modal" class="modal">...</div>
 <div id="descricaoModal" class="modal">...</div>
 
-<!-- Modal de Áudios -->
-<div id="audioModal" class="modal">
-  <div id="audioList"></div>
-  <button onclick="fecharAudioModal()">Fechar</button>
+<!-- Modal de Players -->
+<div id="playerModal" class="modal">
+  <div id="playerList"></div>
+  <button onclick="fecharPlayerModal()">Fechar</button>
 </div>
 
-#audioModal,
+#playerModal,
 #modalTrailer {
   display: none;
   opacity: 0;                /* começa invisível */
@@ -378,7 +378,7 @@ nav div.ativo {
 
 
   
-.audio-btn {
+.player-btn {
   padding: 10px 20px; /* controla tamanho do botão */
   border-radius: 5px; /* cantos arredondados */
   border: none;
@@ -394,7 +394,7 @@ nav div.ativo {
   margin: 5px; /* espaçamento entre botões */
 }
 
-.audio-btn:hover {
+.player-btn:hover {
   background-color: #e50914;
   transform: scale(1.1);
 }
@@ -488,11 +488,11 @@ video::cue {
   
 <div id="pumpkinContainer"></div>
   
-  <div id="audioModal" class="modal">
+  <div id="playerModal" class="modal">
   <div class="modal-content" style="max-width:400px;">
-    <h2>Escolha o áudio</h2>
-    <div id="audioOptions" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;"></div>
-    <button class="close-btn" onclick="fecharAudioModal()">Cancelar</button>
+    <h2>Escolha o player</h2>
+    <div id="playerOptions" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;"></div>
+    <button class="close-btn" onclick="fecharPlayerModal()">Cancelar</button>
   </div>
 </div>
 
@@ -621,8 +621,8 @@ function mostrarToast(mensagem){
 function abrirEpisodio(episodio) {
 
 
-  if (episodio.audios && episodio.audios.length > 0) {
-    abrirAudioModal(episodio);
+  if (episodio.player && episodio.player.length > 0) {
+    abrirPlayerModal(episodio);
   } else {
     abrirVideo(episodio);
   }
@@ -781,30 +781,30 @@ bannerVideo.addEventListener('canplaythrough', () => {
 });
 
 
-function abrirAudioModal(item) {
-  const audioModal = document.getElementById('audioModal');
-  const audioOptions = document.getElementById('audioOptions');
-  audioOptions.innerHTML = ''; // limpa opções anteriores
+function abrirPlayerModal(item) {
+  const playerModal = document.getElementById('playerModal');
+  const playerOptions = document.getElementById('playerOptions');
+  playerOptions.innerHTML = ''; // limpa opções anteriores
 
-  // Supondo que item.audios = [{label: 'PT', src: 'linkPT'}, {label: 'EN', src: 'linkEN'}]
-  if(item.audios && item.audios.length > 0) {
-    item.audios.forEach(a => {
+  // Supondo que item.player = [{label: 'PT', src: 'linkPT'}, {label: 'EN', src: 'linkEN'}]
+  if(item.player && item.player.length > 0) {
+    item.player.forEach(a => {
       const btn = document.createElement('button');
-      btn.className = 'audio-btn';
+      btn.className = 'player-btn';
       btn.textContent = a.label;
       btn.onclick = () => {
         abrirVideo({ titulo: item.titulo, link: a.src });
-        fecharAudioModal();
+        fecharPlayerModal();
       };
-      audioOptions.appendChild(btn);
+      playerOptions.appendChild(btn);
     });
   }
 
-  audioModal.style.display = 'flex';
+  playerModal.style.display = 'flex';
 }
 
-function fecharAudioModal() {
-  document.getElementById('audioModal').style.display = 'none';
+function fecharPlayerModal() {
+  document.getElementById('playerModal').style.display = 'none';
 }
 
   
@@ -881,7 +881,7 @@ document.body.appendChild(videoModal); // adiciona o modal ao DOM primeiro
 // Botão Fechar
 const fecharBtn = document.createElement('button');
 fecharBtn.textContent = 'Fechar';
-fecharBtn.className = 'audio-btn';
+fecharBtn.className = 'player-btn';
 fecharBtn.style.position = 'absolute';
 fecharBtn.style.top = '20px';
 fecharBtn.style.right = '20px';
@@ -899,7 +899,7 @@ const serie = series.find(s => item.titulo.startsWith(s.titulo));
 if (serie) {
   const btnProximo = document.createElement('button');
   btnProximo.textContent = '⏭ Próximo';
-  btnProximo.className = 'audio-btn';
+  btnProximo.className = 'player-btn';
   btnProximo.style.position = 'absolute';
   btnProximo.style.right = fecharBtn.style.right;
   btnProximo.style.backgroundColor = 'white';
@@ -1007,17 +1007,17 @@ document.body.appendChild(videoModal);
     }
 
     // Áudios alternativos
-    if (item.audios && item.audios.length) {
-      const audioContainer = document.createElement('div');
-      audioContainer.style.cssText = `
+    if (item.player && item.player.length) {
+      const playerContainer = document.createElement('div');
+      playerContainer.style.cssText = `
         position:absolute; top:60px; left:50%;
         transform:translateX(-50%);
         display:flex; gap:10px; flex-wrap:wrap; z-index:10001;
       `;
-      item.audios.forEach(a => {
+      item.player.forEach(a => {
         const btn = document.createElement('button');
         btn.textContent = a.label;
-        btn.className = 'audio-btn';
+        btn.className = 'player-btn';
         btn.onclick = () => {
           const t = videoEl.currentTime;
           videoEl.src = a.src;
@@ -1025,9 +1025,9 @@ document.body.appendChild(videoModal);
           videoEl.currentTime = t;
           videoEl.play();
         };
-        audioContainer.appendChild(btn);
+        playerContainer.appendChild(btn);
       });
-      videoModal.appendChild(audioContainer);
+      videoModal.appendChild(playerContainer);
     }
 
     // Eventos do vídeo
@@ -7203,7 +7203,7 @@ const desenhos = [
   img: "https://m.media-amazon.com/images/S/pv-target-images/006a0129d4bf749cc7df4de2a6e8dce33b61a5d11331778c808111f25c0f1030.jpg",
   link: "https://strmup.cc/2369b0096c75f",
   descricao: "2006 Manny, Sid, Diego e Scrat regressam para mais gargalhadas pré-histéricas e unem forças com novos amigos: Ellie e os seus irmãos opossum, Crash e Eddie, para salvar o vale de um dilúvio épico.",
-  audios: [
+  player: [
     { label: "Português", link: "https://strmup.cc/2369b0096c75f" },
     { idioma: "Inglês", link: "https://link-en.mp4" },
     { idioma: "Espanhol", link: "https://link-es.mp4" }
@@ -9130,8 +9130,8 @@ if (item.emBreve || item.link === "#") {
 
 
         // Se tiver múltiplos áudios → abre o modal de áudios
-    if (item.audios && item.audios.length > 1) {
-      abrirAudioModal(item);
+    if (item.player && item.player.length > 1) {
+      abrirPlayerModal(item);
       return;
     }
 
@@ -9148,8 +9148,8 @@ if (item.emBreve || item.link === "#") {
       abrirModalTemporadas({ ...s, temporadas: s.temporadas });
     }
     // 🔊 Se tiver múltiplos áudios → abre o seletor de áudio
-    else if (item.audios && item.audios.length > 0) {
-      abrirAudioModal(item);
+    else if (item.player && item.player.length > 0) {
+      abrirPlayerModal(item);
     }
     // ▶ Caso contrário → vídeo normal
     else {
@@ -9720,7 +9720,7 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
 
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
-  fecharBtn.className = 'audio-btn';
+  fecharBtn.className = 'player-btn';
   fecharBtn.style.position = 'absolute';
   fecharBtn.style.top = '20px';
   fecharBtn.style.right = '20px';
