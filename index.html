@@ -783,6 +783,36 @@ bannerVideo.addEventListener('canplaythrough', () => {
   }, 1000);
 });
 
+function abrirPlayerModal(ep) {
+  const playerModal = document.getElementById('playerModal');
+  const modalEpisodios = document.getElementById('modal');
+
+  // Esconde modal de episódios
+  modalEpisodios.style.display = 'none';
+
+  // Monta conteúdo do modal de players
+  playerModal.innerHTML = '';
+  ep.player.forEach(p => {
+    const btn = document.createElement('button');
+    btn.textContent = p.nome;
+    btn.onclick = () => window.open(p.link, '_blank'); // ou chamar abrirVideo se quiser
+    playerModal.appendChild(btn);
+  });
+
+  // Mostra o modal de players
+  playerModal.style.display = 'block';
+}
+
+
+  function fecharPlayerModal() {
+  const playerModal = document.getElementById('playerModal');
+  const modalEpisodios = document.getElementById('modal');
+
+  playerModal.style.display = 'none';
+  modalEpisodios.style.display = 'block';
+}
+
+  
 
 function abrirPlayerModal(item) {
   const playerModal = document.getElementById('playerModal');
