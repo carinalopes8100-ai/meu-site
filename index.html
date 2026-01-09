@@ -813,15 +813,16 @@ btn.onclick = () => {
   // Fade-in suave
   playerModal.style.display = 'flex';
   
-  // ✅ Aplica fade-in **só se o item NÃO estiver em desenhos**
-  if (item.tipo === "filme" && !desenhos.includes(item)) {
+
+  // Aplica fade-in somente se NÃO estiver no modal de episódios
+  if (!modalEpisodios.dataset.episodiosAtivos) {
     playerModal.style.opacity = '0';
     playerModal.style.transition = 'opacity 0.4s';
     requestAnimationFrame(() => {
       playerModal.style.opacity = '1';
     });
   } else {
-    playerModal.style.opacity = '1'; // para desenhos ou séries, aparece normal
+    playerModal.style.opacity = '1';
   }
 }
 
