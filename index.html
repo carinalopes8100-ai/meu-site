@@ -862,14 +862,65 @@ function abrirVideo(item) {
     justify-content:center; align-items:center; flex-direction:column;
     z-index:10000;
   `;
+  document.body.appendChild(videoModal);
 
-  // Guarda título do episódio
-  videoModal.dataset.titulo = item.titulo;
+  // ====== ESCOLHA DE PLAYER ======
+  if(item.players && item.players.length > 1){
+    const playerContainer = document.createElement('div');
+    playerContainer.style.cssText = 'margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center;';
+    
+    item.players.forEach(p => {
+      const btn = document.createElement('button');
+      btn.textContent = p.nome;
+      btn.className = 'audio-btn';
+      btn.onclick = () => {
+        carregarPlayer(p.url);
+      };
+      playerContainer.appendChild(btn);
+    });
 
-  let videoEl = null; // só será usado se for MP4
-  let terminou = false;
+    videoModal.appendChild(playerContainer);
 
-document.body.appendChild(videoModal); // adiciona o modal ao DOM primeiro
+    function carregarPlayer(url){
+      // limpa vídeo anterior
+      videoModal.querySelectorAll('iframe, video').forEach(el => el.remove());
+
+      if(url.endsWith('.mp4')){
+        const videoEl = document.createElement('video');
+        videoEl.src = url;
+        videoEl.controls = true;
+        videoEl.style.cssText = 'width:80%; max-width:1000px; height:auto;';
+        videoModal.appendChild(videoEl);
+        videoEl.play();
+      } else {
+        const iframe = document.createElement('iframe');
+        iframe.src = url;
+        iframe.allowFullscreen = true;
+        iframe.style.cssText = 'width:80%; max-width:1000px; height:600px;';
+        videoModal.appendChild(iframe);
+      }
+    }
+
+    // abre automaticamente o primeiro player
+    carregarPlayer(item.players[0].url);
+  } else {
+    // Se houver apenas 1 player, abre direto
+    const url = item.players ? item.players[0].url : item.link;
+    if(url.endsWith('.mp4')){
+      const videoEl = document.createElement('video');
+      videoEl.src = url;
+      videoEl.controls = true;
+      videoEl.style.cssText = 'width:80%; max-width:1000px; height:auto;';
+      videoModal.appendChild(videoEl);
+      videoEl.play();
+    } else {
+      const iframe = document.createElement('iframe');
+      iframe.src = url;
+      iframe.allowFullscreen = true;
+      iframe.style.cssText = 'width:80%; max-width:1000px; height:600px;';
+      videoModal.appendChild(iframe);
+    }
+  }
 
 // Botão Fechar
 const fecharBtn = document.createElement('button');
@@ -9209,51 +9260,6 @@ overlay.appendChild(btnPlay);
 }
   
 
-// ===== PLAYER COM ESCOLHA DE PLAYER =====
-function abrirVideo(item) {
-  const modal = document.getElementById("playerModal");
-  const titulo = document.getElementById("modalTitulo");
-  const buttons = document.getElementById("playerButtons");
-  const videoContainer = document.getElementById("videoContainer");
-
-  if (!item.players || item.players.length === 0) {
-    videoContainer.innerHTML = `
-      <iframe src="${item.link}" width="100%" height="450"
-        frameborder="0" allowfullscreen allow="autoplay"></iframe>
-    `;
-    modal.style.display = "flex";
-    return;
-  }
-
-  titulo.textContent = item.titulo;
-  buttons.innerHTML = "";
-  videoContainer.innerHTML = "";
-
-  item.players.forEach(player => {
-    const btn = document.createElement("button");
-    btn.textContent = player.nome;
-    btn.onclick = () => carregarPlayer(player.url);
-    buttons.appendChild(btn);
-  });
-
-  modal.style.display = "flex";
-}
-
-function carregarPlayer(url) {
-  const videoContainer = document.getElementById("videoContainer");
-  videoContainer.innerHTML = `
-    <iframe src="${url}" width="100%" height="450"
-      frameborder="0" allowfullscreen allow="autoplay"></iframe>
-  `;
-}
-
-function fecharModal() {
-  const modal = document.getElementById("playerModal");
-  const videoContainer = document.getElementById("videoContainer");
-
-  modal.style.display = "none";
-  videoContainer.innerHTML = ""; // para parar o vídeo
-}
 
 
 
