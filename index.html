@@ -812,12 +812,17 @@ function abrirPlayerModal(item, origemModal = null) {
     });
   }
 
-  // Atualiza o texto do botão de fechar dependendo da origem
+  // Atualiza o botão de cancelar
   if (btnCancelar) {
+    // Atualiza o texto
     btnCancelar.textContent = origemModal === 'episodios' ? 'Voltar' : 'Fechar';
-    btnCancelar.onclick = () => {
+
+    // Remove qualquer listener antigo e adiciona o correto
+    btnCancelar.replaceWith(btnCancelar.cloneNode(true)); // limpa listeners
+    const novoCancelar = document.getElementById('playerCancelBtn');
+    novoCancelar.textContent = origemModal === 'episodios' ? 'Voltar' : 'Fechar';
+    novoCancelar.onclick = () => {
       playerModal.style.display = 'none';
-      // Só volta pro modal de episódios se tiver vindo dele
       if (origemModal === 'episodios') {
         modalEpisodios.style.display = 'flex';
       }
@@ -832,6 +837,7 @@ function abrirPlayerModal(item, origemModal = null) {
     playerModal.style.opacity = '1';
   });
 }
+
 
 
   
