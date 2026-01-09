@@ -787,58 +787,55 @@ bannerVideo.addEventListener('canplaythrough', () => {
 
   
 
-function abrirPlayerModal(item, origemModal = null) {
+function abrirPlayerModal(item) {
   const playerModal = document.getElementById('playerModal');
   const modalEpisodios = document.getElementById('modal'); // modal de episódios
   const playerOptions = document.getElementById('playerOptions');
-  const btnCancelar = document.getElementById('playerCancelBtn'); // botão existente
 
   // Esconde modal de episódios
   modalEpisodios.style.display = 'none';
   
-  // Limpa opções anteriores
-  playerOptions.innerHTML = '';
+  playerOptions.innerHTML = ''; // limpa opções anteriores
 
-  // Preenche opções de players
-  if (item.player && item.player.length > 0) {
+  // Supondo que item.player = [{player: 'PT', src: 'linkPT'}, {player: 'EN', src: 'linkEN'}]
+  if(item.player && item.player.length > 0) {
     item.player.forEach(a => {
       const btn = document.createElement('button');
       btn.className = 'player-btn';
       btn.textContent = a.player;
-      btn.onclick = () => {
-        abrirVideo({ titulo: item.titulo, link: a.link });
-      };
+btn.onclick = () => {
+  abrirVideo({ titulo: item.titulo, link: a.link }); // ✅ agora é a.link
+};
       playerOptions.appendChild(btn);
     });
   }
 
-  // Atualiza o botão de cancelar
-  if (btnCancelar) {
-    // Atualiza o texto
-    btnCancelar.textContent = origemModal === 'episodios' ? 'Voltar' : 'Fechar';
-
-    // Remove qualquer listener antigo e adiciona o correto
-    btnCancelar.replaceWith(btnCancelar.cloneNode(true)); // limpa listeners
-    const novoCancelar = document.getElementById('playerCancelBtn');
-    novoCancelar.textContent = origemModal === 'episodios' ? 'Voltar' : 'Fechar';
-    novoCancelar.onclick = () => {
-      playerModal.style.display = 'none';
-      if (origemModal === 'episodios') {
-        modalEpisodios.style.display = 'flex';
-      }
-    };
-  }
-
   // Fade-in suave
   playerModal.style.display = 'flex';
-  playerModal.style.opacity = '0';
-  playerModal.style.transition = 'opacity 0.4s';
-  requestAnimationFrame(() => {
+  
+
+  // Aplica fade-in somente se NÃO estiver no modal de episódios
+  if (!modalEpisodios.dataset.episodiosAtivos) {
+    playerModal.style.opacity = '0';
+    playerModal.style.transition = 'opacity 0.4s';
+    requestAnimationFrame(() => {
+      playerModal.style.opacity = '1';
+    });
+  } else {
     playerModal.style.opacity = '1';
-  });
+  }
 }
 
-
+function fecharPlayerModal() {
+  const playerModal = document.getElementById('playerModal');
+  const modalEpisodios = document.getElementById('modal');
+  
+  // Esconde modal de players
+  playerModal.style.display = 'none';
+  
+  // Mostra novamente o modal de episódios
+  modalEpisodios.style.display = 'block';
+}
 
   
 function abrirModalTrailers(item) {
@@ -9451,13 +9448,13 @@ btn.onclick = () => {
   localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
 
   // 🔹 Verifica se o episódio possui múltiplos players
-if (ep.player && ep.player.length > 1) {
-  abrirPlayerModal(ep, 'episodios'); // <-- passa a flag de origem
-} else {
-  // Caso não tenha múltiplos players, abre o vídeo normalmente
-  const temporadaIndex = serie.temporadas.findIndex(t => t.numero === temporada.numero);
-  abrirVideo(serie, temporadaIndex, ep.numero - 1, 'episodios'); // <-- passa a flag de origem
-}
+  if (ep.player && ep.player.length > 1) {
+    abrirPlayerModal(ep); // abre o modal de players
+  } else {
+    // Caso não tenha múltiplos players, abre o vídeo normalmente
+    const temporadaIndex = serie.temporadas.findIndex(t => t.numero === temporada.numero);
+    abrirVideo(serie, temporadaIndex, ep.numero - 1);
+  }
 };
 
 
@@ -9706,7 +9703,7 @@ window.addEventListener('resize', () => {
   });
 });
 
-function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0, origemModal = null) {
+function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
   const videoModal = document.createElement('div');
   videoModal.style.cssText = `
     position: fixed; top:0; left:0; width:100%; height:100%;
@@ -9716,9 +9713,7 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0, origemModal = n
   `;
 
   const fecharBtn = document.createElement('button');
-  
-  // Se veio do modal de episódios, mostra "Voltar", senão "Fechar"
-  fecharBtn.textContent = origemModal === 'episodios' ? 'Voltar' : 'Fechar';
+  fecharBtn.textContent = 'Fechar';
   fecharBtn.className = 'player-btn';
   fecharBtn.style.position = 'absolute';
   fecharBtn.style.top = '20px';
@@ -9737,12 +9732,14 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0, origemModal = n
     iframe.style.boxShadow = '0 0 20px rgba(0,0,0,0.7)';
     videoModal.appendChild(iframe);
 
-    // Botões Próximo/Anterior (igual antes)
+    // Botões Próximo/Anterior
     const btnPrev = document.createElement('button');
     btnPrev.textContent = '⏮ Anterior';
     btnPrev.className = 'control-btn';
     btnPrev.style.position = 'absolute';
+    btnPrev.style.top = '';
     btnPrev.style.left = '80px';
+    btnPrev.style.zIndex = '1000';
     btnPrev.style.padding = '10px';
     videoModal.appendChild(btnPrev);
 
@@ -9750,7 +9747,9 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0, origemModal = n
     btnNext.textContent = 'Próximo ⏭';
     btnNext.className = 'control-btn';
     btnNext.style.position = 'absolute';
+    btnNext.style.top = '';
     btnNext.style.right = '80px';
+    btnNext.style.zIndex = '1000';
     btnNext.style.padding = '10px';
     videoModal.appendChild(btnNext);
 
@@ -9762,6 +9761,8 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0, origemModal = n
       const temporadaAtual = temporadas[temporadaAtualIndex];
       const episodioAtual = temporadaAtual.episodios[episodioAtualIndex];
       iframe.src = episodioAtual.link;
+
+      // Desabilita botões
       btnPrev.disabled = temporadaAtualIndex === 0 && episodioAtualIndex === 0;
       btnNext.disabled =
         temporadaAtualIndex === temporadas.length - 1 &&
@@ -9769,8 +9770,9 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0, origemModal = n
     }
 
     btnPrev.onclick = () => {
-      if (episodioAtualIndex > 0) episodioAtualIndex--;
-      else if (temporadaAtualIndex > 0) {
+      if (episodioAtualIndex > 0) {
+        episodioAtualIndex--;
+      } else if (temporadaAtualIndex > 0) {
         temporadaAtualIndex--;
         episodioAtualIndex = temporadas[temporadaAtualIndex].episodios.length - 1;
       }
@@ -9778,8 +9780,9 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0, origemModal = n
     };
 
     btnNext.onclick = () => {
-      if (episodioAtualIndex < temporadas[temporadaAtualIndex].episodios.length - 1) episodioAtualIndex++;
-      else if (temporadaAtualIndex < temporadas.length - 1) {
+      if (episodioAtualIndex < temporadas[temporadaAtualIndex].episodios.length - 1) {
+        episodioAtualIndex++;
+      } else if (temporadaAtualIndex < temporadas.length - 1) {
         temporadaAtualIndex++;
         episodioAtualIndex = 0;
       }
@@ -9788,7 +9791,7 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0, origemModal = n
 
     atualizarIframe();
   } else {
-    // Filme normal
+    // Se não for série, apenas link simples
     const iframe = document.createElement('iframe');
     iframe.src = item.link;
     iframe.width = '80%';
@@ -9799,20 +9802,7 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0, origemModal = n
     videoModal.appendChild(iframe);
   }
 
-  // Fechar botão
-  fecharBtn.onclick = () => {
-    videoModal.remove();
-
-    // Se veio do modal de episódios, reabre o modal de episódios
-    if (origemModal === 'episodios') {
-      abrirModalEpisodios(
-        item.temporadas[temporadaIndex],
-        item.titulo,
-        item
-      );
-    }
-  };
-
+  fecharBtn.onclick = () => videoModal.remove();
   document.body.appendChild(videoModal);
 }
 
