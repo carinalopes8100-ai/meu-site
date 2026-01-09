@@ -783,40 +783,18 @@ bannerVideo.addEventListener('canplaythrough', () => {
   }, 1000);
 });
 
-function abrirPlayerModal(ep) {
-  const playerModal = document.getElementById('playerModal');
-  const modalEpisodios = document.getElementById('modal');
 
-  // Esconde modal de episódios
-  modalEpisodios.style.display = 'none';
-
-  // Monta conteúdo do modal de players
-  playerModal.innerHTML = '';
-  ep.player.forEach(p => {
-    const btn = document.createElement('button');
-    btn.textContent = p.nome;
-    btn.onclick = () => window.open(p.link, '_blank'); // ou chamar abrirVideo se quiser
-    playerModal.appendChild(btn);
-  });
-
-  // Mostra o modal de players
-  playerModal.style.display = 'block';
-}
-
-
-  function fecharPlayerModal() {
-  const playerModal = document.getElementById('playerModal');
-  const modalEpisodios = document.getElementById('modal');
-
-  playerModal.style.display = 'none';
-  modalEpisodios.style.display = 'block';
-}
 
   
 
 function abrirPlayerModal(item) {
   const playerModal = document.getElementById('playerModal');
+  const modalEpisodios = document.getElementById('modal'); // modal de episódios
   const playerOptions = document.getElementById('playerOptions');
+
+  // Esconde modal de episódios
+  modalEpisodios.style.display = 'none';
+  
   playerOptions.innerHTML = ''; // limpa opções anteriores
 
   // Supondo que item.player = [{player: 'PT', src: 'linkPT'}, {player: 'EN', src: 'linkEN'}]
@@ -842,7 +820,14 @@ btn.onclick = () => {
 }
 
 function fecharPlayerModal() {
-  document.getElementById('playerModal').style.display = 'none';
+  const playerModal = document.getElementById('playerModal');
+  const modalEpisodios = document.getElementById('modal');
+  
+  // Esconde modal de players
+  playerModal.style.display = 'none';
+  
+  // Mostra novamente o modal de episódios
+  modalEpisodios.style.display = 'block';
 }
 
   
