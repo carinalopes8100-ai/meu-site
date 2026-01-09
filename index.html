@@ -3899,18 +3899,29 @@ const series = [
         { "numero": 8, "link": "https://filemoon.sx/e/zc6rtd0tkim7" }
       ]
     },
-            {
-      "numero": 4,
-      "episodios": [
-        { "numero": 1, "link": "https://filemoon.sx/e/zmtn1y15d58y" },
-        { "numero": 2, "link": "https://filemoon.sx/e/vcc38mqgvqt9" },
-        { "numero": 3, "link": "https://filemoon.sx/e/xdafd77vxzck" },
-        { "numero": 4, "link": "https://filemoon.sx/e/ux4lvqijt3u9" },
-        { "numero": 5, "link": "https://filemoon.sx/e/c6msu3oki5p4" },
-        { "numero": 6, "link": "https://filemoon.sx/e/8fcruy93eqhq" },
-        { "numero": 7, "link": "https://filemoon.sx/e/71ul39u1pzo4" },
-        { "numero": 8, "link": "https://filemoon.sx/e/69cdk6z4zelo" },
-        { "numero": 9, "link": "https://filemoon.sx/e/0upu5rssp90u" }
+{
+  "numero": 4,
+  "episodios": [
+    { 
+      "numero": 1, 
+      "link": "https://filemoon.sx/e/rjdc4rtoch74",
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.sx/e/rjdc4rtoch74" },
+        { "player": "Player 2", "link": "https://outroplayer.com/video1" }
+      ]
+    },
+    { 
+      "numero": 2, 
+      "link": "https://filemoon.sx/e/6d2gwaulslgj",
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.sx/e/6d2gwaulslgj" }
+      ]
+    },
+    { 
+      "numero": 3, 
+      "link": "https://filemoon.sx/e/qu5p6qf9ml9y",
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.sx/e/qu5p6qf9ml9y" }
       ]
     },
     {
@@ -9437,27 +9448,33 @@ else {
 }
 
 
-      btn.onclick = () => {
-        // Remove destaque de outros episódios da mesma série
-        list.querySelectorAll('.episodio-btn.selecionado')
-                .forEach(b => b.classList.remove('selecionado'));
+btn.onclick = () => {
+  // Remove destaque de outros episódios da mesma série
+  list.querySelectorAll('.episodio-btn.selecionado')
+      .forEach(b => b.classList.remove('selecionado'));
 
-        // Marca o botão clicado
-        btn.classList.add('selecionado');
+  // Marca o botão clicado
+  btn.classList.add('selecionado');
+
+  // Atualiza temporada e episódio
+  temporadaSelecionada[serieTitulo] = temporada.numero;
+  episodioSelecionado[serieTitulo] = ep.numero;
+
+  // Atualiza o localStorage
+  localStorage.setItem('temporadaSelecionada', JSON.stringify(temporadaSelecionada));
+  localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
+
+  // 🔹 Verifica se o episódio possui múltiplos players
+  if (ep.player && ep.player.length > 1) {
+    abrirPlayerModal(ep); // abre o modal de players
+  } else {
+    // Caso não tenha múltiplos players, abre o vídeo normalmente
+    const temporadaIndex = serie.temporadas.findIndex(t => t.numero === temporada.numero);
+    abrirVideo(serie, temporadaIndex, ep.numero - 1);
+  }
+};
 
 
-    // Atualiza temporada e episódio
-    temporadaSelecionada[serieTitulo] = temporada.numero;
-    episodioSelecionado[serieTitulo] = ep.numero;
-        
-        // Atualiza o localStorage
-    localStorage.setItem('temporadaSelecionada', JSON.stringify(temporadaSelecionada));
-    localStorage.setItem('episodioSelecionado', JSON.stringify(episodioSelecionado));
-
-        // Abre o vídeo usando abrirVideo
-        const temporadaIndex = serie.temporadas.findIndex(t => t.numero === temporada.numero);
-        abrirVideo(serie, temporadaIndex, ep.numero - 1);
-      };
 
       // Reaplica seleção ao criar os botões
 if (episodioSelecionado[serieTitulo] === ep.numero && temporada.numero === temporadaSelecionada[serieTitulo]) {
