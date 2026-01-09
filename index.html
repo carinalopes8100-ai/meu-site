@@ -801,13 +801,15 @@ function abrirPlayerModal(item) {
   // Limpa opções antigas
   playerOptions.innerHTML = '';
 
-  // Cria botões de player
+  // Supondo que item.player = [{player: 'PT', src: 'linkPT'}, {player: 'EN', src: 'linkEN'}]
   if(item.player && item.player.length > 0) {
     item.player.forEach(a => {
       const btn = document.createElement('button');
       btn.className = 'player-btn';
       btn.textContent = a.player;
-      btn.onclick = () => abrirVideo({ titulo: item.titulo, link: a.link });
+btn.onclick = () => {
+  abrirVideo({ titulo: item.titulo, link: a.link }); // ✅ agora é a.link
+};
       playerOptions.appendChild(btn);
     });
   }
