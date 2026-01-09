@@ -797,7 +797,6 @@ function abrirPlayerModal(item) {
       btn.textContent = a.player;
 btn.onclick = () => {
   abrirVideo({ titulo: item.titulo, link: a.link }); // ✅ agora é a.link
-  fecharPlayerModal();
 };
       playerOptions.appendChild(btn);
     });
