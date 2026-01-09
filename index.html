@@ -862,65 +862,14 @@ function abrirVideo(item) {
     justify-content:center; align-items:center; flex-direction:column;
     z-index:10000;
   `;
-  document.body.appendChild(videoModal);
 
-  // ====== ESCOLHA DE PLAYER ======
-  if(item.players && item.players.length > 1){
-    const playerContainer = document.createElement('div');
-    playerContainer.style.cssText = 'margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center;';
-    
-    item.players.forEach(p => {
-      const btn = document.createElement('button');
-      btn.textContent = p.nome;
-      btn.className = 'audio-btn';
-      btn.onclick = () => {
-        carregarPlayer(p.url);
-      };
-      playerContainer.appendChild(btn);
-    });
+  // Guarda título do episódio
+  videoModal.dataset.titulo = item.titulo;
 
-    videoModal.appendChild(playerContainer);
+  let videoEl = null; // só será usado se for MP4
+  let terminou = false;
 
-    function carregarPlayer(url){
-      // limpa vídeo anterior
-      videoModal.querySelectorAll('iframe, video').forEach(el => el.remove());
-
-      if(url.endsWith('.mp4')){
-        const videoEl = document.createElement('video');
-        videoEl.src = url;
-        videoEl.controls = true;
-        videoEl.style.cssText = 'width:80%; max-width:1000px; height:auto;';
-        videoModal.appendChild(videoEl);
-        videoEl.play();
-      } else {
-        const iframe = document.createElement('iframe');
-        iframe.src = url;
-        iframe.allowFullscreen = true;
-        iframe.style.cssText = 'width:80%; max-width:1000px; height:600px;';
-        videoModal.appendChild(iframe);
-      }
-    }
-
-    // abre automaticamente o primeiro player
-    carregarPlayer(item.players[0].url);
-  } else {
-    // Se houver apenas 1 player, abre direto
-    const url = item.players ? item.players[0].url : item.link;
-    if(url.endsWith('.mp4')){
-      const videoEl = document.createElement('video');
-      videoEl.src = url;
-      videoEl.controls = true;
-      videoEl.style.cssText = 'width:80%; max-width:1000px; height:auto;';
-      videoModal.appendChild(videoEl);
-      videoEl.play();
-    } else {
-      const iframe = document.createElement('iframe');
-      iframe.src = url;
-      iframe.allowFullscreen = true;
-      iframe.style.cssText = 'width:80%; max-width:1000px; height:600px;';
-      videoModal.appendChild(iframe);
-    }
-  }
+document.body.appendChild(videoModal); // adiciona o modal ao DOM primeiro
 
 // Botão Fechar
 const fecharBtn = document.createElement('button');
@@ -7244,10 +7193,7 @@ const desenhos = [
                {
   titulo: "A Idade Do Gelo 2: Descongelados (2006)",
   img: "https://m.media-amazon.com/images/S/pv-target-images/006a0129d4bf749cc7df4de2a6e8dce33b61a5d11331778c808111f25c0f1030.jpg",
-    players: [
-    { nome: "Player 1", url: "#" },
-    { nome: "Player 2", url: "#" }
-  ],
+  link: "https://strmup.cc/2369b0096c75f", // este é o padrão inicial
   descricao: "2006 Manny, Sid, Diego e Scrat regressam para mais gargalhadas pré-histéricas e unem forças com novos amigos: Ellie e os seus irmãos opossum, Crash e Eddie, para salvar o vale de um dilúvio épico.",
 },
 
@@ -9258,14 +9204,7 @@ overlay.appendChild(btnPlay);
 
   return container;
 }
-  
 
-
-
-
-
-
-  
 // ===== Funções utilitárias =====
 function debounce(func, wait) {
   let timeout;
@@ -9654,12 +9593,12 @@ searchButton.addEventListener('click', (e) => {
 
 
   // Fechar a barra se clicar fora dela
+  const searchContainer = document.getElementById('searchContainer');
   document.addEventListener('click', (e) => {
     if (!searchContainer.contains(e.target)) {
       searchInput.classList.add('hidden');
     }
   });
-
 
   searchInput.addEventListener('keydown', e=>{
     if(e.key==='Enter'){ 
@@ -9951,17 +9890,6 @@ if (logo) {
 }
 
 
-<div id="playerModal" class="modal">
-  <div class="modal-content">
-    <h2 id="modalTitulo"></h2>
-
-    <div id="playerButtons"></div>
-
-    <div id="videoContainer"></div>
-
-    <button onclick="fecharModal()">Fechar</button>
-  </div>
-</div>
 
 
 </script>
