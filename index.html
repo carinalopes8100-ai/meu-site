@@ -812,11 +812,17 @@ btn.onclick = () => {
 
   // Fade-in suave
   playerModal.style.display = 'flex';
-  playerModal.style.opacity = '0'; // começa invisível
-  playerModal.style.transition = 'opacity 0.4s';
-  requestAnimationFrame(() => {
-    playerModal.style.opacity = '1'; // transição para visível
-  });
+  
+  // ✅ Fade-in só se for filme
+  if (item.tipo === "filme") {
+    playerModal.style.opacity = '0';
+    playerModal.style.transition = 'opacity 0.4s';
+    requestAnimationFrame(() => {
+      playerModal.style.opacity = '1';
+    });
+  } else {
+    playerModal.style.opacity = '1'; // para série, aparece normal sem fade
+  }
 }
 
 function fecharPlayerModal() {
