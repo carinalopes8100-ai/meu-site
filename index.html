@@ -791,15 +791,15 @@ function abrirPlayerModal(item, origemModal = null) {
   const playerModal = document.getElementById('playerModal');
   const modalEpisodios = document.getElementById('modal'); // modal de episódios
   const playerOptions = document.getElementById('playerOptions');
+  const btnCancelar = document.getElementById('playerCancelBtn'); // botão existente
 
-  // Se veio do modal de episódios, esconde ele
-  if (origemModal === 'episodios') {
-    modalEpisodios.style.display = 'none';
-  }
+  // Esconde modal de episódios
+  modalEpisodios.style.display = 'none';
+  
+  // Limpa opções anteriores
+  playerOptions.innerHTML = '';
 
-  playerOptions.innerHTML = ''; // limpa opções anteriores
-
-  // Cria botões de player
+  // Preenche opções de players
   if (item.player && item.player.length > 0) {
     item.player.forEach(a => {
       const btn = document.createElement('button');
@@ -812,27 +812,25 @@ function abrirPlayerModal(item, origemModal = null) {
     });
   }
 
-  // Botão de fechar / voltar
-  let fecharBtn = playerModal.querySelector('.fechar-player-btn');
-  if (!fecharBtn) {
-    fecharBtn = document.createElement('button');
-    fecharBtn.className = 'fechar-player-btn';
-    playerModal.appendChild(fecharBtn);
+  // Atualiza o texto do botão de fechar dependendo da origem
+  if (btnCancelar) {
+    btnCancelar.textContent = origemModal === 'episodios' ? 'Voltar' : 'Fechar';
+    btnCancelar.onclick = () => {
+      playerModal.style.display = 'none';
+      // Só volta pro modal de episódios se tiver vindo dele
+      if (origemModal === 'episodios') {
+        modalEpisodios.style.display = 'flex';
+      }
+    };
   }
 
-  fecharBtn.textContent = origemModal === 'episodios' ? 'Voltar' : 'Fechar';
-  fecharBtn.onclick = () => {
-    playerModal.style.display = 'none';
-    if (origemModal === 'episodios') {
-      modalEpisodios.style.display = 'flex'; // volta para modal de episódios
-    }
-  };
-
-  // Fade-in
+  // Fade-in suave
   playerModal.style.display = 'flex';
   playerModal.style.opacity = '0';
   playerModal.style.transition = 'opacity 0.4s';
-  requestAnimationFrame(() => playerModal.style.opacity = '1');
+  requestAnimationFrame(() => {
+    playerModal.style.opacity = '1';
+  });
 }
 
 
