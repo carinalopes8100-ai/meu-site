@@ -9209,11 +9209,21 @@ overlay.appendChild(btnPlay);
 }
   
 
+// ===== PLAYER COM ESCOLHA DE PLAYER =====
 function abrirVideo(item) {
   const modal = document.getElementById("playerModal");
   const titulo = document.getElementById("modalTitulo");
   const buttons = document.getElementById("playerButtons");
   const videoContainer = document.getElementById("videoContainer");
+
+  if (!item.players || item.players.length === 0) {
+    videoContainer.innerHTML = `
+      <iframe src="${item.link}" width="100%" height="450"
+        frameborder="0" allowfullscreen allow="autoplay"></iframe>
+    `;
+    modal.style.display = "flex";
+    return;
+  }
 
   titulo.textContent = item.titulo;
   buttons.innerHTML = "";
@@ -9222,23 +9232,29 @@ function abrirVideo(item) {
   item.players.forEach(player => {
     const btn = document.createElement("button");
     btn.textContent = player.nome;
-
     btn.onclick = () => carregarPlayer(player.url);
-
     buttons.appendChild(btn);
   });
 
   modal.style.display = "flex";
 }
 
+function carregarPlayer(url) {
+  const videoContainer = document.getElementById("videoContainer");
+  videoContainer.innerHTML = `
+    <iframe src="${url}" width="100%" height="450"
+      frameborder="0" allowfullscreen allow="autoplay"></iframe>
+  `;
+}
 
-  function fecharModal() {
+function fecharModal() {
   const modal = document.getElementById("playerModal");
   const videoContainer = document.getElementById("videoContainer");
 
   modal.style.display = "none";
   videoContainer.innerHTML = ""; // para parar o vídeo
 }
+
 
 
 
