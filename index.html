@@ -9654,17 +9654,11 @@ searchButton.addEventListener('click', (e) => {
 
 
   // Fechar a barra se clicar fora dela
-const searchContainer = document.getElementById('searchContainer');
-const searchInput = document.getElementById('searchInput');
-
-document.addEventListener('click', (e) => {
-  if (!searchContainer || !searchInput) return;
-
-  if (!searchContainer.contains(e.target)) {
-    searchInput.classList.remove('show');
-    searchInput.value = '';
-  }
-});
+  document.addEventListener('click', (e) => {
+    if (!searchContainer.contains(e.target)) {
+      searchInput.classList.add('hidden');
+    }
+  });
 
 
   searchInput.addEventListener('keydown', e=>{
