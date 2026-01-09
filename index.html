@@ -792,7 +792,7 @@ function abrirPlayerModal(item) {
   const playerOptions = document.getElementById('playerOptions');
   const fecharBtn = playerModal.querySelector('.close-btn');
 
-  // Define se veio do modal de episódios
+  // Verifica se veio do modal de episódios
   const abertoDoEpisodio = modalEpisodios.dataset.episodiosAtivos === 'true';
 
   // Esconde modal de episódios
@@ -812,13 +812,21 @@ function abrirPlayerModal(item) {
     });
   }
 
-  // Fade-in suave
+  // Mostra modal de players
   playerModal.style.display = 'flex';
-  playerModal.style.opacity = '0';
-  playerModal.style.transition = 'opacity 0.4s';
-  requestAnimationFrame(() => {
+
+  if (!abertoDoEpisodio) {
+    // Fade-in somente se NÃO veio do modal de episódios
+    playerModal.style.opacity = '0';
+    playerModal.style.transition = 'opacity 0.4s';
+    requestAnimationFrame(() => {
+      playerModal.style.opacity = '1';
+    });
+  } else {
+    // Abre instantaneamente se veio do modal de episódios
     playerModal.style.opacity = '1';
-  });
+    playerModal.style.transition = 'none';
+  }
 
   // Atualiza texto do botão de fechar
   fecharBtn.textContent = abertoDoEpisodio ? 'Voltar' : 'Cancelar';
@@ -841,6 +849,7 @@ function fecharPlayerModal() {
 
   delete playerModal.dataset.abertoDoEpisodio;
 }
+
 
 
   
