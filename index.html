@@ -789,12 +789,12 @@ function abrirPlayerModal(item) {
   const playerOptions = document.getElementById('playerOptions');
   playerOptions.innerHTML = ''; // limpa opções anteriores
 
-  // Supondo que item.player = [{label: 'PT', src: 'linkPT'}, {label: 'EN', src: 'linkEN'}]
+  // Supondo que item.player = [{player: 'PT', src: 'linkPT'}, {player: 'EN', src: 'linkEN'}]
   if(item.player && item.player.length > 0) {
     item.player.forEach(a => {
       const btn = document.createElement('button');
       btn.className = 'player-btn';
-      btn.textContent = a.label;
+      btn.textContent = a.player;
       btn.onclick = () => {
         abrirVideo({ titulo: item.titulo, link: a.src });
         fecharPlayerModal();
@@ -7213,9 +7213,8 @@ const desenhos = [
   link: "https://strmup.cc/2369b0096c75f",
   descricao: "2006 Manny, Sid, Diego e Scrat regressam para mais gargalhadas pré-histéricas e unem forças com novos amigos: Ellie e os seus irmãos opossum, Crash e Eddie, para salvar o vale de um dilúvio épico.",
   player: [
-    { label: "Português", link: "https://strmup.cc/2369b0096c75f" },
-    { idioma: "Inglês", link: "https://link-en.mp4" },
-    { idioma: "Espanhol", link: "https://link-es.mp4" }
+    { player: "Player 1", link: "https://strmup.cc/2369b0096c75f" },
+    { player: "Player 2", link: "https://link-en.mp4" }
   ]
 },
 
