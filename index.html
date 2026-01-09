@@ -125,7 +125,14 @@ nav div.ativo {
 
 #descricaoTitulo small { display: block; margin-top: 10px; color: inherit; /* usa a mesma cor do título */ font-size: 0.7em; /* mesmo tamanho da fonte */ font-weight: inherit; /* mesma espessura */ letter-spacing: inherit; }
 
- 
+ <div id="modal" class="modal">...</div>
+<div id="descricaoModal" class="modal">...</div>
+
+<!-- Modal de Áudios -->
+<div id="audioModal" class="modal">
+  <div id="audioList"></div>
+  <button onclick="fecharAudioModal()">Fechar</button>
+</div>
 
 #audioModal,
 #modalTrailer {
@@ -9921,14 +9928,7 @@ if (logo) {
   });
 }
 
-<div id="modal" class="modal">...</div>
-<div id="descricaoModal" class="modal">...</div>
 
-<!-- Modal de Áudios -->
-<div id="audioModal" class="modal">
-  <div id="audioList"></div>
-  <button onclick="fecharAudioModal()">Fechar</button>
-</div>
 
 
 </script>
