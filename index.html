@@ -7229,12 +7229,18 @@ const desenhos = [
 },
 
 
-               {
+{
   titulo: "A Idade Do Gelo 2: Descongelados (2006)",
   img: "https://m.media-amazon.com/images/S/pv-target-images/006a0129d4bf749cc7df4de2a6e8dce33b61a5d11331778c808111f25c0f1030.jpg",
-  link: "https://strmup.cc/2369b0096c75f", // este é o padrão inicial
+  link: "https://strmup.cc/2369b0096c75f",
   descricao: "2006 Manny, Sid, Diego e Scrat regressam para mais gargalhadas pré-histéricas e unem forças com novos amigos: Ellie e os seus irmãos opossum, Crash e Eddie, para salvar o vale de um dilúvio épico.",
-},
+  audios: [
+    { idioma: "Português", link: "https://strmup.cc/2369b0096c75f" },
+    { idioma: "Inglês", link: "https://link-en.mp4" },
+    { idioma: "Espanhol", link: "https://link-es.mp4" }
+  ]
+}
+
 
 
 
@@ -9152,6 +9158,13 @@ if (item.emBreve || item.link === "#") {
   btnPlay.textContent = '▶ Ver';
   btnPlay.onclick = e => {
     e.stopPropagation();
+
+
+        // Se tiver múltiplos áudios → abre o modal de áudios
+    if (item.audios && item.audios.length > 1) {
+      abrirAudioModal(item);
+      return;
+    }
 
     // 🔍 Procura o item nas listas de séries, novelas, animes e documentários
     const s =
