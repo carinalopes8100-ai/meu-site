@@ -134,6 +134,13 @@ nav div.ativo {
   <button onclick="fecharPlayerModal()">Fechar</button>
 </div>
 
+<div id="loginContainer">
+  <input id="nomeUsuario" placeholder="Digite seu nome">
+  <button onclick="entrarUsuario(document.getElementById('nomeUsuario').value)">Entrar</button>
+</div>
+
+
+  
 #playerModal,
 #modalTrailer {
   display: none;
@@ -9969,7 +9976,58 @@ if (logo) {
 }
 
 
+// ===== Funções de usuário =====
+function entrarUsuario(nome) {
+  localStorage.setItem('usuarioAtual', nome);
+  if (!localStorage.getItem(`user_${nome}`)) {
+    localStorage.setItem(`user_${nome}`, JSON.stringify({
+      minhaLista: [],
+      progresso: {}
+    }));
+  }
+  carregarUsuario();
+}
 
+function carregarUsuario() {
+  const nome = localStorage.getItem('usuarioAtual');
+  if (!nome) return;
+
+  const data = JSON.parse(localStorage.getItem(`user_${nome}`));
+  minhaLista = data.minhaLista || [];
+  progresso = data.progresso || {};
+  mostrarSecao('inicio');
+}
+
+// Salva automaticamente as alterações do usuário
+function salvarUsuario() {
+  const nome = localStorage.getItem('usuarioAtual');
+  if (!nome) return;
+  localStorage.setItem(`user_${nome}`, JSON.stringify({
+    minhaLista,
+    progresso
+  }));
+}
+
+// ===== Outras funções existentes =====
+function adicionarMinhaLista(titulo) {
+  if (minhaLista.includes(titulo)) {
+    minhaLista = minhaLista.filter(t => t !== titulo);
+  } else {
+    minhaLista.push(titulo);
+  }
+  salvarUsuario(); // 🔹 chama aqui sempre que mudar
+  mostrarSecao('inicio');
+}
+
+function salvarProgresso() {
+  // Exemplo: quando atualizar progresso de um vídeo
+  salvarUsuario(); // 🔹 salva automaticamente
+}
+
+// ===== Inicialização =====
+document.addEventListener('DOMContentLoaded', () => {
+  carregarUsuario();
+});
 
 </script>
 </body>
