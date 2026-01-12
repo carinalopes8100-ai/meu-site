@@ -6,6 +6,11 @@
   
 <link rel="icon" href="https://i.postimg.cc/rpJ9YSm2/4f829e85866bd52d062ca58b4e1ecef5.png" sizes="64x64">
   
+
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#ff0000">  
+
+  
 <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -10083,7 +10088,9 @@ if (logo) {
 }
 
 
-
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/service-worker.js");
+}
 
 </script>
 </body>
