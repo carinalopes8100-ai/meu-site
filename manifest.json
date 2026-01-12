@@ -1,0 +1,20 @@
+{
+  "name": "TUGAFLIX",
+  "short_name": "TugaFlix",
+  "start_url": "https://tubular-quokka-10ecc5.netlify.app/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff0000",
+  "icons": [
+    {
+      "src": "https://uxwing.com/download-square-color-red-icon/?format=png&size=192x192",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://uxwing.com/download-square-color-red-icon/?format=png&size=512x512",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
