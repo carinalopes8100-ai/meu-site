@@ -1,6 +1,6 @@
 {
-  "name": "TugaFlix",
-  "short_name": "TugaFlix",
+  "name": "Tugaflix",
+  "short_name": "Tugaflix",
   "start_url": "https://tubular-quokka-10ecc5.netlify.app/",
   "display": "standalone",
   "background_color": "#ffffff",
