@@ -26,7 +26,8 @@ body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
   /* PWA standalone (mobile + desktop): remove scroll */
   @media (display-mode: standalone) {
     html, body {
-      overflow: hidden;
+      scrollbar-width: none; /* deixa fino ou "none" para desaparecer */
+      overflow-y: scroll;    /* scroll continua funcionando */
     }
   }
 
