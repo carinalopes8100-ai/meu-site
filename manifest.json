@@ -2,7 +2,7 @@
   "name": "Tugaflix",
   "short_name": "Tugaflix",
   "start_url": "https://tubular-quokka-10ecc5.netlify.app/",
-  "display": "theme",
+  "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#363636",
   "icons": [
