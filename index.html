@@ -635,38 +635,33 @@ video::cue {
 <script>
 
 (function () {
-    let devtoolsOpen = false;
-
-    const checkDevTools = () => {
-        const threshold = 160;
-        const open =
-            window.outerWidth - window.innerWidth > threshold ||
-            window.outerHeight - window.innerHeight > threshold;
-        
-        if (open && !devtoolsOpen) {
-            devtoolsOpen = true;
-            debugger; // dispara imediatamente
-            console.log("DevTools detectado!");
-        } else if (!open && devtoolsOpen) {
-            devtoolsOpen = false;
-        }
-    };
-
-    // Checa rapidamente a cada 100ms
-    setInterval(checkDevTools, 100);
-
-    // Detecta F12 e atalhos
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'F12' || 
-            (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) ||
-            (e.ctrlKey && e.key === 'U')
-        ) {
+    // Bloqueia F12, atalhos e Ctrl+U
+    document.addEventListener('keydown', function(e) {
+        // F12
+        if (e.key === 'F12') {
             e.preventDefault();
-            debugger;
+            alert('Atalho de desenvolvedor bloqueado!');
+        }
+
+        // Ctrl+Shift+I, J, C
+        if (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) {
+            e.preventDefault();
+            alert('Atalho de desenvolvedor bloqueado!');
+        }
+
+        // Ctrl+U (ver código fonte)
+        if (e.ctrlKey && e.key === 'u') {
+            e.preventDefault();
+            alert('Ver código fonte bloqueado!');
         }
     });
-})();
 
+    // Bloqueia botão direito
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        alert('Clique direito desabilitado!');
+    });
+})();
 
 
   
