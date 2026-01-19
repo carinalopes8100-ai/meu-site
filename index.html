@@ -23,27 +23,16 @@ body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
     overflow: auto;
   }
 
-/* Scroll personalizado só para a PWA (standalone) */
 @media (display-mode: standalone) {
-  /* Chrome / Edge / Safari */
-  html::-webkit-scrollbar {
-    width: 12px;                 /* largura da barra */
+  html, body {
+    height: auto;
+    overflow: auto;
   }
 
-  html::-webkit-scrollbar-track {
-    background: #141414;         /* cor do fundo da barra */
-  }
-
-  html::-webkit-scrollbar-thumb {
-    background-color: #363636;   /* cor da “pegada” do scroll */
-    border-radius: 6px;          /* arredondamento opcional */
-    border: 3px solid #141414;   /* espaço entre o thumb e o track */
-  }
-
-  /* Firefox */
-  html {
-    scrollbar-color: #363636 #141414; /* thumb | track */
-    scrollbar-width: thin;             /* barra mais fina */
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
   }
 }
 
