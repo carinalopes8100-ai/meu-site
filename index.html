@@ -635,33 +635,36 @@ video::cue {
 <script>
 
 (function () {
+    let devtoolsOpen = false;
 
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'F12') {
-            e.preventDefault();
-            debugger;
+    const checkDevTools = () => {
+        const threshold = 160;
+        const open =
+            window.outerWidth - window.innerWidth > threshold ||
+            window.outerHeight - window.innerHeight > threshold;
+        
+        if (open && !devtoolsOpen) {
+            devtoolsOpen = true;
+            debugger; // dispara imediatamente
+            console.log("DevTools detectado!");
+        } else if (!open && devtoolsOpen) {
+            devtoolsOpen = false;
         }
+    };
 
-        if (
-            (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+    // Checa rapidamente a cada 100ms
+    setInterval(checkDevTools, 100);
+
+    // Detecta F12 e atalhos
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'F12' || 
+            (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) ||
             (e.ctrlKey && e.key === 'U')
         ) {
             e.preventDefault();
             debugger;
         }
     });
-
-    setInterval(function () {
-        const threshold = 160;
-        const devtoolsOpen =
-            window.outerWidth - window.innerWidth > threshold ||
-            window.outerHeight - window.innerHeight > threshold;
-
-        if (devtoolsOpen) {
-            debugger;
-        }
-    }, 500);
-
 })();
 
 
