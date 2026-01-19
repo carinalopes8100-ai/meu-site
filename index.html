@@ -23,11 +23,20 @@ body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
     overflow: auto;
   }
 
-  /* PWA standalone (mobile + desktop): remove scroll */
+/* PWA standalone: scroll funciona mas scrollbar invisível */
 @media (display-mode: standalone) {
   html, body {
-    overflow-y: scroll; /* scroll continua funcional */
+    height: auto;       /* deixa o conteúdo crescer */
+    overflow: auto;     /* scroll funciona normalmente */
   }
+
+  /* Chrome/Edge/desktop PWAs */
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    width: 0;           /* barra invisível */
+    background: transparent;
+  }
+}
 
   /* Evita problemas de overflow */
   * {
