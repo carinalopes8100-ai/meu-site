@@ -1,137 +1,1174 @@
-&#60;!DOCTYPE html&#62; &#60;html lang="pt"&#62; &#60;head&#62; &#60;meta charset="UTF-8"&#62; &#60;title&#62;Tugaflix&#60;/title&#62; &#60;link rel="icon" href="https://i.postimg.cc/4xpzJzpz/T-19-01-2026.png" sizes="64x64"&#62; &#60;link rel="manifest"
-href="/manifest.json"&#62; &#60;meta name="theme-color" content="#000"&#62; &#60;link href="https://fonts.googleapis.com/css2?family=Roboto&#38;display=swap" rel="stylesheet"&#62; &#60;style&#62; * { margin: 0; padding: 0; box-sizing: border-box; } body
-{ font-family: 'Roboto', sans-serif; background: #141414; color: #fff; } /* Site normal: scroll normal */ html, body { overflow: auto; } @media (display-mode: standalone) { html, body { height: auto; overflow: auto; } html::-webkit-scrollbar, body::-webkit-scrollbar
-{ width: 0; background: transparent; } } header { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: #141414; display: flex; align-items: center; justify-content: flex-start; padding: 0 40px; z-index: 1000; box-shadow: 0 2px 5px
-rgba(0, 0, 0, 0.5); } header h1 { color: #e50914; font-size: 27px; cursor: pointer; } nav { display: flex; gap: 15px; margin-left: 15px; } nav div { color: rgba(255, 255, 255, 0.8); cursor: pointer; transition: color .2s; border-bottom: none; text-decoration:
-none; } nav div:hover { color: rgba(255, 255, 255, 0.5); text-decoration: none; border-bottom: none; } nav div.ativo { color: rgba(255, 255, 255, 0.9); font-weight: bold; border-bottom: none; } /* Barra de pesquisa */ #searchContainer { display: flex;
-align-items: center; margin-left: auto; } #logo { cursor: pointer; } #pumpkinContainer { position: fixed; top: 0; left: 0; width: 2000%; height: 2000%; pointer-events: none; /* n&#227;o atrapalha cliques */ overflow: hidden; z-index: 0; /* atr&#225;s
-de tudo */ } .pumpkin { position: absolute; width: 60px; /* tamanho inicial */ opacity: 0.7; transform: rotate(0deg); } .mute-btn { position: absolute; bottom: 150px; right: 30px; background: rgba(0, 0, 0, 0.6); color: #fff; border: none; border-radius:
-50%; width: 50px; height: 50px; font-size: 22px; cursor: pointer; transition: background 0.3s, transform 0.2s; z-index: 10; } .mute-btn:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.1); } .close-btn { transition: all 0.3s ease; } .close-btn:hover
-{ transform: scale(1.05); background-color: #e50914; /* vermelho Netflix */ color: white; } #modal { display: none; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; } #modal.show { display: flex; opacity: 1; pointer-events: auto; } #descricaoModal
-{ display: none; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; } #descricaoModal.show { display: flex; opacity: 1; pointer-events: auto; } #descricaoModal .modal-content { background-color: #111; color: #fff; max-width: 500px; border-radius:
-10px; padding: 20px; text-align: center; } #descricaoTitulo small { display: block; margin-top: 10px; color: inherit; /* usa a mesma cor do t&#237;tulo */ font-size: 0.7em; /* mesmo tamanho da fonte */ font-weight: inherit; /* mesma espessura */ letter-spacing:
-inherit; } &#60;div id="modal" class="modal"&#62;...&#60;/div&#62;&#60;div id="descricaoModal" class="modal"&#62;...&#60;/div&#62;&#60; !-- Modal de Players --&#62;&#60;div id="playerModal" class="modal"&#62;&#60;div id="playerList"&#62;&#60;/div&#62;&#60;button
-onclick="fecharPlayerModal()"&#62;Fechar&#60;/button&#62;&#60;/div&#62;&#60;div id="loginContainer"&#62;&#60;input id="nomeUsuario" placeholder="Digite seu nome"&#62;&#60;button onclick="entrarUsuario(document.getElementById('nomeUsuario').value)"&#62;Entrar&#60;/button&#62;&#60;/div&#62;#playerModal,
-#modalTrailer { display: none; opacity: 0; /* come&#231;a invis&#237;vel */ pointer-events: none; /* impede cliques enquanto invis&#237;vel */ transition: opacity 0.4s ease; /* anima&#231;&#227;o suave */ } #modalTrailer.show { display: flex; /* mostra
-o modal */ opacity: 1; /* vis&#237;vel */ pointer-events: auto; /* reativa cliques */ } .episodio-btn.selecionado { background-color: black; /* fica preto */ color: white; /* texto fica vis&#237;vel */ position: relative; /* necess&#225;rio para posicionar
-a seta */ } /* seta &#224; direita */ .episodio-btn.selecionado::after { content: '&#10148;'; /* seta Unicode */ position: absolute; right: 10px; /* dist&#226;ncia da borda direita */ top: 50%; transform: translateY(-50%) rotate(180deg); font-size: 16px;
-color: white; } #bannerVideo, #bannerImage { object-fit: cover; object-position: center top; /* ou center center */ } #playerContainer { position: relative; /* necess&#225;rio para o bot&#227;o ficar posicionado dentro do player */ } #searchContainer
-input { position: relative; top: 3px; /* ou ajuste conforme quiser */ padding: 6px 12px; border-radius: 4px; border: 2px solid #000; outline: none; font-size: 14px; background: #000; color: #fff; } #searchContainer input:focus { border-color: #ff0000;
-box-shadow: 0 0 5px #ff0000; /* efeito glow opcional */ } #searchContainer button { padding: 6px 12px; margin-left: 5px; border: none; border-radius: 4px; background: transparent; color: #fff; cursor: pointer; font-weight: bold; transition: background
-.2s; font-size: 24px; } #searchContainer button:hover { background: transparent; } .hidden { display: none; } .control-btn { background-color: white; color: black; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;
-font-size: 14px; transition: background-color 0.3s, transform 0.3s; /* transi&#231;&#227;o suave */ } .control-btn:hover { background-color: #ccc; /* escurece no hover */ transform: scale(1.1); /* aumenta como o bot&#227;o de fechar */ } .control-btn:disabled
-{ background-color: #555; /* escuro */ color: #ccc; /* texto mais claro */ cursor: not-allowed; transform: none; } .banner-highlight { font-size: 29px !important; font-weight: 900 !important; color: #fff; margin-left: -15px; display: inline-block; padding:
-8px 18px; border-radius: 6px; letter-spacing: 1px; align-self: flex-start; position: relative; /* permite deslocar s&#243; este elemento */ top: 7px; /* ajusta a dist&#226;ncia para baixo */ } .banner { position: relative; width: 100%; height: 100vh;
-display: flex; flex-direction: column; justify-content: flex-end; padding: 40px; overflow: hidden; } .banner::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(20, 20, 20, 0.9)
-0%, rgba(20, 20, 20, 0) 60%); z-index: 1; } .banner-content { position: relative; top: -200px; z-index: 2; max-width: 600px; display: flex; flex-direction: column; gap: 10px; } .banner h1 { font-size: 48px; margin-bottom: 10px; } .banner p { font-size:
-18px; margin-bottom: 20px; } .banner-content button { width: 230px; padding: 16px 0; font-size: 21px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background .2s; } .banner-content button.play { background: #fff; color:
-#000; } .banner-content button.play:hover { background: #ddd; } .banner-content button.lista { background: rgba(109, 109, 110, 0.7); color: #fff; } .banner-content button.lista:hover { background: rgba(109, 109, 110, 0.5); } .banner-buttons { display:
-flex; /* coloca os bot&#245;es em linha */ gap: 10px; /* espa&#231;o entre os bot&#245;es */ flex-wrap: wrap; /* se a tela for pequena, quebra a linha */ } .banner-content button.play { width: 123px; /* largura do bot&#227;o */ padding: 6px 0; /* altura
-do bot&#227;o */ background: #fff; color: #000; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 21px; /* tamanho do texto Ver */ display: flex; /* ativa flexbox */ align-items: center; /* alinha verticalmente */ justify-content:
-center; /* centraliza horizontalmente */ gap: 10px; /* sem espa&#231;o entre s&#237;mbolo e texto */ transition: background 0.2s; } .banner-description { font-size: 16px; color: #fff; margin-top: -20px; max-width: 450px; /* limita a largura da frase */
-line-height: 1.4; } .banner-description { word-wrap: break-word; /* quebra palavras longas */ white-space: normal; /* permite quebra de linha */ margin-top: -20px; } .play-symbol { font-size: 28px; /* tamanho do s&#237;mbolo */ position: relative; top:
--2px; /* move 2px para cima */ } #root { margin-top: -135px; } /* Esconde as setas inicialmente */ .fila-container .btn-scroll { opacity: 0; pointer-events: none; /* evita clicar quando invis&#237;vel */ transition: opacity 0.3s ease; } /* Mostra as setas
-quando o mouse estiver sobre a fila */ .fila-container:hover .btn-scroll { opacity: 1; pointer-events: auto; } .fila-container { position: relative; /* necess&#225;rio para z-index funcionar */ z-index: 5; /* maior que o banner */ margin: 20px 50px; }
-.fila-titulo { font-size: 20px; margin-bottom: 10px; font-weight: bold; } .fila { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 10px; scroll-behavior: smooth; scrollbar-width: none; } .fila::-webkit-scrollbar { display: none; } .filme {
-width: 310px; height: 170px; border-radius: 15px; overflow: hidden; cursor: pointer; position: relative; flex-shrink: 0; transition: transform 0.3s ease; } .filme:hover { transform: scale(1.05); z-index: 2; } .filme img { width: 100%; height: auto; object-fit:
-contain; display: block; } .filme-hover-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(20, 20, 20, 0.8); display: flex; justify-content: center; align-items: center; gap: 8px; opacity: 0; transition: opacity
-0.3s, transform 0.3s; box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); flex-direction: column; border-radius: 4px; z-index: 5; } .filme:hover .filme-hover-overlay { opacity: 1; transform: } .filme-hover-overlay button { width: 100px; padding: 8px 0; background:
-#e50914; border: none; color: #fff; font-weight: bold; cursor: pointer; border-radius: 4px; transition: background .2s; } .filme-hover-overlay button:hover { background: #b20710; } .add-list-btn { position: absolute; bottom: 5px; right: 5px; width: 30px;
-height: 30px; border-radius: 50%; border: none; background: #e50914; color: #fff; font-weight: bold; cursor: pointer; font-size: 18px; z-index: 6; transition: background .2s; opacity: 0; } .filme:hover .add-list-btn { opacity: 1; } .btn-scroll { position:
-absolute; top: 56%; transform: translateY(-50%); background: rgba(0, 0, 0, .6); border: none; color: #fff; font-size: 30px; width: 40px; height: 80px; cursor: pointer; z-index: 10; border-radius: 4px; display: flex; align-items: center; justify-content:
-center; } .btn-scroll:hover { background: rgba(229, 9, 20, .8); } .btn-left { left: 0; } .btn-right { right: 0; } .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); justify-content:
-center; align-items: center; } .modal-content { background: #222; padding: 25px; border-radius: 10px; max-width: 500px; width: 90%; text-align: center; } .modal h2 { margin-bottom: 20px; } .episodio-btn, .temporada-btn { display: block; margin: 10px 0;
-padding: 12px; background: #e50914; border: none; border-radius: 5px; color: #fff; cursor: pointer; font-size: 16px; width: 100%; transition: background .2s; } .episodio-btn:hover, .temporada-btn:hover { background: #b20710; } .close-btn { margin-top:
-15px; padding: 10px 20px; background: #555; border: none; border-radius: 5px; color: #fff; cursor: pointer; transition: background .2s; } .close-btn:hover { background: #333; } .add-list-btn, .add-list-btn.info { bottom: 5px; /* mesma dist&#226;ncia do
-fundo */ height: 30px; /* mesma altura */ line-height: 30px; /* centraliza o texto verticalmente */ display: flex; align-items: center; justify-content: center; } .add-list-btn.info { left: 5px; right: auto; /* garante que n&#227;o usa a posi&#231;&#227;o
-&#224; direita */ background: #555; font-size: 16px; } .player-btn { padding: 10px 20px; /* controla tamanho do bot&#227;o */ border-radius: 5px; /* cantos arredondados */ border: none; background-color: rgba(0, 0, 0, 0.7); color: #fff; font-size: 14px;
-font-weight: bold; cursor: pointer; transition: all 0.3s ease; display: inline-flex; /* ficam ao lado se o container permitir */ justify-content: center; align-items: center; margin: 5px; /* espa&#231;amento entre bot&#245;es */ } .player-btn:hover {
-background-color: #e50914; transform: scale(1.1); } .remover-anuncios { background-color: #e50914; /* cor dourada */ color: #000; /* texto preto */ padding: 12px 25px; /* maior que os outros bot&#245;es */ border-radius: 8px; /* cantos mais arredondados
-*/ border: 2px solid #990000; /* borda laranja */ font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* sombra */ transition: transform 0.2s, background-color 0.3s; } .remover-anuncios:hover { background-color: #990000; transform:
-scale(1.05); /* efeito de leve aumento */ } video::cue { color: #FFFFFF; background-color: rgba(0, 0, 0, 0); /* transparente */ font-size: 1.5c; /* tamanho da fonte */ font-weight: 400; text-align: center; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-line: 90%; /* altura vertical da legenda */ align: center; /* centraliza horizontalmente */ padding: 0.2c 0.5c; border-radius: 0.2c; } /* Scroll interno para temporadas/epis&#243;dios sem mostrar a barra */ #episodiosList { max-height: 400px; overflow-y:
-auto; scrollbar-width: none; /* Firefox */ -ms-overflow-style: none; /* IE e Edge antigos */ } #episodiosList::-webkit-scrollbar { /* Chrome, Safari, Edge */ display: none; } .toast-container { position: fixed; bottom: 20px; right: 20px; display: flex;
-flex-direction: column; gap: 10px; z-index: 20000; } .toast { background: rgba(51, 51, 51, 0.95); color: #fff; padding: 12px 20px; border-radius: 5px; min-width: 220px; max-width: 300px; font-size: 14px; font-weight: bold; display: flex; align-items:
-center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7); opacity: 0; transform: translateX(100%); animation: slideIn 0.5s forwards, fadeOut 0.5s forwards 3s; } .toast button { background: none; border: none; color: #e50914; font-weight:
-bold; cursor: pointer; margin-left: 10px; } @keyframes slideIn { to { opacity: 1; transform: translateX(0); } } @keyframes fadeOut { to { opacity: 0; transform: translateX(100%); } } &#60;style&#62;.filemoon-wrapper { position: relative; width: 100%;
-max-width: 100%; padding-top: 56.25%; /* 16:9 - mant&#233;m propor&#231;&#227;o */ } .filemoon-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; object-fit: contain; /* evita cortes e esticamentos */ } .filme
-.remove-continuar-btn { position: absolute; top: 5px; right: 5px; width: 25px; height: 25px; background-color: black; color: white; border: none; border-radius: 50%; cursor: pointer; z-index: 7; opacity: 0; transition: opacity 0.3s; } .filme:hover .remove-continuar-btn
-{ opacity: 1; } &#60;/style&#62; &#60;/head&#62; &#60;body&#62; &#60;div id="pumpkinContainer"&#62;&#60;/div&#62; &#60;div id="playerModal" class="modal"&#62; &#60;div class="modal-content" style="max-width:400px;"&#62; &#60;h2&#62;Escolha o player&#60;/h2&#62;
-&#60;div id="playerOptions" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;"&#62;&#60;/div&#62; &#60;button class="close-btn" onclick="fecharPlayerModal()"&#62;Fechar&#60;/button&#62; &#60;/div&#62; &#60;/div&#62; &#60;div id="descricaoModal"
-class="modal"&#62; &#60;div class="modal-content" style="max-width:500px;"&#62; &#60;h2 id="descricaoTitulo"&#62;&#60;/h2&#62; &#60;p id="descricaoTexto" style="margin-bottom:20px;"&#62;&#60;/p&#62; &#60;button class="close-btn" onclick="fecharDescricaoModal()"&#62;Fechar&#60;/button&#62;
-&#60;/div&#62; &#60;/div&#62; &#60;header&#62; &#60;!-- Logo --&#62; &#60;img id="logo" src="https://i.postimg.cc/QMZk0fJ9/Adobe-Express-file.png" alt="TUGAFLIX" style="height:95px; margin-top:3px;"&#62; &#60;nav&#62; &#60;div onclick="mostrarSecao('inicio')"&#62;P&#225;gina
-Inicial&#60;/div&#62; &#60;div onclick="mostrarSecao('series')"&#62;S&#233;ries&#60;/div&#62; &#60;div onclick="mostrarSecao('filmes')"&#62;Filmes&#60;/div&#62; &#60;div onclick="mostrarSecao('terror')"&#62;Terror&#60;/div&#62; &#60;div onclick="mostrarSecao('desenhos')"&#62;Anima&#231;&#227;o&#60;/div&#62;
-&#60;div onclick="mostrarSecao('lista')"&#62;A Minha Lista&#60;/div&#62; &#60;/nav&#62; &#60;div id="searchContainer"&#62; &#60;input type="text" id="searchInput" placeholder="Pesquisar..."&#62; &#60;button id="searchButton"&#62;🔍︎&#60;/button&#62; &#60;/div&#62;
-&#60;/header&#62; &#60;div class="banner"&#62; &#60;!-- Imagem de fundo --&#62; &#60;img id="bannerImage" src="https://occ-0-2268-358.1.nflxso.net/dnm/api/v6/6AYY37jfdO6hpXcMjf9Yu5cnmO0/AAAABQqe_iEJt6nSVtk4g3fIhsfI4_TLyWq7QEcS4DevvupWhE-7iQ78TClFpWRta4Ua6GwXwN_Zk6kePJtu8bb5Lc8sx1-rHn4QTJTh.webp?r=ad6"
-style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;"&#62; &#60;!-- V&#237;deo de fundo (inicialmente escondido) --&#62; &#60;video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover;
-position:absolute; top:0; left:0; z-index:0;" autoplay muted loop&#62; &#60;source src="https://ia800807.us.archive.org/35/items/stranger-things-5-aac-hq/Stranger_Things_5_AAC_HQ.mp4" type="video/mp4"&#62; &#60;/video&#62; &#60;button id="muteBtn" class="mute-btn"&#62;🔇&#60;/button&#62;
-&#60;!-- Conte&#250;do do banner --&#62; &#60;div class="banner-content"&#62; &#60;!-- Logo --&#62; &#60;img src="https://i.postimg.cc/GtfbyyyK/AAAABe-S9Q3i-CPfef5ln-XNKGl-Gh1g-Za9g-EBi6VHtg8IRAwpl-PDc-ALd-ql-OK6Sz-Eowna-Cn-HFg8Zksu-IVT7m6Oanj.png" alt="Stranger
-Things" class="banner-title" style="width:400px; height:auto; position:absolute; top:-140px;"&#62; &#60;p class="banner-highlight"&#62;Ver agora a temporada 5&#60;/p&#62; &#60;!-- Descri&#231;&#227;o --&#62; &#60;p class="banner-description"&#62; Quando
-um rapaz desaparece, uma pequena vila descobre um mist&#233;rio relacionado com experi&#234;ncias secretas, assustadoras for&#231;as sobrenaturais e uma estranha rapariga. &#60;/p&#62; &#60;!-- Bot&#245;es lado a lado --&#62; &#60;div class="banner-buttons"&#62;
-&#60;button class="play" onclick="abrirModalTemporadas(series.find(s =&#62; s.titulo === 'Stranger Things'))"&#62; &#60;span class="play-symbol"&#62;&#9654;&#60;/span&#62; Ver &#60;/button&#62; &#60;button id="bannerAddBtn" class="lista"&#62;+ Minha Lista&#60;/button&#62;
-&#60;/div&#62; &#60;/div&#62; &#60;/div&#62; &#60;div id="root"&#62;&#60;/div&#62; &#60;div id="modal" class="modal"&#62; &#60;div class="modal-content" id="modalContent"&#62; &#60;h2 id="modalTitle"&#62;Escolha a temporada&#60;/h2&#62; &#60;div id="episodiosList"&#62;&#60;/div&#62;
-&#60;button id="fecharModalBtn" class="close-btn" onclick="fecharModal()"&#62;Fechar&#60;/button&#62; &#60;/div&#62; &#60;/div&#62; &#60;!-- Modal de trailers --&#62; &#60;div id="modalTrailer" class="modal"&#62; &#60;div class="modal-content" style="max-width:500px;"&#62;
-&#60;h2 id="modalTrailerTitle"&#62;&#60;/h2&#62; &#60;div id="trailerList"&#62;&#60;/div&#62; &#60;button class="close-btn" onclick="fecharModalTrailer()"&#62;Fechar&#60;/button&#62; &#60;/div&#62; &#60;/div&#62; &#60;div id="toastContainer" class="toast-container"&#62;&#60;/div&#62;
-&#60;script&#62; document.addEventListener('contextmenu', e =&#62; e.preventDefault()); document.addEventListener('keydown', e =&#62; { if ( e.key === 'F12' || (e.ctrlKey &#38;&#38; e.shiftKey &#38;&#38; ['I', 'J', 'C'].includes(e.key)) || (e.ctrlKey
-&#38;&#38; e.key.toLowerCase() === 'u') ) { e.preventDefault(); } }); let minhaLista = []; let progresso = {}; let episodioSelecionado = JSON.parse(localStorage.getItem('episodioSelecionado')) || {}; let temporadaSelecionada = JSON.parse(localStorage.getItem('temporadaSelecionada')
-|| '{}'); let secaoAtual = 'inicio'; // guarda a se&#231;&#227;o atual function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); } function carregarLista() { const lista = localStorage.getItem("minhaLista"); if (lista) minhaLista
-= JSON.parse(lista); } function salvarProgresso() { localStorage.setItem("progresso", JSON.stringify(progresso)); } function carregarProgresso() { const p = localStorage.getItem("progresso"); if (p) progresso = JSON.parse(p); } function mostrarToast(mensagem)
-{ const container = document.getElementById('toastContainer'); const toast = document.createElement('div'); toast.className = 'toast'; toast.textContent = mensagem; const btn = document.createElement('button'); btn.textContent = '&#10006;'; btn.onclick
-= () =&#62; container.removeChild(toast); toast.appendChild(btn); container.appendChild(toast); setTimeout(() =&#62; { if (container.contains(toast)) container.removeChild(toast); }, 4000); } function abrirEpisodio(episodio) { if (episodio.player &#38;&#38;
-episodio.player.length &#62; 0) { abrirPlayerModal(episodio); } else { abrirVideo(episodio); } } function debounce(func, delay) { let timeout; return (...args) =&#62; { clearTimeout(timeout); timeout = setTimeout(() =&#62; func.apply(this, args), delay);
-}; } const searchInput = document.getElementById('searchInput'); searchInput.addEventListener('input', debounce(() =&#62; { const termo = searchInput.value.toLowerCase().trim(); const root = document.getElementById('root'); const todosItens = [...filmes,
-...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...documentarios, ...novelas, ...filmesDc, ...filmesMarvel, ...realityShows, ...filmesParaTodaAFamilia]; if (termo === "") { mostrarSecao('inicio'); return; } const resultados = todosItens.filter(i
-=&#62; i.titulo.toLowerCase().includes(termo)); root.innerHTML = ''; if (resultados.length &#62; 0) { root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`)); } else { root.innerHTML = `&#60;div style="margin:50px;
-font-size:18px;"&#62;Nenhum resultado encontrado para "${termo}"&#60;/div&#62;`; } }, 150)); // 150ms de atraso function openDB() { return new Promise((resolve, reject) =&#62; { const request = indexedDB.open("videosDB", 1); request.onupgradeneeded =
-function(e) { const db = e.target.result; db.createObjectStore("videos"); }; request.onsuccess = e =&#62; resolve(e.target.result); request.onerror = e =&#62; reject(e); }); } async function reproduzirOffline(titulo) { const db = await openDB(); const
-tx = db.transaction("videos", "readonly"); const blob = await tx.objectStore("videos").get(titulo); if (blob) { abrirVideo({ titulo, link: URL.createObjectURL(blob) }); } else { mostrarToast("V&#237;deo n&#227;o encontrado offline."); } } function abrirDescricaoModal(item)
-{ const texto = item.descricao || "Sem descri&#231;&#227;o dispon&#237;vel."; // Detecta ano no in&#237;cio da string (4 d&#237;gitos) let ano = ""; let desc = texto; const matchAno = texto.match(/^(\d{4})\s*(.*)$/); if (matchAno) { ano = matchAno[1];
-// captura os 4 d&#237;gitos desc = matchAno[2]; // resto da descri&#231;&#227;o } document.getElementById('descricaoTitulo').textContent = item.titulo; // mant&#233;m o t&#237;tulo // Adiciona ano e descri&#231;&#227;o no corpo do modal document.getElementById('descricaoTexto').innerHTML
-= ` ${ano ? `&#60;p&#62;&#60;strong&#62;Ano:&#60;/strong&#62; ${ano}&#60;/p&#62;` : ""} &#60;p&#62;${desc}&#60;/p&#62; `; document.getElementById('descricaoModal').style.display = 'flex'; } function adicionarMinhaLista(titulo) { if (!minhaLista.includes(titulo))
-{ minhaLista.push(titulo); salvarLista(); mostrarToast(`"${titulo}" adicionado &#224; Minha Lista!`); } else { minhaLista = minhaLista.filter(t =&#62; t !== titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`); } mostrarSecao('inicio');
-} function adicionarMinhaLista(titulo) { const index = minhaLista.indexOf(titulo); if (index === -1) { minhaLista.push(titulo); mostrarToast(`"${titulo}" adicionado &#224; Minha Lista!`); } else { minhaLista.splice(index, 1); mostrarToast(`"${titulo}"
-removido da Minha Lista!`); } salvarLista(); mostrarSecao(secaoAtual); // &#60;-- aqui atualiza imediatamente a se&#231;&#227;o // Atualiza todos os bot&#245;es da p&#225;gina que correspondem a esse item document.querySelectorAll('.add-list-btn').forEach(btn
-=&#62; { if (btn.closest('.filme').querySelector('img').alt === titulo) { if (minhaLista.includes(titulo)) { btn.textContent = '&#10006;'; btn.title = 'Remover da Minha Lista'; } else { btn.textContent = '+'; btn.title = 'Adicionar &#224; Minha Lista';
-} } }); if (titulo === 'Stranger Things') { atualizarBannerBtn(); } // Atualiza a se&#231;&#227;o atual (opcional) mostrarSecao(secaoAtual); } // &#60;&#60;&#60; AQUI: adicionar o c&#243;digo para oncanplaythrough &#62;&#62;&#62; const bannerVideo = document.getElementById('bannerVideo');
-const bannerImage = document.getElementById('bannerImage'); bannerVideo.preload = 'auto'; // garante que o navegador carregue todo o v&#237;deo bannerVideo.addEventListener('canplaythrough', () =&#62; { // Fade out da imagem de banner bannerImage.style.transition
-= 'opacity 1s ease'; bannerImage.style.opacity = '0'; // Ap&#243;s o fade, esconder a imagem e mostrar o v&#237;deo setTimeout(() =&#62; { bannerImage.style.display = 'none'; bannerVideo.style.display = 'block'; bannerVideo.play(); // garante autoplay
-}, 1000); }); function abrirPlayerModal(item) { const playerModal = document.getElementById('playerModal'); const modalEpisodios = document.getElementById('modal'); // modal de epis&#243;dios const playerOptions = document.getElementById('playerOptions');
-const fecharBtn = playerModal.querySelector('.close-btn'); // Verifica se veio do modal de epis&#243;dios const abertoDoEpisodio = modalEpisodios.dataset.episodiosAtivos === 'true'; // Esconde modal de epis&#243;dios modalEpisodios.style.display = 'none';
-// Limpa op&#231;&#245;es antigas playerOptions.innerHTML = ''; // Supondo que item.player = [{player: 'PT', src: 'linkPT'}, {player: 'EN', src: 'linkEN'}] if (item.player &#38;&#38; item.player.length &#62; 0) { item.player.forEach(a =&#62; { const btn
-= document.createElement('button'); btn.className = 'player-btn'; btn.textContent = a.player; btn.onclick = () =&#62; { abrirVideo({ titulo: item.titulo, link: a.link }); // &#9989; agora &#233; a.link }; playerOptions.appendChild(btn); }); } // Mostra
-modal de players playerModal.style.display = 'flex'; if (!abertoDoEpisodio) { // Fade-in somente se N&#195;O veio do modal de epis&#243;dios playerModal.style.opacity = '0'; playerModal.style.transition = 'opacity 0.4s'; requestAnimationFrame(() =&#62;
-{ playerModal.style.opacity = '1'; }); } else { // Abre instantaneamente se veio do modal de epis&#243;dios playerModal.style.opacity = '1'; playerModal.style.transition = 'none'; } // Atualiza texto do bot&#227;o de fechar fecharBtn.textContent = abertoDoEpisodio
-? 'Voltar' : 'Fechar'; // Armazena no dataset se veio de epis&#243;dio playerModal.dataset.abertoDoEpisodio = abertoDoEpisodio ? 'true' : 'false'; } function fecharPlayerModal() { const playerModal = document.getElementById('playerModal'); const modalEpisodios
-= document.getElementById('modal'); // Esconde modal de players playerModal.style.display = 'none'; // Se veio do modal de epis&#243;dios, reabre o modal de epis&#243;dios if (playerModal.dataset.abertoDoEpisodio === 'true') { modalEpisodios.style.display
-= 'flex'; } delete playerModal.dataset.abertoDoEpisodio; } function abrirModalTrailers(item) { const modal = document.getElementById('modalTrailer'); const trailerList = document.getElementById('trailerList'); const titulo = document.getElementById('modalTrailerTitle');
-// Se houver s&#243; um trailer &#8594; abre direto e sai if (item.trailer &#38;&#38; (!item.trailers || item.trailers.length === 0)) { abrirVideo({ titulo: item.titulo + ' - Trailer', link: item.trailer }); return; } // Define o t&#237;tulo titulo.textContent
-= `Trailers de "${item.titulo}"`; trailerList.innerHTML = ''; // Lista de trailers (v&#225;rios ou &#250;nico) if (item.trailers &#38;&#38; item.trailers.length &#62; 0) { item.trailers.forEach((tr, idx) =&#62; { const btn = document.createElement('button');
-btn.className = 'episodio-btn'; btn.textContent = tr.titulo || `Trailer ${idx + 1}`; btn.onclick = () =&#62; abrirVideo({ titulo: `${item.titulo} - ${tr.titulo || 'Trailer'}`, link: tr.link }); trailerList.appendChild(btn); }); } else if (item.trailer)
-{ const btn = document.createElement('button'); btn.className = 'episodio-btn'; btn.textContent = 'Trailer Oficial'; btn.onclick = () =&#62; abrirVideo({ titulo: item.titulo + ' - Trailer', link: item.trailer }); trailerList.appendChild(btn); } // 🎬
-Fade-in modal.style.display = 'flex'; requestAnimationFrame(() =&#62; modal.classList.add('show')); } function fecharModalTrailer() { const modal = document.getElementById('modalTrailer'); // 🎬 Fade-out modal.classList.remove('show'); setTimeout(() =&#62;
-{ modal.style.display = 'none'; }, 400); // mesmo tempo que o transition do CSS } function abrirVideo(item) { const videoModal = document.createElement('div'); videoModal.style.cssText = ` position: fixed; top:0; left:0; width:100%; height:100%; background:
-rgba(0,0,0,0.9); display:flex; justify-content:center; align-items:center; flex-direction:column; z-index:10000; `; // Guarda t&#237;tulo do epis&#243;dio videoModal.dataset.titulo = item.titulo; let videoEl = null; // s&#243; ser&#225; usado se for MP4
-let terminou = false; document.body.appendChild(videoModal); // adiciona o modal ao DOM primeiro // Bot&#227;o Fechar const fecharBtn = document.createElement('button'); fecharBtn.textContent = 'Fechar'; fecharBtn.className = 'player-btn'; fecharBtn.style.position
-= 'absolute'; fecharBtn.style.top = '20px'; fecharBtn.style.right = '20px'; fecharBtn.onclick = () =&#62; { if (videoEl) { videoEl.pause(); videoEl.src = ''; videoEl.load(); } videoModal.remove(); }; videoModal.appendChild(fecharBtn); const serie = series.find(s
-=&#62; item.titulo.startsWith(s.titulo)); if (serie) { const btnProximo = document.createElement('button'); btnProximo.textContent = '&#9197; Pr&#243;ximo'; btnProximo.className = 'player-btn'; btnProximo.style.position = 'absolute'; btnProximo.style.right
-= fecharBtn.style.right; btnProximo.style.backgroundColor = 'white'; btnProximo.style.color = 'black'; btnProximo.style.border = 'none'; btnProximo.style.padding = '8px 12px'; btnProximo.style.cursor = 'pointer'; btnProximo.style.borderRadius = '5px';
-btnProximo.style.zIndex = '10001'; btnProximo.style.font = 'inherit'; btnProximo.style.height = 'auto'; // Ajusta posi&#231;&#227;o do topo depois de o bot&#227;o Fechar estar no DOM setTimeout(() =&#62; { btnProximo.style.top = (fecharBtn.offsetTop +
-fecharBtn.offsetHeight + 8) + 'px'; }, 0); btnProximo.onclick = () =&#62; { if (videoEl) { videoEl.pause(); videoEl.src = ''; videoEl.load(); } videoModal.remove(); for (const temp of serie.temporadas) { const idx = temp.episodios.findIndex(ep =&#62;
-item.titulo.includes(`Ep ${ep.numero}`)); if (idx &#62;= 0 &#38;&#38; temp.episodios[idx + 1]) { abrirVideo({ ...temp.episodios[idx + 1], titulo: `${serie.titulo} - Ep ${temp.episodios[idx+1].numero}` }); return; } } mostrarToast('&#218;ltimo epis&#243;dio
-da temporada!'); }; videoModal.appendChild(btnProximo); } // Verifica tipo de link if (item.link.endsWith('.mp4')) { const loader = document.createElement('div'); loader.textContent = 'Carregando...'; loader.style.cssText = 'color:#fff;font-size:18px;margin-top:10px;text-align:center;';
-videoModal.appendChild(loader); // Cria v&#237;deo videoEl = document.createElement('video'); videoEl.src = item.link; videoEl.controls = true; videoEl.preload = 'auto'; // Wrapper responsivo const videoModal = document.createElement('div'); videoModal.style.cssText
-= ` position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; overflow: auto; /* permite scroll se o v&#237;deo for grande */ display: flex; justify-content: center; align-items: center; `; const wrapper
-= document.createElement('div'); wrapper.style.cssText = ` width: 80%; max-width: 1000px; height: 0; padding-top: 56.25%; /* propor&#231;&#227;o 16:9 */ position: relative; `; videoEl = document.createElement('video'); // ou iframe videoEl.src = item.link;
-videoEl.controls = true; videoEl.style.position = 'absolute'; videoEl.style.top = '0'; videoEl.style.left = '0'; videoEl.style.width = '100%'; videoEl.style.height = '100%'; videoEl.style.objectFit = 'contain'; wrapper.appendChild(videoEl); videoModal.appendChild(wrapper);
-document.body.appendChild(videoModal); // Legendas if (item.legendas) { item.legendas.forEach(l =&#62; { const track = document.createElement('track'); track.kind = 'subtitles'; track.label = l.label; track.srclang = l.lang; track.src = l.src; track.default
-= l.default || false; videoEl.appendChild(track); }); } // &#193;udios alternativos if (item.player &#38;&#38; item.player.length) { const playerContainer = document.createElement('div'); playerContainer.style.cssText = ` position:absolute; top:60px;
-left:50%; transform:translateX(-50%); display:flex; gap:10px; flex-wrap:wrap; z-index:10001; `; item.player.forEach(a =&#62; { const btn = document.createElement('button'); btn.textContent = a.label; btn.className = 'player-btn'; btn.onclick = () =&#62;
-{ const t = videoEl.currentTime; videoEl.src = a.src; videoEl.load(); videoEl.currentTime = t; videoEl.play(); }; playerContainer.appendChild(btn); }); videoModal.appendChild(playerContainer); } // Eventos do v&#237;deo videoEl.addEventListener('loadedmetadata',
-() =&#62; { if (progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo]; }); videoEl.ontimeupdate = () =&#62; { if (!terminou) { progresso[item.titulo] = videoEl.currentTime; salvarProgresso(); } }; videoEl.onended = () =&#62; { terminou
-= true; delete progresso[item.titulo]; salvarProgresso(); videoModal.remove(); mostrarSecao('inicio'); }; videoEl.oncanplaythrough = () =&#62; { loader.remove(); videoEl.play(); }; } else { // Embed (ex: Filemoon) const iframe = document.createElement('iframe');
-iframe.src = item.link; iframe.allowFullscreen = true; iframe.frameBorder = '0'; iframe.style.maxWidth = '1000px'; iframe.style.maxHeight = '600px'; iframe.style.width = '80%'; iframe.style.height = '80%'; iframe.style.borderRadius = '10px'; iframe.style.boxShadow
-= '0 0 20px rgba(0,0,0,0.7)'; videoModal.appendChild(iframe); } document.body.appendChild(videoModal); }
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>Tugaflix</title>
+  
+<link rel="icon" href="https://i.postimg.cc/4xpzJzpz/T-19-01-2026.png" sizes="64x64">
+  
 
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#000">  
+
+  
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
+
+
+
+    /* Site normal: scroll normal */
+  html, body {
+    overflow: auto;
+  }
+
+@media (display-mode: standalone) {
+  html, body {
+    height: auto;
+    overflow: auto;
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+  }
+}
+
+
+
+
+header { position: fixed; top:0; left:0; width:100%; height:60px; background:#141414; display:flex; align-items:center; justify-content:flex-start; padding:0 40px; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.5); }
+header h1 { color:#e50914; font-size:27px; cursor:pointer; }
+nav { display:flex; gap:15px; margin-left: 15px; }
+nav div { color: rgba(255, 255, 255, 0.8); cursor:pointer; transition:color .2s; border-bottom: none; text-decoration: none; }
+nav div:hover { color: rgba(255, 255, 255, 0.5); text-decoration:none; border-bottom: none; }
+nav div.ativo {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: bold;
+  border-bottom: none;
+}
+
+
+/* Barra de pesquisa */
+#searchContainer { 
+  display: flex; 
+  align-items: center; 
+  margin-left: auto; 
+}
+
+
+
+  #logo {
+  cursor: pointer;
+}
+
+#pumpkinContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 2000%;
+  height: 2000%;
+  pointer-events: none; /* não atrapalha cliques */
+  overflow: hidden;
+  z-index: 0; /* atrás de tudo */
+}
+
+.pumpkin {
+  position: absolute;
+  width: 60px;       /* tamanho inicial */
+  opacity: 0.7;
+  transform: rotate(0deg);
+}
+
+.mute-btn {
+  position: absolute;
+  bottom: 150px;
+  right: 30px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 22px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  z-index: 10;
+}
+
+.mute-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.close-btn {
+  transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+  transform: scale(1.05);
+  background-color: #e50914; /* vermelho Netflix */
+  color: white;
+}
+
+
+#modal {
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+#modal.show {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#descricaoModal {
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+#descricaoModal.show {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#descricaoModal .modal-content {
+  background-color: #111;
+  color: #fff;
+  max-width: 500px;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+}
+
+#descricaoTitulo small { display: block; margin-top: 10px; color: inherit; /* usa a mesma cor do título */ font-size: 0.7em; /* mesmo tamanho da fonte */ font-weight: inherit; /* mesma espessura */ letter-spacing: inherit; }
+
+ <div id="modal" class="modal">...</div>
+<div id="descricaoModal" class="modal">...</div>
+
+<!-- Modal de Players -->
+<div id="playerModal" class="modal">
+  <div id="playerList"></div>
+  <button onclick="fecharPlayerModal()">Fechar</button>
+</div>
+
+<div id="loginContainer">
+  <input id="nomeUsuario" placeholder="Digite seu nome">
+  <button onclick="entrarUsuario(document.getElementById('nomeUsuario').value)">Entrar</button>
+</div>
+
+
+  
+#playerModal,
+#modalTrailer {
+  display: none;
+  opacity: 0;                /* começa invisível */
+  pointer-events: none;      /* impede cliques enquanto invisível */
+  transition: opacity 0.4s ease; /* animação suave */
+}
+
+#modalTrailer.show {
+  display: flex;             /* mostra o modal */
+  opacity: 1;                /* visível */
+  pointer-events: auto;      /* reativa cliques */
+}
+ 
+
+
+
+  
+.episodio-btn.selecionado {
+  background-color: black; /* fica preto */
+  color: white; /* texto fica visível */
+  position: relative; /* necessário para posicionar a seta */
+}
+
+/* seta à direita */
+.episodio-btn.selecionado::after {
+  content: '➤'; /* seta Unicode */
+  position: absolute;
+  right: 10px; /* distância da borda direita */
+  top: 50%;
+  transform: translateY(-50%) rotate(180deg);
+  font-size: 16px;
+  color: white;
+}
+
+#bannerVideo, #bannerImage {
+  object-fit: cover;
+  object-position: center top; /* ou center center */
+}  
+
+#playerContainer {
+  position: relative; /* necessário para o botão ficar posicionado dentro do player */
+}
+
+  
+  
+#searchContainer input { 
+  position: relative; 
+  top: 3px; /* ou ajuste conforme quiser */
+  padding: 6px 12px;   
+  border-radius: 4px; 
+  border: 2px solid #000;
+  outline: none; 
+  font-size: 14px; 
+  background: #000; 
+  color: #fff; 
+}
+
+  #searchContainer input:focus {
+  border-color: #ff0000;
+  box-shadow: 0 0 5px #ff0000; /* efeito glow opcional */
+}
+
+
+#searchContainer button { 
+  padding: 6px 12px; 
+  margin-left: 5px; 
+  border: none; 
+  border-radius: 4px; 
+  background: transparent; 
+  color: #fff; 
+  cursor: pointer; 
+  font-weight: bold; 
+  transition: background .2s; 
+  font-size: 24px; 
+}
+
+#searchContainer button:hover { 
+  background: transparent; 
+}
+
+.hidden {
+  display: none;
+}
+
+ .control-btn {
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: background-color 0.3s, transform 0.3s; /* transição suave */
+}
+
+.control-btn:hover {
+  background-color: #ccc;   /* escurece no hover */
+  transform: scale(1.1);    /* aumenta como o botão de fechar */
+} 
+
+.control-btn:disabled {
+  background-color: #555;  /* escuro */
+  color: #ccc;             /* texto mais claro */
+  cursor: not-allowed;
+  transform: none;
+}
+
+.banner-highlight {
+  font-size: 29px !important;
+  font-weight: 900 !important;
+  color: #fff;
+  margin-left: -15px;
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: 6px;
+  letter-spacing: 1px;
+  align-self: flex-start;
+
+  position: relative; /* permite deslocar só este elemento */
+  top: 7px;          /* ajusta a distância para baixo */
+}
+
+
+  
+.banner { position: relative; width:100%; height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
+.banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
+.banner-content { position:relative; top: -200px; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:10px; }
+.banner h1 { font-size:48px; margin-bottom:10px; }
+.banner p { font-size:18px; margin-bottom:20px; }
+.banner-content button { width:230px; padding:16px 0; font-size:21px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; transition: background .2s; }
+.banner-content button.play { background:#fff; color:#000; }
+.banner-content button.play:hover { background:#ddd; }
+.banner-content button.lista { background:rgba(109,109,110,0.7); color:#fff; }
+.banner-content button.lista:hover { background:rgba(109,109,110,0.5); }
+.banner-buttons {
+  display: flex;      /* coloca os botões em linha */
+  gap: 10px;          /* espaço entre os botões */
+  flex-wrap: wrap;    /* se a tela for pequena, quebra a linha */
+} 
+.banner-content button.play {
+  width: 123px;           /* largura do botão */
+  padding: 6px 0;         /* altura do botão */
+  background: #fff;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 21px;        /* tamanho do texto Ver */
+  display: flex;           /* ativa flexbox */
+  align-items: center;     /* alinha verticalmente */
+  justify-content: center; /* centraliza horizontalmente */
+  gap: 10px;                  /* sem espaço entre símbolo e texto */
+  transition: background 0.2s;
+}
+.banner-description {
+  font-size: 16px;
+  color: #fff;
+  margin-top: -20px;
+  max-width: 450px;  /* limita a largura da frase */
+  line-height: 1.4;
+}
+.banner-description {
+  word-wrap: break-word;   /* quebra palavras longas */
+  white-space: normal;     /* permite quebra de linha */
+  margin-top: -20px;
+}
+
+.play-symbol {
+  font-size: 28px;       /* tamanho do símbolo */
+  position: relative;     
+  top: -2px;             /* move 2px para cima */
+}
+
+
+
+#root { margin-top:-135px; }
+
+/* Esconde as setas inicialmente */
+.fila-container .btn-scroll {
+  opacity: 0;
+  pointer-events: none; /* evita clicar quando invisível */
+  transition: opacity 0.3s ease;
+}
+
+/* Mostra as setas quando o mouse estiver sobre a fila */
+.fila-container:hover .btn-scroll {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+  .fila-container {
+  position: relative;   /* necessário para z-index funcionar */
+  z-index: 5;           /* maior que o banner */
+  margin: 20px 50px;
+}
+  
+.fila-titulo { font-size:20px; margin-bottom:10px; font-weight:bold; }
+.fila { display:flex; overflow-x:auto; gap:12px; padding-bottom:10px; scroll-behavior:smooth; scrollbar-width:none; }
+.fila::-webkit-scrollbar { display:none; }
+.filme { width:310px; height:170px; border-radius:15px; overflow:hidden; cursor:pointer; position:relative; flex-shrink:0; transition: transform 0.3s ease; }
+.filme:hover { transform: scale(1.05); z-index:2; }
+.filme img { width:100%; height:auto; object-fit:contain; display:block; }
+
+.filme-hover-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background: rgba(20, 20, 20, 0.8); display:flex; justify-content:center; align-items:center; gap:8px; opacity:0; transition:opacity 0.3s, transform 0.3s; box-shadow: 0 0 15px rgba(0,0,0,0.5); flex-direction:column; border-radius:4px; z-index:5; }
+.filme:hover .filme-hover-overlay { opacity:1; transform: }
+.filme-hover-overlay button { width:100px; padding:8px 0; background:#e50914; border:none; color:#fff; font-weight:bold; cursor:pointer; border-radius:4px; transition: background .2s; }
+.filme-hover-overlay button:hover { background:#b20710; }
+
+.add-list-btn { position:absolute; bottom:5px; right:5px; width:30px; height:30px; border-radius:50%; border:none; background:#e50914; color:#fff; font-weight:bold; cursor:pointer; font-size:18px; z-index:6; transition: background .2s; opacity:0; }
+.filme:hover .add-list-btn { opacity:1; }
+
+.btn-scroll { position:absolute; top:56%; transform:translateY(-50%); background:rgba(0,0,0,.6); border:none; color:#fff; font-size:30px; width:40px; height:80px; cursor:pointer; z-index:10; border-radius:4px; display:flex; align-items:center; justify-content:center; }
+.btn-scroll:hover { background:rgba(229,9,20,.8); }
+.btn-left { left:0; }
+.btn-right { right:0; }
+
+.modal { display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; }
+.modal-content { background:#222; padding:25px; border-radius:10px; max-width:500px; width:90%; text-align:center; }
+.modal h2 { margin-bottom:20px; }
+.episodio-btn, .temporada-btn { display:block; margin:10px 0; padding:12px; background:#e50914; border:none; border-radius:5px; color:#fff; cursor:pointer; font-size:16px; width:100%; transition:background .2s; }
+.episodio-btn:hover, .temporada-btn:hover { background:#b20710; }
+.close-btn { margin-top:15px; padding:10px 20px; background:#555; border:none; border-radius:5px; color:#fff; cursor:pointer; transition:background .2s; }
+.close-btn:hover { background:#333; }
+
+.add-list-btn,
+.add-list-btn.info {
+  bottom: 5px;        /* mesma distância do fundo */
+  height: 30px;       /* mesma altura */
+  line-height: 30px;  /* centraliza o texto verticalmente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-list-btn.info {
+  left: 5px;
+  right: auto;   /* garante que não usa a posição à direita */
+  background: #555;
+  font-size: 16px;
+}
+
+
+
+  
+.player-btn {
+  padding: 10px 20px; /* controla tamanho do botão */
+  border-radius: 5px; /* cantos arredondados */
+  border: none;
+  background-color: rgba(0,0,0,0.7);
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex; /* ficam ao lado se o container permitir */
+  justify-content: center;
+  align-items: center;
+  margin: 5px; /* espaçamento entre botões */
+}
+
+.player-btn:hover {
+  background-color: #e50914;
+  transform: scale(1.1);
+}
+  
+.remover-anuncios {
+  background-color: #e50914;   /* cor dourada */
+  color: #000;                 /* texto preto */
+  padding: 12px 25px;          /* maior que os outros botões */
+  border-radius: 8px;          /* cantos mais arredondados */
+  border: 2px solid #990000;  /* borda laranja */
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* sombra */
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+.remover-anuncios:hover {
+  background-color: #990000;
+  transform: scale(1.05);      /* efeito de leve aumento */
+}
+
+video::cue {
+  color: #FFFFFF;
+  background-color: rgba(0, 0, 0, 0); /* transparente */
+  font-size: 1.5c; /* tamanho da fonte */
+  font-weight: 400;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+  line: 90%;          /* altura vertical da legenda */
+  align: center;      /* centraliza horizontalmente */
+  padding: 0.2c 0.5c;
+  border-radius: 0.2c;
+}
+  
+/* Scroll interno para temporadas/episódios sem mostrar a barra */
+#episodiosList {
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;  /* IE e Edge antigos */
+}
+#episodiosList::-webkit-scrollbar { /* Chrome, Safari, Edge */
+  display: none;
+}
+
+.toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 20000; }
+.toast { background: rgba(51, 51, 51, 0.95); color: #fff; padding: 12px 20px; border-radius: 5px; min-width: 220px; max-width: 300px; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.7); opacity: 0; transform: translateX(100%); animation: slideIn 0.5s forwards, fadeOut 0.5s forwards 3s; }
+.toast button { background: none; border: none; color: #e50914; font-weight: bold; cursor: pointer; margin-left: 10px; }
+@keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeOut { to { opacity: 0; transform: translateX(100%); } }
+
+
+<style>
+.filemoon-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  padding-top: 56.25%; /* 16:9 - mantém proporção */
+}
+
+.filemoon-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: contain; /* evita cortes e esticamentos */
+}
+  
+.filme .remove-continuar-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 25px;
+  height: 25px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 7;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.filme:hover .remove-continuar-btn { opacity: 1; }
+</style>
+</head>
+<body>
+
+  
+<div id="pumpkinContainer"></div>
+  
+  <div id="playerModal" class="modal">
+  <div class="modal-content" style="max-width:400px;">
+    <h2>Escolha o player</h2>
+    <div id="playerOptions" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;"></div>
+    <button class="close-btn" onclick="fecharPlayerModal()">Fechar</button>
+  </div>
+</div>
+
+  <div id="descricaoModal" class="modal">
+  <div class="modal-content" style="max-width:500px;">
+    <h2 id="descricaoTitulo"></h2>
+    <p id="descricaoTexto" style="margin-bottom:20px;"></p>
+    <button class="close-btn" onclick="fecharDescricaoModal()">Fechar</button>
+  </div>
+</div>
+
+
+<header>
+  <!-- Logo -->
+  <img id="logo" 
+       src="https://i.postimg.cc/QMZk0fJ9/Adobe-Express-file.png" 
+       alt="TUGAFLIX" 
+       style="height:95px; margin-top:3px;">
+  
+<nav>
+<div onclick="mostrarSecao('inicio')">Página Inicial</div>
+<div onclick="mostrarSecao('series')">Séries</div>
+<div onclick="mostrarSecao('filmes')">Filmes</div>
+<div onclick="mostrarSecao('terror')">Terror</div>
+<div onclick="mostrarSecao('desenhos')">Animação</div>
+<div onclick="mostrarSecao('lista')">A Minha Lista</div>
+</nav>
+<div id="searchContainer">
+  <input type="text" id="searchInput" placeholder="Pesquisar...">
+  <button id="searchButton">🔍︎</button>
+</div>
+
+</header>
+
+  
+
+  
+
+
+<div class="banner">
+  <!-- Imagem de fundo -->
+  <img id="bannerImage" src="https://occ-0-2268-358.1.nflxso.net/dnm/api/v6/6AYY37jfdO6hpXcMjf9Yu5cnmO0/AAAABQqe_iEJt6nSVtk4g3fIhsfI4_TLyWq7QEcS4DevvupWhE-7iQ78TClFpWRta4Ua6GwXwN_Zk6kePJtu8bb5Lc8sx1-rHn4QTJTh.webp?r=ad6" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;">
+
+  <!-- Vídeo de fundo (inicialmente escondido) -->
+  <video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay muted loop>
+    <source src="https://ia800807.us.archive.org/35/items/stranger-things-5-aac-hq/Stranger_Things_5_AAC_HQ.mp4" type="video/mp4">
+  </video>
+
+
+<button id="muteBtn" class="mute-btn">🔇</button>
+
+
+
+  
+
+  <!-- Conteúdo do banner -->
+  <div class="banner-content">
+    <!-- Logo -->
+    <img src="https://i.postimg.cc/GtfbyyyK/AAAABe-S9Q3i-CPfef5ln-XNKGl-Gh1g-Za9g-EBi6VHtg8IRAwpl-PDc-ALd-ql-OK6Sz-Eowna-Cn-HFg8Zksu-IVT7m6Oanj.png" alt="Stranger Things" class="banner-title" style="width:400px; height:auto; position:absolute; top:-140px;">
+
+<p class="banner-highlight">Ver agora a temporada 5</p>
+    
+    <!-- Descrição -->
+    <p class="banner-description">
+      Quando um rapaz desaparece, uma pequena vila descobre um mistério relacionado com experiências secretas, assustadoras forças sobrenaturais e uma estranha rapariga.
+    </p>
+
+    <!-- Botões lado a lado -->
+    <div class="banner-buttons">
+      <button class="play" onclick="abrirModalTemporadas(series.find(s => s.titulo === 'Stranger Things'))">
+        <span class="play-symbol">▶</span> Ver
+      </button>
+      <button id="bannerAddBtn" class="lista">+ Minha Lista</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<div id="root"></div>
+
+<div id="modal" class="modal">
+  <div class="modal-content" id="modalContent">
+    <h2 id="modalTitle">Escolha a temporada</h2>
+    <div id="episodiosList"></div>
+    <button id="fecharModalBtn" class="close-btn" onclick="fecharModal()">Fechar</button>
+  </div>
+</div>
+
+ <!-- Modal de trailers -->
+<div id="modalTrailer" class="modal">
+  <div class="modal-content" style="max-width:500px;">
+    <h2 id="modalTrailerTitle"></h2>
+    <div id="trailerList"></div>
+    <button class="close-btn" onclick="fecharModalTrailer()">Fechar</button>
+  </div>
+</div> 
+
+<div id="toastContainer" class="toast-container"></div>
+
+<script>
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if (
+    e.key === 'F12' ||
+    (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) ||
+    (e.ctrlKey && e.key.toLowerCase() === 'u')
+  ) {
+    e.preventDefault();
+  }
+});
+
+
+
+  
+
+
+let minhaLista = [];
+let progresso = {};
+let episodioSelecionado = JSON.parse(localStorage.getItem('episodioSelecionado')) || {};
+let temporadaSelecionada = JSON.parse(localStorage.getItem('temporadaSelecionada') || '{}');
+
+  let secaoAtual = 'inicio'; // guarda a seção atual
+
+
+function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
+function carregarLista() { const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
+function salvarProgresso() { localStorage.setItem("progresso", JSON.stringify(progresso)); }
+function carregarProgresso() { const p = localStorage.getItem("progresso"); if(p) progresso = JSON.parse(p); }
+
+function mostrarToast(mensagem){
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div'); toast.className = 'toast'; toast.textContent = mensagem;
+  const btn = document.createElement('button'); btn.textContent = '✖'; btn.onclick = () => container.removeChild(toast);
+  toast.appendChild(btn); container.appendChild(toast);
+  setTimeout(() => { if(container.contains(toast)) container.removeChild(toast); }, 4000);
+}
+
+function abrirEpisodio(episodio) {
+
+
+  if (episodio.player && episodio.player.length > 0) {
+    abrirPlayerModal(episodio);
+  } else {
+    abrirVideo(episodio);
+  }
+}
+
+
+
+  
+  function debounce(func, delay) {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', debounce(() => {
+  const termo = searchInput.value.toLowerCase().trim();
+  const root = document.getElementById('root');
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...documentarios, ...novelas, ...filmesDc,  ...filmesMarvel,  ...realityShows, ...filmesParaTodaAFamilia];
+
+  if (termo === "") {
+    mostrarSecao('inicio'); 
+    return;
+  }
+
+  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
+  root.innerHTML = '';
+
+  if (resultados.length > 0) {
+    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+  } else {
+    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+  }
+}, 150)); // 150ms de atraso
+
+
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open("videosDB", 1);
+    request.onupgradeneeded = function(e) {
+      const db = e.target.result;
+      db.createObjectStore("videos");
+    };
+    request.onsuccess = e => resolve(e.target.result);
+    request.onerror = e => reject(e);
+  });
+}
+
+async function reproduzirOffline(titulo) {
+  const db = await openDB();
+  const tx = db.transaction("videos", "readonly");
+  const blob = await tx.objectStore("videos").get(titulo);
+  if (blob) {
+    abrirVideo({ titulo, link: URL.createObjectURL(blob) });
+  } else {
+    mostrarToast("Vídeo não encontrado offline.");
+  }
+}
+
+function abrirDescricaoModal(item) {
+  const texto = item.descricao || "Sem descrição disponível.";
+
+  // Detecta ano no início da string (4 dígitos)
+  let ano = "";
+  let desc = texto;
+
+  const matchAno = texto.match(/^(\d{4})\s*(.*)$/);
+  if (matchAno) {
+    ano = matchAno[1];   // captura os 4 dígitos
+    desc = matchAno[2];  // resto da descrição
+  }
+
+  document.getElementById('descricaoTitulo').textContent = item.titulo; // mantém o título
+
+  // Adiciona ano e descrição no corpo do modal
+  document.getElementById('descricaoTexto').innerHTML = `
+    ${ano ? `<p><strong>Ano:</strong> ${ano}</p>` : ""}
+    <p>${desc}</p>
+  `;
+
+  document.getElementById('descricaoModal').style.display = 'flex';
+}
+
+
+  
+
+function adicionarMinhaLista(titulo){
+  if(!minhaLista.includes(titulo)){
+    minhaLista.push(titulo); salvarLista(); mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
+  } else {
+    minhaLista = minhaLista.filter(t => t!==titulo); salvarLista(); mostrarToast(`"${titulo}" removido da Minha Lista!`);
+  }
+  mostrarSecao('inicio');
+}
+
+function adicionarMinhaLista(titulo) {
+  const index = minhaLista.indexOf(titulo);
+
+  if (index === -1) {
+    minhaLista.push(titulo);
+    mostrarToast(`"${titulo}" adicionado à Minha Lista!`);
+  } else {
+    minhaLista.splice(index, 1);
+    mostrarToast(`"${titulo}" removido da Minha Lista!`);
+  }
+
+  salvarLista(); 
+
+  
+  mostrarSecao(secaoAtual); // <-- aqui atualiza imediatamente a seção
+ 
+
+
+  // Atualiza todos os botões da página que correspondem a esse item
+  document.querySelectorAll('.add-list-btn').forEach(btn => {
+    if (btn.closest('.filme').querySelector('img').alt === titulo) {
+      if (minhaLista.includes(titulo)) {
+        btn.textContent = '✖';
+        btn.title = 'Remover da Minha Lista';
+      } else {
+        btn.textContent = '+';
+        btn.title = 'Adicionar à Minha Lista';
+      }
+    }
+  });
+
+  if (titulo === 'Stranger Things') {
+  atualizarBannerBtn();
+}
+
+  // Atualiza a seção atual (opcional)
+  mostrarSecao(secaoAtual);
+}
+
+
+// <<< AQUI: adicionar o código para oncanplaythrough >>>
+const bannerVideo = document.getElementById('bannerVideo');
+const bannerImage = document.getElementById('bannerImage');
+
+bannerVideo.preload = 'auto';  // garante que o navegador carregue todo o vídeo
+
+bannerVideo.addEventListener('canplaythrough', () => {
+  // Fade out da imagem de banner
+  bannerImage.style.transition = 'opacity 1s ease';
+  bannerImage.style.opacity = '0';
+
+  // Após o fade, esconder a imagem e mostrar o vídeo
+  setTimeout(() => {
+    bannerImage.style.display = 'none';
+    bannerVideo.style.display = 'block';
+    bannerVideo.play();  // garante autoplay
+  }, 1000);
+});
+
+
+
+  
+function abrirPlayerModal(item) {
+  const playerModal = document.getElementById('playerModal');
+  const modalEpisodios = document.getElementById('modal'); // modal de episódios
+  const playerOptions = document.getElementById('playerOptions');
+  const fecharBtn = playerModal.querySelector('.close-btn');
+
+  // Verifica se veio do modal de episódios
+  const abertoDoEpisodio = modalEpisodios.dataset.episodiosAtivos === 'true';
+
+  // Esconde modal de episódios
+  modalEpisodios.style.display = 'none';
+  
+  // Limpa opções antigas
+  playerOptions.innerHTML = '';
+
+  // Supondo que item.player = [{player: 'PT', src: 'linkPT'}, {player: 'EN', src: 'linkEN'}]
+  if(item.player && item.player.length > 0) {
+    item.player.forEach(a => {
+      const btn = document.createElement('button');
+      btn.className = 'player-btn';
+      btn.textContent = a.player;
+btn.onclick = () => {
+  abrirVideo({ titulo: item.titulo, link: a.link }); // ✅ agora é a.link
+};
+      playerOptions.appendChild(btn);
+    });
+  }
+
+  // Mostra modal de players
+  playerModal.style.display = 'flex';
+
+  if (!abertoDoEpisodio) {
+    // Fade-in somente se NÃO veio do modal de episódios
+    playerModal.style.opacity = '0';
+    playerModal.style.transition = 'opacity 0.4s';
+    requestAnimationFrame(() => {
+      playerModal.style.opacity = '1';
+    });
+  } else {
+    // Abre instantaneamente se veio do modal de episódios
+    playerModal.style.opacity = '1';
+    playerModal.style.transition = 'none';
+  }
+
+  // Atualiza texto do botão de fechar
+  fecharBtn.textContent = abertoDoEpisodio ? 'Voltar' : 'Fechar';
+  
+  // Armazena no dataset se veio de episódio
+  playerModal.dataset.abertoDoEpisodio = abertoDoEpisodio ? 'true' : 'false';
+}
+
+function fecharPlayerModal() {
+  const playerModal = document.getElementById('playerModal');
+  const modalEpisodios = document.getElementById('modal');
+
+  // Esconde modal de players
+  playerModal.style.display = 'none';
+
+  // Se veio do modal de episódios, reabre o modal de episódios
+  if (playerModal.dataset.abertoDoEpisodio === 'true') {
+    modalEpisodios.style.display = 'flex';
+  }
+
+  delete playerModal.dataset.abertoDoEpisodio;
+}
+
+
+
+  
+function abrirModalTrailers(item) {
+  const modal = document.getElementById('modalTrailer');
+  const trailerList = document.getElementById('trailerList');
+  const titulo = document.getElementById('modalTrailerTitle');
+
+   // Se houver só um trailer → abre direto e sai
+  if (item.trailer && (!item.trailers || item.trailers.length === 0)) {
+    abrirVideo({ titulo: item.titulo + ' - Trailer', link: item.trailer });
+    return;
+  }
+
+  // Define o título
+  titulo.textContent = `Trailers de "${item.titulo}"`;
+  trailerList.innerHTML = '';
+
+  // Lista de trailers (vários ou único)
+  if (item.trailers && item.trailers.length > 0) {
+    item.trailers.forEach((tr, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'episodio-btn';
+      btn.textContent = tr.titulo || `Trailer ${idx + 1}`;
+      btn.onclick = () =>
+        abrirVideo({ titulo: `${item.titulo} - ${tr.titulo || 'Trailer'}`, link: tr.link });
+      trailerList.appendChild(btn);
+    });
+  } else if (item.trailer) {
+    const btn = document.createElement('button');
+    btn.className = 'episodio-btn';
+    btn.textContent = 'Trailer Oficial';
+    btn.onclick = () =>
+      abrirVideo({ titulo: item.titulo + ' - Trailer', link: item.trailer });
+    trailerList.appendChild(btn);
+  }
+
+  // 🎬 Fade-in
+  modal.style.display = 'flex';
+  requestAnimationFrame(() => modal.classList.add('show'));
+}
+
+function fecharModalTrailer() {
+  const modal = document.getElementById('modalTrailer');
+
+  // 🎬 Fade-out
+  modal.classList.remove('show');
+  setTimeout(() => {
+    modal.style.display = 'none';
+  }, 400); // mesmo tempo que o transition do CSS
+}
+
+
+
+
+
+function abrirVideo(item) {
+  const videoModal = document.createElement('div');
+  videoModal.style.cssText = `
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.9); display:flex;
+    justify-content:center; align-items:center; flex-direction:column;
+    z-index:10000;
+  `;
+
+  // Guarda título do episódio
+  videoModal.dataset.titulo = item.titulo;
+
+  let videoEl = null; // só será usado se for MP4
+  let terminou = false;
+
+document.body.appendChild(videoModal); // adiciona o modal ao DOM primeiro
+
+// Botão Fechar
+const fecharBtn = document.createElement('button');
+fecharBtn.textContent = 'Fechar';
+fecharBtn.className = 'player-btn';
+fecharBtn.style.position = 'absolute';
+fecharBtn.style.top = '20px';
+fecharBtn.style.right = '20px';
+fecharBtn.onclick = () => {
+  if (videoEl) {
+    videoEl.pause();
+    videoEl.src = '';
+    videoEl.load();
+  }
+  videoModal.remove();
+};
+videoModal.appendChild(fecharBtn);
+
+const serie = series.find(s => item.titulo.startsWith(s.titulo));  
+if (serie) {
+  const btnProximo = document.createElement('button');
+  btnProximo.textContent = '⏭ Próximo';
+  btnProximo.className = 'player-btn';
+  btnProximo.style.position = 'absolute';
+  btnProximo.style.right = fecharBtn.style.right;
+  btnProximo.style.backgroundColor = 'white';
+  btnProximo.style.color = 'black';
+  btnProximo.style.border = 'none';
+  btnProximo.style.padding = '8px 12px';
+  btnProximo.style.cursor = 'pointer';
+  btnProximo.style.borderRadius = '5px';
+  btnProximo.style.zIndex = '10001';
+  btnProximo.style.font = 'inherit';
+  btnProximo.style.height = 'auto';
+
+  // Ajusta posição do topo depois de o botão Fechar estar no DOM
+  setTimeout(() => {
+    btnProximo.style.top = (fecharBtn.offsetTop + fecharBtn.offsetHeight + 8) + 'px';
+  }, 0);
+
+  btnProximo.onclick = () => {
+    if (videoEl) {
+      videoEl.pause();
+      videoEl.src = '';
+      videoEl.load();
+    }
+    videoModal.remove();
+
+    for (const temp of serie.temporadas) {
+      const idx = temp.episodios.findIndex(ep => item.titulo.includes(`Ep ${ep.numero}`));
+      if (idx >= 0 && temp.episodios[idx+1]) {
+        abrirVideo({...temp.episodios[idx+1], titulo:`${serie.titulo} - Ep ${temp.episodios[idx+1].numero}`});
+        return;
+      }
+    }
+    mostrarToast('Último episódio da temporada!');
+  };
+
+  videoModal.appendChild(btnProximo);
+}
+
+
+
+  // Verifica tipo de link
+  if (item.link.endsWith('.mp4')) {
+    const loader = document.createElement('div');
+    loader.textContent = 'Carregando...';
+    loader.style.cssText = 'color:#fff;font-size:18px;margin-top:10px;text-align:center;';
+    videoModal.appendChild(loader);
+
+// Cria vídeo
+videoEl = document.createElement('video');
+videoEl.src = item.link;
+videoEl.controls = true;
+videoEl.preload = 'auto';
+
+// Wrapper responsivo
+const videoModal = document.createElement('div');
+videoModal.style.cssText = `
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.9);
+  z-index: 10000;
+  overflow: auto; /* permite scroll se o vídeo for grande */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const wrapper = document.createElement('div');
+wrapper.style.cssText = `
+  width: 80%;
+  max-width: 1000px;
+  height: 0;
+  padding-top: 56.25%; /* proporção 16:9 */
+  position: relative;
+`;
+
+videoEl = document.createElement('video'); // ou iframe
+videoEl.src = item.link;
+videoEl.controls = true;
+videoEl.style.position = 'absolute';
+videoEl.style.top = '0';
+videoEl.style.left = '0';
+videoEl.style.width = '100%';
+videoEl.style.height = '100%';
+videoEl.style.objectFit = 'contain';
+
+wrapper.appendChild(videoEl);
+videoModal.appendChild(wrapper);
+document.body.appendChild(videoModal);
+
+
+    // Legendas
+    if (item.legendas) {
+      item.legendas.forEach(l => {
+        const track = document.createElement('track');
+        track.kind = 'subtitles';
+        track.label = l.label;
+        track.srclang = l.lang;
+        track.src = l.src;
+        track.default = l.default || false;
+        videoEl.appendChild(track);
+      });
+    }
+
+    // Áudios alternativos
+    if (item.player && item.player.length) {
+      const playerContainer = document.createElement('div');
+      playerContainer.style.cssText = `
+        position:absolute; top:60px; left:50%;
+        transform:translateX(-50%);
+        display:flex; gap:10px; flex-wrap:wrap; z-index:10001;
+      `;
+      item.player.forEach(a => {
+        const btn = document.createElement('button');
+        btn.textContent = a.label;
+        btn.className = 'player-btn';
+        btn.onclick = () => {
+          const t = videoEl.currentTime;
+          videoEl.src = a.src;
+          videoEl.load();
+          videoEl.currentTime = t;
+          videoEl.play();
+        };
+        playerContainer.appendChild(btn);
+      });
+      videoModal.appendChild(playerContainer);
+    }
+
+    // Eventos do vídeo
+    videoEl.addEventListener('loadedmetadata', () => {
+      if (progresso[item.titulo]) videoEl.currentTime = progresso[item.titulo];
+    });
+
+    videoEl.ontimeupdate = () => {
+      if (!terminou) {
+        progresso[item.titulo] = videoEl.currentTime;
+        salvarProgresso();
+      }
+    };
+
+    videoEl.onended = () => {
+      terminou = true;
+      delete progresso[item.titulo];
+      salvarProgresso();
+      videoModal.remove();
+      mostrarSecao('inicio');
+    };
+
+    videoEl.oncanplaythrough = () => {
+      loader.remove();
+      videoEl.play();
+    };
+
+  } else {
+    // Embed (ex: Filemoon)
+    const iframe = document.createElement('iframe');
+    iframe.src = item.link;
+    iframe.allowFullscreen = true;
+    iframe.frameBorder = '0';
+  iframe.style.maxWidth = '1000px';
+iframe.style.maxHeight = '600px';
+iframe.style.width = '80%';
+iframe.style.height = '80%';
+iframe.style.borderRadius = '10px';
+iframe.style.boxShadow = '0 0 20px rgba(0,0,0,0.7)';
+    videoModal.appendChild(iframe);
+  }
+
+  document.body.appendChild(videoModal);
+}
 
 
 
