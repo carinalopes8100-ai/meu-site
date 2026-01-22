@@ -11059,7 +11059,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // DUPLICAR conteúdo para loop contínuo
   track.innerHTML += track.innerHTML;
 
-  let x = window.innerWidth; // começa fora da tela à direita
+  let x = window.innerWidth + 500; // aumenta para começar mais à direita
   const speed = 1; // pixels por frame
 
   function animarTrack() {
