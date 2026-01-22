@@ -11059,14 +11059,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // DUPLICAR conteúdo para loop contínuo
   track.innerHTML += track.innerHTML;
 
+  const speed = 1; // velocidade em px/frame
   const trackWidth = track.offsetWidth / 2; // largura do conteúdo original
-  let x = trackWidth + 800; // 300px fora da tela
-  const speed = 1;    // velocidade em px/frame
+  let x = window.innerWidth; // começa na ponta direita da tela
 
   function animarTrack() {
     x -= speed;
 
-    // quando o primeiro conjunto de imagens saiu, reseta x
+    // quando o primeiro conjunto de imagens saiu totalmente, reseta
     if (x <= -trackWidth) {
       x = 0;
     }
@@ -11076,6 +11076,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   animarTrack();
+
+  // ajusta se a tela for redimensionada
+  window.addEventListener('resize', () => {
+    x = window.innerWidth; // reinicia na ponta direita
+  });
 });
 
   
