@@ -322,6 +322,28 @@ nav div.ativo {
 }
 
 
+  #novidadesTrack img {
+  height: 40px;
+  width: auto;
+  margin-right: 50px;
+
+  /* suavidade */
+  transition: 
+    transform 0.35s ease,
+    filter 0.35s ease,
+    box-shadow 0.35s ease;
+
+  transform-origin: center;
+}
+
+/* hover elegante */
+#novidadesTrack img:hover {
+  transform: scale(1.18);
+  filter: brightness(1.15);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+}
+
+
 
 .novidade-img-pequena {
   width: 130px !important;  /* tamanho que quiser */
