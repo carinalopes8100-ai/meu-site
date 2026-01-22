@@ -492,26 +492,30 @@ video::cue {
 
 #novidadesContainer {
   position: fixed;        /* fixa na tela */
-  top: 70px;              /* distância do topo, ajuste para seu menu */
+  top: 60px;              /* logo abaixo do header de 60px */
   left: 0;
   width: 100%;
   overflow: hidden;
   white-space: nowrap;
-  z-index: 9999;          /* acima de tudo */
+  z-index: 1500;          /* acima do banner e abaixo do modal */
   pointer-events: none;   /* permite clicar no banner atrás */
-  background: rgba(0,0,0,0.3); /* opcional: fundo semi-transparente */
+  background: rgba(0,0,0,0.4); /* fundo semi-transparente */
   padding: 5px 0;
 }
+
 #novidadesTrack {
   display: inline-block;
   white-space: nowrap;
+  font-size: 16px;
 }
+
 #novidadesTrack span {
   display: inline-block;
   margin-right: 50px;    /* espaço entre as mensagens */
   font-weight: bold;
   color: #fff;
 }
+
 
 
   
@@ -597,7 +601,14 @@ video::cue {
 
   
 
-
+<div id="novidadesContainer">
+  <div id="novidadesTrack">
+    <span>🎬 Novo filme: “Invasão Final” disponível!</span>
+    <span>🌟 Série “Mistérios de Outono” estreia hoje!</span>
+    <span>🍿 Documentário “O Mundo Secreto” agora na plataforma!</span>
+    <span>🎥 Anime “Estrelas do Céu” – nova temporada!</span>
+  </div>
+</div>
 
 
 <div class="banner">
@@ -643,14 +654,7 @@ video::cue {
 
 
   
-<div id="novidadesContainer">
-  <div id="novidadesTrack">
-    <span>🎬 Novo filme: “Invasão Final” disponível!</span>
-    <span>🌟 Série “Mistérios de Outono” estreia hoje!</span>
-    <span>🍿 Documentário “O Mundo Secreto” agora na plataforma!</span>
-    <span>🎥 Anime “Estrelas do Céu” – nova temporada!</span>
-  </div>
-</div>
+
 
 
 
@@ -10985,22 +10989,23 @@ if ("serviceWorker" in navigator) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-const track = document.getElementById('novidadesTrack');
-let x = window.innerWidth;
+  const track = document.getElementById('novidadesTrack');
+  let x = window.innerWidth;
 
-function animarNovidades() {
-  x -= 1; // velocidade
-  if (x < -track.offsetWidth) x = window.innerWidth;
-  track.style.transform = `translateX(${x}px)`;
-  requestAnimationFrame(animarNovidades);
-}
+  function animarNovidades() {
+    x -= 1; // velocidade
+    if (x < -track.offsetWidth) x = window.innerWidth;
+    track.style.transform = `translateX(${x}px)`;
+    requestAnimationFrame(animarNovidades);
+  }
 
-animarNovidades();
+  animarNovidades();
 
-window.addEventListener('resize', () => {
-  x = window.innerWidth; // reinicia se redimensionar
+  window.addEventListener('resize', () => {
+    x = window.innerWidth;
+  });
 });
-});
+
   
 
 
