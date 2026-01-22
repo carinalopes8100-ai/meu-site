@@ -10347,6 +10347,13 @@ function preencherDiasJogos() {
     const diaElemento = document.createElement('div');
     diaElemento.className = 'dia';
     diaElemento.textContent = dia.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' });
+    
+
+        // ✅ Evento de clique
+    diaElemento.onclick = () => {
+        mostrarJogosDoDia(dia); // chama a função que vai mostrar os jogos
+    };
+
 
     barra.appendChild(diaElemento);
   }
@@ -10512,6 +10519,11 @@ else if (secao === 'canais') {
         const diaElemento = document.createElement('div');
         diaElemento.className = 'dia';
         diaElemento.textContent = dia.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' });
+
+          // ✅ Evento de clique
+    diaElemento.onclick = () => {
+        mostrarJogosDoDia(dia); // chama a função que vai mostrar os jogos
+    };
 
         barra.appendChild(diaElemento);
     }
