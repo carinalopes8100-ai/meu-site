@@ -10349,12 +10349,9 @@ function atualizarBannerBtn() {
 }
 
 
-// Preenche a barra com os próximos 7 dias
 function preencherDiasJogos() {
   const barra = document.getElementById('diasJogos');
-  if (!barra) return;
-
-  barra.innerHTML = ''; // limpa o conteúdo antigo
+  barra.innerHTML = '';
 
   const hoje = new Date();
 
@@ -10365,20 +10362,44 @@ function preencherDiasJogos() {
     const diaElemento = document.createElement('div');
     diaElemento.className = 'dia';
     diaElemento.textContent = dia.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' });
-    
 
-        // ✅ Evento de clique
-    diaElemento.onclick = () => {
-        mostrarJogosDoDia(dia); // chama a função que vai mostrar os jogos
-    };
+    // Cria painel flutuante
+    const painel = document.createElement('div');
+    painel.className = 'painel-jogos';
+    painel.style.position = 'absolute';
+    painel.style.background = 'rgba(0,0,0,0.9)';
+    painel.style.color = 'white';
+    painel.style.padding = '10px';
+    painel.style.borderRadius = '5px';
+    painel.style.top = '-100px'; // sobe acima do dia
+    painel.style.left = '0';
+    painel.style.display = 'none';
+    painel.style.zIndex = '10';
+    painel.style.minWidth = '150px';
 
+    // Filtra os jogos do dia
+    const diaStr = dia.toISOString().split('T')[0]; // yyyy-mm-dd
+    const jogosDoDia = jogos.filter(j => j.dia === diaStr);
+    if (jogosDoDia.length === 0) {
+      painel.textContent = 'Sem jogos';
+    } else {
+      jogosDoDia.forEach(j => {
+        const p = document.createElement('div');
+        p.textContent = j.jogo;
+        painel.appendChild(p);
+      });
+    }
+
+    diaElemento.appendChild(painel);
+
+    // Hover para mostrar/esconder
+    diaElemento.addEventListener('mouseenter', () => painel.style.display = 'block');
+    diaElemento.addEventListener('mouseleave', () => painel.style.display = 'none');
 
     barra.appendChild(diaElemento);
   }
 }
 
-// Chama a função quando você mostra a seção de canais
-preencherDiasJogos();
 
   
 
@@ -10538,13 +10559,7 @@ else if (secao === 'canais') {
         diaElemento.className = 'dia';
         diaElemento.textContent = dia.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' });
 
-          // ✅ Evento de clique
-    diaElemento.onclick = () => {
-        mostrarJogosDoDia(dia); // chama a função que vai mostrar os jogos
-    };
 
-        barra.appendChild(diaElemento);
-    }
 
     // Cria a fila de canais
     root.appendChild(
