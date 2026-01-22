@@ -434,6 +434,43 @@ nav div.ativo {
   background-color: #e50914;
   transform: scale(1.1);
 }
+
+
+#novidadesBarra {
+  width: 100%;
+  overflow: hidden;
+  background-color: #111;  /* cor de fundo da barra */
+  color: #fff;             /* texto branco */
+  padding: 10px 0;
+  font-weight: bold;
+  font-size: 16px;
+  position: relative;
+}
+
+.novidades-track {
+  display: inline-block;
+  white-space: nowrap;
+  animation: slide-left 20s linear infinite;
+}
+
+.novidades-track span {
+  margin-right: 50px; /* espaço entre anúncios */
+}
+
+/* Animação para deslizar da direita para a esquerda */
+@keyframes slide-left {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+
+
+
+  
   
 .remover-anuncios {
   background-color: #e50914;   /* cor dourada */
@@ -608,7 +645,12 @@ video::cue {
 </div>
 
 
-
+<!-- Barra de novidades -->
+<div id="novidadesBarra">
+  <div class="novidades-track">
+    <!-- os spans serão preenchidos via JS ou podem estar fixos aqui -->
+  </div>
+</div>
 
 
 
@@ -10934,6 +10976,21 @@ if (logo) {
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/service-worker.js");
 }
+
+
+    // Novidades
+  const novidades = [
+    '🎬 Stranger Things 5 chega dia 12/02!',
+    '🆕 Nova temporada de "Filmes de Terror" disponível!',
+    '📺 Reality Show "Desafio Total" agora online!',
+    '✨ Filmes da Marvel atualizados!'
+  ];
+
+  const track = document.querySelector('.novidades-track');
+  if(track) {
+    track.innerHTML = novidades.map(n => `<span>${n}</span>`).join('');
+  }
+});
 
 </script>
 </body>
