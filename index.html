@@ -10074,8 +10074,14 @@ if (item.emBreve || item.link === "#") {
   btnPlay.style.cursor = "not-allowed";
 } else {
   btnPlay.textContent = '▶ Ver';
-  btnPlay.onclick = e => {
-    e.stopPropagation();
+btnPlay.onclick = e => {
+  e.stopPropagation();
+
+  if(item.tipo === 'canal') {
+    // Canais: abre o link direto em nova aba
+    window.open(item.link, '_blank');
+    return;
+  }
 
 
         // Se tiver múltiplos áudios → abre o modal de áudios
