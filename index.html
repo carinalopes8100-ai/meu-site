@@ -10645,18 +10645,30 @@ else if (secao === 'canais') {
   ocultarBanner();
   ocultarPumpkins();
 
-  // ✅ MOSTRA CALENDÁRIO
-  document.getElementById('calendarioJogos').style.display = 'block';
-  document.getElementById('listaJogos').style.display = 'block';
+  // Calendário
+  const calendario = document.createElement('div');
+  calendario.id = 'calendarioJogos';
 
-  // ✅ Preenche dias (UMA ÚNICA VEZ)
-  preencherDiasJogos();
+  const barra = document.createElement('div');
+  barra.id = 'barraDias';
+  barra.className = 'barra-dias';
 
-  // ✅ Mostra canais
+  calendario.appendChild(barra);
+  root.appendChild(calendario);
+
+  // Lista de jogos (NÃO limpa o root)
+  const lista = document.createElement('div');
+  lista.id = 'listaJogos';
+  root.appendChild(lista);
+
+  // 🔥 FILA DE CANAIS (AGORA NÃO DESAPARECE)
   root.appendChild(
     criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming')
   );
+
+  preencherDiasJogos(); // só mexe em barraDias e listaJogos
 }
+
  // <-- fecha o else if
 
 }
