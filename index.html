@@ -10335,7 +10335,31 @@ function atualizarBannerBtn() {
 }
 
 
+// Preenche a barra com os próximos 7 dias
+function preencherDiasJogos() {
+  const barra = document.getElementById('diasJogos');
+  if (!barra) return;
 
+  barra.innerHTML = ''; // limpa o conteúdo antigo
+
+  const hoje = new Date();
+
+  for (let i = 0; i < 7; i++) {
+    const dia = new Date();
+    dia.setDate(hoje.getDate() + i);
+
+    const diaElemento = document.createElement('div');
+    diaElemento.className = 'dia';
+    diaElemento.textContent = dia.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' });
+
+    barra.appendChild(diaElemento);
+  }
+}
+
+// Chama a função quando você mostra a seção de canais
+preencherDiasJogos();
+
+  
 
 
   function mostrarPumpkins() {
