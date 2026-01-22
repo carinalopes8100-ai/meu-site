@@ -555,8 +555,6 @@ video::cue {
 <div onclick="mostrarSecao('terror')">Terror</div>
 <div onclick="mostrarSecao('desenhos')">Animação</div>
 <div onclick="mostrarSecao('lista')">A Minha Lista</div>
-<div onclick="mostrarSecao('canais')">Canais Streaming</div>
-
 </nav>
 <div id="searchContainer">
   <input type="text" id="searchInput" placeholder="Pesquisar...">
@@ -698,7 +696,7 @@ const searchInput = document.getElementById('searchInput');
 searchInput.addEventListener('input', debounce(() => {
   const termo = searchInput.value.toLowerCase().trim();
   const root = document.getElementById('root');
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...documentarios, ...novelas, ...filmesDc,  ...filmesMarvel,  ...realityShows, ...filmesParaTodaAFamilia, ...canaisStreaming];
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...documentarios, ...novelas, ...filmesDc,  ...filmesMarvel,  ...realityShows, ...filmesParaTodaAFamilia];
 
   if (termo === "") {
     mostrarSecao('inicio'); 
@@ -2367,22 +2365,6 @@ const filmes = [
   descricao: "2022 A retrospectiva especial Harry Potter: De Volta a Hogwarts reúne Daniel Radcliffe, Rupert Grint, Emma Watson e outros atores e cineastas dos oito filmes de Harry Potter para celebrar o aniversário de 20 anos do primeiro longa da franquia.",
 },
   
-];
-
-
-    const canaisStreaming = [
-  {
-    titulo: "Canal Filmes 24h",
-    img: "img/canais/filmes24.jpg",
-    link: "https://exemplo.com/stream.m3u8",
-    tipo: "canal"
-  },
-  {
-    titulo: "Canal Esportes",
-    img: "img/canais/esportes.jpg",
-    link: "https://exemplo.com/esportes.m3u8",
-    tipo: "canal"
-  },
 ];
 
 const series = [
@@ -6770,9 +6752,6 @@ const series = [
 
 
 
-
-
-
 const animes = [
 
         {
@@ -10076,36 +10055,8 @@ if (item.emBreve || item.link === "#") {
   btnPlay.style.cursor = "not-allowed";
 } else {
   btnPlay.textContent = '▶ Ver';
-btnPlay.onclick = e => {
-  e.stopPropagation();
-
-  if(item.tipo === 'canal') {
-    // Canais: abre o link direto em nova aba
-    window.open(item.link, '_blank');
-    return;
-  }
-
-  // Filmes/Séries/Documentários
-  if (item.player && item.player.length > 1) {
-    abrirPlayerModal(item);
-    return;
-  }
-
-  const s =
-    series.find(s => s.titulo === item.titulo) ||
-    novelas.find(n => n.titulo === item.titulo) ||
-    animes.find(a => a.titulo === item.titulo) ||
-    documentarios.find(d => d.titulo === item.titulo) ||
-    (item.temporadas && item.temporadas.length > 0 ? item : null);
-
-  if (s && s.temporadas && s.temporadas.length > 0) {
-    abrirModalTemporadas(s);
-  } else if (item.player && item.player.length > 0) {
-    abrirPlayerModal(item);
-  } else {
-    abrirVideo(item);
-  }
-};
+  btnPlay.onclick = e => {
+    e.stopPropagation();
 
 
         // Se tiver múltiplos áudios → abre o modal de áudios
@@ -10238,53 +10189,7 @@ function atualizarBannerBtn() {
 }
 
 
-  function criarFila(id, itens, tipo, titulo="") {
-    const container = document.createElement('div');
-    container.id = id;
-    if (titulo) {
-        const h2 = document.createElement('h2');
-        h2.textContent = titulo;
-        container.appendChild(h2);
-    }
 
-    const fila = document.createElement('div');
-    fila.className = 'fila';
-
-    itens.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        
-        const img = document.createElement('img');
-        img.src = item.imagem;
-        card.appendChild(img);
-
-        const name = document.createElement('div');
-        name.textContent = item.titulo;
-        card.appendChild(name);
-
-        // Botão assistir
-        const btn = document.createElement('button');
-        btn.textContent = '▶ Ver';
-        btn.onclick = () => {
-            if(tipo === 'canal'){
-                window.open(item.link, '_blank');
-            } else {
-                // Aqui vai seu código de assistir filmes/séries
-                assistir(item);
-            }
-        }
-        card.appendChild(btn);
-
-        fila.appendChild(card);
-    });
-
-    container.appendChild(fila);
-    return container;
-}
-
-
-
-  
   
 function mostrarSecao(secao) {
     secaoAtual = secao;
@@ -10378,10 +10283,6 @@ else if(secao === 'documentarios'){
 
     else if(secao === 'animes'){
         root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
-    }
-
-    else if(secao === 'canais') {
-        root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
     }
 }
 
