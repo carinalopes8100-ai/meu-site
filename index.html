@@ -11056,29 +11056,21 @@ if ("serviceWorker" in navigator) {
 document.addEventListener('DOMContentLoaded', () => {
   const track = document.getElementById('novidadesTrack');
 
-  // DUPLICA o conteúdo para criar loop contínuo
-  track.innerHTML += track.innerHTML;
-
-  let x = 0;          // posição inicial
-  const speed = 1;    // pixels por frame
-  const trackWidth = track.offsetWidth / 2; // metade do conteúdo original
+  let x = track.parentElement.offsetWidth; // começa na ponta direita da tela
+  const speed = 1; // pixels por frame
 
   function animar() {
     x -= speed; // move para a esquerda
 
-    // quando metade do track sair, reseta x para 0
-    if (x <= -trackWidth) x = 0;
-
     track.style.transform = `translateX(${x}px)`;
-    requestAnimationFrame(animar);
+
+    // quando toda a track sair pela esquerda, para (ou remove)
+    if (x + track.offsetWidth > 0) {
+      requestAnimationFrame(animar);
+    }
   }
 
   animar();
-
-  // opcional: reinicia posição na ponta direita se redimensionar
-  window.addEventListener('resize', () => {
-    x = 0;
-  });
 });
 
 
