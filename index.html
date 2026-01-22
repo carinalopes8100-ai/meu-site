@@ -555,7 +555,7 @@ video::cue {
 <div onclick="mostrarSecao('terror')">Terror</div>
 <div onclick="mostrarSecao('desenhos')">Animação</div>
 <div onclick="mostrarSecao('lista')">A Minha Lista</div>
-<div onclick="mostrarSecao('canais')">Canais Streaming</div>
+<div onclick="mostrarSecao('canais')">Canais Streaming</div>  
 </nav>
 <div id="searchContainer">
   <input type="text" id="searchInput" placeholder="Pesquisar...">
@@ -697,23 +697,18 @@ const searchInput = document.getElementById('searchInput');
 searchInput.addEventListener('input', debounce(() => {
   const termo = searchInput.value.toLowerCase().trim();
   const root = document.getElementById('root');
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...documentarios, ...novelas, ...filmesDc,  ...filmesMarvel,  ...realityShows, ...filmesParaTodaAFamilia, ...canaisStreaming];
-
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...documentarios, ...novelas, ...filmesDc,  ...filmesMarvel,  ...realityShows, ...filmesParaTodaAFamilia];
 
   if (termo === "") {
     mostrarSecao('inicio'); 
     return;
   }
 
-const resultados = todosItens.filter(i => {
-  const nomeItem = i.titulo || i.nome; // usa "titulo" se existir, senão "nome"
-  return nomeItem && nomeItem.toLowerCase().includes(termo);
-});
-root.innerHTML = '';
+  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
+  root.innerHTML = '';
 
   if (resultados.length > 0) {
-    const tipoFila = resultados[0].nome ? 'canal' : 'filme';
-root.appendChild(criarFila('filaPesquisa', resultados, tipoFila, `Resultados para "${termo}"`));
+    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
   } else {
     root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
   }
@@ -2375,7 +2370,7 @@ const filmes = [
 
 
 
-const canaisStreaming = [
+ const canaisStreaming = [
   {
     titulo: "Sport TV 1",
     img: "https://i.postimg.cc/7PWZQVHx/sport-tv-1.png",
@@ -2408,7 +2403,7 @@ const canaisStreaming = [
   },
                   {
     titulo: "Dazn 1",
-    img: "https://image.discovery.indazn.com/ca/v2/ca/image?id=xraq62d8vawl19o8abgigmjib_image-header_pRow_1730196750000",
+    img: "https://image.discovery.indazn.com/ca/v2/ca/image?id=xraq62d8vawl19o8abgigmjib_image-header_pRow_1730196750000&quality=70",
     link: "https://sportzonline.top/channels/pt/eleven1.php",
     tipo: "canal"
   },
@@ -2430,13 +2425,15 @@ const canaisStreaming = [
     link: "https://sportzonline.top/channels/pt/btv.php",
     tipo: "canal"
   },
-                              {
+                                 {
     titulo: "TVI Reality",
     img: "https://i.postimg.cc/k4f35Zx5/tvi-reality.png",
     link: "https://video-auth5.iol.pt/live_tvi_reality/live_tvi_reality/edge_servers/tvireality-720_passthrough/playlist.m3u8",
     tipo: "canal"
   }
 ];
+
+
 
   
 
@@ -10044,122 +10041,123 @@ const filmesTerror = [
 ];
 
 // ===== Funções de interface =====
-function criarFila(id, lista, tipo, tituloFila) {
-  const container = document.createElement('div');
-  container.className = 'fila-container';
-  container.id = id;
+function criarFila(idFila, lista, tipo, tituloFila=null){
+  const container = document.createElement('div'); 
+  container.className = 'fila-container'; 
+  container.id = idFila;
 
-  const titulo = document.createElement('div');
-  titulo.className = 'fila-titulo';
-  titulo.textContent = tituloFila;
-  container.appendChild(titulo);
+  const titulo = document.createElement('div'); 
+  titulo.className = 'fila-titulo'; 
+  titulo.textContent = tituloFila || (tipo==='filme' ? (idFila==='fila3' ? 'Terror' : 'Filmes Populares') : 'Séries Populares');
 
-  const fila = document.createElement('div');
-  fila.className = 'fila';
-  container.appendChild(fila);
+  const btnLeft = document.createElement('button'); 
+  btnLeft.className = 'btn-scroll btn-left'; 
+  btnLeft.innerHTML = '&#10094;';
 
+  const btnRight = document.createElement('button'); 
+  btnRight.className = 'btn-scroll btn-right'; 
+  btnRight.innerHTML = '&#10095;';
+
+  const fila = document.createElement('div'); 
+  fila.className = 'fila'; 
+  fila.id = idFila + '-content';
+  
   lista.forEach(item => {
     const itemDiv = document.createElement('div'); 
     itemDiv.className = 'filme';
 
     const img = document.createElement('img'); 
     img.src = item.img; 
-    img.alt = item.titulo || item.nome; 
+    img.alt = item.titulo; 
     itemDiv.appendChild(img);
 
-    const tituloItem = document.createElement('div');
-    tituloItem.className = 'item-titulo';
-    tituloItem.textContent = item.titulo || item.nome;
-    itemDiv.appendChild(tituloItem);
+    // ==== Barra de progresso ====
+    if(progresso[item.titulo] && progresso[item.titulo] > 0){
+      const progressoDiv = document.createElement('div');
+      progressoDiv.style.position = 'absolute';
+      progressoDiv.style.bottom = '0';
+      progressoDiv.style.left = '0';
+      progressoDiv.style.width = '100%';
+      progressoDiv.style.height = '5px';
+      progressoDiv.style.backgroundColor = 'rgba(255,255,255,0.3)';
 
-    // === Botão "Adicionar à Minha Lista" ===
-    const btnLista = document.createElement('button');
-    btnLista.className = 'add-list-btn';
-    btnLista.textContent = minhaLista.includes(item.titulo || item.nome) ? '✖' : '+';
-    btnLista.title = minhaLista.includes(item.titulo || item.nome) ? 'Remover da Minha Lista' : 'Adicionar à Minha Lista';
-    btnLista.onclick = e => {
-      e.stopPropagation();
-      adicionarMinhaLista(item.titulo || item.nome);
-    };
-    itemDiv.appendChild(btnLista);
+      const progressoInner = document.createElement('div');
+      progressoInner.style.height = '100%';
+      progressoInner.style.backgroundColor = '#e50914';
+      progressoDiv.appendChild(progressoInner);
+      itemDiv.appendChild(progressoDiv);
 
-    // === Filmes, séries, documentários (não canais) ===
-    if(tipo !== 'canal') {
-      // Barra de progresso
-      if(progresso[item.titulo] && progresso[item.titulo] > 0){
-        const progressoDiv = document.createElement('div');
-        progressoDiv.style.cssText = `
-          position:absolute; bottom:0; left:0; width:100%; height:5px; background-color: rgba(255,255,255,0.3);
-        `;
-        const progressoInner = document.createElement('div');
-        progressoInner.style.height = '100%';
-        progressoInner.style.backgroundColor = '#e50914';
-        progressoDiv.appendChild(progressoInner);
-        itemDiv.appendChild(progressoDiv);
+      const atualizarBarra = duracao => {
+        const pct = Math.min((progresso[item.titulo] / duracao) * 100, 100);
+        progressoInner.style.width = pct + '%';
+      };
 
-        const atualizarBarra = duracao => {
-          const pct = Math.min((progresso[item.titulo] / duracao) * 100, 100);
-          progressoInner.style.width = pct + '%';
-        };
+      if(item.duracao){
+        atualizarBarra(item.duracao);
+      } else if(item.link){
+        const tempVideo = document.createElement('video');
+        tempVideo.src = item.link;
+        tempVideo.preload = 'metadata';
+        tempVideo.addEventListener('loadedmetadata', () => {
+          item.duracao = tempVideo.duration; 
+          atualizarBarra(tempVideo.duration);
+        });
+      }
 
-        if(item.duracao){
-          atualizarBarra(item.duracao);
-        } else if(item.link){
-          const tempVideo = document.createElement('video');
-          tempVideo.src = item.link;
-          tempVideo.preload = 'metadata';
-          tempVideo.addEventListener('loadedmetadata', () => {
-            item.duracao = tempVideo.duration; 
-            atualizarBarra(tempVideo.duration);
-          });
+      const observer = new MutationObserver(() => {
+        const video = document.getElementById('playerVideo');
+        if(video && video.dataset.titulo === item.titulo){
+          video.addEventListener('timeupdate', () => atualizarBarra(video.duration));
         }
-      }
-
-      // Overlay com botão "Ver"
-      const overlay = document.createElement('div'); 
-      overlay.className = 'filme-hover-overlay';
-
-      const btnPlay = document.createElement('button'); 
-      if (item.emBreve || item.link === "#") {
-        btnPlay.textContent = 'Em Breve';
-        btnPlay.disabled = true;
-        btnPlay.style.backgroundColor = "#555";
-        btnPlay.style.cursor = "not-allowed";
-      } else {
-        btnPlay.textContent = '▶ Ver';
-        btnPlay.onclick = e => {
-          e.stopPropagation();
-          if(item.player && item.player.length > 1) {
-            abrirPlayerModal(item);
-          } else if(item.temporadas && item.temporadas.length > 0) {
-            abrirModalTemporadas(item);
-          } else {
-            abrirVideo(item);
-          }
-        };
-      }
-      overlay.appendChild(btnPlay);
-      itemDiv.appendChild(overlay);
+      });
+      observer.observe(document.body, {childList: true, subtree: true});
     }
 
-    fila.appendChild(itemDiv);
-  });
+    // ==== Overlay com botões (play e trailer/verão) ====
+    const overlay = document.createElement('div'); 
+    overlay.className = 'filme-hover-overlay';
 
-  // Setas de scroll
-  const btnLeft = document.createElement('button');
-  btnLeft.className = 'btn-scroll btn-left';
-  btnLeft.textContent = '‹';
-  btnLeft.onclick = () => fila.scrollBy({left:-350, behavior:'smooth'});
-  container.appendChild(btnLeft);
+ const btnPlay = document.createElement('button'); 
+if (item.emBreve || item.link === "#") {
+  btnPlay.textContent = 'Em Breve';
+  btnPlay.disabled = true;
+  btnPlay.style.backgroundColor = "#555";
+  btnPlay.style.cursor = "not-allowed";
+} else {
+  btnPlay.textContent = '▶ Ver';
+  btnPlay.onclick = e => {
+    e.stopPropagation();
 
-  const btnRight = document.createElement('button');
-  btnRight.className = 'btn-scroll btn-right';
-  btnRight.textContent = '›';
-  btnRight.onclick = () => fila.scrollBy({left:350, behavior:'smooth'});
-  container.appendChild(btnRight);
 
-  return container;
+        // Se tiver múltiplos áudios → abre o modal de áudios
+    if (item.player && item.player.length > 1) {
+      abrirPlayerModal(item);
+      return;
+    }
+
+    // 🔍 Procura o item nas listas de séries, novelas, animes e documentários
+    const s =
+      series.find(s => s.titulo === item.titulo) ||
+      novelas.find(n => n.titulo === item.titulo) ||
+      animes.find(a => a.titulo === item.titulo) ||
+      documentarios.find(d => d.titulo === item.titulo) ||
+      (item.temporadas && item.temporadas.length > 0 ? item : null);
+
+    // 🎬 Se for série/documentário com temporadas → abre o modal de temporadas
+    if (s && s.temporadas && s.temporadas.length > 0) {
+      abrirModalTemporadas({ ...s, temporadas: s.temporadas });
+    }
+    // 🔊 Se tiver múltiplos áudios → abre o seletor de áudio
+    else if (item.player && item.player.length > 0) {
+      abrirPlayerModal(item);
+    }
+    // ▶ Caso contrário → vídeo normal
+    else {
+      abrirVideo(item);
+    }
+  };
 }
+overlay.appendChild(btnPlay);
 
 
     const btnDireito = document.createElement('button');
@@ -10213,6 +10211,8 @@ function criarFila(id, lista, tipo, tituloFila) {
       };
       itemDiv.appendChild(removeBtn);
     }
+
+    fila.appendChild(itemDiv);
   });
 
   container.appendChild(titulo); 
@@ -10359,6 +10359,7 @@ else if(secao === 'canais') {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
+  
     root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
 }
 }
@@ -10367,29 +10368,21 @@ else if(secao === 'canais') {
 function pesquisar() {
   const termo = document.getElementById('searchInput').value.toLowerCase().trim();
   const root = document.getElementById('root');
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesMarvel, ...novelas, ...documentarios , ...filmesDc, ...filmesParaTodaAFamilia, ...canaisStreaming];
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesMarvel, ...novelas, ...documentarios , ...filmesDc, ...filmesParaTodaAFamilia];
 
   if (termo === "") {
     mostrarSecao('inicio');
     return;
   }
 
-const resultados = todosItens.filter(i => {
-  const nomeItem = i.titulo || i.nome;
-  return nomeItem && nomeItem.toLowerCase().includes(termo);
-});
+  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
+  root.innerHTML = '';
 
-// criar a fila com o tipo correto
-root.innerHTML = '';
-if (resultados.length > 0) {
-  root.appendChild(criarFila(
-    'filaPesquisa',
-    resultados,
-    resultados[0].nome ? 'canal' : 'filme',  // se for canal, tipo='canal', senão 'filme'
-    `Resultados para "${termo}"`
-  ));
-} else {
-  root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+  if (resultados.length > 0) {
+    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+  } else {
+    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
+  }
 }
 
 function abrirModalTemporadas(serie) {
@@ -10912,7 +10905,7 @@ navItems.forEach(item => {
                   item.textContent.toLowerCase() === 'filmes' ? 'filmes' :
                   item.textContent.toLowerCase() === 'terror' ? 'terror' :
                   item.textContent.toLowerCase() === 'animação' ? 'desenhos' :
-                  item.textContent.toLowerCase() === 'canais streaming' ? 'canais' :
+                  
                   'inicio';
     mostrarSecao(secao);
   });
