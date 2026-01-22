@@ -555,6 +555,7 @@ video::cue {
 <div onclick="mostrarSecao('terror')">Terror</div>
 <div onclick="mostrarSecao('desenhos')">Animação</div>
 <div onclick="mostrarSecao('lista')">A Minha Lista</div>
+<div onclick="mostrarSecao('canais')">Canais Streaming</div>
 </nav>
 <div id="searchContainer">
   <input type="text" id="searchInput" placeholder="Pesquisar...">
@@ -2366,6 +2367,67 @@ const filmes = [
 },
   
 ];
+
+
+
+const canaisStreaming = [
+  {
+    titulo Sport TV 1,
+    img httpsi.postimg.cc7PWZQVHxsport-tv-1.png,
+    link httpssportzonline.topchannelsptsporttv1.php,
+    tipo canal
+  },
+  {
+    titulo Sport TV 2,
+    img httpsi.postimg.ccR0dM11s8sport-tv-2.png,
+    link httpssportzonline.topchannelsptsporttv2.php,
+    tipo canal
+  },
+      {
+    titulo Sport TV 3,
+    img httpsi.postimg.ccpV4PBLCHsport-tv-3.png,
+    link httpssportzonline.topchannelsptsporttv3.php,
+    tipo canal
+  },
+          {
+    titulo Sport TV 4,
+    img httpsi.postimg.cc263f4sBdsport-tv-4.png,
+    link httpssportzonline.topchannelsptsporttv4.php,
+    tipo canal
+  },
+              {
+    titulo Sport TV 5,
+    img httpsi.postimg.ccY25hC35Bsport-tv-5.png,
+    link httpssportzonline.topchannelsptsporttv5.php,
+    tipo canal
+  },
+                  {
+    titulo Dazn 1,
+    img httpsimage.discovery.indazn.comcav2caimageid=xraq62d8vawl19o8abgigmjib_image-header_pRow_1730196750000,
+    link httpssportzonline.topchannelspteleven1.php,
+    tipo canal
+  },
+                      {
+    titulo Dazn 2,
+    img httpsimage.discovery.indazn.comcav2caimageid=1o4twnocva6uwz9121szkcqly_image-header_pRow_1730196778000,
+    link httpssportzonline.topchannelspteleven2.php,
+    tipo canal
+  },
+                          {
+    titulo Dazn 3,
+    img httpsimage.discovery.indazn.comcav2caimageid=29l8c8txra9q1gmicmku13nhw_image-header_pRow_1730196810000&quality=50,
+    link httpssportzonline.topchannelspteleven3.php,
+    tipo canal
+  },
+                              {
+    titulo Benfica TV,
+    img httpsi.postimg.ccbr3C3rcGbenfica-tv.png,
+    link httpssportzonline.topchannelsptbtv.php,
+    tipo canal
+  }
+];
+
+  
 
 const series = [
 
@@ -10283,7 +10345,15 @@ else if(secao === 'documentarios'){
 
     else if(secao === 'animes'){
         root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
-    }
+}
+
+else if(secao === 'canais') {
+    const root = document.getElementById('root');
+    root.innerHTML = '';  limpa conteúdo anterior
+
+     Cria a fila de canais
+    root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
+}
 }
 
 
@@ -10827,6 +10897,7 @@ navItems.forEach(item => {
                   item.textContent.toLowerCase() === 'filmes' ? 'filmes' :
                   item.textContent.toLowerCase() === 'terror' ? 'terror' :
                   item.textContent.toLowerCase() === 'animação' ? 'desenhos' :
+                  item.textContent.toLowerCase() === 'canais streaming' ? 'canais' :
                   'inicio';
     mostrarSecao(secao);
   });
