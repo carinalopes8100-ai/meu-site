@@ -488,16 +488,17 @@ video::cue {
 
 
 <style>
-/* Se quer que fique logo abaixo do topo, mas fixo ao rolar */
 #novidadesBarra {
-  position: absolute; /* ou fixed se quiser sempre visível */
-  top: 60px;          /* ajusta conforme altura do header */
+  position: absolute;      /* fica sobre o banner */
+  top: 10px;               /* distância do topo do banner */
   left: 0;
   width: 100%;
-  background-color: rgba(0,0,0,0.7);
-  padding: 10px 0;
-  color: white;
-  z-index: 1000;
+  text-align: center;
+  background-color: rgba(0,0,0,0.5); /* semi-transparente */
+  color: #fff;
+  padding: 8px 0;
+  font-size: 16px;
+  z-index: 10;             /* acima do banner */
 }
 
 /* Track que desliza */
