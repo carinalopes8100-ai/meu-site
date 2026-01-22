@@ -10302,6 +10302,15 @@ else if(secao === 'documentarios'){
 
     else if(secao === 'animes'){
         root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
+
+}
+
+      else if(secao === 'canais') {
+    const root = document.getElementById('root');
+    root.innerHTML = ''; // limpa conteúdo anterior
+
+    // Cria a fila de canais
+    root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
     }
 }
 
