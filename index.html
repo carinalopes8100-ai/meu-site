@@ -11055,19 +11055,22 @@ if ("serviceWorker" in navigator) {
 
 document.addEventListener('DOMContentLoaded', () => {
   const track = document.getElementById('novidadesTrack');
+  const container = document.getElementById('novidadesContainer');
 
-  // Começa na ponta direita da tela
-  let x = track.parentElement.offsetWidth; 
-  const speed = 1; // pixels por frame
+  // Começa fora da tela, à direita
+  let x = container.offsetWidth;
+  const speed = 1; // velocidade em px/frame
 
   function animar() {
     x -= speed; // move para a esquerda
     track.style.transform = `translateX(${x}px)`;
 
-    // Continua a animação só enquanto ainda estiver visível
-    if (x + track.offsetWidth > 0) {
-      requestAnimationFrame(animar);
+    // Quando toda a track sair da tela à esquerda
+    if (x + track.offsetWidth < 0) {
+      x = container.offsetWidth; // volta para a direita
     }
+
+    requestAnimationFrame(animar);
   }
 
   animar();
