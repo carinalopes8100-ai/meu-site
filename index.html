@@ -10177,24 +10177,28 @@ overlay.appendChild(btnPlay);
     }
     itemDiv.appendChild(overlay);
 
-    // ==== Botão de descrição ====
-    const btnDescricao = document.createElement('button');
-    btnDescricao.className = 'add-list-btn info';
-    btnDescricao.textContent = 'i';
-    btnDescricao.title = 'Ver descrição';
-    btnDescricao.onclick = e => { e.stopPropagation(); abrirDescricaoModal(item); };
-    itemDiv.appendChild(btnDescricao);
 
-    // ==== Botão adicionar/remover lista ====
-    const addBtn = document.createElement('button'); 
-    addBtn.className = 'add-list-btn';
-    const updateButton = () => {
-      if(minhaLista.includes(item.titulo)){ addBtn.textContent='✖'; addBtn.title='Remover da Minha Lista'; } 
-      else { addBtn.textContent='+'; addBtn.title='Adicionar à Minha Lista'; }
-    };
-    addBtn.onclick = e => { e.stopPropagation(); adicionarMinhaLista(item.titulo); updateButton(); };
-    updateButton();
-    itemDiv.appendChild(addBtn);
+
+if(tipo !== 'canal') {
+  // ==== Botão de descrição ====
+  const btnDescricao = document.createElement('button');
+  btnDescricao.className = 'add-list-btn info';
+  btnDescricao.textContent = 'i';
+  btnDescricao.title = 'Ver descrição';
+  btnDescricao.onclick = e => { e.stopPropagation(); abrirDescricaoModal(item); };
+  itemDiv.appendChild(btnDescricao);
+
+  // ==== Botão adicionar/remover lista ====
+  const addBtn = document.createElement('button'); 
+  addBtn.className = 'add-list-btn';
+  const updateButton = () => {
+    if(minhaLista.includes(item.titulo)){ addBtn.textContent='✖'; addBtn.title='Remover da Minha Lista'; } 
+    else { addBtn.textContent='+'; addBtn.title='Adicionar à Minha Lista'; }
+  };
+  addBtn.onclick = e => { e.stopPropagation(); adicionarMinhaLista(item.titulo); updateButton(); };
+  updateButton();
+  itemDiv.appendChild(addBtn);
+}
 
     // ==== Botão remover da fila continuar ====
     if(idFila === 'filaContinuar'){
