@@ -305,9 +305,12 @@ nav div.ativo {
   cursor: pointer;
   z-index: 9999;     /* acima do vídeo */
   white-space: nowrap;
+
+  
+  /* efeito de aumento suave */
+  transition: transform 0.35s ease;
+  transform-origin: center;
 }
-
-
 
 
 #novidadesTrack span {
@@ -330,13 +333,15 @@ nav div.ativo {
   transform-origin: center;
 }
 
-#novidadesTrack:hover {
-  transform: scale(1.15);
-  animation-play-state: paused;
+ 
+#novidadesContainer:hover {
+  transform: scale(1.12);  /* aumenta todas juntas */
 }
 
- 
-
+  /* pausa animação ao hover */
+#novidadesContainer:hover #novidadesTrack {
+  animation-play-state: paused;
+}
 
 
 .novidade-img-pequena {
