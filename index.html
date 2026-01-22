@@ -491,34 +491,31 @@ video::cue {
 
 
 #novidadesContainer {
-  position: fixed;
-  top: 60px;          /* logo abaixo do header */
+  position: fixed;       /* fica por cima de tudo */
+  top: 20px;             /* você controla a distância do topo */
   left: 0;
   width: 100%;
-  height: 35px;       /* altura visível */
-  overflow: hidden;
-  white-space: nowrap;
-  z-index: 5000;      /* acima do banner */
-  background: rgba(0,0,0,0.5); /* fundo semi-transparente */
+  height: 40px;          /* você controla a altura */
+  background: rgba(0,0,0,0.5); /* opcional */
+  z-index: 2000;         /* acima do banner */
   display: flex;
   align-items: center;
-  padding-left: 10px;
-  pointer-events: none;  /* permite clicar no banner atrás */
+  overflow: hidden;
+  white-space: nowrap;
+  padding-left: 15px;
 }
 
 #novidadesTrack {
   display: inline-block;
   white-space: nowrap;
-  color: #fff;        /* texto branco */
   font-weight: bold;
   font-size: 16px;
-  line-height: 1.2;
+  color: #fff;
 }
-
 #novidadesTrack span {
   display: inline-block;
   margin-right: 50px;
-  color: #fff;       /* garante que seja visível */
+}
 
 
 
