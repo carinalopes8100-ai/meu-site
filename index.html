@@ -711,7 +711,8 @@ const resultados = todosItens.filter(i => {
 root.innerHTML = '';
 
   if (resultados.length > 0) {
-    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
+    const tipoFila = resultados[0].nome ? 'canal' : 'filme';
+root.appendChild(criarFila('filaPesquisa', resultados, tipoFila, `Resultados para "${termo}"`));
   } else {
     root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
   }
@@ -10063,15 +10064,21 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
   fila.className = 'fila'; 
   fila.id = idFila + '-content';
   
-  lista.forEach(item => {
-    const itemDiv = document.createElement('div'); 
-    itemDiv.className = 'filme';
+lista.forEach(item => {
+  const itemDiv = document.createElement('div'); 
+  itemDiv.className = 'filme';
 
-    const img = document.createElement('img'); 
-    img.src = item.img; 
-    img.alt = item.titulo; 
-    itemDiv.appendChild(img);
+  const img = document.createElement('img'); 
+  img.src = item.img; 
+  img.alt = item.titulo || item.nome; 
+  itemDiv.appendChild(img);
 
+  const tituloItem = document.createElement('div');
+  tituloItem.className = 'item-titulo';
+  tituloItem.textContent = item.titulo || item.nome;
+  itemDiv.appendChild(tituloItem);
+
+  if(tipo !== 'canal') {
     // ==== Barra de progresso ====
     if(progresso[item.titulo] && progresso[item.titulo] > 0){
       const progressoDiv = document.createElement('div');
@@ -10104,61 +10111,51 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
           atualizarBarra(tempVideo.duration);
         });
       }
-
-      const observer = new MutationObserver(() => {
-        const video = document.getElementById('playerVideo');
-        if(video && video.dataset.titulo === item.titulo){
-          video.addEventListener('timeupdate', () => atualizarBarra(video.duration));
-        }
-      });
-      observer.observe(document.body, {childList: true, subtree: true});
     }
 
-    // ==== Overlay com botões (play e trailer/verão) ====
+    // ==== Overlay com botões (play, trailer, minha lista) ====
     const overlay = document.createElement('div'); 
     overlay.className = 'filme-hover-overlay';
 
- const btnPlay = document.createElement('button'); 
-if (item.emBreve || item.link === "#") {
-  btnPlay.textContent = 'Em Breve';
-  btnPlay.disabled = true;
-  btnPlay.style.backgroundColor = "#555";
-  btnPlay.style.cursor = "not-allowed";
-} else {
-  btnPlay.textContent = '▶ Ver';
-  btnPlay.onclick = e => {
-    e.stopPropagation();
+    const btnPlay = document.createElement('button'); 
+    if (item.emBreve || item.link === "#") {
+      btnPlay.textContent = 'Em Breve';
+      btnPlay.disabled = true;
+      btnPlay.style.backgroundColor = "#555";
+      btnPlay.style.cursor = "not-allowed";
+    } else {
+      btnPlay.textContent = '▶ Ver';
+      btnPlay.onclick = e => {
+        e.stopPropagation();
 
+        if (item.player && item.player.length > 1) {
+          abrirPlayerModal(item);
+          return;
+        }
 
-        // Se tiver múltiplos áudios → abre o modal de áudios
-    if (item.player && item.player.length > 1) {
-      abrirPlayerModal(item);
-      return;
-    }
+        const s =
+          series.find(s => s.titulo === item.titulo) ||
+          novelas.find(n => n.titulo === item.titulo) ||
+          animes.find(a => a.titulo === item.titulo) ||
+          documentarios.find(d => d.titulo === item.titulo) ||
+          (item.temporadas && item.temporadas.length > 0 ? item : null);
 
-    // 🔍 Procura o item nas listas de séries, novelas, animes e documentários
-    const s =
-      series.find(s => s.titulo === item.titulo) ||
-      novelas.find(n => n.titulo === item.titulo) ||
-      animes.find(a => a.titulo === item.titulo) ||
-      documentarios.find(d => d.titulo === item.titulo) ||
-      (item.temporadas && item.temporadas.length > 0 ? item : null);
+        if (s && s.temporadas && s.temporadas.length > 0) {
+          abrirModalTemporadas({ ...s, temporadas: s.temporadas });
+        } else if (item.player && item.player.length > 0) {
+          abrirPlayerModal(item);
+        } else {
+          abrirVideo(item);
+        }
+      };
+    }
+    overlay.appendChild(btnPlay);
+    itemDiv.appendChild(overlay);
+  }
 
-    // 🎬 Se for série/documentário com temporadas → abre o modal de temporadas
-    if (s && s.temporadas && s.temporadas.length > 0) {
-      abrirModalTemporadas({ ...s, temporadas: s.temporadas });
-    }
-    // 🔊 Se tiver múltiplos áudios → abre o seletor de áudio
-    else if (item.player && item.player.length > 0) {
-      abrirPlayerModal(item);
-    }
-    // ▶ Caso contrário → vídeo normal
-    else {
-      abrirVideo(item);
-    }
-  };
-}
-overlay.appendChild(btnPlay);
+  fila.appendChild(itemDiv);
+});
+
 
 
     const btnDireito = document.createElement('button');
