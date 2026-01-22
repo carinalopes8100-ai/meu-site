@@ -492,31 +492,34 @@ video::cue {
 }
 
 .dia {
-  position: relative; /* necessário para o painel ficar relativo ao dia */
+  position: relative; /* referência para o painel */
   cursor: pointer;
 }
 
 .painel-jogos {
   position: absolute;
-  bottom: 100%; /* sobe acima do dia */
+  bottom: 120%; /* sobe acima do dia */
   left: 50%;
   transform: translateX(-50%);
   background-color: rgba(0,0,0,0.9);
-  color: white;
+  color: #fff;
   padding: 10px;
   border-radius: 5px;
-  display: none;          /* escondido por padrão */
   min-width: 180px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-  z-index: 1000;
-  transition: opacity 0.3s ease;
+  display: none; /* escondido por padrão */
   opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none; /* evita que o painel bloqueie hover */
 }
 
 .dia:hover .painel-jogos {
   display: block;
   opacity: 1;
+  transform: translateX(-50%) translateY(-10px); /* anima suavemente para cima */
+  pointer-events: auto;
 }
+
 
 
 
@@ -11130,7 +11133,7 @@ for (let i = 0; i < 7; i++) {
   diaElemento.dataset.dia = diaStr;
   diaElemento.textContent = dia.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric' });
 
-  // Painel flutuante
+  // Cria painel **sempre**, sem precisar de clique
   const painel = document.createElement('div');
   painel.className = 'painel-jogos';
 
@@ -11148,6 +11151,7 @@ for (let i = 0; i < 7; i++) {
   diaElemento.appendChild(painel);
   barra.appendChild(diaElemento);
 }
+
 
 
 
