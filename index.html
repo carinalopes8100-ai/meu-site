@@ -697,7 +697,8 @@ const searchInput = document.getElementById('searchInput');
 searchInput.addEventListener('input', debounce(() => {
   const termo = searchInput.value.toLowerCase().trim();
   const root = document.getElementById('root');
-  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...documentarios, ...novelas, ...filmesDc,  ...filmesMarvel,  ...realityShows, ...filmesParaTodaAFamilia];
+  const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...documentarios, ...novelas, ...filmesDc,  ...filmesMarvel,  ...realityShows, ...filmesParaTodaAFamilia, ...canaisStreaming];
+
 
   if (termo === "") {
     mostrarSecao('inicio'); 
