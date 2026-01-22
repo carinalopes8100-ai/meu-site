@@ -491,50 +491,33 @@ video::cue {
   padding-top: 56.25%; /* 16:9 - mantém proporção */
 }
 
-.barra-dias {
-  display: flex;
-  overflow-x: auto;
-  padding: 10px;
-  background: #111;
-  color: #fff;
-  gap: 10px;
-  position: relative; /* necessário para absolute dos painéis */
-}
-
 .dia {
-  min-width: 80px;
-  padding: 5px 10px;
-  background: #222;
-  border-radius: 8px;
-  text-align: center;
+  position: relative; /* necessário para o painel ficar relativo ao dia */
   cursor: pointer;
-  flex-shrink: 0;
-  position: relative; /* importante para o painel subir */
 }
 
-.dia:hover {
-  background: #444;
-}
-
-/* Painel de jogos escondido por padrão */
 .painel-jogos {
-  display: none; /* começa escondido */
   position: absolute;
   bottom: 100%; /* sobe acima do dia */
   left: 50%;
   transform: translateX(-50%);
-  background: #333;
+  background-color: rgba(0,0,0,0.9);
+  color: white;
   padding: 10px;
-  border-radius: 8px;
-  min-width: 150px;
-  z-index: 1000; /* garante que fique acima de tudo */
-  white-space: nowrap;
+  border-radius: 5px;
+  display: none;          /* escondido por padrão */
+  min-width: 180px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+  opacity: 0;
 }
 
-/* Mostra o painel quando o mouse passa no dia */
 .dia:hover .painel-jogos {
   display: block;
+  opacity: 1;
 }
+
 
 
 
@@ -659,7 +642,6 @@ video::cue {
 </div>
 
 
-<div id="diasJogos" class="barra-dias"></div>
 
 
 <div id="root"></div>
@@ -11141,18 +11123,17 @@ const hoje = new Date();
 for (let i = 0; i < 7; i++) {
   const dia = new Date();
   dia.setDate(hoje.getDate() + i);
-
-  const diaStr = dia.toISOString().split('T')[0]; // yyyy-mm-dd
+  const diaStr = dia.toISOString().split('T')[0];
 
   const diaElemento = document.createElement('div');
   diaElemento.className = 'dia';
+  diaElemento.dataset.dia = diaStr;
   diaElemento.textContent = dia.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric' });
 
-  // Cria painel de jogos
+  // Painel flutuante
   const painel = document.createElement('div');
   painel.className = 'painel-jogos';
 
-  // Filtra os jogos do dia
   const jogosDoDia = jogos.filter(j => j.dia === diaStr);
   if (jogosDoDia.length === 0) {
     painel.textContent = 'Sem jogos';
@@ -11167,6 +11148,7 @@ for (let i = 0; i < 7; i++) {
   diaElemento.appendChild(painel);
   barra.appendChild(diaElemento);
 }
+
 
 
 </script>
