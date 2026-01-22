@@ -491,17 +491,18 @@ video::cue {
 
 
 #novidadesContainer {
+  position: absolute; /* ou fixed se quiser sempre visível */
+  top: 80px; /* ajuste de acordo com a altura do header */
+  left: 0;
   width: 100%;
+  background-color: rgba(0,0,0,0.7);
   overflow: hidden;
-  background-color: #333; /* cor de fundo da faixa */
-  color: #fff;
+  white-space: nowrap;
   padding: 10px 0;
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  position: relative;
-  border-top: 1px solid #444;
-  border-bottom: 1px solid #444;
+  color: #fff;
+  z-index: 1000;
 }
+
 
 #novidadesTrack {
   display: inline-block;
