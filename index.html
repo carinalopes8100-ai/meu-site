@@ -10303,6 +10303,12 @@ else if(secao === 'animes'){
     root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
 }
 
+  else if(secao === 'canais') {
+    root.innerHTML = '';
+    root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
+}
+
+
 
 function pesquisar() {
   const termo = document.getElementById('searchInput').value.toLowerCase().trim();
