@@ -555,7 +555,6 @@ video::cue {
 <div onclick="mostrarSecao('terror')">Terror</div>
 <div onclick="mostrarSecao('desenhos')">Animação</div>
 <div onclick="mostrarSecao('lista')">A Minha Lista</div>
-<div onclick="mostrarSecao('canais')">Canais Streaming</div> <!-- novo item -->  
 </nav>
 <div id="searchContainer">
   <input type="text" id="searchInput" placeholder="Pesquisar...">
@@ -9971,10 +9970,6 @@ const filmesTerror = [
   {titulo:"Until Dawn",img:"https://m.media-amazon.com/images/S/pv-target-images/1baa3a677871ae4b874f25539ea0e4b5183b0bbd10f41501af55fb9e05bbc375.jpg",link:"#",trailer:"https://www.youtube.com/embed/BPhIXLMEBLE?autoplay=1"}
 ];
 
-
-
-
-
 // ===== Funções de interface =====
 function criarFila(idFila, lista, tipo, tituloFila=null){
   const container = document.createElement('div'); 
@@ -10286,11 +10281,10 @@ else if(secao === 'documentarios'){
         root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
     }
 
-else if(secao === 'animes'){
-    root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
+    else if(secao === 'animes'){
+        root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
+    }
 }
-
-
 
 
 function pesquisar() {
