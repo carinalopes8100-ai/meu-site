@@ -509,31 +509,32 @@ video::cue {
   text-align: center;
   cursor: pointer;
   flex-shrink: 0;
-  position: relative; /* necessário para o painel */
+  position: relative; /* importante para o painel */
 }
 
 .dia:hover {
   background: #444;
 }
 
-/* Painel que aparece no hover */
-.dia .painel-jogos {
-  display: none;
+/* Painel de jogos escondido por padrão */
+.painel-jogos {
+  display: none; /* começa escondido */
   position: absolute;
   bottom: 100%; /* sobe acima do dia */
-  left: 50%;
-  transform: translateX(-50%);
-  background: #222;
+  left: 0;
+  background: #333;
   padding: 10px;
   border-radius: 8px;
   min-width: 150px;
-  text-align: left;
-  z-index: 100;
+  z-index: 10;
+  white-space: nowrap;
 }
 
+/* Mostra o painel quando o mouse passa no dia */
 .dia:hover .painel-jogos {
-  display: block; /* mostra o painel ao passar o mouse */
+  display: block;
 }
+
 
 
 
