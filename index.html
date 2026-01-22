@@ -10268,6 +10268,14 @@ function atualizarBannerBtn() {
 
   
 function mostrarSecao(secao) {
+      // Esconder banner se não for página inicial
+    const bannerImage = document.getElementById('bannerImage');
+    const bannerVideo = document.getElementById('bannerVideo');
+
+    if (bannerImage) bannerImage.style.display = (secao === 'inicio') ? 'block' : 'none';
+    if (bannerVideo) bannerVideo.style.display = (secao === 'inicio') ? 'block' : 'none';
+
+  
     secaoAtual = secao;
     const root = document.getElementById('root');
     root.innerHTML = '';
