@@ -742,7 +742,7 @@ video::cue {
 
 </div>
 
-<div id="listaJogos"></div>
+
 
 
   
@@ -10509,6 +10509,31 @@ function mostrarJogos(data) {
   });
 }
 
+
+  function preencherDiasJogos() {
+  const barra = document.getElementById('barraDias');
+  barra.innerHTML = '';
+
+  const hoje = new Date();
+
+  for (let i = 0; i < 14; i++) {
+    const dia = new Date();
+    dia.setDate(hoje.getDate() + i);
+
+    const d = dia.toISOString().split('T')[0];
+
+    const div = document.createElement('div');
+    div.className = 'dia';
+    div.textContent = dia.getDate() + ' ' +
+      dia.toLocaleDateString('pt-PT', { weekday: 'short' });
+
+    div.onmouseenter = () => mostrarJogos(d);
+
+    barra.appendChild(div);
+  }
+}
+
+
   
   
 
@@ -10645,28 +10670,49 @@ else if (secao === 'canais') {
   ocultarBanner();
   ocultarPumpkins();
 
-  // Calendário
+  // 🔹 CALENDÁRIO
   const calendario = document.createElement('div');
   calendario.id = 'calendarioJogos';
 
-  const barra = document.createElement('div');
-  barra.id = 'barraDias';
-  barra.className = 'barra-dias';
+  calendario.innerHTML = `
+    <div class="calendario-topo">
+      <h2>📅 Calendário</h2>
+    </div>
 
-  calendario.appendChild(barra);
+    <div id="barraDias" class="barra-dias"></div>
+
+    <div class="filtros">
+      <button>Hoje</button>
+      <button>Amanhã</button>
+      <button>Esta Semana</button>
+      <button class="ativo">Tudo</button>
+    </div>
+
+    <div class="filtros-secundarios">
+      <input type="text" placeholder="🔍 Procurar equipa/canal...">
+      <select>
+        <option>Todas as competições</option>
+        <option>UEFA Liga Europa</option>
+        <option>Champions</option>
+        <option>Primeira Liga</option>
+      </select>
+    </div>
+  `;
+
   root.appendChild(calendario);
 
-  // Lista de jogos (NÃO limpa o root)
-  const lista = document.createElement('div');
-  lista.id = 'listaJogos';
-  root.appendChild(lista);
+  // 🔹 LISTA DE JOGOS
+  const listaJogos = document.createElement('div');
+  listaJogos.id = 'listaJogos';
+  root.appendChild(listaJogos);
 
-  // 🔥 FILA DE CANAIS (AGORA NÃO DESAPARECE)
+  // 🔹 FILA DE CANAIS
   root.appendChild(
     criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming')
   );
 
-  preencherDiasJogos(); // só mexe em barraDias e listaJogos
+  // 🔹 PREENCHE OS DIAS
+  preencherDiasJogos();
 }
 
  // <-- fecha o else if
