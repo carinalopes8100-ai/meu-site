@@ -294,6 +294,38 @@ nav div.ativo {
 
   
 .banner { position: relative; width:100%; height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding:40px; overflow:hidden; }
+
+/* Novidades sobre o banner, sem fundo */
+#novidadesContainer {
+  position: fixed;   /* sobre toda a tela */
+  top: 20px;         /* controla a altura livremente */
+  left: 0;
+  width: 100%;
+  pointer-events: none; /* permite clicar no banner */
+  z-index: 9999;     /* acima do vídeo */
+  white-space: nowrap;
+}
+
+#novidadesTrack span {
+  display: inline-block;
+  margin-right: 50px;
+  font-weight: bold;
+  font-size: 18px;
+  color: #fff;
+}
+
+/* Animação */
+#novidadesTrack {
+  display: inline-block;
+  animation: scrollLeft 20s linear infinite;
+}
+
+@keyframes scrollLeft {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+  
 .banner::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 60%); z-index:1; }
 .banner-content { position:relative; top: -200px; z-index:2; max-width:600px; display:flex; flex-direction:column; gap:10px; }
 .banner h1 { font-size:48px; margin-bottom:10px; }
@@ -602,14 +634,7 @@ video::cue {
 
   
 
-<div id="novidadesContainer">
-  <div id="novidadesTrack">
-    <span>🎬 Novo filme: “Invasão Final” disponível!</span>
-    <span>🌟 Série “Mistérios de Outono” estreia hoje!</span>
-    <span>🍿 Documentário “O Mundo Secreto” agora na plataforma!</span>
-    <span>🎥 Anime “Estrelas do Céu” – nova temporada!</span>
-  </div>
-</div>
+
 
 
 <div class="banner">
@@ -621,6 +646,16 @@ video::cue {
   <video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay muted loop>
     <source src="https://ia800807.us.archive.org/35/items/stranger-things-5-aac-hq/Stranger_Things_5_AAC_HQ.mp4" type="video/mp4">
   </video>
+
+
+  <div id="novidadesContainer">
+  <div id="novidadesTrack">
+    <span>🎬 Novo filme: “Invasão Final” disponível!</span>
+    <span>🌟 Série “Mistérios de Outono” estreia hoje!</span>
+    <span>🍿 Documentário “O Mundo Secreto” agora na plataforma!</span>
+    <span>🎥 Anime “Estrelas do Céu” – nova temporada!</span>
+  </div>
+</div>
 
 
 
