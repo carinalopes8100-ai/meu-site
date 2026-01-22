@@ -491,18 +491,14 @@ video::cue {
 
 
 #novidadesContainer {
-  position: fixed;       /* fixa em relação à tela inteira */
-  top: 10px;             /* ajusta a altura que quiser */
+  position: fixed;   /* fixa na tela */
+  top: 80px;         /* ajusta a distância do topo, abaixo do menu */
   left: 0;
   width: 100%;
   overflow: hidden;
   white-space: nowrap;
-  color: #fff;
-  font-weight: bold;
-  font-size: 18px;
-  text-shadow: 1px 1px 3px #000;
-  z-index: 9999;         /* garante que fique acima de tudo */
-  pointer-events: none;  /* para não atrapalhar cliques */
+  z-index: 1000;
+  pointer-events: none; /* permite clicar no banner por trás */
 }
 
 #novidadesTrack span {
