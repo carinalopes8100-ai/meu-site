@@ -489,8 +489,8 @@ video::cue {
 
 <style>
 #novidadesBarra {
-  position: fixed;   /* fixa no topo da tela */
-  top: 0;            /* topo da página */
+  position: fixed;      /* fixa na tela */
+  top: 60px;            /* altura do header */
   left: 0;
   width: 100%;
   background-color: rgba(0,0,0,0.85); /* semi-transparente */
@@ -498,12 +498,12 @@ video::cue {
   text-align: center;
   padding: 8px 0;
   font-size: 16px;
-  z-index: 2000;     /* acima do banner e do botão mute */
+  z-index: 2000;       /* acima do banner e vídeo */
 }
 
 /* Faz os spans rolarem horizontalmente */
 .novidades-track {
-  display: inline-block; /* ou flex se quiser efeito slide */
+  display: inline-block;
   white-space: nowrap;
 }
 .novidades-track span {
