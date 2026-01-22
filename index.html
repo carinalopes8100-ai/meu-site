@@ -10376,16 +10376,21 @@ function pesquisar() {
   }
 
 const resultados = todosItens.filter(i => {
-  const nomeItem = i.titulo || i.nome; // usa "titulo" se existir, senão "nome"
+  const nomeItem = i.titulo || i.nome;
   return nomeItem && nomeItem.toLowerCase().includes(termo);
 });
-root.innerHTML = '';
 
-  if (resultados.length > 0) {
-    root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
-  } else {
-    root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
-  }
+// criar a fila com o tipo correto
+root.innerHTML = '';
+if (resultados.length > 0) {
+  root.appendChild(criarFila(
+    'filaPesquisa',
+    resultados,
+    resultados[0].nome ? 'canal' : 'filme',  // se for canal, tipo='canal', senão 'filme'
+    `Resultados para "${termo}"`
+  ));
+} else {
+  root.innerHTML = `<div style="margin:50px; font-size:18px;">Nenhum resultado encontrado para "${termo}"</div>`;
 }
 
 function abrirModalTemporadas(serie) {
