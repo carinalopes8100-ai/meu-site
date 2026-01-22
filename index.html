@@ -436,33 +436,6 @@ nav div.ativo {
 }
 
 
-#novidadesBarra {
-  width: 100%;
-  overflow: hidden;
-  background-color: #111;
-  color: #fff;
-  padding: 8px 0;
-  font-weight: bold;
-  font-size: 16px;
-}
-
-.novidades-track {
-  display: inline-block;
-  white-space: nowrap;
-  animation: slide-left 15s linear infinite;
-}
-
-.novidades-track span {
-  margin-right: 50px;
-}
-
-@keyframes slide-left {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-
-
-
 
   
   
@@ -639,12 +612,7 @@ video::cue {
 </div>
 
 
-<!-- Barra de novidades -->
-<div id="novidadesBarra">
-  <div class="novidades-track">
-    <!-- os spans serão preenchidos via JS ou podem estar fixos aqui -->
-  </div>
-</div>
+
 
 
 
@@ -10972,19 +10940,6 @@ if ("serviceWorker" in navigator) {
 }
 
 
-  const novidades = [
-    '🎬 Stranger Things 5 chega dia 12/02!',
-    '🆕 Nova temporada de Terror!',
-    '✨ Filmes da Marvel atualizados!'
-  ];
-  
-  const track = document.querySelector('.novidades-track');
-  novidades.forEach(n => {
-    const span = document.createElement('span');
-    span.textContent = n;
-    track.appendChild(span);
-  });
-});
 
 </script>
 </body>
