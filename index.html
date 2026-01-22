@@ -317,13 +317,21 @@ nav div.ativo {
 
 /* Animação */
 #novidadesTrack {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  gap: 50px;
+
   animation: scrollLeft 20s linear infinite;
+
+  transition: transform 0.35s ease;
+  transform-origin: center;
 }
 
 #novidadesTrack:hover {
   transform: scale(1.15);
+  animation-play-state: paused;
 }
+
  
 
 
