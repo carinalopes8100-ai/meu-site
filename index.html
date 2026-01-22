@@ -340,6 +340,17 @@ nav div.ativo {
   left: -20px;         /* move 20px para a esquerda */
 }
 
+  .novidade-sporttv {
+  width: 175px;       /* tamanho que quiser */
+  height: auto;       /* mantém proporção */
+  display: inline-block;
+  margin-right: 50px; /* espaço entre imagens */
+  object-fit: contain;
+
+  position: relative; /* permite mover */
+  right: -20px;         /* move 30px para a direita */
+}
+
 
   
 @keyframes scrollLeft {
@@ -672,7 +683,7 @@ video::cue {
 
   <div id="novidadesContainer">
   <div id="novidadesTrack">
-    <img src="https://megatuga.io/imagens/icones/sporttv_homepage2.png" alt="Sport TV">
+    <img src="https://megatuga.io/imagens/icones/sporttv_homepage2.png" alt="Sport TV" class="novidade-sporttv">
     <img src="https://megatuga.io/imagens/icones/dazn_homepage.jpg" alt="Dazn">
     <img src="https://megatuga.io/imagens/icones/btv_homepage.png" alt="Benfica TV" class="novidade-img-pequena">
   </div>
