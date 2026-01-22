@@ -491,18 +491,26 @@ video::cue {
 
 
 #novidadesContainer {
-  position: fixed;   /* fixa na tela */
-  top: 80px;         /* ajusta a distância do topo, abaixo do menu */
+  position: fixed;        /* fixa na tela */
+  top: 70px;              /* distância do topo, ajuste para seu menu */
   left: 0;
   width: 100%;
   overflow: hidden;
   white-space: nowrap;
-  z-index: 1000;
-  pointer-events: none; /* permite clicar no banner por trás */
+  z-index: 9999;          /* acima de tudo */
+  pointer-events: none;   /* permite clicar no banner atrás */
+  background: rgba(0,0,0,0.3); /* opcional: fundo semi-transparente */
+  padding: 5px 0;
 }
-
+#novidadesTrack {
+  display: inline-block;
+  white-space: nowrap;
+}
 #novidadesTrack span {
-  margin-right: 50px;
+  display: inline-block;
+  margin-right: 50px;    /* espaço entre as mensagens */
+  font-weight: bold;
+  color: #fff;
 }
 
 
@@ -10977,23 +10985,22 @@ if ("serviceWorker" in navigator) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  const track = document.getElementById('novidadesTrack');
-  let x = window.innerWidth;
+const track = document.getElementById('novidadesTrack');
+let x = window.innerWidth;
 
-  function animarNovidades() {
-    x -= 1; // velocidade do scroll (1px por frame)
-    if (x < -track.offsetWidth) x = window.innerWidth; // reinicia ao sair da tela
-    track.style.transform = `translateX(${x}px)`;
-    requestAnimationFrame(animarNovidades);
-  }
+function animarNovidades() {
+  x -= 1; // velocidade
+  if (x < -track.offsetWidth) x = window.innerWidth;
+  track.style.transform = `translateX(${x}px)`;
+  requestAnimationFrame(animarNovidades);
+}
 
-  animarNovidades();
+animarNovidades();
 
-  // Ajusta o reinício do scroll ao redimensionar a tela
-  window.addEventListener('resize', () => {
-    if (x > window.innerWidth) x = window.innerWidth;
-  });
+window.addEventListener('resize', () => {
+  x = window.innerWidth; // reinicia se redimensionar
 });
+
   
 
 
