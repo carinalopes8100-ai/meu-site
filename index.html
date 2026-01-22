@@ -491,30 +491,25 @@ video::cue {
 
 
 #novidadesContainer {
-  position: absolute; /* ou fixed se quiser sempre visível */
-  top: 80px; /* ajuste de acordo com a altura do header */
+  position: absolute;  /* fica sobre o banner */
+  top: 20px;           /* distância do topo do banner */
   left: 0;
   width: 100%;
-  background-color: rgba(0,0,0,0.7);
   overflow: hidden;
   white-space: nowrap;
-  padding: 10px 0;
   color: #fff;
-  z-index: 1000;
-}
-
-
-#novidadesTrack {
-  display: inline-block;
-  white-space: nowrap;
-  position: absolute;
-  will-change: transform;
+  font-weight: bold;
+  font-size: 18px;
+  text-shadow: 1px 1px 3px #000;  /* para destacar sobre o vídeo */
+  z-index: 10;          /* acima do vídeo */
+  pointer-events: none; /* para não bloquear cliques no banner */
 }
 
 #novidadesTrack span {
   display: inline-block;
-  margin-right: 50px; /* espaço entre mensagens */
+  margin-right: 50px;
 }
+
 
 
   
@@ -599,15 +594,7 @@ video::cue {
 </header>
 
   
-<!-- NOVA BARRA DE NOVIDADES AQUI -->
-<div id="novidadesContainer">
-  <div id="novidadesTrack">
-    <span>🎬 Novo filme: “Invasão Final” disponível!</span>
-    <span>🌟 Série “Mistérios de Outono” estreia hoje!</span>
-    <span>🍿 Documentário “O Mundo Secreto” agora na plataforma!</span>
-    <span>🎥 Anime “Estrelas do Céu” – nova temporada!</span>
-  </div>
-</div>
+
 
 
 
@@ -619,6 +606,16 @@ video::cue {
   <video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay muted loop>
     <source src="https://ia800807.us.archive.org/35/items/stranger-things-5-aac-hq/Stranger_Things_5_AAC_HQ.mp4" type="video/mp4">
   </video>
+
+  <!-- NOVA BARRA DE NOVIDADES AQUI -->
+<div id="novidadesContainer">
+  <div id="novidadesTrack">
+    <span>🎬 Novo filme: “Invasão Final” disponível!</span>
+    <span>🌟 Série “Mistérios de Outono” estreia hoje!</span>
+    <span>🍿 Documentário “O Mundo Secreto” agora na plataforma!</span>
+    <span>🎥 Anime “Estrelas do Céu” – nova temporada!</span>
+  </div>
+</div>
 
 
 <button id="muteBtn" class="mute-btn">🔇</button>
