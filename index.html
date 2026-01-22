@@ -11054,22 +11054,26 @@ if ("serviceWorker" in navigator) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  const track = document.getElementById('novidadesTrack');
-  let x = window.innerWidth;
+const track = document.getElementById('novidadesTrack');
+let x = window.innerWidth; // começa fora da tela à direita
+const speed = 1;           // velocidade em px/frame
 
-  function animarNovidades() {
-    x -= 1; // velocidade
-    if (x < -track.offsetWidth) x = window.innerWidth;
-    track.style.transform = `translateX(${x}px)`;
-    requestAnimationFrame(animarNovidades);
+function animarTrack() {
+  x -= speed; // move para a esquerda
+  if (x < -track.offsetWidth) {
+    x = window.innerWidth; // reinicia à direita
   }
+  track.style.transform = `translateX(${x}px)`;
+  requestAnimationFrame(animarTrack);
+}
 
-  animarNovidades();
+animarTrack();
 
-  window.addEventListener('resize', () => {
-    x = window.innerWidth;
-  });
+window.addEventListener('resize', () => {
+  // reinicia posição se redimensionar
+  x = window.innerWidth;
 });
+
 
   
 
