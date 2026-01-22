@@ -11056,15 +11056,15 @@ if ("serviceWorker" in navigator) {
 document.addEventListener('DOMContentLoaded', () => {
   const track = document.getElementById('novidadesTrack');
 
-  let x = track.parentElement.offsetWidth; // começa na ponta direita da tela
+  // Começa na ponta direita da tela
+  let x = track.parentElement.offsetWidth; 
   const speed = 1; // pixels por frame
 
   function animar() {
     x -= speed; // move para a esquerda
-
     track.style.transform = `translateX(${x}px)`;
 
-    // quando toda a track sair pela esquerda, para (ou remove)
+    // Continua a animação só enquanto ainda estiver visível
     if (x + track.offsetWidth > 0) {
       requestAnimationFrame(animar);
     }
@@ -11072,6 +11072,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   animar();
 });
+
 
 
   
