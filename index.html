@@ -491,6 +491,32 @@ video::cue {
   padding-top: 56.25%; /* 16:9 - mantém proporção */
 }
 
+.barra-dias {
+  display: flex;
+  overflow-x: auto; /* permite scroll horizontal */
+  padding: 10px;
+  background: #111; /* ou a cor que quiser */
+  color: #fff;
+  gap: 10px;
+}
+
+.dia {
+  min-width: 80px;
+  padding: 5px 10px;
+  background: #222;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  flex-shrink: 0; /* garante que não encolha */
+}
+
+.dia:hover {
+  background: #444;
+}
+
+
+
+  
 .filemoon-wrapper iframe {
   position: absolute;
   top: 0;
@@ -609,7 +635,10 @@ video::cue {
 
 
 
-
+<!-- Barra de dias para os jogos -->
+<div id="diasJogos" class="barra-dias">
+  <!-- JS vai preencher os dias aqui -->
+</div>
 
 
 <div id="root"></div>
@@ -10263,6 +10292,49 @@ function atualizarBannerBtn() {
     bannerAddBtn.title = 'Adicionar à Minha Lista';
   }
 }
+  
+
+
+  function criarBarraDias() {
+  const barra = document.getElementById('diasJogos');
+  barra.innerHTML = ''; // limpa
+
+  const hoje = new Date();
+
+  for (let i = 0; i < 7; i++) { // 7 dias, hoje + 6
+    const dia = new Date(hoje);
+    dia.setDate(hoje.getDate() + i);
+
+    const diaDiv = document.createElement('div');
+    diaDiv.className = 'dia';
+    diaDiv.dataset.data = dia.toISOString().split('T')[0]; // yyyy-mm-dd
+    diaDiv.innerHTML = `${dia.getDate()}/${dia.getMonth()+1} <br> ${dia.toLocaleDateString('pt-PT', { weekday: 'short' })}`;
+
+    diaDiv.onclick = () => {
+      mostrarJogosDoDia(diaDiv.dataset.data); // função que você cria para mostrar os jogos
+    };
+
+    barra.appendChild(diaDiv);
+  }
+}
+
+
+
+  function mostrarJogosDoDia(data) {
+  const root = document.getElementById('root');
+  root.innerHTML = '';
+
+  const jogosDoDia = jogos.filter(j => j.data === data); // array `jogos` precisa ter objetos com {nome, canal, data}
+
+  if (jogosDoDia.length === 0) {
+    root.innerHTML = '<div style="margin:20px; color:white;">Não há jogos neste dia.</div>';
+    return;
+  }
+
+  root.appendChild(criarFila('filaJogos', jogosDoDia, 'canal', 'Jogos do dia'));
+}
+
+
 
 
 
@@ -10405,6 +10477,14 @@ else if (secao === 'canais') {
   ocultarBanner();      // já tens isto
   ocultarPumpkins();   // ✅ DESLIGA AS ABÓBORAS
 
+  // Adiciona a barra de dias antes da fila de canais
+  const barraDias = document.createElement('div');
+  barraDias.id = 'diasJogos';
+  barraDias.className = 'barra-dias';
+  barraDias.innerHTML = '<!-- JS vai preencher os dias aqui -->';
+  root.appendChild(barraDias);
+
+  // Fila de canais streaming
   root.appendChild(
     criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming')
   );
