@@ -10988,7 +10988,11 @@ if ("serviceWorker" in navigator) {
 
   const track = document.querySelector('.novidades-track');
   if(track) {
-    track.innerHTML = novidades.map(n => `<span>${n}</span>`).join('');
+    novidades.forEach(n => {
+      const span = document.createElement('span');
+      span.textContent = n;
+      track.appendChild(span);
+    });
   }
 });
 
