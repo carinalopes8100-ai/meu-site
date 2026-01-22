@@ -11056,32 +11056,31 @@ if ("serviceWorker" in navigator) {
 document.addEventListener('DOMContentLoaded', () => {
   const track = document.getElementById('novidadesTrack');
 
-  // DUPLICAR conteúdo para loop contínuo
+  // DUPLICA o conteúdo para criar loop contínuo
   track.innerHTML += track.innerHTML;
 
-  const speed = 1; // velocidade em px/frame
-  const trackWidth = track.offsetWidth / 2; // largura do conteúdo original
-  let x = window.innerWidth; // começa na ponta direita da tela
+  let x = 0;          // posição inicial
+  const speed = 1;    // pixels por frame
+  const trackWidth = track.offsetWidth / 2; // metade do conteúdo original
 
-  function animarTrack() {
-    x -= speed;
+  function animar() {
+    x -= speed; // move para a esquerda
 
-    // quando o primeiro conjunto de imagens saiu totalmente, reseta
-    if (x <= -trackWidth) {
-      x = 0;
-    }
+    // quando metade do track sair, reseta x para 0
+    if (x <= -trackWidth) x = 0;
 
     track.style.transform = `translateX(${x}px)`;
-    requestAnimationFrame(animarTrack);
+    requestAnimationFrame(animar);
   }
 
-  animarTrack();
+  animar();
 
-  // ajusta se a tela for redimensionada
+  // opcional: reinicia posição na ponta direita se redimensionar
   window.addEventListener('resize', () => {
-    x = window.innerWidth; // reinicia na ponta direita
+    x = 0;
   });
 });
+
 
   
 
