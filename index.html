@@ -10478,36 +10478,7 @@ function ocultarPumpkins() {
 }
 
 
-function mostrarJogos(data) {
-  const lista = document.getElementById('listaJogos');
-  lista.innerHTML = '';
 
-  const jogosDia = jogos.filter(j => j.data === data);
-
-  jogosDia.forEach(j => {
-    const card = document.createElement('div');
-    card.className = 'card-jogo';
-
-    card.innerHTML = `
-      <div class="hora">${j.hora}</div>
-
-      <div>
-        <div class="equipas">
-          <img src="${j.logoCasa}">
-          ${j.casa}
-          <span>vs</span>
-          ${j.fora}
-          <img src="${j.logoFora}">
-        </div>
-        <div class="info">${j.competicao}</div>
-      </div>
-
-      <div class="info">${j.canal}</div>
-    `;
-
-    lista.appendChild(card);
-  });
-}
 
 
   function preencherDiasJogos() {
