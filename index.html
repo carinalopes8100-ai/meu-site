@@ -10264,6 +10264,18 @@ function atualizarBannerBtn() {
   }
 }
 
+
+
+  function mostrarPumpkins() {
+  const p = document.getElementById('pumpkinContainer');
+  if (p) p.style.display = 'block';
+}
+
+function ocultarPumpkins() {
+  const p = document.getElementById('pumpkinContainer');
+  if (p) p.style.display = 'none';
+}
+
   
 
 function ocultarBanner() {
@@ -10300,7 +10312,11 @@ function mostrarSecao(secao) {
     secaoAtual = secao;
     const root = document.getElementById('root');
     root.innerHTML = '';
+  
 
+    mostrarPumpkins();
+
+  
     // Reset do espaço do root
     root.style.marginTop = '';
 
@@ -10388,11 +10404,13 @@ function mostrarSecao(secao) {
     else if(secao === 'animes'){
         root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
     } 
-    else if(secao === 'canais') {
-        // Banner escondido
-        ocultarBanner();
-        root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
-    }
+else if (secao === 'canais') {
+  ocultarBanner();      // já tens isto
+  ocultarPumpkins();   // ✅ DESLIGA AS ABÓBORAS
+
+  root.appendChild(
+    criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming')
+  );
 }
 
 
