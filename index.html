@@ -493,11 +493,12 @@ video::cue {
 
 .barra-dias {
   display: flex;
-  overflow-x: auto; /* permite scroll horizontal */
+  overflow-x: auto;
   padding: 10px;
-  background: #111; /* ou a cor que quiser */
+  background: #111;
   color: #fff;
   gap: 10px;
+  position: relative;
 }
 
 .dia {
@@ -507,12 +508,33 @@ video::cue {
   border-radius: 8px;
   text-align: center;
   cursor: pointer;
-  flex-shrink: 0; /* garante que não encolha */
+  flex-shrink: 0;
+  position: relative; /* necessário para o painel */
 }
 
 .dia:hover {
   background: #444;
 }
+
+/* Painel que aparece no hover */
+.dia .painel-jogos {
+  display: none;
+  position: absolute;
+  bottom: 100%; /* sobe acima do dia */
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  padding: 10px;
+  border-radius: 8px;
+  min-width: 150px;
+  text-align: left;
+  z-index: 100;
+}
+
+.dia:hover .painel-jogos {
+  display: block; /* mostra o painel ao passar o mouse */
+}
+
 
 
 
@@ -11101,6 +11123,45 @@ if (logo) {
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/service-worker.js");
+}
+
+
+  const barra = document.getElementById('diasJogos');
+const jogos = [
+  { dia: '2026-01-22', jogo: 'Time A x Time B' },
+  { dia: '2026-01-23', jogo: 'Time C x Time D' },
+  { dia: '2026-01-24', jogo: 'Time E x Time F' },
+];
+
+const hoje = new Date();
+
+for (let i = 0; i < 7; i++) {
+  const dia = new Date();
+  dia.setDate(hoje.getDate() + i);
+
+  const diaStr = dia.toISOString().split('T')[0];
+
+  const diaElemento = document.createElement('div');
+  diaElemento.className = 'dia';
+  diaElemento.textContent = dia.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric' });
+
+  // Painel de jogos
+  const painel = document.createElement('div');
+  painel.className = 'painel-jogos';
+
+  const jogosDoDia = jogos.filter(j => j.dia === diaStr);
+  if (jogosDoDia.length === 0) {
+    painel.textContent = 'Sem jogos';
+  } else {
+    jogosDoDia.forEach(j => {
+      const p = document.createElement('div');
+      p.textContent = j.jogo;
+      painel.appendChild(p);
+    });
+  }
+
+  diaElemento.appendChild(painel);
+  barra.appendChild(diaElemento);
 }
 
 </script>
