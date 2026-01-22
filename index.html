@@ -704,8 +704,11 @@ searchInput.addEventListener('input', debounce(() => {
     return;
   }
 
-  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
-  root.innerHTML = '';
+const resultados = todosItens.filter(i => {
+  const nomeItem = i.titulo || i.nome; // usa "titulo" se existir, senão "nome"
+  return nomeItem && nomeItem.toLowerCase().includes(termo);
+});
+root.innerHTML = '';
 
   if (resultados.length > 0) {
     root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
