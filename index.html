@@ -11056,10 +11056,10 @@ if ("serviceWorker" in navigator) {
 document.addEventListener('DOMContentLoaded', () => {
   const track = document.getElementById('novidadesTrack');
 
-  // DUPLICAR conteúdo para o loop contínuo
+  // DUPLICAR conteúdo para loop contínuo
   track.innerHTML += track.innerHTML;
 
-  let x = 0;
+  let x = window.innerWidth; // começa fora da tela à direita
   const speed = 1; // pixels por frame
 
   function animarTrack() {
@@ -11075,6 +11075,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   animarTrack();
+
+  // ajusta o tamanho da tela se redimensionar
+  window.addEventListener('resize', () => {
+    x = window.innerWidth;
+  });
 });
   
 
