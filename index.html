@@ -489,29 +489,26 @@ video::cue {
 
 <style>
 #novidadesBarra {
-  position: absolute;      /* fica sobre o banner */
-  top: 50%;                /* centraliza verticalmente */
-  left: 50%;               /* centraliza horizontalmente */
-  transform: translate(-50%, -50%); /* ajusta o centro real */
-  background-color: rgba(0,0,0,0.5); /* semi-transparente */
+  position: absolute;
+  top: 50%;               /* verticalmente no meio do banner */
+  left: 50%;              /* centraliza horizontalmente */
+  transform: translate(-50%, -50%);
   color: white;
+  font-size: 20px;
+  z-index: 10;            /* acima da imagem e do vídeo */
   text-align: center;
-  padding: 10px 20px;
-  font-size: 16px;
-  z-index: 10;             /* acima do banner */
-  border-radius: 8px;      /* opcional, fica mais bonito */
+  pointer-events: none;   /* não bloqueia cliques */
 }
 
-/* Estilo do texto rolando, se quiser */
 .novidades-track {
   display: inline-block;
   white-space: nowrap;
 }
+
 .novidades-track span {
   margin: 0 15px;
   display: inline-block;
 }
-
 
 /* Animação */
 @keyframes slide-left {
