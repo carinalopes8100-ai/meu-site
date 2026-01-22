@@ -10282,30 +10282,27 @@ function ocultarBanner() {
   const banner = document.querySelector('.banner');
   if (!banner) return;
 
-  // Oculta elementos internos
-  const elementos = banner.querySelectorAll('*');
-  elementos.forEach(el => {
-    el.style.display = 'none';
-  });
+  banner.style.display = 'none'; // esconde o banner
 
-  // Opcional: deixa o banner container visível só para não quebrar layout
-  banner.style.height = '0';
-  banner.style.overflow = 'hidden';
+  // cria ou mantém um placeholder para manter a altura
+  let placeholder = document.getElementById('bannerPlaceholder');
+  if (!placeholder) {
+    placeholder = document.createElement('div');
+    placeholder.id = 'bannerPlaceholder';
+    document.body.insertBefore(placeholder, document.getElementById('root'));
+  }
+  placeholder.style.height = '400px'; // mesma altura do banner
 }
 
 function mostrarBanner() {
   const banner = document.querySelector('.banner');
   if (!banner) return;
 
-  const elementos = banner.querySelectorAll('*');
-  elementos.forEach(el => {
-    el.style.display = '';
-  });
-
-  banner.style.height = '';
-  banner.style.overflow = '';
+  banner.style.display = '';
+  
+  const placeholder = document.getElementById('bannerPlaceholder');
+  if (placeholder) placeholder.style.height = '0';
 }
-
 
   
 function mostrarSecao(secao) {
