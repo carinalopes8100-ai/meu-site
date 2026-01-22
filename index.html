@@ -10119,11 +10119,10 @@ if (item.emBreve || item.link === "#") {
 btnPlay.onclick = e => {
   e.stopPropagation();
 
-  if(item.tipo === 'canal') {
-    // Canais: abre o link direto em nova aba
-    window.open(item.link, '_blank');
-    return;
-  }
+if (item.player && item.player.length > 1) {
+  abrirPlayerModal(item);
+  return;
+}
 
 
         // Se tiver múltiplos áudios → abre o modal de áudios
