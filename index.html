@@ -10357,7 +10357,7 @@ else if(secao === 'canais') {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
-    root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
+    root.appendChild(criarFila('filaCanais', shuffleArray(canaisStreaming), 'canal', 'Canais Streaming'));
 }
 }
 
