@@ -11057,15 +11057,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const track = document.getElementById('novidadesTrack');
   const container = document.getElementById('novidadesContainer');
 
-  // Começa fora da tela, à direita
-  let x = container.offsetWidth;
-  const speed = 1; // velocidade em px/frame
+  // começa totalmente à direita, fora da tela
+  let x = container.offsetWidth;  
+  const speed = 1; // pixels por frame
 
   function animar() {
     x -= speed; // move para a esquerda
     track.style.transform = `translateX(${x}px)`;
 
-    // Quando toda a track sair da tela à esquerda
+    // quando a track inteira sair da tela à esquerda
     if (x + track.offsetWidth < 0) {
       x = container.offsetWidth; // volta para a direita
     }
