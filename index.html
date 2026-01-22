@@ -307,6 +307,17 @@ nav div.ativo {
   white-space: nowrap;
 }
 
+
+  #novidadesScale {
+  display: inline-block;
+  transition: transform 0.35s ease;
+  transform-origin: center;
+}
+
+  #novidadesContainer:hover #novidadesScale {
+  transform: scale(1.15);
+}
+
 #novidadesTrack span {
   display: inline-block;
   margin-right: 50px;
@@ -691,6 +702,7 @@ video::cue {
 
 
   <div id="novidadesContainer">
+  <div id="novidadesScale">  
   <div id="novidadesTrack">
     <a href="#" onclick="mostrarSecao('canais')">
     <img src="https://megatuga.io/imagens/icones/sporttv_homepage2.png" alt="Sport TV" class="novidade-sporttv">
