@@ -498,7 +498,7 @@ video::cue {
   background: #111;
   color: #fff;
   gap: 10px;
-  position: relative;
+  position: relative; /* necessário para absolute dos painéis */
 }
 
 .dia {
@@ -509,7 +509,7 @@ video::cue {
   text-align: center;
   cursor: pointer;
   flex-shrink: 0;
-  position: relative; /* importante para o painel */
+  position: relative; /* importante para o painel subir */
 }
 
 .dia:hover {
@@ -521,12 +521,13 @@ video::cue {
   display: none; /* começa escondido */
   position: absolute;
   bottom: 100%; /* sobe acima do dia */
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   background: #333;
   padding: 10px;
   border-radius: 8px;
   min-width: 150px;
-  z-index: 10;
+  z-index: 1000; /* garante que fique acima de tudo */
   white-space: nowrap;
 }
 
@@ -534,6 +535,7 @@ video::cue {
 .dia:hover .painel-jogos {
   display: block;
 }
+
 
 
 
@@ -11127,7 +11129,7 @@ if ("serviceWorker" in navigator) {
 }
 
 
-  const barra = document.getElementById('diasJogos');
+const barra = document.getElementById('diasJogos');
 const jogos = [
   { dia: '2026-01-22', jogo: 'Time A x Time B' },
   { dia: '2026-01-23', jogo: 'Time C x Time D' },
@@ -11140,16 +11142,17 @@ for (let i = 0; i < 7; i++) {
   const dia = new Date();
   dia.setDate(hoje.getDate() + i);
 
-  const diaStr = dia.toISOString().split('T')[0];
+  const diaStr = dia.toISOString().split('T')[0]; // yyyy-mm-dd
 
   const diaElemento = document.createElement('div');
   diaElemento.className = 'dia';
   diaElemento.textContent = dia.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric' });
 
-  // Painel de jogos
+  // Cria painel de jogos
   const painel = document.createElement('div');
   painel.className = 'painel-jogos';
 
+  // Filtra os jogos do dia
   const jogosDoDia = jogos.filter(j => j.dia === diaStr);
   if (jogosDoDia.length === 0) {
     painel.textContent = 'Sem jogos';
@@ -11164,6 +11167,7 @@ for (let i = 0; i < 7; i++) {
   diaElemento.appendChild(painel);
   barra.appendChild(diaElemento);
 }
+
 
 </script>
 </body>
