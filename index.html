@@ -10336,6 +10336,7 @@ function mostrarSecao(secao) {
     }
 
     else if(secao === 'lista') {
+      mostrarBanner(); // ❌ Banner reaparece
         const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
         if(itensLista.length > 0){
             root.appendChild(criarFila('filaMinhaLista', itensLista, 'filme', 'Minha Lista'));
