@@ -491,41 +491,103 @@ video::cue {
   padding-top: 56.25%; /* 16:9 - mantém proporção */
 }
 
+#calendarioJogos {
+  background: radial-gradient(circle at top, #1a1a1a, #0c0c0c);
+  padding: 25px;
+  border-radius: 20px;
+  color: white;
+}
+
+.barra-dias {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 10px 0;
+}
+
 .dia {
-  position: relative;
-  cursor: pointer;
-  display: inline-block;
-  margin: 5px;
-  padding: 5px 10px;
-  background-color: #222;
-  color: #fff;
-  border-radius: 5px;
-}
-
-.painel-jogos {
-  position: absolute;
-  bottom: 120%; /* sobe acima do dia */
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(0,0,0,0.95);
-  color: #fff;
+  background: #222;
+  border-radius: 10px;
   padding: 10px;
-  border-radius: 5px;
-  min-width: 180px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-  display: none;
-  opacity: 0;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  pointer-events: none;
-  z-index: 10;
+  min-width: 60px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.dia:hover .painel-jogos {
-  display: block;
-  opacity: 1;
-  transform: translateX(-50%) translateY(-10px);
-  pointer-events: auto;
+.dia:hover,
+.dia.ativo {
+  background: #333;
 }
+
+.filtros {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.filtros button {
+  background: #111;
+  border: 1px solid #333;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.filtros button.ativo {
+  background: #fff;
+  color: #000;
+}
+
+.filtros-secundarios {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filtros-secundarios input,
+.filtros-secundarios select {
+  background: #111;
+  border: 1px solid #333;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  flex: 1;
+}
+
+
+
+  .card-jogo {
+  background: #111;
+  border-radius: 15px;
+  padding: 15px;
+  display: grid;
+  grid-template-columns: 80px 1fr 120px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.hora {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.equipas {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.equipas img {
+  width: 28px;
+}
+
+.info {
+  font-size: 12px;
+  color: #aaa;
+}
+
 
 
 
@@ -653,6 +715,37 @@ video::cue {
 </div>
 
 
+<div id="calendarioJogos">
+
+  <div class="calendario-topo">
+    <h2>📅 Calendário</h2>
+  </div>
+
+  <div id="barraDias" class="barra-dias"></div>
+
+  <div class="filtros">
+    <button>Hoje</button>
+    <button>Amanhã</button>
+    <button>Esta Semana</button>
+    <button class="ativo">Tudo</button>
+  </div>
+
+  <div class="filtros-secundarios">
+    <input type="text" placeholder="🔍 Procurar equipa/canal...">
+    <select>
+      <option>Todas as competições</option>
+      <option>UEFA Liga Europa</option>
+      <option>Champions</option>
+      <option>Primeira Liga</option>
+    </select>
+  </div>
+
+</div>
+
+<div id="listaJogos"></div>
+
+
+  
 
 
 <div id="root"></div>
@@ -1220,6 +1313,28 @@ iframe.style.boxShadow = '0 0 20px rgba(0,0,0,0.7)';
 
 
 
+const jogos = [
+  {
+    data: '2026-01-22',
+    hora: '17:45',
+    casa: 'Plzen',
+    fora: 'FC Porto',
+    logoCasa: 'plzen.png',
+    logoFora: 'porto.png',
+    competicao: 'UEFA Liga Europa',
+    canal: 'Sport TV 5'
+  },
+  {
+    data: '2026-01-22',
+    hora: '20:00',
+    casa: 'Sp. Braga',
+    fora: 'N. Forest',
+    logoCasa: 'braga.png',
+    logoFora: 'forest.png',
+    competicao: 'UEFA Liga Europa',
+    canal: 'DAZN 1'
+  }
+];
 
 
 
@@ -10309,107 +10424,43 @@ function atualizarBannerBtn() {
   
 
 
-  function criarBarraDias() {
-  const barra = document.getElementById('diasJogos');
-  barra.innerHTML = ''; // limpa
+function mostrarJogos(data) {
+  const lista = document.getElementById('listaJogos');
+  lista.innerHTML = '';
 
-  const hoje = new Date();
+  const jogosDia = jogos.filter(j => j.data === data);
 
-  for (let i = 0; i < 7; i++) { // 7 dias, hoje + 6
-    const dia = new Date(hoje);
-    dia.setDate(hoje.getDate() + i);
+  jogosDia.forEach(j => {
+    const card = document.createElement('div');
+    card.className = 'card-jogo';
 
-    const diaDiv = document.createElement('div');
-    diaDiv.className = 'dia';
-    diaDiv.dataset.data = dia.toISOString().split('T')[0]; // yyyy-mm-dd
-    diaDiv.innerHTML = `${dia.getDate()}/${dia.getMonth()+1} <br> ${dia.toLocaleDateString('pt-PT', { weekday: 'short' })}`;
+    card.innerHTML = `
+      <div class="hora">${j.hora}</div>
 
-    diaDiv.onclick = () => {
-      mostrarJogosDoDia(diaDiv.dataset.data); // função que você cria para mostrar os jogos
-    };
+      <div>
+        <div class="equipas">
+          <img src="${j.logoCasa}">
+          ${j.casa}
+          <span>vs</span>
+          ${j.fora}
+          <img src="${j.logoFora}">
+        </div>
+        <div class="info">${j.competicao}</div>
+      </div>
 
-    barra.appendChild(diaDiv);
-  }
+      <div class="info">${j.canal}</div>
+    `;
+
+    lista.appendChild(card);
+  });
 }
 
 
 
-  function mostrarJogosDoDia(data) {
-  const root = document.getElementById('root');
-  root.innerHTML = '';
-
-  const jogosDoDia = jogos.filter(j => j.data === data); // array `jogos` precisa ter objetos com {nome, canal, data}
-
-  if (jogosDoDia.length === 0) {
-    root.innerHTML = '<div style="margin:20px; color:white;">Não há jogos neste dia.</div>';
-    return;
-  }
-
-  root.appendChild(criarFila('filaJogos', jogosDoDia, 'canal', 'Jogos do dia'));
-}
 
 
-function preencherDiasJogos() {
-  const barra = document.getElementById('diasJogos');
-  barra.innerHTML = '';
 
-  const hoje = new Date();
 
-  for (let i = 0; i < 7; i++) {
-    const dia = new Date();
-    dia.setDate(hoje.getDate() + i);
-
-    const diaElemento = document.createElement('div');
-    diaElemento.className = 'dia';
-    diaElemento.textContent = dia.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' });
-
-    // Painel flutuante
-    const painel = document.createElement('div');
-    painel.className = 'painel-jogos';
-    painel.style.position = 'absolute';
-    painel.style.background = 'rgba(0,0,0,0.95)';
-    painel.style.color = 'white';
-    painel.style.padding = '10px';
-    painel.style.borderRadius = '5px';
-    painel.style.top = '-150px';
-    painel.style.left = '0';
-    painel.style.display = 'none';
-    painel.style.zIndex = '10';
-    painel.style.minWidth = '250px';
-    painel.style.boxShadow = '0 4px 10px rgba(0,0,0,0.5)';
-
-    // Filtra os jogos do dia
-    const diaStr = dia.toISOString().split('T')[0]; // YYYY-MM-DD
-    const jogosDoDia = jogos.filter(j => j.data === diaStr);
-
-    if (jogosDoDia.length === 0) {
-      painel.textContent = 'Sem jogos';
-    } else {
-      jogosDoDia.forEach(j => {
-        const p = document.createElement('div');
-        p.style.marginBottom = '8px';
-
-        const equipes = j.equipes.map(e => `${e.simbolo} ${e.nome}`).join(' x ');
-
-        p.innerHTML = `
-          <strong>${equipes}</strong><br>
-          🕒 ${j.hora} | 📺 ${j.canal}<br>
-          📅 ${j.data}
-        `;
-
-        painel.appendChild(p);
-      });
-    }
-
-    diaElemento.appendChild(painel);
-
-    // Hover para mostrar/esconder
-    diaElemento.addEventListener('mouseenter', () => painel.style.display = 'block');
-    diaElemento.addEventListener('mouseleave', () => painel.style.display = 'none');
-
-    barra.appendChild(diaElemento);
-  }
-}
 
 
 
@@ -10426,6 +10477,39 @@ function ocultarPumpkins() {
   if (p) p.style.display = 'none';
 }
 
+
+function mostrarJogos(data) {
+  const lista = document.getElementById('listaJogos');
+  lista.innerHTML = '';
+
+  const jogosDia = jogos.filter(j => j.data === data);
+
+  jogosDia.forEach(j => {
+    const card = document.createElement('div');
+    card.className = 'card-jogo';
+
+    card.innerHTML = `
+      <div class="hora">${j.hora}</div>
+
+      <div>
+        <div class="equipas">
+          <img src="${j.logoCasa}">
+          ${j.casa}
+          <span>vs</span>
+          ${j.fora}
+          <img src="${j.logoFora}">
+        </div>
+        <div class="info">${j.competicao}</div>
+      </div>
+
+      <div class="info">${j.canal}</div>
+    `;
+
+    lista.appendChild(card);
+  });
+}
+
+  
   
 
 function ocultarBanner() {
@@ -11186,60 +11270,6 @@ if ("serviceWorker" in navigator) {
 }
 
 
-const barra = document.getElementById('diasJogos');
-
-const jogos = [
-  {
-    data: '2026-01-22',      // YYYY-MM-DD
-    hora: '20:00',           // hora do jogo
-    canal: 'SporTV',         // canal de transmissão
-    equipes: [
-      { nome: 'Flamengo', simbolo: '🔥' },  // você pode usar emoji ou URL de imagem
-      { nome: 'Palmeiras', simbolo: '🌿' }
-    ]
-  },
-  {
-    data: '2026-01-22',
-    hora: '22:00',
-    canal: 'ESPN',
-    equipes: [
-      { nome: 'Barcelona', simbolo: '🔵🔴' },
-      { nome: 'Real Madrid', simbolo: '⚪' }
-    ]
-  }
-];
-
-
-const hoje = new Date();
-
-for (let i = 0; i < 7; i++) {
-  const dia = new Date();
-  dia.setDate(hoje.getDate() + i);
-
-  const diaStr = dia.toISOString().split('T')[0]; // yyyy-mm-dd
-
-  const diaElemento = document.createElement('div');
-  diaElemento.className = 'dia';
-  diaElemento.textContent = dia.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric' });
-
-  // Painel sempre criado
-  const painel = document.createElement('div');
-  painel.className = 'painel-jogos';
-
-  const jogosDoDia = jogos.filter(j => j.data === diaStr);
-  if (jogosDoDia.length === 0) {
-    painel.textContent = 'Sem jogos';
-  } else {
-    jogosDoDia.forEach(j => {
-      const p = document.createElement('div');
-      p.textContent = j.jogo;
-      painel.appendChild(p);
-    });
-  }
-
-  diaElemento.appendChild(painel);
-  barra.appendChild(diaElemento);
-}
 
 
 
