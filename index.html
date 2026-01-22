@@ -10981,24 +10981,7 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/service-worker.js");
 }
 
-  const novidades = [
-    '🎬 Stranger Things 5 chega dia 12/02!',
-    '🆕 Nova temporada de Terror!',
-    '✨ Filmes da Marvel atualizados!'
-  ];
 
-  const track = document.querySelector('.novidades-track');
-
-  // Limpa conteúdo anterior
-  track.innerHTML = '';
-
-  // Cria spans para cada novidade
-  novidades.forEach(n => {
-    const span = document.createElement('span');
-    span.textContent = n;
-    track.appendChild(span);
-  });
-});
 
 </script>
 </body>
