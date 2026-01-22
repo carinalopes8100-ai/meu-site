@@ -555,6 +555,8 @@ video::cue {
 <div onclick="mostrarSecao('terror')">Terror</div>
 <div onclick="mostrarSecao('desenhos')">Animação</div>
 <div onclick="mostrarSecao('lista')">A Minha Lista</div>
+<div onclick="mostrarSecao('canais')">Canais Streaming</div>
+
 </nav>
 <div id="searchContainer">
   <input type="text" id="searchInput" placeholder="Pesquisar...">
@@ -10074,8 +10076,36 @@ if (item.emBreve || item.link === "#") {
   btnPlay.style.cursor = "not-allowed";
 } else {
   btnPlay.textContent = '▶ Ver';
-  btnPlay.onclick = e => {
-    e.stopPropagation();
+btnPlay.onclick = e => {
+  e.stopPropagation();
+
+  if(item.tipo === 'canal') {
+    // Canais: abre o link direto em nova aba
+    window.open(item.link, '_blank');
+    return;
+  }
+
+  // Filmes/Séries/Documentários
+  if (item.player && item.player.length > 1) {
+    abrirPlayerModal(item);
+    return;
+  }
+
+  const s =
+    series.find(s => s.titulo === item.titulo) ||
+    novelas.find(n => n.titulo === item.titulo) ||
+    animes.find(a => a.titulo === item.titulo) ||
+    documentarios.find(d => d.titulo === item.titulo) ||
+    (item.temporadas && item.temporadas.length > 0 ? item : null);
+
+  if (s && s.temporadas && s.temporadas.length > 0) {
+    abrirModalTemporadas(s);
+  } else if (item.player && item.player.length > 0) {
+    abrirPlayerModal(item);
+  } else {
+    abrirVideo(item);
+  }
+};
 
 
         // Se tiver múltiplos áudios → abre o modal de áudios
@@ -10302,6 +10332,11 @@ else if(secao === 'documentarios'){
 
     else if(secao === 'animes'){
         root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
+    }
+
+    else if(secao === 'canais') {
+        root.innerHTML = ''; // limpa o conteúdo anterior
+        root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
     }
 }
 
