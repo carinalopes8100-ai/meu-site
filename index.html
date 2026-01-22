@@ -10498,20 +10498,32 @@ function mostrarSecao(secao) {
         root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
     } 
 else if (secao === 'canais') {
-  ocultarBanner();      // já tens isto
-  ocultarPumpkins();   // ✅ DESLIGA AS ABÓBORAS
+    ocultarBanner();      // desliga banner
+    ocultarPumpkins();    // desliga abóboras
 
-  // Adiciona a barra de dias antes da fila de canais
-  const barraDias = document.createElement('div');
-  barraDias.id = 'diasJogos';
-  barraDias.className = 'barra-dias';
-  barraDias.innerHTML = '<!-- JS vai preencher os dias aqui -->';
-  root.appendChild(barraDias);
+    // Cria barra de dias apenas nesta seção
+    const barra = document.createElement('div');
+    barra.id = 'diasJogos';
+    barra.className = 'barra-dias';
+    root.appendChild(barra); // adiciona acima da fila de canais
 
-  // Fila de canais streaming
-  root.appendChild(
-    criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming')
-  );
+    // Preenche os dias
+    const hoje = new Date();
+    for (let i = 0; i < 7; i++) {
+        const dia = new Date();
+        dia.setDate(hoje.getDate() + i);
+
+        const diaElemento = document.createElement('div');
+        diaElemento.className = 'dia';
+        diaElemento.textContent = dia.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' });
+
+        barra.appendChild(diaElemento);
+    }
+
+    // Cria a fila de canais
+    root.appendChild(
+        criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming')
+    );
 } // <-- fecha o else if
 
 }
