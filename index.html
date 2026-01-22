@@ -10363,29 +10363,40 @@ function preencherDiasJogos() {
     diaElemento.className = 'dia';
     diaElemento.textContent = dia.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' });
 
-    // Cria painel flutuante
+    // Painel flutuante
     const painel = document.createElement('div');
     painel.className = 'painel-jogos';
     painel.style.position = 'absolute';
-    painel.style.background = 'rgba(0,0,0,0.9)';
+    painel.style.background = 'rgba(0,0,0,0.95)';
     painel.style.color = 'white';
     painel.style.padding = '10px';
     painel.style.borderRadius = '5px';
-    painel.style.top = '-100px'; // sobe acima do dia
+    painel.style.top = '-150px';
     painel.style.left = '0';
     painel.style.display = 'none';
     painel.style.zIndex = '10';
-    painel.style.minWidth = '150px';
+    painel.style.minWidth = '250px';
+    painel.style.boxShadow = '0 4px 10px rgba(0,0,0,0.5)';
 
     // Filtra os jogos do dia
-    const diaStr = dia.toISOString().split('T')[0]; // yyyy-mm-dd
-    const jogosDoDia = jogos.filter(j => j.dia === diaStr);
+    const diaStr = dia.toISOString().split('T')[0]; // YYYY-MM-DD
+    const jogosDoDia = jogos.filter(j => j.data === diaStr);
+
     if (jogosDoDia.length === 0) {
       painel.textContent = 'Sem jogos';
     } else {
       jogosDoDia.forEach(j => {
         const p = document.createElement('div');
-        p.textContent = j.jogo;
+        p.style.marginBottom = '8px';
+
+        const equipes = j.equipes.map(e => `${e.simbolo} ${e.nome}`).join(' x ');
+
+        p.innerHTML = `
+          <strong>${equipes}</strong><br>
+          🕒 ${j.hora} | 📺 ${j.canal}<br>
+          📅 ${j.data}
+        `;
+
         painel.appendChild(p);
       });
     }
@@ -10399,6 +10410,7 @@ function preencherDiasJogos() {
     barra.appendChild(diaElemento);
   }
 }
+
 
 
   
