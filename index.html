@@ -488,33 +488,6 @@ video::cue {
 
 
 <style>
-#novidadesBarra {
-  position: absolute;
-  top: 50%;               /* verticalmente no meio do banner */
-  left: 50%;              /* centraliza horizontalmente */
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 20px;
-  z-index: 10;            /* acima da imagem e do vídeo */
-  text-align: center;
-  pointer-events: none;   /* não bloqueia cliques */
-}
-
-.novidades-track {
-  display: inline-block;
-  white-space: nowrap;
-}
-
-.novidades-track span {
-  margin: 0 15px;
-  display: inline-block;
-}
-
-/* Animação */
-@keyframes slide-left {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-100%); }
-}
 
 
 
@@ -645,12 +618,7 @@ video::cue {
 
 
   
-  <!-- NOVIDADES DENTRO DO BANNER -->
-  <div id="novidadesBarra">
-    <div class="novidades-track"></div>
-  </div>
 
-</div> <!-- fim do banner -->
 
 
 
@@ -677,26 +645,7 @@ video::cue {
 
 <script>
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const novidades = [
-        '🎬 Stranger Things 5 chega dia 12/02!',
-        '🆕 Nova temporada de Terror!',
-        '✨ Filmes da Marvel atualizados!'
-      ];
-
-      const track = document.querySelector('.novidades-track');
-
-      // Limpa conteúdo anterior
-      track.innerHTML = '';
-
-      // Cria spans para cada novidade
-      novidades.forEach(n => {
-        const span = document.createElement('span');
-        span.textContent = n;
-        track.appendChild(span);
-      });
-    });
-
+ 
   
 
 document.addEventListener('contextmenu', e => e.preventDefault());
