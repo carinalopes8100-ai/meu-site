@@ -489,16 +489,16 @@ video::cue {
 
 <style>
 #novidadesBarra {
-  position: absolute;      /* fica sobre o banner */
-  top: 0px;               /* distância do topo do banner */
+  position: absolute;    /* posiciona sobre o banner */
+  top: 0;                /* no topo */
   left: 0;
   width: 100%;
-  text-align: center;
-  background-color: rgba(0,0,0,0.5); /* semi-transparente */
+  background-color: rgba(0,0,0,0.6);
   color: #fff;
+  text-align: center;
   padding: 8px 0;
   font-size: 16px;
-  z-index: 10;             /* acima do banner */
+  z-index: 1000;         /* MUITO maior que imagem/vídeo */
 }
 
 /* Track que desliza */
@@ -610,12 +610,7 @@ video::cue {
 
   
 
-    <!-- Barra de Novidades -->
-<div id="novidadesBarra">
-  <div class="novidades-track">
-    <!-- Os spans serão adicionados pelo JS -->
-  </div>
-</div>
+
 
 
   
@@ -626,6 +621,14 @@ video::cue {
   <video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay muted loop>
     <source src="https://ia800807.us.archive.org/35/items/stranger-things-5-aac-hq/Stranger_Things_5_AAC_HQ.mp4" type="video/mp4">
   </video>
+
+
+      <!-- Barra de Novidades -->
+<div id="novidadesBarra">
+  <div class="novidades-track">
+    <!-- Os spans serão adicionados pelo JS -->
+  </div>
+</div>
 
 
 
