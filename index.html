@@ -10238,7 +10238,53 @@ function atualizarBannerBtn() {
 }
 
 
+  function criarFila(id, itens, tipo, titulo="") {
+    const container = document.createElement('div');
+    container.id = id;
+    if (titulo) {
+        const h2 = document.createElement('h2');
+        h2.textContent = titulo;
+        container.appendChild(h2);
+    }
 
+    const fila = document.createElement('div');
+    fila.className = 'fila';
+
+    itens.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        const img = document.createElement('img');
+        img.src = item.imagem;
+        card.appendChild(img);
+
+        const name = document.createElement('div');
+        name.textContent = item.titulo;
+        card.appendChild(name);
+
+        // Botão assistir
+        const btn = document.createElement('button');
+        btn.textContent = '▶ Ver';
+        btn.onclick = () => {
+            if(tipo === 'canal'){
+                window.open(item.link, '_blank');
+            } else {
+                // Aqui vai seu código de assistir filmes/séries
+                assistir(item);
+            }
+        }
+        card.appendChild(btn);
+
+        fila.appendChild(card);
+    });
+
+    container.appendChild(fila);
+    return container;
+}
+
+
+
+  
   
 function mostrarSecao(secao) {
     secaoAtual = secao;
