@@ -488,17 +488,19 @@ video::cue {
 
 
 <style>
-/* Container da barra */
+/* Se quer que fique logo abaixo do topo, mas fixo ao rolar */
 #novidadesBarra {
   width: 100%;
-  overflow: hidden;          /* Esconde o que passa do container */
   background-color: #111;
   color: #fff;
+  overflow: hidden;
+  white-space: nowrap;
   padding: 10px 0;
-  font-weight: bold;
-  font-size: 16px;
-  position: relative;
   box-sizing: border-box;
+  position: fixed;      /* fica fixo no topo */
+  top: 60px;            /* ajusta conforme a altura do header */
+  left: 0;
+  z-index: 9999;        /* acima de quase tudo */
 }
 
 /* Track que desliza */
