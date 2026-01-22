@@ -10299,9 +10299,17 @@ else if(secao === 'documentarios'){
         root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
     }
 
-    else if(secao === 'animes'){
-        root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
-    }
+else if(secao === 'animes'){
+    root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
+}
+
+else if(secao === 'canais') {
+    const root = document.getElementById('root');
+    root.innerHTML = ''; // limpa o conteúdo anterior
+
+    // Cria a fila de canais apenas quando clicar em "Canais Streaming"
+    const filaCanais = criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming');
+    root.appendChild(filaCanais);
 }
 
 
