@@ -11226,7 +11226,7 @@ for (let i = 0; i < 7; i++) {
   const painel = document.createElement('div');
   painel.className = 'painel-jogos';
 
-  const jogosDoDia = jogos.filter(j => j.dia === diaStr);
+  const jogosDoDia = jogos.filter(j => j.data === diaStr);
   if (jogosDoDia.length === 0) {
     painel.textContent = 'Sem jogos';
   } else {
