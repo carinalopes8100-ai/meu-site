@@ -10304,7 +10304,7 @@ function mostrarSecao(secao) {
     // Reset do espaço do root
     root.style.marginTop = '';
 
-    if (secao === 'inicio' || secao === 'filmes' || secao === 'series' || secao === 'terror' || secao === 'desenhos') {
+    if(secao === 'inicio' || secao === 'filmes' || secao === 'series' || secao === 'terror' || secao === 'desenhos' || secao === 'lista') {
         mostrarBanner(); 
         root.style.marginTop = ''; // normal, banner ocupa o espaço
     } else if (secao === 'canais') {
