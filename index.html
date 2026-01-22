@@ -10264,25 +10264,40 @@ function atualizarBannerBtn() {
   }
 }
 
+  
+
+function ocultarBanner() {
+  const banner = document.querySelector('.banner');
+  if (!banner) return;
+
+  // Oculta elementos internos
+  const elementos = banner.querySelectorAll('*');
+  elementos.forEach(el => {
+    el.style.display = 'none';
+  });
+
+  // Opcional: deixa o banner container visível só para não quebrar layout
+  banner.style.height = '0';
+  banner.style.overflow = 'hidden';
+}
+
+function mostrarBanner() {
+  const banner = document.querySelector('.banner');
+  if (!banner) return;
+
+  const elementos = banner.querySelectorAll('*');
+  elementos.forEach(el => {
+    el.style.display = '';
+  });
+
+  banner.style.height = '';
+  banner.style.overflow = '';
+}
 
 
   
 function mostrarSecao(secao) {
-      // Esconder banner se não for página inicial
-  const banner = document.querySelector('.banner');
-  if(banner){
-    if(secao === 'inicio') {
-      // Mostrar banner
-      banner.style.display = 'block';
-      banner.style.opacity = '1';
-    } else {
-      // Esconder completamente
-      banner.style.opacity = '0';
-      setTimeout(() => {
-        banner.style.display = 'none';
-      }, 400); // tempo do fade-out, se tiver CSS transition
-    }
-  }
+  
 
   
     secaoAtual = secao;
@@ -10292,6 +10307,7 @@ function mostrarSecao(secao) {
     const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel, ...filmesParaTodaAFamilia];
 
     if(secao === 'inicio') {
+      mostrarBanner(); // ❌ Banner reaparece
         // Continuar a ver
         const continuar = todosItens.filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
         if (continuar.length > 0) {
@@ -10382,6 +10398,9 @@ else if(secao === 'documentarios'){
 else if(secao === 'canais') {
     const root = document.getElementById('root');
     root.innerHTML = ''; // limpa conteúdo anterior
+
+    // Oculta todo o banner
+    ocultarBanner();
 
     // Cria a fila de canais
     root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
