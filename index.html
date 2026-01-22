@@ -489,29 +489,26 @@ video::cue {
 
 <style>
 #novidadesBarra {
-  position: absolute;    /* posiciona sobre o banner */
-  top: 0;                /* no topo */
+  position: fixed;   /* fixa no topo da tela */
+  top: 0;            /* topo da página */
   left: 0;
   width: 100%;
-  background-color: rgba(0,0,0,0.6);
-  color: #fff;
+  background-color: rgba(0,0,0,0.85); /* semi-transparente */
+  color: white;
   text-align: center;
   padding: 8px 0;
   font-size: 16px;
-  z-index: 1000;         /* MUITO maior que imagem/vídeo */
+  z-index: 2000;     /* acima do banner e do botão mute */
 }
 
-/* Track que desliza */
+/* Faz os spans rolarem horizontalmente */
 .novidades-track {
-  display: inline-block;
+  display: inline-block; /* ou flex se quiser efeito slide */
   white-space: nowrap;
-  padding-left: 100%;       /* Começa fora da tela */
-  animation: slide-left 20s linear infinite; /* tempo ajustável */
 }
-
-/* Cada item da barra */
 .novidades-track span {
-  margin-right: 50px;        /* Espaço entre novidades */
+  margin: 0 15px;
+  display: inline-block;
 }
 
 /* Animação */
