@@ -10297,17 +10297,23 @@ function mostrarBanner() {
 
   
 function mostrarSecao(secao) {
-  
-
-  
     secaoAtual = secao;
     const root = document.getElementById('root');
     root.innerHTML = '';
 
+    // Banner
+    if (secao === 'inicio' || secao === 'lista') {
+        mostrarBanner(); // Banner visível
+        root.style.paddingTop = ''; // remove padding extra
+    } else {
+        ocultarBanner(); // Banner escondido
+        root.style.paddingTop = '20px'; // adiciona padding para não ficar grudado no topo
+    }
+
     const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel, ...filmesParaTodaAFamilia];
 
+    // Secções específicas
     if(secao === 'inicio') {
-      mostrarBanner(); // ❌ Banner reaparece
         // Continuar a ver
         const continuar = todosItens.filter(i => progresso[i.titulo] && progresso[i.titulo] > 0);
         if (continuar.length > 0) {
@@ -10320,7 +10326,7 @@ function mostrarSecao(secao) {
             root.appendChild(criarFila('filaMinhaLista', itensLista, 'filme', 'Minha Lista'));
         }
 
-        // Outras seções
+        // Outras filas
         root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
         root.appendChild(criarFila('fila2', shuffleArray(filmesParaTodaAFamilia), 'filme', 'Natal em Família'));
         root.appendChild(criarFila('fila3', shuffleArray(series), 'serie'));
@@ -10336,7 +10342,6 @@ function mostrarSecao(secao) {
     }
 
     else if(secao === 'lista') {
-      mostrarBanner(); // ❌ Banner reaparece
         const itensLista = todosItens.filter(i => minhaLista.includes(i.titulo));
         if(itensLista.length > 0){
             root.appendChild(criarFila('filaMinhaLista', itensLista, 'filme', 'Minha Lista'));
@@ -10345,68 +10350,47 @@ function mostrarSecao(secao) {
         }
     }
 
+    // Outras seções sem banner
     else if(secao === 'filmes'){
         root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
-    }
-
-          else if(secao === 'filmesParaTodaAFamilia'){
-        root.appendChild(criarFila('fila2', shuffleArray(filmesParaTodaAFamilia), 'filme', 'filmesParaTodaAFamilia'));
-    }
-
+    } 
     else if(secao === 'series'){
         root.appendChild(criarFila('fila3', shuffleArray(series), 'serie'));
-    }
-
+    } 
     else if(secao === 'terror'){
         root.appendChild(criarFila('fila4', shuffleArray(filmesTerror), 'filme'));
-    }
-
+    } 
     else if(secao === 'marvel'){
         root.appendChild(criarFila('filaMarvel', shuffleArray(filmesMarvel), 'filme', 'Marvel'));
-    }
-
+    } 
     else if(secao === 'dc'){
         root.appendChild(criarFila('filaDc', shuffleArray(filmesDc), 'filme', 'DC Comics'));
-    }
-
+    } 
     else if(secao === 'comedia'){
         root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
-    }
-
-    else if(secao === 'reality') {
-    root.appendChild(criarFila('filaReality', shuffleArray(realityShows), 'serie', 'Reality Shows Competitivos'));
-    }
-  
-
+    } 
+    else if(secao === 'reality'){
+        root.appendChild(criarFila('filaReality', shuffleArray(realityShows), 'serie', 'Reality Shows Competitivos'));
+    } 
     else if(secao === 'novelas'){
         root.appendChild(criarFila('filaNovelas', shuffleArray(novelas), 'serie', 'Novelas'));
-    }
-
-else if(secao === 'documentarios'){
-  root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'misto', 'Documentários'));
-}
-
-
+    } 
+    else if(secao === 'documentarios'){
+        root.appendChild(criarFila('filaDocumentarios', shuffleArray(documentarios), 'misto', 'Documentários'));
+    } 
     else if(secao === 'desenhos'){
         root.appendChild(criarFila('filaDesenhos', shuffleArray(desenhos), 'serie', 'Desenhos Animados'));
-    }
-
+    } 
     else if(secao === 'animes'){
         root.appendChild(criarFila('filaAnimes', shuffleArray(animes), 'serie', 'Séries de anime'));
-
+    } 
+    else if(secao === 'canais') {
+        // Banner escondido
+        ocultarBanner();
+        root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
+    }
 }
 
-else if(secao === 'canais') {
-    const root = document.getElementById('root');
-    root.innerHTML = ''; // limpa conteúdo anterior
-
-    // Oculta todo o banner
-    ocultarBanner();
-
-    // Cria a fila de canais
-    root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
-}
-}
 
 
 function pesquisar() {
