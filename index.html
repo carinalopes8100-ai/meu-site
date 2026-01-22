@@ -490,6 +490,30 @@ video::cue {
 <style>
 
 
+#novidadesContainer {
+  width: 100%;
+  overflow: hidden;
+  background-color: #333; /* cor de fundo da faixa */
+  color: #fff;
+  padding: 10px 0;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  position: relative;
+  border-top: 1px solid #444;
+  border-bottom: 1px solid #444;
+}
+
+#novidadesTrack {
+  display: inline-block;
+  white-space: nowrap;
+  position: absolute;
+  will-change: transform;
+}
+
+#novidadesTrack span {
+  display: inline-block;
+  margin-right: 50px; /* espaço entre mensagens */
+}
 
 
   
@@ -623,6 +647,17 @@ video::cue {
 
 
 <div id="root"></div>
+
+
+<div id="novidadesContainer">
+  <div id="novidadesTrack">
+    <span>🎬 Novo filme: “Invasão Final” disponível!</span>
+    <span>🌟 Série “Mistérios de Outono” estreia hoje!</span>
+    <span>🍿 Documentário “O Mundo Secreto” agora na plataforma!</span>
+    <span>🎥 Anime “Estrelas do Céu” – nova temporada!</span>
+  </div>
+</div>
+  
 
 <div id="modal" class="modal">
   <div class="modal-content" id="modalContent">
@@ -10948,6 +10983,26 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/service-worker.js");
 }
 
+
+document.addEventListener('DOMContentLoaded', () => {
+  const track = document.getElementById('novidadesTrack');
+  let x = window.innerWidth;
+
+  function animarNovidades() {
+    x -= 1; // velocidade do scroll (1px por frame)
+    if (x < -track.offsetWidth) x = window.innerWidth; // reinicia ao sair da tela
+    track.style.transform = `translateX(${x}px)`;
+    requestAnimationFrame(animarNovidades);
+  }
+
+  animarNovidades();
+
+  // Ajusta o reinício do scroll ao redimensionar a tela
+  window.addEventListener('resize', () => {
+    if (x > window.innerWidth) x = window.innerWidth;
+  });
+});
+  
 
 
 </script>
