@@ -10357,7 +10357,7 @@ else if(secao === 'canais') {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
-    root.appendChild(criarFila('filaCanais', shuffleArray(canaisStreaming), 'canal', 'Canais Streaming'));
+    root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
 }
 }
 
@@ -10372,8 +10372,11 @@ function pesquisar() {
     return;
   }
 
-  const resultados = todosItens.filter(i => i.titulo.toLowerCase().includes(termo));
-  root.innerHTML = '';
+const resultados = todosItens.filter(i => {
+  const nomeItem = i.titulo || i.nome; // usa "titulo" se existir, senão "nome"
+  return nomeItem && nomeItem.toLowerCase().includes(termo);
+});
+root.innerHTML = '';
 
   if (resultados.length > 0) {
     root.appendChild(criarFila('filaPesquisa', resultados, 'filme', `Resultados para "${termo}"`));
