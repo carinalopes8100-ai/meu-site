@@ -11054,32 +11054,21 @@ if ("serviceWorker" in navigator) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  const track = document.getElementById('novidadesTrack');
+const trackWidth = track.offsetWidth / 2; // largura do conteúdo original
 
-  // DUPLICAR conteúdo para loop contínuo
-  track.innerHTML += track.innerHTML;
+let x = trackWidth + 1500; // começa mais à direita
+const speed = 1;
 
-  let x = window.innerWidth + 1500; // aumenta para começar mais à direita
-  const speed = 1; // pixels por frame
-
-  function animarTrack() {
-    x -= speed;
-
-    // quando o primeiro conjunto inteiro saiu, reseta
-    if (x <= -track.offsetWidth / 2) {
-      x = 0;
-    }
-
-    track.style.transform = `translateX(${x}px)`;
-    requestAnimationFrame(animarTrack);
+function animarTrack() {
+  x -= speed;
+  if (x <= -trackWidth) { // reseta apenas quando o primeiro conjunto saiu
+    x = 0;
   }
+  track.style.transform = `translateX(${x}px)`;
+  requestAnimationFrame(animarTrack);
+}
 
-  animarTrack();
-
-  // ajusta o tamanho da tela se redimensionar
-  window.addEventListener('resize', () => {
-    x = window.innerWidth;
-  });
+animarTrack();
 });
   
 
