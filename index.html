@@ -555,6 +555,7 @@ video::cue {
 <div onclick="mostrarSecao('terror')">Terror</div>
 <div onclick="mostrarSecao('desenhos')">Animação</div>
 <div onclick="mostrarSecao('lista')">A Minha Lista</div>
+<div onclick="mostrarSecao('canais')">Canais Streaming</div> <!-- novo item -->  
 </nav>
 <div id="searchContainer">
   <input type="text" id="searchInput" placeholder="Pesquisar...">
@@ -9969,6 +9970,23 @@ const filmesTerror = [
   {titulo:"Eu Sei O Que Voçes Fizeram no Verão Passado 2025",img:"https://images-eu.ssl-images-amazon.com/images/S/pv-target-images/38c5e182403463f0f7e9f7e9d8cef2331680245af0ab7da92b7e5f87c07ebd46._UR1920,1080_SX624_FMwebp_.jpg",link:"#",trailer:"https://www.youtube.com/embed/D1CnrwzgOEg?autoplay=1"},
   {titulo:"Until Dawn",img:"https://m.media-amazon.com/images/S/pv-target-images/1baa3a677871ae4b874f25539ea0e4b5183b0bbd10f41501af55fb9e05bbc375.jpg",link:"#",trailer:"https://www.youtube.com/embed/BPhIXLMEBLE?autoplay=1"}
 ];
+
+
+  const canaisStreaming = [
+  {
+    titulo: "Canal Filmes 24h",
+    imagem: "img/canais/filmes24.jpg",
+    link: "https://exemplo.com/stream.m3u8",
+    tipo: "canal"
+  },
+  {
+    titulo: "Canal Esportes",
+    imagem: "img/canais/esportes.jpg",
+    link: "https://exemplo.com/esportes.m3u8",
+    tipo: "canal"
+  }
+];
+
 
 // ===== Funções de interface =====
 function criarFila(idFila, lista, tipo, tituloFila=null){
