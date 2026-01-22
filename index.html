@@ -329,10 +329,11 @@ nav div.ativo {
 }
 
 .novidade-img-pequena {
-  width: 175px !important;  /* tamanho que quiser */
+  width: 130px !important;  /* tamanho que quiser */
   height: auto !important;   /* mantém proporção */
   display: inline-block;
-  margin-right: 50px;
+  margin-left: 4px;
+  vertical-align:middle;
   object-fit: contain;
 
   position: relative;  /* permite mover */
@@ -341,14 +342,24 @@ nav div.ativo {
 }
 
   .novidade-sporttv {
-  width: 50px !important;      /* tamanho que quiser */
+  width: 100px !important;      /* tamanho que quiser */
   height: auto !important;      /* mantém proporção */
   display: inline-block;
-  margin-right: 50px; /* espaço entre imagens */
+  margin-right: 4px; /* espaço entre imagens */
+  vertical-align:middle;
   object-fit: contain;
 
   position: relative; /* permite mover */
   right: -20px;         /* move 30px para a direita */
+}
+
+  .novidade-dazn {
+  width: 32px;   /* define a largura que queres */
+  height: auto;  /* mantém a proporção */
+  display: inline-block;
+  margin-leftt: 4px;  
+  margin-right: 4px;
+  vertical-align: middle;
 }
 
 
@@ -684,7 +695,9 @@ video::cue {
   <div id="novidadesContainer">
   <div id="novidadesTrack">
     <img src="https://megatuga.io/imagens/icones/sporttv_homepage2.png" alt="Sport TV" class="novidade-sporttv">
-    <img src="https://megatuga.io/imagens/icones/dazn_homepage.jpg" alt="Dazn">
+    <img src="https://megatuga.io/imagens/icones/dazn_homepage.jpg" 
+     alt="Dazn" 
+     class="novidade-dazn">
     <img src="https://megatuga.io/imagens/icones/btv_homepage.png" alt="Benfica TV" class="novidade-img-pequena">
   </div>
 </div>
