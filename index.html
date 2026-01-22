@@ -11055,26 +11055,24 @@ if ("serviceWorker" in navigator) {
 
 document.addEventListener('DOMContentLoaded', () => {
 const track = document.getElementById('novidadesTrack');
-let x = window.innerWidth; // começa fora da tela à direita
-const speed = 1;           // velocidade em px/frame
+
+// DUPLICAR conteúdo para criar loop contínuo
+track.innerHTML += track.innerHTML;
+
+let x = 0;             // posição inicial
+const speed = 1;       // velocidade em px/frame
 
 function animarTrack() {
-  x -= speed; // move para a esquerda
-  if (x < -track.offsetWidth) {
-    x = window.innerWidth; // reinicia à direita
+  x -= speed;
+  // quando o primeiro conjunto de imagens saiu, reseta x
+  if (x <= -track.offsetWidth / 2) {
+    x = 0;
   }
   track.style.transform = `translateX(${x}px)`;
   requestAnimationFrame(animarTrack);
 }
 
 animarTrack();
-
-window.addEventListener('resize', () => {
-  // reinicia posição se redimensionar
-  x = window.innerWidth;
-});
-});
-
 
   
 
