@@ -624,18 +624,19 @@ video::cue {
 
   
 
-<div class="banner" id="bannerContainer">
-  <img id="bannerImage" src="..." style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;">
-  <video id="bannerVideo" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;" autoplay muted loop>
-    <source src="...mp4" type="video/mp4">
-  </video>
-  <button id="muteBtn" class="mute-btn">🔇</button>
-
   <!-- Conteúdo do banner -->
   <div class="banner-content">
-    <img src="..." alt="Stranger Things" class="banner-title" style="width:400px; height:auto; position:absolute; top:-140px;">
-    <p class="banner-highlight">Ver agora a temporada 5</p>
-    <p class="banner-description">Quando um rapaz desaparece ...</p>
+    <!-- Logo -->
+    <img src="https://i.postimg.cc/GtfbyyyK/AAAABe-S9Q3i-CPfef5ln-XNKGl-Gh1g-Za9g-EBi6VHtg8IRAwpl-PDc-ALd-ql-OK6Sz-Eowna-Cn-HFg8Zksu-IVT7m6Oanj.png" alt="Stranger Things" class="banner-title" style="width:400px; height:auto; position:absolute; top:-140px;">
+
+<p class="banner-highlight">Ver agora a temporada 5</p>
+    
+    <!-- Descrição -->
+    <p class="banner-description">
+      Quando um rapaz desaparece, uma pequena vila descobre um mistério relacionado com experiências secretas, assustadoras forças sobrenaturais e uma estranha rapariga.
+    </p>
+
+    <!-- Botões lado a lado -->
     <div class="banner-buttons">
       <button class="play" onclick="abrirModalTemporadas(series.find(s => s.titulo === 'Stranger Things'))">
         <span class="play-symbol">▶</span> Ver
@@ -643,7 +644,10 @@ video::cue {
       <button id="bannerAddBtn" class="lista">+ Minha Lista</button>
     </div>
   </div>
+</div>
 
+
+  
   <!-- NOVIDADES DENTRO DO BANNER -->
   <div id="novidadesBarra">
     <div class="novidades-track"></div>
