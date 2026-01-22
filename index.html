@@ -10301,14 +10301,17 @@ function mostrarSecao(secao) {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
-    // Decide se o banner deve aparecer
-    const bannerSecoes = ['inicio', 'lista', 'filmes', 'series', 'terror', 'desenhos']; // anime = series, animação = desenhos
-    if (bannerSecoes.includes(secao)) {
-        mostrarBanner();
-        root.style.paddingTop = ''; // remove padding extra
-    } else {
+    // Reset do espaço do root
+    root.style.marginTop = '';
+
+    if (secao === 'inicio' || secao === 'filmes' || secao === 'series' || secao === 'terror' || secao === 'desenhos') {
+        mostrarBanner(); 
+        root.style.marginTop = ''; // normal, banner ocupa o espaço
+    } else if (secao === 'canais') {
         ocultarBanner();
-        root.style.paddingTop = '20px'; // evita que a fila fique grudada no topo
+
+        // Adiciona espaço fixo para "banner ausente"
+        root.style.marginTop = '400px'; // mesma altura do banner
     }
 
     const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel, ...filmesParaTodaAFamilia];
