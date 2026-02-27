@@ -10477,7 +10477,8 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
 
   const titulo = document.createElement('div'); 
   titulo.className = 'fila-titulo'; 
-  titulo.textContent = tituloFila || (tipo==='filme' ? (idFila==='fila3' ? 'Terror' : 'Filmes Populares') : 'Séries Populares');
+  titulo.textContent = tituloFila || 
+  (tipo === 'filme' ? 'Filmes Populares' : 'Séries Populares');
 
   const btnLeft = document.createElement('button'); 
   btnLeft.className = 'btn-scroll btn-left'; 
@@ -10718,7 +10719,7 @@ function mostrarSecao(secao) {
         root.appendChild(criarFila('fila1', shuffleArray(filmes), 'filme'));
         root.appendChild(criarFila('fila2', shuffleArray(filmesParaTodaAFamilia), 'filme', 'Natal em Família'));
         root.appendChild(criarFila('fila3', shuffleArray(series), 'serie'));
-        root.appendChild(criarFila('fila4', shuffleArray(filmesTerror), 'filme'));
+        root.appendChild(criarFila('fila4', shuffleArray(filmesTerror), 'filme', 'Terror'));
         root.appendChild(criarFila('filaMarvel', shuffleArray(filmesMarvel), 'filme', 'Marvel'));
         root.appendChild(criarFila('filaDc', shuffleArray(filmesDc), 'filme', 'DC Comics'));
         root.appendChild(criarFila('filaComedia', shuffleArray(filmesComedia), 'filme', 'Comédia'));
@@ -10751,7 +10752,7 @@ function mostrarSecao(secao) {
     }
 
     else if(secao === 'terror'){
-        root.appendChild(criarFila('fila4', shuffleArray(filmesTerror), 'filme'));
+        root.appendChild(criarFila('fila4', shuffleArray(filmesTerror), 'filme', 'Terror'));
     }
 
     else if(secao === 'marvel'){
