@@ -11657,21 +11657,31 @@ else if(secao === 'canais') {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
-    // 🔹 Cria botão Flashscore
+    // 🔹 Cria botão Flashscore igual ao "Ver" do banner
     const flashscoreBtn = document.createElement('button');
-    flashscoreBtn.textContent = 'Abrir Flashscore';
-	flashscoreBtn.className = 'lista'; // aplica o mesmo CSS do botão do banner
-    flashscoreBtn.style.position = 'absolute'; // fica sobre o banner
-    flashscoreBtn.style.top = '800px'; // ajusta pra baixo
+    flashscoreBtn.className = 'play'; // herda o estilo do botão do banner
+
+    // Cria o símbolo ▶
+    const simbolo = document.createElement('span');
+    simbolo.className = 'play-symbol';
+    simbolo.textContent = '▶';
+    flashscoreBtn.appendChild(simbolo);
+
+    // Adiciona o texto do botão
+    const texto = document.createTextNode(' Flashscore');
+    flashscoreBtn.appendChild(texto);
+
+    // Posicionamento
+    flashscoreBtn.style.position = 'absolute';
+    flashscoreBtn.style.top = '120px';   // ajuste a altura desejada
     flashscoreBtn.style.left = '50%';
     flashscoreBtn.style.transform = 'translateX(-50%)';
-    flashscoreBtn.style.padding = '10px 20px';
-    flashscoreBtn.style.fontSize = '16px';
-    flashscoreBtn.style.cursor = 'pointer';
     flashscoreBtn.style.zIndex = '1001';
+
+    // Clique
     flashscoreBtn.onclick = () => abrirEmbedModal('https://www.flashscore.pt/');
 
-    // 🔹 Adiciona ao root da seção canais
+    // Adiciona ao root
     root.appendChild(flashscoreBtn);
 
     // Adiciona a fila dos canais
