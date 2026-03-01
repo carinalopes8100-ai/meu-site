@@ -12353,6 +12353,35 @@ function abrirEmbedModal(url, titulo = 'Embed') {
 }
 
 
+	function mostrarSecao(secao) {
+    const root = document.getElementById('root');
+    root.innerHTML = '';
+
+    if (secao === 'canais') {
+        // Adiciona a fila dos canais
+        root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
+
+        // Cria o botão Flashscore igual ao do banner
+        const flashscoreBtn = document.createElement('button');
+        flashscoreBtn.className = 'play flashscore-btn';
+        flashscoreBtn.textContent = 'Flashscore';
+        flashscoreBtn.onclick = () => abrirEmbedModal('https://www.flashscore.pt/');
+
+        // Coloca ele à direita do banner
+        flashscoreBtn.style.position = 'absolute';
+        flashscoreBtn.style.bottom = '150px';
+        flashscoreBtn.style.right = '30px';
+        flashscoreBtn.style.zIndex = '11';
+
+        // Adiciona o botão ao root
+        root.appendChild(flashscoreBtn);
+    } else {
+        // Se não for canais, garante que o botão Flashscore não apareça
+        const existingBtn = document.querySelector('.flashscore-btn');
+        if (existingBtn) existingBtn.remove();
+    }
+
+
 
 
 
