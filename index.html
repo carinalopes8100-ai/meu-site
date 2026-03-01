@@ -11598,6 +11598,14 @@ function mostrarSecao(secao) {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
+	    // Seleciona o botão Flashscore que já existe no HTML
+    const flashscoreBtn = document.querySelector('.flashscore-btn');
+
+    // Mostra apenas se estivermos na aba "canais"
+    if (flashscoreBtn) {
+        flashscoreBtn.style.display = (secao === 'canais') ? 'inline-block' : 'none';
+    }
+
     const todosItens = [...filmes, ...series, ...filmesTerror, ...animes, ...desenhos, ...filmesComedia, ...novelas, ...documentarios, ...filmesMarvel, ...filmesParaTodaAFamilia];
 
     if(secao === 'inicio') {
@@ -12353,17 +12361,7 @@ function abrirEmbedModal(url, titulo = 'Embed') {
 }
 
 
-function mostrarSecao(secao) {
-    const root = document.getElementById('root');
-    root.innerHTML = '';
 
-    // Seleciona o botão Flashscore que já existe
-    const flashscoreBtn = document.querySelector('.flashscore-btn');
-
-    // Mostra apenas se estivermos na aba "canais"
-    if (flashscoreBtn) {
-        flashscoreBtn.style.display = (secao === 'canais') ? 'inline-block' : 'none';
-    }
 
 
 
