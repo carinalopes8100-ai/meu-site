@@ -11678,6 +11678,10 @@ else if(secao === 'canais') {
     flashscoreBtn.style.transform = 'translateX(-50%)';
     flashscoreBtn.style.zIndex = '1001';
 
+    // Hover igual ao banner
+    flashscoreBtn.onmouseover = () => flashscoreBtn.style.background = '#ddd';
+    flashscoreBtn.onmouseout = () => flashscoreBtn.style.background = '#fff';
+
     flashscoreBtn.onclick = () => abrirEmbedModal('https://www.flashscore.pt/');
 
     // Adiciona ao root da seção canais
