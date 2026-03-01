@@ -12231,6 +12231,7 @@ document.addEventListener('DOMContentLoaded', () => {
        // This is using the built-in support of the plain video element, without using hls.js.
         else if (video.canPlayType('application/vnd.apple.mpegurl')) {
           video.src = 'https://video-auth6.iol.pt/live_tvi/live_tvi/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9Mi8yOC8yMDI2IDEwOjk6NDYgUE0maGFzaF92YWx1ZT1FSC96OUlCaEYyZWlWVkJ6WXdVRVJBPT0mdmFsaWRtaW51dGVzPTE0NDAmaWQ9OGRkYzk2MmUtNGVlOS00MjQ2LWFjZGUtZjBjZDI3ZmYzNWEx';
+			video.src = 'https://streaming-live.rtp.pt/liverepeater/smil:rtp1HD.smil/chunklist_b2540000_slpor.m3u8';
           video.addEventListener('canplay',function() {
             video.play();
           });
@@ -12241,19 +12242,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-const video = document.getElementById('player');
 
-if(Hls.isSupported()) {
-  const hls = new Hls();
-  hls.loadSource('https://streaming-live.rtp.pt/liverepeater/smil:rtp1HD.smil/chunklist_b2540000_slpor.m3u8');
-  hls.attachMedia(video);
-  hls.on(Hls.Events.MANIFEST_PARSED, function() {
-    video.play();
-  });
-} else if(video.canPlayType('application/vnd.apple.mpegurl')) {
-  video.src = 'https://streaming-live.rtp.pt/liverepeater/smil:rtp1HD.smil/chunklist_b2540000_slpor.m3u8';
-  video.addEventListener('canplay', () => video.play());
-}
 
 
 
