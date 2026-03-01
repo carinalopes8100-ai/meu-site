@@ -11309,26 +11309,15 @@ function criarFila(idFila, lista, tipo, tituloFila=null){
   fila.className = 'fila'; 
   fila.id = idFila + '-content';
   
-lista.forEach(item => {
-  const itemDiv = document.createElement('div'); 
-  itemDiv.className = 'filme';
+  lista.forEach(item => {
+    const itemDiv = document.createElement('div'); 
+    itemDiv.className = 'filme';
 
-  // ==== Se for canal, adiciona o iframe direto ====
-  if(item.tipo === "canal") {
-    const canalFrame = document.createElement("iframe");
-    canalFrame.src = item.link;          // link do embed
-    canalFrame.width = "100%";           // largura total da "caixa"
-    canalFrame.height = "250";           // altura fixa (ou ajusta conforme quiser)
-    canalFrame.frameBorder = "0";
-    canalFrame.scrolling = "no";
-    canalFrame.allowFullscreen = true;
-    itemDiv.appendChild(canalFrame);
-  } 
-	
-   const img = document.createElement('img'); 
+    const img = document.createElement('img'); 
     img.src = item.img; 
     img.alt = item.titulo; 
     itemDiv.appendChild(img);
+
 
     // ==== Barra de progresso ====
     if(progresso[item.titulo] && progresso[item.titulo] > 0){
