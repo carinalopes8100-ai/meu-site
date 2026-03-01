@@ -495,9 +495,44 @@ nav div.ativo {
   background: #555;
   font-size: 16px;
 }
+	
+
+	
 
 
+/* Ambos herdam o estilo do botão do banner */
+.play {
+  font-size: 18px;
+  padding: 12px 24px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  background-color: #e50914;
+  color: white;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
 
+.play:hover {
+  background-color: #f40612;
+}
+
+/* Botão à esquerda */
+.left-btn {
+  position: absolute;
+  left: 50px;       /* distância da esquerda */
+  bottom: 50px;     /* distância do fundo do banner */
+}
+
+/* Botão à direita */
+.right-btn {
+  position: absolute;
+  right: 50px;      /* distância da direita */
+  bottom: 50px;     /* mesma distância do fundo */
+}
+
+
+	
   
 .player-btn {
   padding: 10px 20px; /* controla tamanho do botão */
@@ -750,10 +785,11 @@ video::cue {
       <button id="bannerAddBtn" class="lista">+ Minha Lista</button>
 		  <!-- Novo botão Flashscore -->
   <!-- Flashscore totalmente à direita -->
-  <button class="play" onclick="abrirEmbedModal('https://www.flashscore.pt/')" 
-          style="right: 20px;">
-    Flashscore
-  </button>
+<!-- Botão Flashscore (direita) -->
+<button class="play right-btn" 
+        onclick="abrirEmbedModal('https://www.flashscore.pt/')">
+  Flashscore
+</button>
     </div>
   </div>
 </div>
