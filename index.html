@@ -11657,30 +11657,18 @@ else if(secao === 'canais') {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
-    // 🔹 Cria botão Flashscore igual ao do banner
+    // 🔹 Cria botão Flashscore igual ao botão "+ Minha Lista"
     const flashscoreBtn = document.createElement('button');
-    flashscoreBtn.className = 'play';   // usa o mesmo CSS do botão do banner
+    flashscoreBtn.className = 'lista';   // mesma classe do banner
 
-    // Adiciona o símbolo ▶ como no banner
-    const simbolo = document.createElement('span');
-    simbolo.className = 'play-symbol';
-    simbolo.textContent = '▶';
-    flashscoreBtn.appendChild(simbolo);
+    flashscoreBtn.textContent = '+ Flashscore'; // texto do botão
 
-    // Adiciona o texto
-    const texto = document.createTextNode(' Flashscore');
-    flashscoreBtn.appendChild(texto);
-
-    // Posicionamento sobre o banner
+    // Posicionamento
     flashscoreBtn.style.position = 'absolute';
-    flashscoreBtn.style.top = '120px';   // ajuste a altura desejada
+    flashscoreBtn.style.top = '120px';
     flashscoreBtn.style.left = '50%';
     flashscoreBtn.style.transform = 'translateX(-50%)';
     flashscoreBtn.style.zIndex = '1001';
-
-    // Hover igual ao banner
-    flashscoreBtn.onmouseover = () => flashscoreBtn.style.background = '#ddd';
-    flashscoreBtn.onmouseout = () => flashscoreBtn.style.background = '#fff';
 
     flashscoreBtn.onclick = () => abrirEmbedModal('https://www.flashscore.pt/');
 
