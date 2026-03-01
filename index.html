@@ -11661,25 +11661,7 @@ else if(secao === 'canais') {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
-    // 🔹 Botão igual ao "▶ Ver" do banner
-    const flashscoreBtn = document.createElement('button');
-    flashscoreBtn.className = 'play';   // herda todos os estilos do banner
-    flashscoreBtn.innerHTML = '▶ Abrir Flashscore';  // mantém o símbolo do play igual ao banner
-
-    // Centraliza sobre a página
-    flashscoreBtn.style.position = 'absolute';
-    flashscoreBtn.style.top = '800px';  // ajusta conforme o banner
-    flashscoreBtn.style.left = '50%';
-    flashscoreBtn.style.transform = 'translateX(-50%)';
-    flashscoreBtn.style.zIndex = '1001';
-
-    // Ação ao clicar
-    flashscoreBtn.onclick = () => abrirEmbedModal('https://www.flashscore.pt/');
-
-    // Adiciona o botão ao root
-    root.appendChild(flashscoreBtn);
-
-    // Adiciona a fila de canais abaixo
+  
     root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
 }
 }
