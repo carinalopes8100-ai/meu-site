@@ -11657,21 +11657,27 @@ else if(secao === 'canais') {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
-
-	    // 🔹 Botão para abrir Flashscore
+    // 🔹 Cria botão Flashscore sobre o banner
     const flashscoreBtn = document.createElement('button');
     flashscoreBtn.textContent = 'Abrir Flashscore';
-    flashscoreBtn.style.margin = '10px 0';
+    flashscoreBtn.style.position = 'absolute'; // fica sobre o banner
+    flashscoreBtn.style.top = '20px';
+    flashscoreBtn.style.left = '50%';
+    flashscoreBtn.style.transform = 'translateX(-50%)';
     flashscoreBtn.style.padding = '10px 20px';
     flashscoreBtn.style.fontSize = '16px';
     flashscoreBtn.style.cursor = 'pointer';
+    flashscoreBtn.style.zIndex = '1001';
     flashscoreBtn.onclick = () => abrirEmbedModal('https://www.flashscore.pt/');
-    root.appendChild(flashscoreBtn);
 
-  
+    // Coloca dentro do banner se existir, senão no body
+    const bannerContainer = document.getElementById('bannerContainer') || document.body;
+    bannerContainer.appendChild(flashscoreBtn);
+
+    // 🔹 Cria a fila de canais
     root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
 }
-}
+
 
 
 function pesquisar() {
