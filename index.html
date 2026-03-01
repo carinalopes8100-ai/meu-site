@@ -11324,9 +11324,8 @@ lista.forEach(item => {
     canalFrame.allowFullscreen = true;
     itemDiv.appendChild(canalFrame);
   } 
-  else {
-    // ==== Caso seja filme ou série, mantém imagem ====
-    const img = document.createElement('img'); 
+	
+   const img = document.createElement('img'); 
     img.src = item.img; 
     img.alt = item.titulo; 
     itemDiv.appendChild(img);
