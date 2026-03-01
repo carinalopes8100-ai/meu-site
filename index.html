@@ -503,7 +503,7 @@ nav div.ativo {
 /* Ambos herdam o estilo do botão do banner */
 .play {
   font-size: 18px;
-  padding: 12px 24px;
+  padding: 12px 24px;                                
   border-radius: 4px;
   border: none;
   cursor: pointer;
@@ -511,18 +511,19 @@ nav div.ativo {
   color: white;
   font-weight: bold;
   transition: background-color 0.3s;
+  z-index: 11; /* acima de tudo */
 }
 
 .play:hover {
   background-color: #f40612;
 }
 
-
-/* Botão à direita */
-.right-btn {
+/* Botão Flashscore à direita, mas antes do botão de som */
+.flashscore-btn {
   position: absolute;
-  right: 5px;      /* distância da direita */
-  bottom: 50px;     /* mesma distância do fundo */
+  right: 100px;   /* ajusta a distância da direita */
+  bottom: 150px;  /* mesma distância do botão de ver e mute */
+  z-index: 11;
 }
 
 
