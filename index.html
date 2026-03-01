@@ -2536,7 +2536,7 @@ const filmes = [
    {
     titulo: "RTP 1",
     img: "https://i.postimg.cc/FRHZynSP/Design-sem-nome-(4).png",
-    link: "https:\\streaming-live.rtp.pt\liverepeater\smil:rtp1HD.smil\playlist.m3u8",
+    link: "https://streaming-live.rtp.pt/liverepeater/smil:rtp1HD.smil/playlist.m3u8",
     tipo: "canal"
   }, 
   
@@ -12231,6 +12231,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       
 
+  <!-- 🎬 Player de vídeo -->
+  <div style="padding:20px; text-align:center;">
+    <video id="video" controls width="800" style="border-radius:8px; background:#000;"></video>
+    <br><br>
+    <!-- Botão para abrir RTP 1 -->
+    <button onclick="abrirCanal(0)" style="padding:10px 20px; font-size:16px; cursor:pointer;">
+      Abrir RTP 1
+    </button>
+  </div>
+
+  <!-- 📦 Biblioteca HLS.js -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+  <!-- 🎯 Script para carregar canais -->
+  <script>
+    const canaisStreaming = [
+      {
+        titulo: "RTP 1",
+        img: "https://i.postimg.cc/FRHZynSP/Design-sem-nome-(4).png",
+        link: "https://streaming-live.rtp.pt/liverepeater/smil:rtp1HD.smil/playlist.m3u8",
+        tipo: "canal"
+      }
+    ];
+
+    const video = document.getElementById("video");
+    let hls;
+
+    function abrirCanal(index) {
+      const link = canaisStreaming[index].link;
+
+      // destruir instância anterior se existir
+      if (hls) {
+        hls.destroy();
+      }
+
+      // carregar canal via HLS
+      if (Hls.isSupported()) {
+        hls = new Hls();
+        hls.loadSource(link);
+        hls.attachMedia(video);
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = link;
+      }
+    }
+
+	
 
 </script>
 </body>
