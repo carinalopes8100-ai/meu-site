@@ -520,11 +520,23 @@ nav div.ativo {
 
 /* Botão Flashscore à direita, mas antes do botão de som */
 .flashscore-btn {
-  padding: 6px 12px;
-  position: absolute;
-  left: 1586px;   /* ajusta a distância da direita */
-  top: 340px;  /* mesma distância do botão de ver e mute */
-  z-index: 11;
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    background-color: rgba(109, 109, 110, 0.7);
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    position: absolute;
+    left: 1586px; /* ajusta conforme o layout */
+    top: 340px;
+    z-index: 11;
+}
+
+.flashscore-btn:hover {
+    background-color: rgba(109, 109, 110, 0.4);
 }
 
 
