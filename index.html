@@ -11657,6 +11657,17 @@ else if(secao === 'canais') {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
+
+	    // 🔹 Botão para abrir Flashscore
+    const flashscoreBtn = document.createElement('button');
+    flashscoreBtn.textContent = 'Abrir Flashscore';
+    flashscoreBtn.style.margin = '10px 0';
+    flashscoreBtn.style.padding = '10px 20px';
+    flashscoreBtn.style.fontSize = '16px';
+    flashscoreBtn.style.cursor = 'pointer';
+    flashscoreBtn.onclick = () => abrirEmbedModal('https://www.flashscore.pt/');
+    root.appendChild(flashscoreBtn);
+
   
     root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
 }
@@ -12284,7 +12295,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+// ===== Função para abrir embed em modal =====
+function abrirEmbedModal(url, titulo = 'Embed') {
+  const modal = document.createElement('div');
+  modal.style.cssText = `
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.9); display:flex;
+    justify-content:center; align-items:center; flex-direction:column;
+    z-index:10000;
+  `;
 
+  const iframe = document.createElement('iframe');
+  iframe.src = url;
+  iframe.width = '90%';
+  iframe.height = '90%';
+  iframe.frameBorder = '0';
+  iframe.allowFullscreen = true;
+  iframe.style.borderRadius = '10px';
+  iframe.style.boxShadow = '0 0 20px rgba(0,0,0,0.7)';
+  modal.appendChild(iframe);
+
+  const fecharBtn = document.createElement('button');
+  fecharBtn.textContent = 'Fechar';
+  fecharBtn.style.position = 'absolute';
+  fecharBtn.style.top = '20px';
+  fecharBtn.style.right = '20px';
+  fecharBtn.style.padding = '10px';
+  fecharBtn.style.zIndex = '1001';
+  fecharBtn.className = 'player-btn';
+  fecharBtn.onclick = () => modal.remove();
+  modal.appendChild(fecharBtn);
+
+  document.body.appendChild(modal);
+}
 
 
 
