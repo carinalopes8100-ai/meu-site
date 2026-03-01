@@ -11657,19 +11657,28 @@ else if(secao === 'canais') {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
-    // 🔹 Cria botão Flashscore igual ao botão "+ Minha Lista"
+    // 🔹 Cria botão igual ao "Ver" do banner
     const flashscoreBtn = document.createElement('button');
-    flashscoreBtn.className = 'lista';   // mesma classe do banner
+    flashscoreBtn.className = 'play'; // aplica o mesmo CSS do botão do banner
 
-    flashscoreBtn.textContent = '+ Flashscore'; // texto do botão
+    // Cria o símbolo ▶
+    const simbolo = document.createElement('span');
+    simbolo.className = 'play-symbol';
+    simbolo.textContent = '▶';
+    flashscoreBtn.appendChild(simbolo);
+
+    // Adiciona o texto do botão
+    const texto = document.createTextNode(' Flashscore');
+    flashscoreBtn.appendChild(texto);
 
     // Posicionamento
     flashscoreBtn.style.position = 'absolute';
-    flashscoreBtn.style.top = '120px';
+    flashscoreBtn.style.top = '120px';   // ajuste a altura desejada
     flashscoreBtn.style.left = '50%';
     flashscoreBtn.style.transform = 'translateX(-50%)';
     flashscoreBtn.style.zIndex = '1001';
 
+    // Ação do botão
     flashscoreBtn.onclick = () => abrirEmbedModal('https://www.flashscore.pt/');
 
     // Adiciona ao root da seção canais
