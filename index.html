@@ -11670,11 +11670,10 @@ else if(secao === 'canais') {
     flashscoreBtn.style.zIndex = '1001';
     flashscoreBtn.onclick = () => abrirEmbedModal('https://www.flashscore.pt/');
 
-    // Coloca dentro do banner se existir, senão no body
-    const bannerContainer = document.getElementById('bannerContainer') || document.body;
-    bannerContainer.appendChild(flashscoreBtn);
+    // 🔹 Adiciona ao root da seção canais
+    root.appendChild(flashscoreBtn);
 
-    // 🔹 Cria a fila de canais
+    // Adiciona a fila dos canais
     root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
 }
 }
