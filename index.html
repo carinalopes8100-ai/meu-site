@@ -12357,22 +12357,12 @@ function mostrarSecao(secao) {
     const root = document.getElementById('root');
     root.innerHTML = '';
 
-    // Remove o botão Flashscore se existir
-    const existingBtn = document.querySelector('.flashscore-btn');
-    if (existingBtn) existingBtn.remove();
+    // Seleciona o botão Flashscore que já existe
+    const flashscoreBtn = document.querySelector('.flashscore-btn');
 
-    if (secao === 'canais') {
-        // Adiciona a fila dos canais
-        root.appendChild(criarFila('filaCanais', canaisStreaming, 'canal', 'Canais Streaming'));
-
-        // Cria o botão Flashscore
-        const flashscoreBtn = document.createElement('button');
-        flashscoreBtn.className = 'play flashscore-btn';
-        flashscoreBtn.textContent = 'Flashscore';
-        flashscoreBtn.onclick = () => abrirEmbedModal('https://www.flashscore.pt/');
-
-        // Adiciona o botão ao root
-        root.appendChild(flashscoreBtn);
+    // Mostra apenas se estivermos na aba "canais"
+    if (flashscoreBtn) {
+        flashscoreBtn.style.display = (secao === 'canais') ? 'inline-block' : 'none';
     }
 
 
