@@ -1036,123 +1036,87 @@ bannerVideo.addEventListener('canplaythrough', () => {
 
 
 
-function abrirPlayerModal(canal) {
-  let playerAtualIndex = 0; // começa no primeiro player
-  const modal = document.createElement('div');
-  modal.style.cssText = `position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; justify-content:center; align-items:center; flex-direction:column; z-index:10000;`;
 
-  const iframe = document.createElement('iframe');
-  iframe.width = '80%';
-  iframe.height = '80%';
-  iframe.allowFullscreen = true;
-  iframe.frameBorder = '0';
-  iframe.allow = 'autoplay';
-  modal.appendChild(iframe);
+  
+function abrirPlayerModal(item) {
+  const playerModal = document.getElementById('playerModal');
+  const modalEpisodios = document.getElementById('modal'); 
+  const playerOptions = document.getElementById('playerOptions');
+  const fecharBtn = playerModal.querySelector('.close-btn');
+
+  const abertoDoEpisodio = modalEpisodios.dataset.episodiosAtivos === 'true';
+  modalEpisodios.style.display = 'none';
+  playerOptions.innerHTML = '';
+
+  if (!item.player || item.player.length === 0) return;
+
+  let playerAtualIndex = 0;
 
   function atualizarPlayer() {
-    iframe.src = canal.player[playerAtualIndex].link;
+    abrirVideo({ titulo: item.titulo, link: item.player[playerAtualIndex].link });
   }
 
-  // Botões
+  // Cria botões de player
+  item.player.forEach((p, index) => {
+    const btn = document.createElement('button');
+    btn.className = 'player-btn';
+    btn.textContent = p.player;
+    btn.onclick = () => {
+      playerAtualIndex = index;
+      atualizarPlayer();
+    };
+    playerOptions.appendChild(btn);
+  });
+
+  // Botão Anterior
   const btnAnterior = document.createElement('button');
   btnAnterior.textContent = '◀';
   btnAnterior.className = 'player-btn';
   btnAnterior.style.cssText = `position:absolute; left:20px; top:50%; transform:translateY(-50%);`;
-
   btnAnterior.onclick = () => {
     if (playerAtualIndex > 0) {
       playerAtualIndex--;
       atualizarPlayer();
     } else {
-      // Se chegar ao primeiro player, volta ao canal anterior
-      let canalIndex = canaisStreaming.findIndex(c => c.titulo === canal.titulo);
+      let canalIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
       let novoIndex = canalIndex - 1;
       if (novoIndex < 0) novoIndex = canaisStreaming.length - 1;
-      modal.remove();
+      playerModal.style.display = 'none';
       abrirVideo(canaisStreaming[novoIndex]);
     }
   };
 
+  // Botão Próximo
   const btnProximo = document.createElement('button');
   btnProximo.textContent = '▶';
   btnProximo.className = 'player-btn';
   btnProximo.style.cssText = `position:absolute; right:20px; top:50%; transform:translateY(-50%);`;
-
   btnProximo.onclick = () => {
-    if (playerAtualIndex < canal.player.length - 1) {
+    if (playerAtualIndex < item.player.length - 1) {
       playerAtualIndex++;
       atualizarPlayer();
     } else {
-      // Se chegar ao último player, passa para o próximo canal
-      let canalIndex = canaisStreaming.findIndex(c => c.titulo === canal.titulo);
+      let canalIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
       let novoIndex = canalIndex + 1;
       if (novoIndex >= canaisStreaming.length) novoIndex = 0;
-      modal.remove();
+      playerModal.style.display = 'none';
       abrirVideo(canaisStreaming[novoIndex]);
     }
   };
 
-  modal.appendChild(btnAnterior);
-  modal.appendChild(btnProximo);
-  document.body.appendChild(modal);
+  playerModal.appendChild(btnAnterior);
+  playerModal.appendChild(btnProximo);
+
+  playerModal.style.display = 'flex';
+  playerModal.style.opacity = abertoDoEpisodio ? '1' : '0';
+  playerModal.style.transition = abertoDoEpisodio ? 'none' : 'opacity 0.4s';
+  if (!abertoDoEpisodio) requestAnimationFrame(() => { playerModal.style.opacity = '1'; });
+
+  fecharBtn.textContent = abertoDoEpisodio ? 'Voltar' : 'Fechar';
+  playerModal.dataset.abertoDoEpisodio = abertoDoEpisodio ? 'true' : 'false';
 
   atualizarPlayer(); // abre o primeiro player
-}	
-
-
-
-  
-function abrirPlayerModal(item) {
-  const playerModal = document.getElementById('playerModal');
-  const modalEpisodios = document.getElementById('modal'); // modal de episódios
-  const playerOptions = document.getElementById('playerOptions');
-  const fecharBtn = playerModal.querySelector('.close-btn');
-
-  // Verifica se veio do modal de episódios
-  const abertoDoEpisodio = modalEpisodios.dataset.episodiosAtivos === 'true';
-
-  // Esconde modal de episódios
-  modalEpisodios.style.display = 'none';
-  
-  // Limpa opções antigas
-  playerOptions.innerHTML = '';
-
-  // Supondo que item.player = [{player: 'PT', src: 'linkPT'}, {player: 'EN', src: 'linkEN'}]
-  if(item.player && item.player.length > 0) {
-    item.player.forEach(a => {
-      const btn = document.createElement('button');
-      btn.className = 'player-btn';
-      btn.textContent = a.player;
-btn.onclick = () => {
-  abrirVideo({ titulo: item.titulo, link: a.link }); // ✅ agora é a.link
-};
-      playerOptions.appendChild(btn);
-    });
-  }
-
-  // Mostra modal de players
-  playerModal.style.display = 'flex';
-
-  if (!abertoDoEpisodio) {
-    // Fade-in somente se NÃO veio do modal de episódios
-    playerModal.style.opacity = '0';
-    playerModal.style.transition = 'opacity 0.4s';
-    requestAnimationFrame(() => {
-      playerModal.style.opacity = '1';
-    });
-  } else {
-    // Abre instantaneamente se veio do modal de episódios
-    playerModal.style.opacity = '1';
-    playerModal.style.transition = 'none';
-  }
-
-  // Atualiza texto do botão de fechar
-  fecharBtn.textContent = abertoDoEpisodio ? 'Voltar' : 'Fechar';
-  
-  // Armazena no dataset se veio de episódio
-  playerModal.dataset.abertoDoEpisodio = abertoDoEpisodio ? 'true' : 'false';
 }
-
 function fecharPlayerModal() {
   const playerModal = document.getElementById('playerModal');
   const modalEpisodios = document.getElementById('modal');
