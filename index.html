@@ -12247,6 +12247,8 @@ window.addEventListener('resize', () => {
   });
 });
 
+let canalAtualIndex = -1;	
+
 function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
   const videoModal = document.createElement('div');
   videoModal.style.cssText = `
