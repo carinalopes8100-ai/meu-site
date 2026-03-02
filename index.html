@@ -1089,7 +1089,20 @@ btn.onclick = () => {
   playerModal.dataset.abertoDoEpisodio = abertoDoEpisodio ? 'true' : 'false';
 }
 
+function fecharPlayerModal() {
+  const playerModal = document.getElementById('playerModal');
+  const modalEpisodios = document.getElementById('modal');
 
+  // Esconde modal de players
+  playerModal.style.display = 'none';
+
+  // Se veio do modal de episódios, reabre o modal de episódios
+  if (playerModal.dataset.abertoDoEpisodio === 'true') {
+    modalEpisodios.style.display = 'flex';
+  }
+
+  delete playerModal.dataset.abertoDoEpisodio;
+}
 
   
 function abrirModalTrailers(item) {
