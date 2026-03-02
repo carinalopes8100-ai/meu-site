@@ -12246,8 +12246,15 @@ window.addEventListener('resize', () => {
     if (p.x > window.innerWidth) p.x = Math.random() * window.innerWidth;
   });
 });
+	
+
+let canalAtualIndex = -1;
+	
 
 function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
+  canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
+
+  const videoModal = document.createElement('div');	
   const videoModal = document.createElement('div');
   videoModal.style.cssText = `
     position: fixed; top:0; left:0; width:100%; height:100%;
@@ -12334,17 +12341,54 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
     };
 
     atualizarIframe();
-  } else {
-    // Se não for série, apenas link simples
-    const iframe = document.createElement('iframe');
-    iframe.src = item.link;
-    iframe.width = '80%';
-    iframe.height = '80%';
-    iframe.allowFullscreen = true;
-    iframe.frameBorder = '0';
-    iframe.allow = 'autoplay';
-    videoModal.appendChild(iframe);
+else {
+
+  const iframe = document.createElement('iframe');
+  iframe.src = item.link;
+  iframe.width = '80%';
+  iframe.height = '80%';
+  iframe.allowFullscreen = true;
+  iframe.frameBorder = '0';
+  iframe.allow = 'autoplay';
+  videoModal.appendChild(iframe);
+
+  // 🔥 Se for canal, adiciona botões Anterior / Próximo
+  if (canalAtualIndex !== -1) {
+
+    const btnAnterior = document.createElement('button');
+    btnAnterior.textContent = '◀';
+    btnAnterior.className = 'player-btn';
+    btnAnterior.style.position = 'absolute';
+    btnAnterior.style.left = '20px';
+    btnAnterior.style.top = '50%';
+    btnAnterior.style.transform = 'translateY(-50%)';
+
+    btnAnterior.onclick = () => {
+      let novoIndex = canalAtualIndex - 1;
+      if (novoIndex < 0) novoIndex = canaisStreaming.length - 1;
+      videoModal.remove();
+      abrirVideo(canaisStreaming[novoIndex]);
+    };
+
+    const btnProximo = document.createElement('button');
+    btnProximo.textContent = '▶';
+    btnProximo.className = 'player-btn';
+    btnProximo.style.position = 'absolute';
+    btnProximo.style.right = '20px';
+    btnProximo.style.top = '50%';
+    btnProximo.style.transform = 'translateY(-50%)';
+
+    btnProximo.onclick = () => {
+      let novoIndex = canalAtualIndex + 1;
+      if (novoIndex >= canaisStreaming.length) novoIndex = 0;
+      videoModal.remove();
+      abrirVideo(canaisStreaming[novoIndex]);
+    };
+
+    videoModal.appendChild(btnAnterior);
+    videoModal.appendChild(btnProximo);
   }
+}
 
   fecharBtn.onclick = () => videoModal.remove();
   document.body.appendChild(videoModal);
