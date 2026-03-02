@@ -1036,6 +1036,71 @@ bannerVideo.addEventListener('canplaythrough', () => {
 
 
 
+function abrirPlayerModal(canal) {
+  let playerAtualIndex = 0; // começa no primeiro player
+  const modal = document.createElement('div');
+  modal.style.cssText = `position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; justify-content:center; align-items:center; flex-direction:column; z-index:10000;`;
+
+  const iframe = document.createElement('iframe');
+  iframe.width = '80%';
+  iframe.height = '80%';
+  iframe.allowFullscreen = true;
+  iframe.frameBorder = '0';
+  iframe.allow = 'autoplay';
+  modal.appendChild(iframe);
+
+  function atualizarPlayer() {
+    iframe.src = canal.player[playerAtualIndex].link;
+  }
+
+  // Botões
+  const btnAnterior = document.createElement('button');
+  btnAnterior.textContent = '◀';
+  btnAnterior.className = 'player-btn';
+  btnAnterior.style.cssText = `position:absolute; left:20px; top:50%; transform:translateY(-50%);`;
+
+  btnAnterior.onclick = () => {
+    if (playerAtualIndex > 0) {
+      playerAtualIndex--;
+      atualizarPlayer();
+    } else {
+      // Se chegar ao primeiro player, volta ao canal anterior
+      let canalIndex = canaisStreaming.findIndex(c => c.titulo === canal.titulo);
+      let novoIndex = canalIndex - 1;
+      if (novoIndex < 0) novoIndex = canaisStreaming.length - 1;
+      modal.remove();
+      abrirVideo(canaisStreaming[novoIndex]);
+    }
+  };
+
+  const btnProximo = document.createElement('button');
+  btnProximo.textContent = '▶';
+  btnProximo.className = 'player-btn';
+  btnProximo.style.cssText = `position:absolute; right:20px; top:50%; transform:translateY(-50%);`;
+
+  btnProximo.onclick = () => {
+    if (playerAtualIndex < canal.player.length - 1) {
+      playerAtualIndex++;
+      atualizarPlayer();
+    } else {
+      // Se chegar ao último player, passa para o próximo canal
+      let canalIndex = canaisStreaming.findIndex(c => c.titulo === canal.titulo);
+      let novoIndex = canalIndex + 1;
+      if (novoIndex >= canaisStreaming.length) novoIndex = 0;
+      modal.remove();
+      abrirVideo(canaisStreaming[novoIndex]);
+    }
+  };
+
+  modal.appendChild(btnAnterior);
+  modal.appendChild(btnProximo);
+  document.body.appendChild(modal);
+
+  atualizarPlayer(); // abre o primeiro player
+}	
+
+
+
   
 function abrirPlayerModal(item) {
   const playerModal = document.getElementById('playerModal');
