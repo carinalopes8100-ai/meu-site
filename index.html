@@ -12246,9 +12246,6 @@ window.addEventListener('resize', () => {
     if (p.x > window.innerWidth) p.x = Math.random() * window.innerWidth;
   });
 });
-	
-
-	
 
 function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
   const videoModal = document.createElement('div');
@@ -12348,10 +12345,6 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
     iframe.allow = 'autoplay';
     videoModal.appendChild(iframe);
   }
-
-  fecharBtn.onclick = () => videoModal.remove();
-  document.body.appendChild(videoModal);
-}
 
   fecharBtn.onclick = () => videoModal.remove();
   document.body.appendChild(videoModal);
