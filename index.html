@@ -1040,96 +1040,53 @@ bannerVideo.addEventListener('canplaythrough', () => {
   
 function abrirPlayerModal(item) {
   const playerModal = document.getElementById('playerModal');
-  const modalEpisodios = document.getElementById('modal'); 
+  const modalEpisodios = document.getElementById('modal'); // modal de episódios
   const playerOptions = document.getElementById('playerOptions');
   const fecharBtn = playerModal.querySelector('.close-btn');
 
+  // Verifica se veio do modal de episódios
   const abertoDoEpisodio = modalEpisodios.dataset.episodiosAtivos === 'true';
+
+  // Esconde modal de episódios
   modalEpisodios.style.display = 'none';
+  
+  // Limpa opções antigas
   playerOptions.innerHTML = '';
 
-  if (!item.player || item.player.length === 0) return;
-
-  let playerAtualIndex = 0;
-
-  function atualizarPlayer() {
-    abrirVideo({ titulo: item.titulo, link: item.player[playerAtualIndex].link });
+  // Supondo que item.player = [{player: 'PT', src: 'linkPT'}, {player: 'EN', src: 'linkEN'}]
+  if(item.player && item.player.length > 0) {
+    item.player.forEach(a => {
+      const btn = document.createElement('button');
+      btn.className = 'player-btn';
+      btn.textContent = a.player;
+btn.onclick = () => {
+  abrirVideo({ titulo: item.titulo, link: a.link }); // ✅ agora é a.link
+};
+      playerOptions.appendChild(btn);
+    });
   }
 
-  // Cria botões de player
-  item.player.forEach((p, index) => {
-    const btn = document.createElement('button');
-    btn.className = 'player-btn';
-    btn.textContent = p.player;
-    btn.onclick = () => {
-      playerAtualIndex = index;
-      atualizarPlayer();
-    };
-    playerOptions.appendChild(btn);
-  });
-
-  // Botão Anterior
-  const btnAnterior = document.createElement('button');
-  btnAnterior.textContent = '◀';
-  btnAnterior.className = 'player-btn';
-  btnAnterior.style.cssText = `position:absolute; left:20px; top:50%; transform:translateY(-50%);`;
-  btnAnterior.onclick = () => {
-    if (playerAtualIndex > 0) {
-      playerAtualIndex--;
-      atualizarPlayer();
-    } else {
-      let canalIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
-      let novoIndex = canalIndex - 1;
-      if (novoIndex < 0) novoIndex = canaisStreaming.length - 1;
-      playerModal.style.display = 'none';
-      abrirVideo(canaisStreaming[novoIndex]);
-    }
-  };
-
-  // Botão Próximo
-  const btnProximo = document.createElement('button');
-  btnProximo.textContent = '▶';
-  btnProximo.className = 'player-btn';
-  btnProximo.style.cssText = `position:absolute; right:20px; top:50%; transform:translateY(-50%);`;
-  btnProximo.onclick = () => {
-    if (playerAtualIndex < item.player.length - 1) {
-      playerAtualIndex++;
-      atualizarPlayer();
-    } else {
-      let canalIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
-      let novoIndex = canalIndex + 1;
-      if (novoIndex >= canaisStreaming.length) novoIndex = 0;
-      playerModal.style.display = 'none';
-      abrirVideo(canaisStreaming[novoIndex]);
-    }
-  };
-
-  playerModal.appendChild(btnAnterior);
-  playerModal.appendChild(btnProximo);
-
+  // Mostra modal de players
   playerModal.style.display = 'flex';
-  playerModal.style.opacity = abertoDoEpisodio ? '1' : '0';
-  playerModal.style.transition = abertoDoEpisodio ? 'none' : 'opacity 0.4s';
-  if (!abertoDoEpisodio) requestAnimationFrame(() => { playerModal.style.opacity = '1'; });
 
-  fecharBtn.textContent = abertoDoEpisodio ? 'Voltar' : 'Fechar';
-  playerModal.dataset.abertoDoEpisodio = abertoDoEpisodio ? 'true' : 'false';
-
-  atualizarPlayer(); // abre o primeiro player
-}
-function fecharPlayerModal() {
-  const playerModal = document.getElementById('playerModal');
-  const modalEpisodios = document.getElementById('modal');
-
-  // Esconde modal de players
-  playerModal.style.display = 'none';
-
-  // Se veio do modal de episódios, reabre o modal de episódios
-  if (playerModal.dataset.abertoDoEpisodio === 'true') {
-    modalEpisodios.style.display = 'flex';
+  if (!abertoDoEpisodio) {
+    // Fade-in somente se NÃO veio do modal de episódios
+    playerModal.style.opacity = '0';
+    playerModal.style.transition = 'opacity 0.4s';
+    requestAnimationFrame(() => {
+      playerModal.style.opacity = '1';
+    });
+  } else {
+    // Abre instantaneamente se veio do modal de episódios
+    playerModal.style.opacity = '1';
+    playerModal.style.transition = 'none';
   }
 
-  delete playerModal.dataset.abertoDoEpisodio;
+  // Atualiza texto do botão de fechar
+  fecharBtn.textContent = abertoDoEpisodio ? 'Voltar' : 'Fechar';
+  
+  // Armazena no dataset se veio de episódio
+  playerModal.dataset.abertoDoEpisodio = abertoDoEpisodio ? 'true' : 'false';
 }
 
 
