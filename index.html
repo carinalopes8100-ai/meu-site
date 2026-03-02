@@ -12361,15 +12361,16 @@ canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
     btnAnterior.style.top = '50%';
     btnAnterior.style.transform = 'translateY(-50%)';
 
+// 🔹 Botão Anterior
 btnAnterior.onclick = () => {
   let novoIndex = canalAtualIndex - 1;
   if (novoIndex < 0) novoIndex = canaisStreaming.length - 1;
 
   const canalAnterior = canaisStreaming[novoIndex];
 
-  // 🔹 Abre o modal de players se houver múltiplos
+  // Se tiver vários players, abre o primeiro player diretamente
   if (canalAnterior.player && canalAnterior.player.length > 1) {
-    abrirPlayerModal(canalAnterior);
+    abrirVideo(canalAnterior, 0, 0); // 0 = primeira temporada, 0 = primeiro player
   } else {
     abrirVideo(canalAnterior);
   }
@@ -12391,13 +12392,14 @@ btnProximo.onclick = () => {
 
   const proximoCanal = canaisStreaming[novoIndex];
 
+  // Se tiver vários players, abre o primeiro player ou continue do selecionado
   if(proximoCanal.player && proximoCanal.player.length > 1){
-    abrirPlayerModal(proximoCanal);
+    abrirVideo(proximoCanal, 0, 0); // 0 = primeira temporada, 0 = primeiro player
   } else {
     abrirVideo(proximoCanal);
   }
 
-  videoModal.remove(); // remove o modal atual
+  videoModal.remove();
 };
 
     videoModal.appendChild(btnAnterior);
