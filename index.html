@@ -2639,7 +2639,7 @@ const filmes = [
 	 	                                     {
     titulo: "CNN Portugal",
     img: "https://www.atelevisao.com/wp-content/uploads/2024/09/cnn-portugal.jpg",
-    link: "https://www.anuncioprivado.com/tvwms/tvi24.php",
+    link: "https://video-auth6.iol.pt/live_cnn/live_cnn/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9My8yLzIwMjYgMTA6MjY6MTcgQU0maGFzaF92YWx1ZT1IbkFZNjNUVVJKRmM3OXEyaDJpV2dBPT0mdmFsaWRtaW51dGVzPTE0NDAmaWQ9ZWNhNTAzMGEtNTM2MC00MzlmLTg4OTAtYmUxYmQ2YmQwOWFi",
     tipo: "canal"
   },
      {
@@ -12543,32 +12543,32 @@ function abrirEmbedModal(url, titulo = 'Embed') {
 
 
 
-  var video = document.getElementById('video');
-  var src = 'https://sicnot.tvtuga.workers.dev/playlist.m3u8';
 
-  if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    // Safari / iOS
-    video.src = src;
-    video.addEventListener('loadedmetadata', function () {
-      video.play().catch(() => {});
-    });
-  } else if (Hls.isSupported()) {
-    // Chrome / Firefox / Edge
-    var hls = new Hls({
-      enableWorker: true,
-      lowLatencyMode: true,
-      backBufferLength: 90
-    });
-
-    hls.loadSource(src);
-    hls.attachMedia(video);
-
-    hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-      video.play().catch(() => {});
-    });
-  } else {
-    video.outerHTML = "<p>Este browser não suporta HLS.</p>";
-  }
+        if(Hls.isSupported()) {
+          var video = document.getElementById('video');
+          var hls = new Hls({
+              debug: true,
+			  enableWorker: true,
+			  lowLatencyMode: true,
+			  backBufferLength: 90
+          });
+          hls.loadSource('https://video-auth6.iol.pt/live_cnn/live_cnn/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9My8yLzIwMjYgMTA6MjY6MTcgQU0maGFzaF92YWx1ZT1IbkFZNjNUVVJKRmM3OXEyaDJpV2dBPT0mdmFsaWRtaW51dGVzPTE0NDAmaWQ9ZWNhNTAzMGEtNTM2MC00MzlmLTg4OTAtYmUxYmQ2YmQwOWFi');
+          hls.attachMedia(video);
+          hls.on(Hls.Events.MEDIA_ATTACHED, function() {
+            video.muted = true;
+            video.play();
+        });
+       }
+       // hls.js is not supported on platforms that do not have Media Source Extensions (MSE) enabled.
+       // When the browser has built-in HLS support (check using `canPlayType`), we can provide an HLS manifest (i.e. .m3u8 URL) directly to the video element throught the `src` property.
+       // This is using the built-in support of the plain video element, without using hls.js.
+        else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = 'https://video-auth6.iol.pt/live_cnn/live_cnn/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9My8yLzIwMjYgMTA6MjY6MTcgQU0maGFzaF92YWx1ZT1IbkFZNjNUVVJKRmM3OXEyaDJpV2dBPT0mdmFsaWRtaW51dGVzPTE0NDAmaWQ9ZWNhNTAzMGEtNTM2MC00MzlmLTg4OTAtYmUxYmQ2YmQwOWFi';
+          video.addEventListener('canplay',function() {
+            video.play();
+          });
+        }
+      
 
 
 
