@@ -12361,12 +12361,21 @@ canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
     btnAnterior.style.top = '50%';
     btnAnterior.style.transform = 'translateY(-50%)';
 
-    btnAnterior.onclick = () => {
-      let novoIndex = canalAtualIndex - 1;
-      if (novoIndex < 0) novoIndex = canaisStreaming.length - 1;
-      videoModal.remove();
-      abrirVideo(canaisStreaming[novoIndex]);
-    };
+btnAnterior.onclick = () => {
+  let novoIndex = canalAtualIndex - 1;
+  if (novoIndex < 0) novoIndex = canaisStreaming.length - 1;
+
+  const canalAnterior = canaisStreaming[novoIndex];
+
+  // 🔹 Abre o modal de players se houver múltiplos
+  if (canalAnterior.player && canalAnterior.player.length > 1) {
+    abrirPlayerModal(canalAnterior);
+  } else {
+    abrirVideo(canalAnterior);
+  }
+
+  videoModal.remove(); // remove o modal atual
+};
 
     const btnProximo = document.createElement('button');
     btnProximo.textContent = '▶';
@@ -12376,12 +12385,20 @@ canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
     btnProximo.style.top = '50%';
     btnProximo.style.transform = 'translateY(-50%)';
 
-    btnProximo.onclick = () => {
-      let novoIndex = canalAtualIndex + 1;
-      if (novoIndex >= canaisStreaming.length) novoIndex = 0;
-      videoModal.remove();
-      abrirVideo(canaisStreaming[novoIndex]);
-    };
+btnProximo.onclick = () => {
+  let novoIndex = canalAtualIndex + 1;
+  if(novoIndex >= canaisStreaming.length) novoIndex = 0;
+
+  const proximoCanal = canaisStreaming[novoIndex];
+
+  if(proximoCanal.player && proximoCanal.player.length > 1){
+    abrirPlayerModal(proximoCanal);
+  } else {
+    abrirVideo(proximoCanal);
+  }
+
+  videoModal.remove(); // remove o modal atual
+};
 
     videoModal.appendChild(btnAnterior);
     videoModal.appendChild(btnProximo);
