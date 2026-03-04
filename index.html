@@ -14042,6 +14042,36 @@ async function loadTVI() {
 
 loadTVI();
 
+
+function abrirCanal(canal) {
+  const player = document.getElementById("player");
+
+  if (canal.tipo === "iframe") {
+    player.innerHTML = `
+      <iframe 
+        src="${canal.link}" 
+        width="100%" 
+        height="500" 
+        frameborder="0" 
+        allowfullscreen>
+      </iframe>
+    `;
+  } else {
+    player.innerHTML = `
+      <video id="video" controls width="100%"></video>
+    `;
+
+    const video = document.getElementById('video');
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(canal.link);
+      hls.attachMedia(video);
+    } else {
+      video.src = canal.link;
+    }
+  }
+}
 	
 
 </script>
