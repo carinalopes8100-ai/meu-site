@@ -2769,7 +2769,7 @@ const filmes = [
     titulo: "TVI",
     img: "https://img.iol.pt/image/id/5f49477f0cf2e21cf33181c7/600.jpg",
     baseUrl: "https://video-auth6.iol.pt/live_tvi/live_tvi/playlist.m3u8",
-    tipo: "iframe"
+    tipo: "canal-com-token"
   },
                                     {
     titulo: "TVI Reality",
@@ -13608,8 +13608,16 @@ async function getHlsUrl(baseUrl) {
 
 // --- COLOQUE AQUI ---
 async function playChannel(canal) {
+  const playerDiv = document.getElementById('player');
+  playerDiv.innerHTML = `<video id="video" controls width="100%"></video>`;
   const video = document.getElementById('video');
-  const url = await getHlsUrl(canal.baseUrl);
+
+  let url = canal.link;
+
+  // Se o canal precisa de token, monta a URL HLS
+  if (canal.tipo === "canal-com-token") {
+    url = await getHlsUrl(canal.baseUrl);
+  }
 
   if (Hls.isSupported()) {
     const hls = new Hls({ enableWorker: true, lowLatencyMode: true, backBufferLength: 30 });
@@ -13620,7 +13628,7 @@ async function playChannel(canal) {
     video.src = url;
     video.addEventListener('loadedmetadata', () => video.play().catch(() => {}));
   } else {
-    video.outerHTML = "<p>Este navegador não suporta HLS.</p>";
+    playerDiv.innerHTML = "<p>Este navegador não suporta HLS.</p>";
   }
 }
 
