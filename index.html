@@ -13469,6 +13469,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
   reaplicarSelecaoEpisodios();
   reaplicarSelecaoTemporadas();
 
+  // 🎬 Aqui você pode tocar o canal TVI automaticamente
+  const tvi = canaisStreaming.find(c => c.titulo === "TVI");
+  if (tvi) playCanal(tvi);
+
+	
   // Banner
   const bannerImage = document.getElementById('bannerImage');
   const bannerVideo = document.getElementById('bannerVideo');
