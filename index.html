@@ -14107,6 +14107,47 @@ async function playCanal(canal) {
     player.innerHTML = "<p>Este navegador não suporta HLS.</p>";
   }
 }
+
+	// ===== Snippet pronto para tocar TVI com token =====
+document.addEventListener('DOMContentLoaded', () => {
+  const tvi = canaisStreaming.find(c => c.titulo === "TVI");
+  if (!tvi) return;
+
+  async function playCanal(canal) {
+    const player = document.getElementById('player');
+    if (!player) return;
+
+    player.innerHTML = `<video id="videoCanal" controls autoplay width="100%"></video>`;
+    const video = document.getElementById('videoCanal');
+
+    let url = canal.link || canal.baseUrl;
+
+    // Se precisar de token
+    if (canal.tipo === "canal-com-token" && canal.baseUrl) {
+      try {
+        const token = await fetch('https://services.iol.pt/matrix?userId=12345')
+                              .then(res => res.text());
+        url = `${canal.baseUrl}?wmsAuthSign=${token}`;
+      } catch {
+        console.warn("Não foi possível obter token, canal pode não carregar.");
+      }
+    }
+
+    if (Hls.isSupported()) {
+      const hls = new Hls({ enableWorker: true, lowLatencyMode: true, backBufferLength: 90 });
+      hls.loadSource(url);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MEDIA_ATTACHED, () => video.play().catch(() => {}));
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = url;
+      video.addEventListener('loadedmetadata', () => video.play().catch(() => {}));
+    } else {
+      player.innerHTML = "<p>Este navegador não suporta HLS.</p>";
+    }
+  }
+
+  playCanal(tvi);
+});
 	
 
 </script>
