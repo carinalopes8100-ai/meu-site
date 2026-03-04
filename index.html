@@ -14066,6 +14066,42 @@ function abrirCanal(canal) {
   // Chama a função HLS que pega o token e toca o vídeo
   playChannel(canal);
 }
+
+
+
+
+	// ===== Função para tocar canal HLS (TV Tuga / outros) =====
+async function playCanal(canal) {
+  const player = document.getElementById('player');
+  player.innerHTML = `<video id="videoCanal" controls autoplay width="100%"></video>`;
+  const video = document.getElementById('videoCanal');
+
+  let url = canal.link || canal.baseUrl;
+
+  // Se precisar de token
+  if (canal.tipo === "canal-com-token" && canal.baseUrl) {
+    const token = await fetch('https://services.iol.pt/matrix?userId=12345')
+                          .then(res => res.text())
+                          .catch(() => '');
+    url = `${canal.baseUrl}?wmsAuthSign=${token}`;
+  }
+
+  if (Hls.isSupported()) {
+    const hls = new Hls({
+      enableWorker: true,
+      lowLatencyMode: true,
+      backBufferLength: 90
+    });
+    hls.loadSource(url);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MEDIA_ATTACHED, () => video.play().catch(() => {}));
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = url;
+    video.addEventListener('loadedmetadata', () => video.play().catch(() => {}));
+  } else {
+    player.innerHTML = "<p>Este navegador não suporta HLS.</p>";
+  }
+}
 	
 
 </script>
