@@ -14108,45 +14108,55 @@ async function playCanal(canal) {
   }
 }
 
-	// ===== Snippet pronto para tocar TVI com token =====
+// ===== Snippet seguro para tocar TVI com token =====
 document.addEventListener('DOMContentLoaded', () => {
+  // Encontra o canal TVI no seu array
   const tvi = canaisStreaming.find(c => c.titulo === "TVI");
   if (!tvi) return;
 
-  async function playCanal(canal) {
+  // Função para tocar o canal dentro do player
+  async function tocarTVI() {
     const player = document.getElementById('player');
     if (!player) return;
 
+    // Cria o vídeo
     player.innerHTML = `<video id="videoCanal" controls autoplay width="100%"></video>`;
     const video = document.getElementById('videoCanal');
 
-    let url = canal.link || canal.baseUrl;
+    // Monta a URL do canal
+    let url = tvi.link || tvi.baseUrl;
 
-    // Se precisar de token
-    if (canal.tipo === "canal-com-token" && canal.baseUrl) {
+    // Se o canal precisar de token
+    if (tvi.tipo === "canal-com-token" && tvi.baseUrl) {
       try {
         const token = await fetch('https://services.iol.pt/matrix?userId=12345')
                               .then(res => res.text());
-        url = `${canal.baseUrl}?wmsAuthSign=${token}`;
+        url = `${tvi.baseUrl}?wmsAuthSign=${token}`;
       } catch {
-        console.warn("Não foi possível obter token, canal pode não carregar.");
+        console.warn("Não foi possível obter token. O canal pode não carregar.");
       }
     }
 
+    // Usa HLS se suportado
     if (Hls.isSupported()) {
       const hls = new Hls({ enableWorker: true, lowLatencyMode: true, backBufferLength: 90 });
       hls.loadSource(url);
       hls.attachMedia(video);
       hls.on(Hls.Events.MEDIA_ATTACHED, () => video.play().catch(() => {}));
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    } 
+    // Safari / iOS
+    else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = url;
       video.addEventListener('loadedmetadata', () => video.play().catch(() => {}));
-    } else {
+    } 
+    else {
       player.innerHTML = "<p>Este navegador não suporta HLS.</p>";
     }
   }
 
-  playCanal(tvi);
+  // Chama a função só quando quiser tocar automaticamente
+  // Você pode trocar por um botão de play se preferir
+  tocarTVI();
 });
 	
 
