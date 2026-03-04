@@ -2768,7 +2768,7 @@ const filmes = [
                                        {
     titulo: "TVI",
     img: "https://img.iol.pt/image/id/5f49477f0cf2e21cf33181c7/600.jpg",
-    link: "https://tviplayer.iol.pt/direto",
+    baseUrl: "https://video-auth6.iol.pt/live_tvi/live_tvi/playlist.m3u8",
     tipo: "iframe"
   },
                                     {
@@ -13593,6 +13593,39 @@ window.addEventListener('resize', () => {
 
 let canalAtualIndex = -1;	
 
+
+// ----- Funções de vídeo HLS para canais -----
+
+async function getToken() {
+  const res = await fetch('https://services.iol.pt/matrix?userId=12345');
+  return await res.text();
+}
+
+async function getHlsUrl(baseUrl) {
+  const token = await getToken();
+  return `${baseUrl}?wmsAuthSign=${token}`;
+}
+
+// --- COLOQUE AQUI ---
+async function playChannel(canal) {
+  const video = document.getElementById('video');
+  const url = await getHlsUrl(canal.baseUrl);
+
+  if (Hls.isSupported()) {
+    const hls = new Hls({ enableWorker: true, lowLatencyMode: true, backBufferLength: 30 });
+    hls.loadSource(url);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MEDIA_ATTACHED, () => video.play().catch(() => {}));
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = url;
+    video.addEventListener('loadedmetadata', () => video.play().catch(() => {}));
+  } else {
+    video.outerHTML = "<p>Este navegador não suporta HLS.</p>";
+  }
+}
+
+	
+
 function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
 
 canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
@@ -14013,58 +14046,17 @@ function abrirEmbedModal(url, titulo = 'Embed') {
 
 
 
-	async function getToken() {
-  // Chama a API que devolve o token
-  const res = await fetch('https://services.iol.pt/matrix?userId=12345');
-  const token = await res.text(); // ou json(), depende do retorno
-  return token;
-}
 
-async function loadTVI() {
-  const video = document.getElementById('video');
-  const token = await getToken();
-  const url = `https://video-auth7.iol.pt/live_tvi/live_tvi/playlist.m3u8?wmsAuthSign=${token}`;
-
-  if (Hls.isSupported()) {
-    const hls = new Hls();
-    hls.loadSource(url);
-    hls.attachMedia(video);
-  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    video.src = url;
-  }
-}
-
-loadTVI();
 
 
 function abrirCanal(canal) {
   const player = document.getElementById("player");
 
-  if (canal.tipo === "iframe") {
-    player.innerHTML = `
-      <iframe 
-        src="${canal.link}" 
-        width="100%" 
-        height="500" 
-        frameborder="0" 
-        allowfullscreen>
-      </iframe>
-    `;
-  } else {
-    player.innerHTML = `
-      <video id="video" controls width="100%"></video>
-    `;
+  // Limpa conteúdo antigo
+  player.innerHTML = `<video id="video" controls width="100%" autoplay></video>`;
 
-    const video = document.getElementById('video');
-
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(canal.link);
-      hls.attachMedia(video);
-    } else {
-      video.src = canal.link;
-    }
-  }
+  // Chama a função HLS que pega o token e toca o vídeo
+  playChannel(canal);
 }
 	
 
