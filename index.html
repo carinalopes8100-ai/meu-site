@@ -707,6 +707,57 @@ video::cue {
     url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
 }
 
+#authLoading {
+  position: fixed;
+  inset: 0;
+  z-index: 50010;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.9)),
+    url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+}
+
+#authLoading[hidden] {
+  display: none !important;
+}
+
+.auth-loading-card {
+  width: min(100%, 380px);
+  padding: 30px 24px;
+  border-radius: 18px;
+  background: rgba(20, 20, 20, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  text-align: center;
+}
+
+.auth-loading-spinner {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #e50914;
+  animation: authSpin 0.9s linear infinite;
+}
+
+@keyframes authSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.auth-loading-card h2 {
+  margin-bottom: 8px;
+}
+
+.auth-loading-card p {
+  color: rgba(255, 255, 255, 0.78);
+}
+
 #authGate[hidden] {
   display: none !important;
 }
@@ -965,6 +1016,14 @@ video::cue {
 </style>
 </head>
 <body>
+<div id="authLoading">
+  <div class="auth-loading-card">
+    <div class="auth-loading-spinner"></div>
+    <h2>A carregar</h2>
+    <p>A verificar a tua sessão...</p>
+  </div>
+</div>
+
 <div id="authGate">
   <div class="auth-card">
     <div class="auth-brand">TUGAFLIX</div>
@@ -1199,6 +1258,7 @@ let currentAuthUser = null;
 let userDataLoaded = false;
 let persistTimer = null;
 let authMode = 'login';
+let authResolved = false;
 
 function hasFirebaseConfig() {
   return Boolean(
@@ -1406,6 +1466,7 @@ async function carregarDadosUtilizador(user) {
 }
 
 function toggleSiteAccess(user) {
+  const authLoading = document.getElementById('authLoading');
   const authGate = document.getElementById('authGate');
   const siteShell = document.getElementById('siteShell');
   const logoutButton = document.getElementById('logoutButton');
@@ -1415,6 +1476,7 @@ function toggleSiteAccess(user) {
   const displayName = user?.displayName?.trim();
   const fallbackName = user?.email ? user.email.split('@')[0] : 'Sessao iniciada';
 
+  if (authLoading) authLoading.hidden = authResolved;
   if (authGate) authGate.hidden = isLoggedIn;
   if (siteShell) siteShell.classList.toggle('is-authenticated', isLoggedIn);
   if (logoutButton) logoutButton.style.display = isLoggedIn ? 'inline-flex' : 'none';
@@ -1425,6 +1487,14 @@ function toggleSiteAccess(user) {
     setAuthMessage('');
   } else {
     fecharDefinicoesPerfil();
+  }
+
+  if (!authResolved && authGate) {
+    authGate.hidden = true;
+  }
+
+  if (authResolved && !isLoggedIn && authGate) {
+    authGate.hidden = false;
   }
 }
 
@@ -1642,6 +1712,7 @@ function initializeAuth() {
 
   authReady = true;
   firebase.auth().onAuthStateChanged(async user => {
+    authResolved = true;
     await aplicarSessaoAutenticada(user);
   });
 }
