@@ -685,9 +685,179 @@ video::cue {
   transition: opacity 0.3s;
 }
 .filme:hover .remove-continuar-btn { opacity: 1; }
+
+.site-shell {
+  display: none;
+}
+
+.site-shell.is-authenticated {
+  display: block;
+}
+
+#authGate {
+  position: fixed;
+  inset: 0;
+  z-index: 50000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.88)),
+    url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+}
+
+#authGate[hidden] {
+  display: none !important;
+}
+
+.auth-card {
+  width: min(100%, 420px);
+  padding: 32px 28px;
+  border-radius: 18px;
+  background: rgba(20, 20, 20, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+.auth-brand {
+  color: #e50914;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.auth-card h2 {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
+.auth-card p {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.5;
+}
+
+.auth-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+}
+
+.auth-form input:focus {
+  border-color: #e50914;
+  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.18);
+}
+
+.auth-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.auth-actions button,
+#logoutButton {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.auth-actions button:hover,
+#logoutButton:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+.auth-primary {
+  background: #e50914;
+  color: #fff;
+}
+
+.auth-secondary {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.auth-tertiary {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+#authMessage {
+  min-height: 22px;
+  margin-top: 14px;
+  font-size: 14px;
+  color: #ffd166;
+}
+
+.auth-user-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 12px;
+}
+
+#authUserEmail {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#logoutButton {
+  display: none;
+  background: #e50914;
+  color: #fff;
+  padding: 10px 14px;
+}
+
+@media (max-width: 900px) {
+  .auth-user-bar {
+    display: none;
+  }
+}
 </style>
 </head>
 <body>
+<div id="authGate">
+  <div class="auth-card">
+    <div class="auth-brand">TUGAFLIX</div>
+    <h2>Entrar com conta</h2>
+    <p>Para abrir o site, cria uma conta ou entra com o teu email e palavra-passe.</p>
+
+    <div class="auth-form">
+      <input type="email" id="authEmail" placeholder="Email" autocomplete="email">
+      <input type="password" id="authPassword" placeholder="Palavra-passe" autocomplete="current-password">
+    </div>
+
+    <div class="auth-actions">
+      <button class="auth-primary" type="button" onclick="loginUser()">Entrar</button>
+      <button class="auth-secondary" type="button" onclick="registerUser()">Criar conta</button>
+      <button class="auth-tertiary" type="button" onclick="resetPassword()">Recuperar palavra-passe</button>
+    </div>
+
+    <div id="authMessage"></div>
+  </div>
+</div>
+
+<div id="siteShell" class="site-shell">
 
 
 
@@ -731,6 +901,11 @@ video::cue {
 <div id="searchContainer">
   <input type="text" id="searchInput" placeholder="Pesquisar...">
   <button id="searchButton">🔍︎</button>
+</div>
+
+<div class="auth-user-bar">
+  <span id="authUserEmail"></span>
+  <button id="logoutButton" type="button" onclick="logoutUser()">Sair</button>
 </div>
 
 </header>
@@ -831,7 +1006,10 @@ video::cue {
 </div> 
 
 <div id="toastContainer" class="toast-container"></div>
+</div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script>
 
  
@@ -847,6 +1025,146 @@ document.addEventListener('keydown', e => {
     e.preventDefault();
   }
 });
+
+const firebaseConfig = window.TUGAFLIX_FIREBASE_CONFIG || {
+  apiKey: "AIzaSyCSSXonJRIW7IB13hqdaqKdjMVaoToCwkQ",
+  authDomain: "tugaflix-82eec.firebaseapp.com",
+  projectId: "tugaflix-82eec",
+  appId: "1:1070182388349:web:02127fdada052662949714"
+};
+
+let authReady = false;
+
+function hasFirebaseConfig() {
+  return Boolean(
+    firebaseConfig.apiKey &&
+    firebaseConfig.authDomain &&
+    firebaseConfig.projectId &&
+    firebaseConfig.appId &&
+    !firebaseConfig.apiKey.includes("COLOCA_") &&
+    !firebaseConfig.authDomain.includes("COLOCA_") &&
+    !firebaseConfig.projectId.includes("COLOCA_") &&
+    !firebaseConfig.appId.includes("COLOCA_")
+  );
+}
+
+function setAuthMessage(message, isError = false) {
+  const authMessage = document.getElementById('authMessage');
+  if (!authMessage) return;
+  authMessage.textContent = message;
+  authMessage.style.color = isError ? '#ff8a80' : '#ffd166';
+}
+
+function toggleSiteAccess(user) {
+  const authGate = document.getElementById('authGate');
+  const siteShell = document.getElementById('siteShell');
+  const logoutButton = document.getElementById('logoutButton');
+  const authUserEmail = document.getElementById('authUserEmail');
+  const isLoggedIn = Boolean(user);
+
+  if (authGate) authGate.hidden = isLoggedIn;
+  if (siteShell) siteShell.classList.toggle('is-authenticated', isLoggedIn);
+  if (logoutButton) logoutButton.style.display = isLoggedIn ? 'inline-flex' : 'none';
+  if (authUserEmail) authUserEmail.textContent = isLoggedIn ? (user.email || 'Sessao iniciada') : '';
+
+  if (isLoggedIn) {
+    setAuthMessage('');
+  }
+}
+
+function getAuthFormValues() {
+  const email = document.getElementById('authEmail')?.value.trim();
+  const password = document.getElementById('authPassword')?.value || '';
+  return { email, password };
+}
+
+function ensureAuthReady() {
+  if (!window.firebase || !firebase.apps?.length || !authReady) {
+    setAuthMessage('Falta ligar o Firebase antes de usar o login.', true);
+    return false;
+  }
+
+  return true;
+}
+
+function loginUser() {
+  if (!ensureAuthReady()) return;
+
+  const { email, password } = getAuthFormValues();
+  if (!email || !password) {
+    setAuthMessage('Preenche o email e a palavra-passe.', true);
+    return;
+  }
+
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(() => setAuthMessage('Sessao iniciada com sucesso.'))
+    .catch(error => setAuthMessage(error.message, true));
+}
+
+function registerUser() {
+  if (!ensureAuthReady()) return;
+
+  const { email, password } = getAuthFormValues();
+  if (!email || !password) {
+    setAuthMessage('Preenche o email e a palavra-passe para criar conta.', true);
+    return;
+  }
+
+  if (password.length < 6) {
+    setAuthMessage('A palavra-passe tem de ter pelo menos 6 caracteres.', true);
+    return;
+  }
+
+  firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then(() => setAuthMessage('Conta criada. Ja podes entrar no site.'))
+    .catch(error => setAuthMessage(error.message, true));
+}
+
+function resetPassword() {
+  if (!ensureAuthReady()) return;
+
+  const { email } = getAuthFormValues();
+  if (!email) {
+    setAuthMessage('Escreve o teu email para recuperar a palavra-passe.', true);
+    return;
+  }
+
+  firebase.auth().sendPasswordResetEmail(email)
+    .then(() => setAuthMessage('Enviamos um email para redefinir a palavra-passe.'))
+    .catch(error => setAuthMessage(error.message, true));
+}
+
+function logoutUser() {
+  if (!ensureAuthReady()) return;
+
+  firebase.auth().signOut()
+    .then(() => setAuthMessage('Sessao terminada.'))
+    .catch(error => setAuthMessage(error.message, true));
+}
+
+function initializeAuth() {
+  if (!window.firebase) {
+    setAuthMessage('Nao foi possivel carregar o Firebase.', true);
+    return;
+  }
+
+  if (!hasFirebaseConfig()) {
+    setAuthMessage('Falta configurar o Firebase no topo do script para ativar o login.', true);
+    toggleSiteAccess(null);
+    return;
+  }
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  authReady = true;
+  firebase.auth().onAuthStateChanged(user => {
+    toggleSiteAccess(user);
+  });
+}
+
+initializeAuth();
 
 
 
