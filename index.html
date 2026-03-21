@@ -1259,6 +1259,7 @@ let userDataLoaded = false;
 let persistTimer = null;
 let authMode = 'login';
 let authResolved = false;
+let googleRedirectPending = false;
 
 function hasFirebaseConfig() {
   return Boolean(
@@ -1278,6 +1279,35 @@ function setAuthMessage(message, isError = false) {
   if (!authMessage) return;
   authMessage.textContent = message;
   authMessage.style.color = isError ? '#ff8a80' : '#ffd166';
+}
+
+function handleFirebaseError(error, fallbackMessage = 'Nao foi possivel concluir a operacao.') {
+  if (!error) {
+    setAuthMessage(fallbackMessage, true);
+    return;
+  }
+
+  if (error.code === 'auth/operation-not-allowed') {
+    setAuthMessage('Ativa o login com Google no Firebase para usar este botao.', true);
+    return;
+  }
+
+  if (error.code === 'auth/unauthorized-domain') {
+    setAuthMessage('Falta autorizar este dominio no Firebase Authentication.', true);
+    return;
+  }
+
+  if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
+    setAuthMessage('O browser bloqueou a janela do Google. Vamos tentar pelo redirecionamento.', true);
+    return;
+  }
+
+  if (error.code === 'auth/web-storage-unsupported') {
+    setAuthMessage('Este browser esta a bloquear o armazenamento necessario para o login Google.', true);
+    return;
+  }
+
+  setAuthMessage(error.message || fallbackMessage, true);
 }
 
 function setProfileSettingsMessage(message, isError = false) {
@@ -1588,6 +1618,9 @@ function loginWithGoogle() {
   const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 
   if (isMobileDevice) {
+    googleRedirectPending = true;
+    sessionStorage.setItem('googleRedirectPending', '1');
+    setAuthMessage('A abrir o Google...', false);
     firebase.auth().signInWithRedirect(provider);
     return;
   }
@@ -1598,26 +1631,18 @@ function loginWithGoogle() {
       setAuthMessage('Sessao iniciada com Google.');
     })
     .catch(error => {
-      if (error.code === 'auth/operation-not-allowed') {
-        setAuthMessage('Ativa o login com Google no Firebase para usar este botao.', true);
-        return;
-      }
-
       if (
         error.code === 'auth/popup-blocked' ||
         error.code === 'auth/popup-closed-by-user' ||
         error.code === 'auth/cancelled-popup-request'
       ) {
+        googleRedirectPending = true;
+        sessionStorage.setItem('googleRedirectPending', '1');
         firebase.auth().signInWithRedirect(provider);
         return;
       }
 
-      if (error.code === 'auth/unauthorized-domain') {
-        setAuthMessage('Falta autorizar este dominio no Firebase Authentication.', true);
-        return;
-      }
-
-      setAuthMessage(error.message, true);
+      handleFirebaseError(error);
     });
 }
 
@@ -1706,12 +1731,37 @@ function initializeAuth() {
     firebase.initializeApp(firebaseConfig);
   }
 
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(() => {});
+
   if (firebase.firestore) {
     db = firebase.firestore();
   }
 
+  googleRedirectPending = sessionStorage.getItem('googleRedirectPending') === '1';
+
   authReady = true;
+  firebase.auth().getRedirectResult()
+    .then(async result => {
+      if (result?.user) {
+        sessionStorage.removeItem('googleRedirectPending');
+        googleRedirectPending = false;
+        await aplicarSessaoAutenticada(result.user);
+        setAuthMessage('Sessao iniciada com Google.');
+      } else if (googleRedirectPending) {
+        setAuthMessage('Se o Google nao abriu, tenta no Chrome do telemovel ou desativa o bloqueio do browser para este site.', true);
+      }
+    })
+    .catch(error => {
+      sessionStorage.removeItem('googleRedirectPending');
+      googleRedirectPending = false;
+      handleFirebaseError(error, 'Nao foi possivel concluir o regresso do Google.');
+    });
+
   firebase.auth().onAuthStateChanged(async user => {
+    if (user) {
+      sessionStorage.removeItem('googleRedirectPending');
+      googleRedirectPending = false;
+    }
     authResolved = true;
     await aplicarSessaoAutenticada(user);
   });
