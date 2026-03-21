@@ -848,7 +848,7 @@ video::cue {
   align-items: center;
   justify-content: center;
   width: 42px;
-  height: 42px;
+  height: 40px;
   padding: 0;
   background: rgba(255, 255, 255, 0.14);
   color: #fff;
@@ -975,6 +975,7 @@ video::cue {
     <div class="settings-form">
       <input type="text" id="settingsName" placeholder="Nome" autocomplete="name">
       <input type="email" id="settingsEmail" placeholder="Email" autocomplete="email">
+      <input type="password" id="settingsCurrentPassword" placeholder="Palavra-passe atual" autocomplete="current-password">
       <input type="password" id="settingsPassword" placeholder="Nova palavra-passe" autocomplete="new-password">
     </div>
 
@@ -1033,8 +1034,8 @@ video::cue {
 
 <div class="auth-user-bar">
   <span id="authUserEmail"></span>
-  <button id="settingsButton" type="button" onclick="openSettingsModal()" aria-label="Configuracoes">⚙</button>
   <button id="logoutButton" type="button" onclick="logoutUser()">Sair</button>
+  <button id="settingsButton" type="button" onclick="openSettingsModal()" aria-label="Configuracoes">⚙</button>
 </div>
 
 </header>
@@ -1268,10 +1269,12 @@ function openSettingsModal() {
   const settingsModal = document.getElementById('settingsModal');
   const settingsName = document.getElementById('settingsName');
   const settingsEmail = document.getElementById('settingsEmail');
+  const settingsCurrentPassword = document.getElementById('settingsCurrentPassword');
   const settingsPassword = document.getElementById('settingsPassword');
 
   if (settingsName) settingsName.value = user.displayName || '';
   if (settingsEmail) settingsEmail.value = user.email || '';
+  if (settingsCurrentPassword) settingsCurrentPassword.value = '';
   if (settingsPassword) settingsPassword.value = '';
 
   setSettingsMessage('');
@@ -1280,8 +1283,10 @@ function openSettingsModal() {
 
 function closeSettingsModal() {
   const settingsModal = document.getElementById('settingsModal');
+  const settingsCurrentPassword = document.getElementById('settingsCurrentPassword');
   const settingsPassword = document.getElementById('settingsPassword');
 
+  if (settingsCurrentPassword) settingsCurrentPassword.value = '';
   if (settingsPassword) settingsPassword.value = '';
   setSettingsMessage('');
   if (settingsModal) settingsModal.classList.remove('show');
@@ -1298,10 +1303,23 @@ async function saveUserSettings() {
 
   const newName = document.getElementById('settingsName')?.value.trim() || '';
   const newEmail = document.getElementById('settingsEmail')?.value.trim() || '';
+  const currentPassword = document.getElementById('settingsCurrentPassword')?.value || '';
   const newPassword = document.getElementById('settingsPassword')?.value || '';
   const updates = [];
+  const needsSensitiveUpdate =
+    (newEmail && newEmail !== (user.email || '')) || Boolean(newPassword);
 
   try {
+    if (needsSensitiveUpdate) {
+      if (!currentPassword) {
+        setSettingsMessage('Escreve a palavra-passe atual para alterar email ou palavra-passe.', true);
+        return;
+      }
+
+      const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
+      await user.reauthenticateWithCredential(credential);
+    }
+
     if (newName && newName !== (user.displayName || '')) {
       updates.push(user.updateProfile({ displayName: newName }));
     }
@@ -1325,10 +1343,19 @@ async function saveUserSettings() {
 
     await Promise.all(updates);
     toggleSiteAccess(firebase.auth().currentUser);
+    const settingsCurrentPassword = document.getElementById('settingsCurrentPassword');
+    const settingsPassword = document.getElementById('settingsPassword');
+    if (settingsCurrentPassword) settingsCurrentPassword.value = '';
+    if (settingsPassword) settingsPassword.value = '';
     setSettingsMessage('Dados atualizados com sucesso.');
   } catch (error) {
     if (error.code === 'auth/requires-recent-login') {
       setSettingsMessage('Para alterar email ou palavra-passe, volta a iniciar sessao e tenta novamente.', true);
+      return;
+    }
+
+    if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+      setSettingsMessage('A palavra-passe atual nao esta correta.', true);
       return;
     }
 
