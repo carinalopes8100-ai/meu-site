@@ -1588,6 +1588,7 @@ function loginWithGoogle() {
   const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 
   if (isMobileDevice) {
+    setAuthMessage('A abrir o Google...', false);
     firebase.auth().signInWithRedirect(provider);
     return;
   }
@@ -1706,11 +1707,25 @@ function initializeAuth() {
     firebase.initializeApp(firebaseConfig);
   }
 
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(() => {});
+
   if (firebase.firestore) {
     db = firebase.firestore();
   }
 
   authReady = true;
+  firebase.auth().getRedirectResult()
+    .then(async result => {
+      if (result?.user) {
+        authResolved = true;
+        await aplicarSessaoAutenticada(result.user);
+        setAuthMessage('Sessao iniciada com Google.');
+      }
+    })
+    .catch(error => {
+      setAuthMessage(error.message || 'Nao foi possivel concluir o login com Google.', true);
+    });
+
   firebase.auth().onAuthStateChanged(async user => {
     authResolved = true;
     await aplicarSessaoAutenticada(user);
