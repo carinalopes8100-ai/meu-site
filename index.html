@@ -1115,9 +1115,32 @@ function scheduleUserDataPersist() {
 
 async function aplicarSessaoAutenticada(user) {
   currentAuthUser = user;
-  userDataLoaded = false;
-  await carregarDadosUtilizador(user);
   toggleSiteAccess(user);
+
+  if (!user) {
+    userDataLoaded = false;
+    await carregarDadosUtilizador(user);
+  } else {
+    userDataLoaded = false;
+    carregarDadosUtilizador(user)
+      .then(() => {
+        if (document.getElementById('root')) {
+          mostrarSecao(secaoAtual || 'inicio');
+          if (typeof atualizarBannerBtn === 'function') atualizarBannerBtn();
+        }
+      })
+      .catch(error => {
+        console.warn('Falha ao aplicar dados sincronizados do utilizador.', error);
+      });
+  }
+
+  if (!user) {
+    if (document.getElementById('root')) {
+      mostrarSecao(secaoAtual || 'inicio');
+      if (typeof atualizarBannerBtn === 'function') atualizarBannerBtn();
+    }
+    return;
+  }
 
   if (document.getElementById('root')) {
     mostrarSecao(secaoAtual || 'inicio');
