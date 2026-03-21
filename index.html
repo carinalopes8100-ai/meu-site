@@ -792,6 +792,11 @@ video::cue {
   color: #fff;
 }
 
+.auth-google {
+  background: #ffffff;
+  color: #111111;
+}
+
 .auth-tertiary {
   background: transparent;
   color: #fff;
@@ -850,6 +855,7 @@ video::cue {
     <div class="auth-actions">
       <button class="auth-primary" type="button" onclick="loginUser()">Entrar</button>
       <button class="auth-secondary" type="button" onclick="registerUser()">Criar conta</button>
+      <button class="auth-google" type="button" onclick="loginWithGoogle()">Entrar com Google</button>
       <button class="auth-tertiary" type="button" onclick="resetPassword()">Recuperar palavra-passe</button>
     </div>
 
@@ -1027,10 +1033,10 @@ document.addEventListener('keydown', e => {
 });
 
 const firebaseConfig = window.TUGAFLIX_FIREBASE_CONFIG || {
-  apiKey: "AIzaSyB5nfRQzdl4KDSkK6rI1ZNhar1H_kvR484",,
-  authDomain: "tugaflix-b7979.firebaseapp.com",
-  projectId: "tugaflix-b7979",
-  appId: "1:204209891341:web:cbeda6af71af13e99a8d44"
+  apiKey: "AIzaSyCSSXonJRlW7IB13hqdaqKdjMVaoToCwkQ",
+  authDomain: "tugaflix-82eec.firebaseapp.com",
+  projectId: "tugaflix-82eec",
+  appId: "1:1070182388349:web:02127fdada052662949714"
 };
 
 let authReady = false;
@@ -1132,6 +1138,24 @@ function resetPassword() {
   firebase.auth().sendPasswordResetEmail(email)
     .then(() => setAuthMessage('Enviamos um email para redefinir a palavra-passe.'))
     .catch(error => setAuthMessage(error.message, true));
+}
+
+function loginWithGoogle() {
+  if (!ensureAuthReady()) return;
+
+  const provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+
+  firebase.auth().signInWithPopup(provider)
+    .then(() => setAuthMessage('Sessao iniciada com Google.'))
+    .catch(error => {
+      if (error.code === 'auth/operation-not-allowed') {
+        setAuthMessage('Ativa o login com Google no Firebase para usar este botao.', true);
+        return;
+      }
+
+      setAuthMessage(error.message, true);
+    });
 }
 
 function logoutUser() {
