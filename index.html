@@ -694,6 +694,60 @@ video::cue {
   display: block;
 }
 
+#authLoading {
+  position: fixed;
+  inset: 0;
+  z-index: 50010;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.92)),
+    url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+}
+
+#authLoading[hidden] {
+  display: none !important;
+}
+
+.auth-loading-card {
+  width: min(100%, 360px);
+  padding: 30px 26px;
+  border-radius: 18px;
+  background: rgba(20, 20, 20, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  text-align: center;
+}
+
+.auth-loading-spinner {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.18);
+  border-top-color: #e50914;
+  animation: authSpin 0.9s linear infinite;
+}
+
+.auth-loading-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.auth-loading-text {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.5;
+}
+
+@keyframes authSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 #authGate {
   position: fixed;
   inset: 0;
@@ -949,6 +1003,14 @@ video::cue {
 </style>
 </head>
 <body>
+<div id="authLoading">
+  <div class="auth-loading-card">
+    <div class="auth-loading-spinner"></div>
+    <div class="auth-loading-title">A carregar</div>
+    <div id="authLoadingText" class="auth-loading-text">A verificar a tua sessao...</div>
+  </div>
+</div>
+
 <div id="authGate">
   <div class="auth-card">
     <div class="auth-brand">TUGAFLIX</div>
@@ -1186,6 +1248,24 @@ function hasFirebaseConfig() {
   );
 }
 
+function setAuthLoading(isLoading, message = 'A verificar a tua sessao...') {
+  const authLoading = document.getElementById('authLoading');
+  const authLoadingText = document.getElementById('authLoadingText');
+  const authGate = document.getElementById('authGate');
+
+  if (authLoadingText) {
+    authLoadingText.textContent = message;
+  }
+
+  if (authLoading) {
+    authLoading.hidden = !isLoading;
+  }
+
+  if (authGate && isLoading) {
+    authGate.hidden = true;
+  }
+}
+
 function setAuthMessage(message, isError = false) {
   const authMessage = document.getElementById('authMessage');
   if (!authMessage) return;
@@ -1254,6 +1334,7 @@ function toggleSiteAccess(user) {
   const displayName = user?.displayName?.trim();
   const fallbackName = user?.email ? user.email.split('@')[0] : 'Sessao iniciada';
 
+  setAuthLoading(false);
   if (authGate) authGate.hidden = isLoggedIn;
   if (siteShell) siteShell.classList.toggle('is-authenticated', isLoggedIn);
   if (logoutButton) logoutButton.style.display = isLoggedIn ? 'inline-flex' : 'none';
@@ -1478,11 +1559,13 @@ function logoutUser() {
 
 function initializeAuth() {
   if (!window.firebase) {
+    setAuthLoading(false);
     setAuthMessage('Nao foi possivel carregar o Firebase.', true);
     return;
   }
 
   if (!hasFirebaseConfig()) {
+    setAuthLoading(false);
     setAuthMessage('Falta configurar o Firebase no topo do script para ativar o login.', true);
     toggleSiteAccess(null);
     return;
@@ -1498,6 +1581,7 @@ function initializeAuth() {
   });
 }
 
+setAuthLoading(true);
 setAuthMode('login');
 initializeAuth();
 
