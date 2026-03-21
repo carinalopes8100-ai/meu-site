@@ -848,6 +848,7 @@ video::cue {
     <p>Para abrir o site, cria uma conta ou entra com o teu email e palavra-passe.</p>
 
     <div class="auth-form">
+      <input type="text" id="authName" placeholder="Nome" autocomplete="name">
       <input type="email" id="authEmail" placeholder="Email" autocomplete="email">
       <input type="password" id="authPassword" placeholder="Palavra-passe" autocomplete="current-password">
     </div>
@@ -1033,10 +1034,10 @@ document.addEventListener('keydown', e => {
 });
 
 const firebaseConfig = window.TUGAFLIX_FIREBASE_CONFIG || {
-  apiKey: "AIzaSyB5nfRQzdl4KDSkK6rI1ZNhar1H_kvR484",
-  authDomain: "tugaflix-b7979.firebaseapp.com",
-  projectId: "tugaflix-b7979",
-  appId: "1:204209891341:web:cbeda6af71af13e99a8d44"
+  apiKey: "AIzaSyCSSXonJRlW7IB13hqdaqKdjMVaoToCwkQ",
+  authDomain: "tugaflix-82eec.firebaseapp.com",
+  projectId: "tugaflix-82eec",
+  appId: "1:1070182388349:web:02127fdada052662949714"
 };
 
 let authReady = false;
@@ -1067,11 +1068,13 @@ function toggleSiteAccess(user) {
   const logoutButton = document.getElementById('logoutButton');
   const authUserEmail = document.getElementById('authUserEmail');
   const isLoggedIn = Boolean(user);
+  const displayName = user?.displayName?.trim();
+  const fallbackName = user?.email ? user.email.split('@')[0] : 'Sessao iniciada';
 
   if (authGate) authGate.hidden = isLoggedIn;
   if (siteShell) siteShell.classList.toggle('is-authenticated', isLoggedIn);
   if (logoutButton) logoutButton.style.display = isLoggedIn ? 'inline-flex' : 'none';
-  if (authUserEmail) authUserEmail.textContent = isLoggedIn ? (user.email || 'Sessao iniciada') : '';
+  if (authUserEmail) authUserEmail.textContent = isLoggedIn ? (displayName || fallbackName) : '';
 
   if (isLoggedIn) {
     setAuthMessage('');
@@ -1079,9 +1082,10 @@ function toggleSiteAccess(user) {
 }
 
 function getAuthFormValues() {
+  const name = document.getElementById('authName')?.value.trim() || '';
   const email = document.getElementById('authEmail')?.value.trim();
   const password = document.getElementById('authPassword')?.value || '';
-  return { email, password };
+  return { name, email, password };
 }
 
 function ensureAuthReady() {
@@ -1110,9 +1114,9 @@ function loginUser() {
 function registerUser() {
   if (!ensureAuthReady()) return;
 
-  const { email, password } = getAuthFormValues();
-  if (!email || !password) {
-    setAuthMessage('Preenche o email e a palavra-passe para criar conta.', true);
+  const { name, email, password } = getAuthFormValues();
+  if (!name || !email || !password) {
+    setAuthMessage('Preenche o nome, email e palavra-passe para criar conta.', true);
     return;
   }
 
@@ -1122,7 +1126,14 @@ function registerUser() {
   }
 
   firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then(() => setAuthMessage('Conta criada. Ja podes entrar no site.'))
+    .then(({ user }) => user.updateProfile({ displayName: name }))
+    .then(() => {
+      const currentUser = firebase.auth().currentUser;
+      if (currentUser) {
+        toggleSiteAccess(currentUser);
+      }
+      setAuthMessage('Conta criada. Ja podes entrar no site.');
+    })
     .catch(error => setAuthMessage(error.message, true));
 }
 
@@ -14787,8 +14798,8 @@ searchButton.addEventListener('click', (e) => {
 });
 
 const container = document.getElementById("pumpkinContainer");
-const NUM_PUMPKINS = 0;
-const pumpkinURL = "#";
+const NUM_PUMPKINS = 30;
+const pumpkinURL = "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/84f6d3c7-19b3-471c-99b3-ebe943ca814d/dkkyxxj-2ea18044-3c5c-4d81-b199-7479690147b5.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi84NGY2ZDNjNy0xOWIzLTQ3MWMtOTliMy1lYmU5NDNjYTgxNGQvZGtreXh4ai0yZWExODA0NC0zYzVjLTRkODEtYjE5OS03NDc5NjkwMTQ3YjUucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.vS2BqeIFwE9CYFKq4faHslJ2rc5EN2HAOUZVp5htcBo";
 
 const pumpkins = [];
 
