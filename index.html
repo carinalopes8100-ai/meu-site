@@ -1113,6 +1113,18 @@ function scheduleUserDataPersist() {
   }, 500);
 }
 
+async function aplicarSessaoAutenticada(user) {
+  currentAuthUser = user;
+  userDataLoaded = false;
+  await carregarDadosUtilizador(user);
+  toggleSiteAccess(user);
+
+  if (document.getElementById('root')) {
+    mostrarSecao(secaoAtual || 'inicio');
+    if (typeof atualizarBannerBtn === 'function') atualizarBannerBtn();
+  }
+}
+
 async function carregarDadosUtilizador(user) {
   if (!user || !db) {
     minhaLista = normalizarLista(JSON.parse(localStorage.getItem("minhaLista") || '[]'));
@@ -1197,7 +1209,10 @@ function loginUser() {
   }
 
   firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(() => setAuthMessage('Sessao iniciada com sucesso.'))
+    .then(async ({ user }) => {
+      if (user) await aplicarSessaoAutenticada(user);
+      setAuthMessage('Sessao iniciada com sucesso.');
+    })
     .catch(error => setAuthMessage(error.message, true));
 }
 
@@ -1217,10 +1232,10 @@ function registerUser() {
 
   firebase.auth().createUserWithEmailAndPassword(email, password)
     .then(({ user }) => user.updateProfile({ displayName: name }))
-    .then(() => {
+    .then(async () => {
       const currentUser = firebase.auth().currentUser;
       if (currentUser) {
-        toggleSiteAccess(currentUser);
+        await aplicarSessaoAutenticada(currentUser);
       }
       setAuthMessage('Conta criada. Ja podes entrar no site.');
     })
@@ -1254,7 +1269,10 @@ function loginWithGoogle() {
   }
 
   firebase.auth().signInWithPopup(provider)
-    .then(() => setAuthMessage('Sessao iniciada com Google.'))
+    .then(async ({ user }) => {
+      if (user) await aplicarSessaoAutenticada(user);
+      setAuthMessage('Sessao iniciada com Google.');
+    })
     .catch(error => {
       if (error.code === 'auth/operation-not-allowed') {
         setAuthMessage('Ativa o login com Google no Firebase para usar este botao.', true);
@@ -1309,14 +1327,7 @@ function initializeAuth() {
 
   authReady = true;
   firebase.auth().onAuthStateChanged(async user => {
-    currentAuthUser = user;
-    userDataLoaded = false;
-    await carregarDadosUtilizador(user);
-    toggleSiteAccess(user);
-    if (document.getElementById('root')) {
-      mostrarSecao(secaoAtual || 'inicio');
-      if (typeof atualizarBannerBtn === 'function') atualizarBannerBtn();
-    }
+    await aplicarSessaoAutenticada(user);
   });
 }
 
