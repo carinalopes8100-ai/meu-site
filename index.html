@@ -760,6 +760,10 @@ video::cue {
   box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.18);
 }
 
+.auth-field-hidden {
+  display: none;
+}
+
 .auth-actions {
   display: grid;
   gap: 10px;
@@ -844,18 +848,18 @@ video::cue {
 <div id="authGate">
   <div class="auth-card">
     <div class="auth-brand">TUGAFLIX</div>
-    <h2>Entrar com conta</h2>
-    <p>Para abrir o site, cria uma conta ou entra com o teu email e palavra-passe.</p>
+    <h2 id="authTitle">Entrar com conta</h2>
+    <p id="authDescription">Para abrir o site, entra com o teu email e palavra-passe.</p>
 
     <div class="auth-form">
-      <input type="text" id="authName" placeholder="Nome" autocomplete="name">
+      <input type="text" id="authName" class="auth-field-hidden" placeholder="Nome" autocomplete="name">
       <input type="email" id="authEmail" placeholder="Email" autocomplete="email">
       <input type="password" id="authPassword" placeholder="Palavra-passe" autocomplete="current-password">
     </div>
 
     <div class="auth-actions">
-      <button class="auth-primary" type="button" onclick="loginUser()">Entrar</button>
-      <button class="auth-secondary" type="button" onclick="registerUser()">Criar conta</button>
+      <button id="loginButton" class="auth-primary" type="button" onclick="loginUser()">Entrar</button>
+      <button id="registerButton" class="auth-secondary" type="button" onclick="registerUser()">Criar conta</button>
       <button class="auth-google" type="button" onclick="loginWithGoogle()">Entrar com Google</button>
       <button class="auth-tertiary" type="button" onclick="resetPassword()">Recuperar palavra-passe</button>
     </div>
@@ -1041,6 +1045,7 @@ const firebaseConfig = window.TUGAFLIX_FIREBASE_CONFIG || {
 };
 
 let authReady = false;
+let authMode = 'login';
 
 function hasFirebaseConfig() {
   return Boolean(
@@ -1060,6 +1065,50 @@ function setAuthMessage(message, isError = false) {
   if (!authMessage) return;
   authMessage.textContent = message;
   authMessage.style.color = isError ? '#ff8a80' : '#ffd166';
+}
+
+function setAuthMode(mode) {
+  authMode = mode === 'register' ? 'register' : 'login';
+
+  const authTitle = document.getElementById('authTitle');
+  const authDescription = document.getElementById('authDescription');
+  const authName = document.getElementById('authName');
+  const authPassword = document.getElementById('authPassword');
+  const loginButton = document.getElementById('loginButton');
+  const registerButton = document.getElementById('registerButton');
+  const isRegisterMode = authMode === 'register';
+
+  if (authTitle) {
+    authTitle.textContent = isRegisterMode ? 'Criar conta' : 'Entrar com conta';
+  }
+
+  if (authDescription) {
+    authDescription.textContent = isRegisterMode
+      ? 'Preenche nome, email e palavra-passe para criares a tua conta.'
+      : 'Para abrir o site, entra com o teu email e palavra-passe.';
+  }
+
+  if (authName) {
+    authName.classList.toggle('auth-field-hidden', !isRegisterMode);
+    authName.required = isRegisterMode;
+    if (!isRegisterMode) {
+      authName.value = '';
+    }
+  }
+
+  if (authPassword) {
+    authPassword.autocomplete = isRegisterMode ? 'new-password' : 'current-password';
+  }
+
+  if (loginButton) {
+    loginButton.textContent = isRegisterMode ? 'Voltar para entrar' : 'Entrar';
+  }
+
+  if (registerButton) {
+    registerButton.textContent = isRegisterMode ? 'Confirmar conta' : 'Criar conta';
+  }
+
+  setAuthMessage('');
 }
 
 function toggleSiteAccess(user) {
@@ -1098,6 +1147,11 @@ function ensureAuthReady() {
 }
 
 function loginUser() {
+  if (authMode !== 'login') {
+    setAuthMode('login');
+    return;
+  }
+
   if (!ensureAuthReady()) return;
 
   const { email, password } = getAuthFormValues();
@@ -1112,6 +1166,11 @@ function loginUser() {
 }
 
 function registerUser() {
+  if (authMode !== 'register') {
+    setAuthMode('register');
+    return;
+  }
+
   if (!ensureAuthReady()) return;
 
   const { name, email, password } = getAuthFormValues();
@@ -1199,6 +1258,7 @@ function initializeAuth() {
   });
 }
 
+setAuthMode('login');
 initializeAuth();
 
 
