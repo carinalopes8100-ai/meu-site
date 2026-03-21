@@ -767,7 +767,9 @@ video::cue {
 }
 
 .auth-actions button,
-#logoutButton {
+#logoutButton,
+#settingsButton,
+#profileSaveButton {
   border: none;
   border-radius: 10px;
   padding: 12px 16px;
@@ -777,7 +779,9 @@ video::cue {
 }
 
 .auth-actions button:hover,
-#logoutButton:hover {
+#logoutButton:hover,
+#settingsButton:hover,
+#profileSaveButton:hover {
   transform: translateY(-1px);
   opacity: 0.95;
 }
@@ -835,6 +839,61 @@ video::cue {
   background: #e50914;
   color: #fff;
   padding: 10px 14px;
+}
+
+#settingsButton {
+  display: none;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 20px;
+}
+
+#profileSettingsModal .modal-content {
+  max-width: 460px;
+  text-align: left;
+}
+
+.profile-settings-form {
+  display: grid;
+  gap: 12px;
+}
+
+.profile-settings-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.profile-settings-form input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  outline: none;
+}
+
+.profile-settings-form input:focus {
+  border-color: #e50914;
+  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.18);
+}
+
+#profileSettingsMessage {
+  min-height: 20px;
+  margin-top: 12px;
+  font-size: 14px;
+  color: #ffd166;
+}
+
+#profileSaveButton {
+  background: #e50914;
+  color: #fff;
+  margin-top: 14px;
 }
 
 @media (max-width: 900px) {
@@ -916,6 +975,7 @@ video::cue {
 
 <div class="auth-user-bar">
   <span id="authUserEmail"></span>
+  <button id="settingsButton" type="button" onclick="abrirDefinicoesPerfil()" title="Definições">⚙</button>
   <button id="logoutButton" type="button" onclick="logoutUser()">Sair</button>
 </div>
 
@@ -1017,6 +1077,33 @@ video::cue {
 </div> 
 
 <div id="toastContainer" class="toast-container"></div>
+
+<div id="profileSettingsModal" class="modal">
+  <div class="modal-content">
+    <h2>Definições da conta</h2>
+    <div class="profile-settings-form">
+      <label>
+        Nome
+        <input type="text" id="profileName" placeholder="O teu nome" autocomplete="name">
+      </label>
+      <label>
+        Email
+        <input type="email" id="profileEmail" placeholder="novoemail@email.com" autocomplete="email">
+      </label>
+      <label>
+        Palavra-passe atual
+        <input type="password" id="profileCurrentPassword" placeholder="Obrigatória para trocar email ou palavra-passe" autocomplete="current-password">
+      </label>
+      <label>
+        Nova palavra-passe
+        <input type="password" id="profileNewPassword" placeholder="Deixa vazio para manter a atual" autocomplete="new-password">
+      </label>
+    </div>
+    <div id="profileSettingsMessage"></div>
+    <button id="profileSaveButton" type="button" onclick="guardarDefinicoesPerfil()">Guardar alterações</button>
+    <button class="close-btn" type="button" onclick="fecharDefinicoesPerfil()">Fechar</button>
+  </div>
+</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -1070,6 +1157,44 @@ function setAuthMessage(message, isError = false) {
   if (!authMessage) return;
   authMessage.textContent = message;
   authMessage.style.color = isError ? '#ff8a80' : '#ffd166';
+}
+
+function setProfileSettingsMessage(message, isError = false) {
+  const node = document.getElementById('profileSettingsMessage');
+  if (!node) return;
+  node.textContent = message;
+  node.style.color = isError ? '#ff8a80' : '#ffd166';
+}
+
+function abrirDefinicoesPerfil() {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+
+  document.getElementById('profileName').value = user.displayName || '';
+  document.getElementById('profileEmail').value = user.email || '';
+  document.getElementById('profileCurrentPassword').value = '';
+  document.getElementById('profileNewPassword').value = '';
+  setProfileSettingsMessage('');
+  document.getElementById('profileSettingsModal').style.display = 'flex';
+}
+
+function fecharDefinicoesPerfil() {
+  const modal = document.getElementById('profileSettingsModal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function reautenticarSePrecisar(user, currentPassword) {
+  const providerIds = user.providerData.map(provider => provider.providerId);
+  const usaPassword = providerIds.includes('password');
+
+  if (!usaPassword) return;
+
+  if (!currentPassword) {
+    throw new Error('Para alterar email ou palavra-passe, escreve a palavra-passe atual.');
+  }
+
+  const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
+  await user.reauthenticateWithCredential(credential);
 }
 
 function setAuthMode(mode = 'login') {
@@ -1223,6 +1348,7 @@ function toggleSiteAccess(user) {
   const authGate = document.getElementById('authGate');
   const siteShell = document.getElementById('siteShell');
   const logoutButton = document.getElementById('logoutButton');
+  const settingsButton = document.getElementById('settingsButton');
   const authUserEmail = document.getElementById('authUserEmail');
   const isLoggedIn = Boolean(user);
   const displayName = user?.displayName?.trim();
@@ -1231,10 +1357,13 @@ function toggleSiteAccess(user) {
   if (authGate) authGate.hidden = isLoggedIn;
   if (siteShell) siteShell.classList.toggle('is-authenticated', isLoggedIn);
   if (logoutButton) logoutButton.style.display = isLoggedIn ? 'inline-flex' : 'none';
+  if (settingsButton) settingsButton.style.display = isLoggedIn ? 'inline-flex' : 'none';
   if (authUserEmail) authUserEmail.textContent = isLoggedIn ? (displayName || fallbackName) : '';
 
   if (isLoggedIn) {
     setAuthMessage('');
+  } else {
+    fecharDefinicoesPerfil();
   }
 }
 
@@ -1359,6 +1488,67 @@ function loginWithGoogle() {
 
       setAuthMessage(error.message, true);
     });
+}
+
+async function guardarDefinicoesPerfil() {
+  if (!ensureAuthReady()) return;
+
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    setProfileSettingsMessage('Tens de iniciar sessão primeiro.', true);
+    return;
+  }
+
+  const novoNome = document.getElementById('profileName')?.value.trim() || '';
+  const novoEmail = document.getElementById('profileEmail')?.value.trim() || '';
+  const passwordAtual = document.getElementById('profileCurrentPassword')?.value || '';
+  const novaPassword = document.getElementById('profileNewPassword')?.value || '';
+
+  try {
+    const vaiMudarEmail = Boolean(novoEmail && novoEmail !== (user.email || ''));
+    const vaiMudarPassword = Boolean(novaPassword);
+
+    if (vaiMudarPassword && novaPassword.length < 6) {
+      setProfileSettingsMessage('A nova palavra-passe tem de ter pelo menos 6 caracteres.', true);
+      return;
+    }
+
+    if (vaiMudarEmail || vaiMudarPassword) {
+      await reautenticarSePrecisar(user, passwordAtual);
+    }
+
+    if (novoNome !== (user.displayName || '')) {
+      await user.updateProfile({ displayName: novoNome });
+    }
+
+    if (vaiMudarEmail) {
+      await user.updateEmail(novoEmail);
+    }
+
+    if (vaiMudarPassword) {
+      await user.updatePassword(novaPassword);
+    }
+
+    await aplicarSessaoAutenticada(firebase.auth().currentUser);
+    setProfileSettingsMessage('Dados atualizados com sucesso.');
+  } catch (error) {
+    if (error.code === 'auth/requires-recent-login') {
+      setProfileSettingsMessage('Por segurança, termina sessão e entra de novo antes de alterar estes dados.', true);
+      return;
+    }
+
+    if (error.code === 'auth/wrong-password') {
+      setProfileSettingsMessage('A palavra-passe atual está errada.', true);
+      return;
+    }
+
+    if (error.code === 'auth/email-already-in-use') {
+      setProfileSettingsMessage('Esse email já está a ser usado noutra conta.', true);
+      return;
+    }
+
+    setProfileSettingsMessage(error.message || 'Nao foi possivel atualizar os dados.', true);
+  }
 }
 
 function logoutUser() {
