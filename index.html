@@ -14022,7 +14022,7 @@ function atualizarBannerBtn() {
   const bannerAddBtn = document.getElementById('bannerAddBtn') || document.querySelector('.banner .lista');
   if (!bannerAddBtn) return;
 
-  if (minhaLista.includes('Stranger Things')) {
+  if (minhaLista.includes('Peaky Blinders: O Homem Imortal')) {
     bannerAddBtn.textContent = 'Remover da Lista';
     bannerAddBtn.title = 'Remover da Minha Lista';
   } else {
@@ -14767,7 +14767,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const bannerAddBtn = document.querySelector('.banner .lista');
 bannerAddBtn.addEventListener('click', () => {
-  adicionarMinhaLista('Stranger Things');
+  adicionarMinhaLista('Peaky Blinders: O Homem Imortal');
   atualizarBannerBtn();
 });
 
