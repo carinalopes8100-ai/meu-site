@@ -1794,7 +1794,7 @@ function abrirPlayerModal(item, serie = null, temporadaIndex = 0, episodioIndex 
 
   // Supondo que item.player = [{player: 'PT', src: 'linkPT'}, {player: 'EN', src: 'linkEN'}]
   if(item.player && item.player.length > 0) {
-    item.player.forEach(a => {
+    item.player.forEach((a, playerIndex) => {
       const btn = document.createElement('button');
       btn.className = 'player-btn';
       btn.textContent = a.player;
@@ -1805,9 +1805,14 @@ btn.onclick = () => {
       temporadas: serie.temporadas.map((temp, tIndex) => ({
         ...temp,
         episodios: temp.episodios.map((ep, eIndex) => {
+          if (ep.player && ep.player[playerIndex]?.link) {
+            return { ...ep, link: ep.player[playerIndex].link };
+          }
+
           if (tIndex === temporadaIndex && eIndex === episodioIndex) {
             return { ...ep, link: a.link };
           }
+
           return ep;
         })
       }))
