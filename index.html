@@ -15801,7 +15801,9 @@ canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
     document.activeElement.blur();
   }
 
+  const previousHtmlOverflow = document.documentElement.style.overflow;
   const previousBodyOverflow = document.body.style.overflow;
+  document.documentElement.style.overflow = 'hidden';
   document.body.style.overflow = 'hidden';
 	
   const videoModal = document.createElement('div');
@@ -15814,6 +15816,7 @@ canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
   videoModal.tabIndex = -1;
 
   const cleanupVideoModal = () => {
+    document.documentElement.style.overflow = previousHtmlOverflow;
     document.body.style.overflow = previousBodyOverflow;
     if (shouldResumeBanner && bannerVideoEl) {
       bannerVideoEl.play().catch(() => {});
