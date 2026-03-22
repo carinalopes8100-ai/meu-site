@@ -1549,6 +1549,13 @@ function setAuthMode(mode) {
   setAuthMessage('');
 }
 
+function isAuthUserVerified(user) {
+  if (!user) return false;
+  const providerIds = (user.providerData || []).map(provider => provider?.providerId);
+  const usesPasswordAuth = providerIds.includes('password') || providerIds.length === 0;
+  return !usesPasswordAuth || Boolean(user.emailVerified);
+}
+
 function toggleSiteAccess(user) {
   const authGate = document.getElementById('authGate');
   const siteShell = document.getElementById('siteShell');
@@ -1556,7 +1563,7 @@ function toggleSiteAccess(user) {
   const settingsButton = document.getElementById('settingsButton');
   const authAccountTrigger = document.getElementById('authAccountTrigger');
   const authUserEmail = document.getElementById('authUserEmail');
-  const isLoggedIn = Boolean(user);
+  const isLoggedIn = Boolean(user) && isAuthUserVerified(user);
   const displayName = user?.displayName?.trim();
   const fallbackName = user?.email ? user.email.split('@')[0] : 'Sessao iniciada';
 
@@ -1728,7 +1735,16 @@ function loginUser() {
   }
 
   firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(() => setAuthMessage('Sessao iniciada com sucesso.'))
+    .then(async ({ user }) => {
+      if (user && !isAuthUserVerified(user)) {
+        await user.sendEmailVerification();
+        await firebase.auth().signOut();
+        setAuthMessage('Verifica o teu email antes de entrar. Enviamos um novo link de confirmacao.', true);
+        return;
+      }
+
+      setAuthMessage('Sessao iniciada com sucesso.');
+    })
     .catch(error => setAuthMessage(error.message, true));
 }
 
@@ -1756,16 +1772,15 @@ async function registerUser() {
 
     if (user) {
       await user.updateProfile({ displayName: name });
+      await user.sendEmailVerification();
       await user.reload();
       await saveUserProfileToFirestore(user, name, email);
     }
 
-    const currentUser = firebase.auth().currentUser;
-    if (currentUser) {
-      toggleSiteAccess(currentUser);
-    }
-
-    setAuthMessage('Conta criada. Ja podes entrar no site.');
+    await firebase.auth().signOut();
+    toggleSiteAccess(null);
+    setAuthMode('login');
+    setAuthMessage('Conta criada. Verifica o teu email antes de entrar no site.');
   } catch (error) {
     setAuthMessage(error.message, true);
   }
@@ -1830,7 +1845,13 @@ function initializeAuth() {
   }
 
   authReady = true;
-  firebase.auth().onAuthStateChanged(user => {
+  firebase.auth().onAuthStateChanged(async user => {
+    if (user && !isAuthUserVerified(user)) {
+      toggleSiteAccess(null);
+      setAuthMessage('Verifica o teu email para poderes entrar no site.', true);
+      return;
+    }
+
     toggleSiteAccess(user);
   });
 }
