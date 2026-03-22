@@ -1924,9 +1924,12 @@ function abrirPlayerModal(item, serie = null, temporadaIndex = 0, episodioIndex 
   if(item.player && item.player.length > 0) {
     item.player.forEach((a, playerIndex) => {
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = 'player-btn';
       btn.textContent = a.player;
-btn.onclick = () => {
+btn.onclick = (event) => {
+  event.preventDefault();
+  event.stopPropagation();
   playerModal.dataset.reabrirEpisodios = 'false';
   fecharPlayerModal();
 
@@ -1980,6 +1983,7 @@ btn.onclick = () => {
   }
 
   // Atualiza texto do botão de fechar
+  fecharBtn.type = 'button';
   fecharBtn.textContent = abertoDoEpisodio ? 'Voltar' : 'Fechar';
   
   // Armazena no dataset se veio de episódio
