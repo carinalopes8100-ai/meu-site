@@ -28,7 +28,7 @@ body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
   }
 
   html {
-    scrollbar-color: #5c5c5c #111111;
+    scrollbar-color: #cfcfcf #111111;
     scrollbar-width: thin;
   }
 
@@ -212,8 +212,8 @@ nav div.ativo {
 <div id="descricaoModal" class="modal">...</div>
 
 <!-- Modal de Players -->
-<div id="playerModal" class="modal">
-  <div id="playerList"></div>
+<div id="playerModalLegacy" class="modal" style="display:none !important;">
+  <div id="playerListLegacy"></div>
   <button onclick="fecharPlayerModal()">Fechar</button>
 </div>
 
@@ -1906,6 +1906,10 @@ function abrirPlayerModal(item, serie = null, temporadaIndex = 0, episodioIndex 
   const modalEpisodios = document.getElementById('modal'); // modal de episódios
   const playerOptions = document.getElementById('playerOptions');
   const fecharBtn = playerModal.querySelector('.close-btn');
+  playerModal.hidden = false;
+  playerModal.style.visibility = 'visible';
+  playerModal.style.zIndex = '12000';
+  playerModal.style.pointerEvents = 'auto';
 
   // Verifica se veio do modal de episódios
   const abertoDoEpisodio = modalEpisodios.dataset.episodiosAtivos === 'true';
@@ -1923,6 +1927,9 @@ function abrirPlayerModal(item, serie = null, temporadaIndex = 0, episodioIndex 
       btn.className = 'player-btn';
       btn.textContent = a.player;
 btn.onclick = () => {
+  playerModal.dataset.reabrirEpisodios = 'false';
+  fecharPlayerModal();
+
   if (serie && serie.temporadas && serie.temporadas[temporadaIndex]?.episodios?.[episodioIndex]) {
     const serieAtualizada = {
       ...serie,
@@ -1942,11 +1949,15 @@ btn.onclick = () => {
       }))
     };
 
-    abrirVideo(serieAtualizada, temporadaIndex, episodioIndex);
+    setTimeout(() => {
+      abrirVideo(serieAtualizada, temporadaIndex, episodioIndex);
+    }, 0);
     return;
   }
 
-        abrirVideo({ ...item, link: a.link, currentPlayerIndex: playerIndex });
+        setTimeout(() => {
+          abrirVideo({ ...item, link: a.link, currentPlayerIndex: playerIndex });
+        }, 0);
       };
       playerOptions.appendChild(btn);
     });
@@ -1978,16 +1989,23 @@ btn.onclick = () => {
 function fecharPlayerModal() {
   const playerModal = document.getElementById('playerModal');
   const modalEpisodios = document.getElementById('modal');
+  const reabrirEpisodios = playerModal.dataset.reabrirEpisodios !== 'false';
 
   // Esconde modal de players
   playerModal.style.display = 'none';
+  playerModal.style.opacity = '0';
+  playerModal.style.pointerEvents = 'none';
+  playerModal.style.visibility = 'hidden';
+  playerModal.style.zIndex = '-1';
+  playerModal.hidden = true;
 
   // Se veio do modal de episódios, reabre o modal de episódios
-  if (playerModal.dataset.abertoDoEpisodio === 'true') {
+  if (reabrirEpisodios && playerModal.dataset.abertoDoEpisodio === 'true') {
     modalEpisodios.style.display = 'flex';
   }
 
   delete playerModal.dataset.abertoDoEpisodio;
+  delete playerModal.dataset.reabrirEpisodios;
 }
 
   
