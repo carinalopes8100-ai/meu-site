@@ -3675,8 +3675,11 @@ const filmes = [
                                        {
     titulo: "TVI",
     img: "https://img.iol.pt/image/id/5f49477f0cf2e21cf33181c7/600.jpg",
-	link: "https://tviplayer.iol.pt/direto",									   
-    tipo: "canal"				   
+    tipo: "canal",
+    player: [
+      { player: "Player 1", link: "https://player.kick.com/Zonrealiti" },
+      { player: "Player 2", link: "https://tviplayer.iol.pt/direto" }
+    ]
   },
                                     {
     titulo: "TVI Reality",
@@ -3686,9 +3689,9 @@ const filmes = [
   },
 
 	                                     {
-    titulo: "Secret Story 10 (Casa dos Segredos) (4 cameras)",
-    img: "https://media-manager.noticiasaominuto.com/1920/naom_68c7a5c5761ad.webp",
-    link: "https://player.kick.com/Zonrealiti",
+    titulo: "Secret Story 10 (4 cameras)",
+    img: "https://www.atelevisao.com/wp-content/uploads/2024/07/promo-2-inscricoes-secret-story-.jpg",
+    link: "https://eus23.playlist.live-video.net/v1/playlist/CvwFI1rxDd78CCEIKGfzLgVjsIUQx9KyoTSZUMxH5mxJ6vm8dJ_sjfFZdwAWK1ZikGX6FrLdxS3iDT3buZPKV10PWtZ-Z7_-u41YVObGhObbiEOx4qh3iMlW09igEGUQlymCi9bXdbes89NG_Xi8N7tRF3O46G58PohC_v-1xVeOnqvbadcfagVv2JobI5V98mpz9tbiayWkcswMhwbemnSpJn1YwgrR2KZad_ooSVaDmg2RpZIaOhfw1XihKhBU27_SRyj6xwZVyfVFSNhll4uquGNrYi5BbvM6oxFrhpyFqLrbaqPx6X8lY9X3gf18e-9HNsyKU58aPq9GGxJ-WATKmC9gZ0nxj95B4p9vNkZQSaao1L1Q1NdOO9rRf7LxruvKyVsLP0zw3bk6q8JvQovIk1M7brQyiAtr5G2qdSANc6qBIz6c4rF3Cb09VAlKn18Fg2O9gLrqgvT7JixJXqX61oF9taZc36prCJAJc1Eu82IdelZHxA5oy5BjklyQnk1dL-LxosUshAuUGrcoJtSWSqGUPvk0l5z6pwBcaCb81tMbVJU4-0YUeQ7r0j0MG5pp04_rCrB4FE7zDh8-yIHUu8zxzKoA5rk2MDgJ9GSs1gzUAnVhPZAVyaYjXlCMpaTKn0jw2FR98CYHOueMNl6EIQNxSDTDob4rI59jGXFdEzV6M56dM6_Cn6sMnKbHymtPowXm7AE9Hzmu3G_25jnZ8-Aabl17e5RifvKeNafsLVMIxwWiihyViQjoT22dU4gtYXx86oxH5i7C5DcOLsgwxMy2HyCuA8D5_3Y0gyFQ-t9Dc42gWVb55hKpG6rdSdowY4McsDoN420sAM0tTmwNAi8jcnkZZan6m5iFxgNqALTTs6o7cTM_HY9aHMNaMd1sYLn6mX3YZySLIhFzHVwfUwr8Y568u8byFntLKW3BvY78lfgX8Hnmg5deoHjeXWSKJCipHLAxEL3uoTRb-AyMgOIzRJTmpWN7GTu4WpbV1Ea54TeZ2G2q0ZdkzJYaDCtysOBrUvL4Zuv-fyABKglldS13ZXN0LTIw2g4.m3u8",
     tipo: "canal"
   },
 
@@ -15878,10 +15881,12 @@ canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
     const video = document.createElement('video');
     video.controls = true;
     video.autoplay = true;
-    video.muted = false;
+    video.muted = true;
     video.playsInline = true;
     video.style.width = '80%';
     video.style.height = '80%';
+    video.style.objectFit = 'contain';
+    video.style.backgroundColor = '#000';
     video.style.borderRadius = '10px';
     video.style.boxShadow = '0 0 20px rgba(0,0,0,0.7)';
     videoModal.appendChild(video);
