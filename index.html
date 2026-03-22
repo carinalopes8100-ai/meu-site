@@ -654,6 +654,8 @@ nav div.ativo {
   overflow-x: hidden;
   padding-right: 8px;
   max-height: calc(85vh - 140px);
+  scrollbar-color: #e50914 #1a1a1a;
+  scrollbar-width: thin;
 }
 
 #playerOptions .player-btn {
@@ -667,6 +669,25 @@ nav div.ativo {
 
 #playerOptions .player-btn:hover {
   transform: translateY(-1px);
+}
+
+#playerOptions::-webkit-scrollbar {
+  width: 12px;
+}
+
+#playerOptions::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 999px;
+}
+
+#playerOptions::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff2a2a, #b80710);
+  border-radius: 999px;
+  border: 2px solid #1a1a1a;
+}
+
+#playerOptions::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ff4b4b, #d90b16);
 }
 
 
