@@ -15577,6 +15577,7 @@ function abrirPesquisaNetflix() {
 function fecharPesquisaNetflix() {
   const searchInput = document.getElementById('searchInput');
   if (!searchInput) return;
+  searchInput.blur();
   searchInput.classList.remove('show');
   searchInput.style.opacity = '0';
   searchInput.style.pointerEvents = 'none';
