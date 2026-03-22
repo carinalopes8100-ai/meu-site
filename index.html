@@ -15898,10 +15898,12 @@ canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
 // 🔹 Botão Anterior
 btnAnterior.onclick = () => {
   if (item.player && item.player.length > 1) {
-    const novoPlayerIndex = currentPlayerIndex > 0 ? currentPlayerIndex - 1 : item.player.length - 1;
-    abrirVideo({ ...item, link: item.player[novoPlayerIndex].link, currentPlayerIndex: novoPlayerIndex });
-    videoModal.remove();
-    return;
+    if (currentPlayerIndex > 0) {
+      const novoPlayerIndex = currentPlayerIndex - 1;
+      abrirVideo({ ...item, link: item.player[novoPlayerIndex].link, currentPlayerIndex: novoPlayerIndex });
+      videoModal.remove();
+      return;
+    }
   }
 
   let novoIndex = canalAtualIndex - 1;
@@ -15929,10 +15931,12 @@ btnAnterior.onclick = () => {
 
 btnProximo.onclick = () => {
   if (item.player && item.player.length > 1) {
-    const novoPlayerIndex = currentPlayerIndex < item.player.length - 1 ? currentPlayerIndex + 1 : 0;
-    abrirVideo({ ...item, link: item.player[novoPlayerIndex].link, currentPlayerIndex: novoPlayerIndex });
-    videoModal.remove();
-    return;
+    if (currentPlayerIndex < item.player.length - 1) {
+      const novoPlayerIndex = currentPlayerIndex + 1;
+      abrirVideo({ ...item, link: item.player[novoPlayerIndex].link, currentPlayerIndex: novoPlayerIndex });
+      videoModal.remove();
+      return;
+    }
   }
 
   let novoIndex = canalAtualIndex + 1;
