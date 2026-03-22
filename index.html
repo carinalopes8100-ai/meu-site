@@ -15929,10 +15929,6 @@ function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
 canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
   const currentPlayerIndex = Number.isInteger(item.currentPlayerIndex) ? item.currentPlayerIndex : 0;
   const bannerVideoEl = document.getElementById('bannerVideo');
-  const shouldResumeBanner = Boolean(
-    bannerVideoEl &&
-    bannerVideoEl.dataset.pausedByPlayer === 'true'
-  );
 
   if (bannerVideoEl && !bannerVideoEl.paused && bannerVideoEl.style.display !== 'none') {
     bannerVideoEl.dataset.pausedByPlayer = 'true';
@@ -15960,7 +15956,7 @@ canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
   const cleanupVideoModal = () => {
     document.documentElement.style.overflow = previousHtmlOverflow;
     document.body.style.overflow = previousBodyOverflow;
-    if (shouldResumeBanner && bannerVideoEl) {
+    if (bannerVideoEl && bannerVideoEl.dataset.pausedByPlayer === 'true') {
       bannerVideoEl.play().catch(() => {});
       delete bannerVideoEl.dataset.pausedByPlayer;
     }
