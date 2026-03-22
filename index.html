@@ -937,6 +937,14 @@ video::cue {
   display: none !important;
 }
 
+.auth-gate-layout {
+  width: min(100%, 1080px);
+  display: grid;
+  grid-template-columns: minmax(320px, 420px) minmax(320px, 420px);
+  justify-content: center;
+  gap: 28px;
+}
+
 .auth-card {
   width: min(100%, 420px);
   padding: 32px 28px;
@@ -944,6 +952,47 @@ video::cue {
   background: rgba(20, 20, 20, 0.94);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+.auth-notice {
+  width: min(100%, 420px);
+  padding: 32px 28px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(229, 9, 20, 0.18), rgba(20, 20, 20, 0.94));
+  border: 1px solid rgba(229, 9, 20, 0.3);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  align-self: center;
+}
+
+.auth-notice-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffd166;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.auth-notice h3 {
+  font-size: 26px;
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+
+.auth-notice p {
+  color: rgba(255, 255, 255, 0.84);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.auth-notice strong {
+  color: #fff;
 }
 
 .auth-brand {
@@ -1214,6 +1263,15 @@ video::cue {
 }
 
 @media (max-width: 900px) {
+  .auth-gate-layout {
+    grid-template-columns: 1fr;
+    width: min(100%, 420px);
+  }
+
+  .auth-notice {
+    order: -1;
+  }
+
   .auth-user-bar {
     display: none;
   }
@@ -1230,25 +1288,36 @@ video::cue {
 </div>
 
 <div id="authGate">
-  <div class="auth-card">
-    <div class="auth-brand">TUGAFLIX</div>
-    <h2 id="authTitle">Entrar com conta</h2>
-    <p id="authDescription">Para abrir o site, entra com o teu email e palavra-passe.</p>
+  <div class="auth-gate-layout">
+    <div class="auth-card">
+      <div class="auth-brand">TUGAFLIX</div>
+      <h2 id="authTitle">Entrar com conta</h2>
+      <p id="authDescription">Para abrir o site, entra com o teu email e palavra-passe.</p>
 
-    <div class="auth-form">
-      <input type="text" id="authName" class="auth-field-hidden" placeholder="Nome" autocomplete="name">
-      <input type="email" id="authEmail" placeholder="Email" autocomplete="email">
-      <input type="password" id="authPassword" placeholder="Palavra-passe" autocomplete="current-password">
+      <div class="auth-form">
+        <input type="text" id="authName" class="auth-field-hidden" placeholder="Nome" autocomplete="name">
+        <input type="email" id="authEmail" placeholder="Email" autocomplete="email">
+        <input type="password" id="authPassword" placeholder="Palavra-passe" autocomplete="current-password">
+      </div>
+
+      <div class="auth-actions">
+        <button id="loginButton" class="auth-primary" type="button" onclick="loginUser()">Entrar</button>
+        <button id="registerButton" class="auth-secondary" type="button" onclick="registerUser()">Criar conta</button>
+        <button class="auth-google" type="button" onclick="loginWithGoogle()">Entrar com Google</button>
+        <button class="auth-tertiary" type="button" onclick="resetPassword()">Recuperar palavra-passe</button>
+      </div>
+
+      <div id="authMessage"></div>
     </div>
 
-    <div class="auth-actions">
-      <button id="loginButton" class="auth-primary" type="button" onclick="loginUser()">Entrar</button>
-      <button id="registerButton" class="auth-secondary" type="button" onclick="registerUser()">Criar conta</button>
-      <button class="auth-google" type="button" onclick="loginWithGoogle()">Entrar com Google</button>
-      <button class="auth-tertiary" type="button" onclick="resetPassword()">Recuperar palavra-passe</button>
-    </div>
-
-    <div id="authMessage"></div>
+    <aside class="auth-notice">
+      <div class="auth-notice-label">Comunicado de Segurança</div>
+      <h3>As contas antigas precisam de ser recriadas</h3>
+      <p><strong>Quem já tinha criado conta anteriormente vai ter de criar uma conta nova.</strong></p>
+      <p>Isto foi necessário por motivos de segurança, porque na versão antiga era possível criar registos com emails que não existiam realmente.</p>
+      <p>Agora a criação de conta exige <strong>verificação do email</strong> antes de permitir o acesso ao site.</p>
+      <p>Este problema foi corrigido e <strong>não voltará a acontecer</strong> com o novo sistema de validação.</p>
+    </aside>
   </div>
 </div>
 
