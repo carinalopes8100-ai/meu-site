@@ -15776,12 +15776,23 @@ document.addEventListener('DOMContentLoaded', ()=>{
   // Pesquisa
   const searchInput = document.getElementById('searchInput');
   const searchButton = document.getElementById('searchButton');
+  const pesquisarInstantaneamente = () => {
+    searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
+  };
 
 searchButton.addEventListener('click', (e) => {
+  e.preventDefault();
   e.stopPropagation();
-  searchInput.classList.toggle('show');
-  if (searchInput.classList.contains('show')) searchInput.focus();
-  else searchInput.value = '';
+  const estaVisivel = searchInput.classList.contains('show') && !searchInput.classList.contains('hidden');
+
+  if (!estaVisivel) {
+    searchInput.classList.remove('hidden');
+    searchInput.classList.add('show');
+    searchInput.focus();
+    return;
+  }
+
+  pesquisarInstantaneamente();
 });
 
 
@@ -15790,13 +15801,14 @@ searchButton.addEventListener('click', (e) => {
   document.addEventListener('click', (e) => {
     if (!searchContainer.contains(e.target)) {
       searchInput.classList.add('hidden');
+      searchInput.classList.remove('show');
     }
   });
 
   searchInput.addEventListener('keydown', e=>{
     if(e.key==='Enter'){ 
       e.preventDefault();
-      searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio'); 
+      pesquisarInstantaneamente();
     }
   });
 
