@@ -15911,7 +15911,7 @@ btnAnterior.onclick = () => {
 
   // Se tiver vários players, abre o primeiro player diretamente
   if (canalAnterior.player && canalAnterior.player.length > 1) {
-    abrirVideo(canalAnterior, 0, 0); // 0 = primeira temporada, 0 = primeiro player
+    abrirVideo({ ...canalAnterior, link: canalAnterior.player[0].link, currentPlayerIndex: 0 }, 0, 0);
   } else {
     abrirVideo(canalAnterior);
   }
@@ -15942,7 +15942,7 @@ btnProximo.onclick = () => {
 
   // Se tiver vários players, abre o primeiro player ou continue do selecionado
   if(proximoCanal.player && proximoCanal.player.length > 1){
-    abrirVideo(proximoCanal, 0, 0); // 0 = primeira temporada, 0 = primeiro player
+    abrirVideo({ ...proximoCanal, link: proximoCanal.player[0].link, currentPlayerIndex: 0 }, 0, 0);
   } else {
     abrirVideo(proximoCanal);
   }
