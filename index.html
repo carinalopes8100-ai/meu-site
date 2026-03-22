@@ -15799,7 +15799,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const searchInput = document.getElementById('searchInput');
   const searchButton = document.getElementById('searchButton');
   searchInput.classList.remove('show');
-  searchInput.classList.add('hidden');
   const pesquisarInstantaneamente = () => {
     searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
   };
@@ -15807,17 +15806,15 @@ document.addEventListener('DOMContentLoaded', ()=>{
 searchButton.addEventListener('click', (e) => {
   e.preventDefault();
   e.stopPropagation();
-  const estaVisivel = searchInput.classList.contains('show') && !searchInput.classList.contains('hidden');
+  const estaVisivel = searchInput.classList.contains('show');
   const temTermo = Boolean(searchInput.value.trim());
 
   if (!estaVisivel && !temTermo) {
-    searchInput.classList.remove('hidden');
     searchInput.classList.add('show');
     searchInput.focus();
     return;
   }
 
-  searchInput.classList.remove('hidden');
   searchInput.classList.add('show');
   searchInput.focus();
   pesquisarInstantaneamente();
@@ -15828,7 +15825,6 @@ searchButton.addEventListener('click', (e) => {
   const searchContainer = document.getElementById('searchContainer');
   document.addEventListener('click', (e) => {
     if (!searchContainer.contains(e.target)) {
-      searchInput.classList.add('hidden');
       searchInput.classList.remove('show');
     }
   });
