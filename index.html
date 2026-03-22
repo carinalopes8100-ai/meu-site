@@ -15856,11 +15856,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   // Fechar a barra se clicar fora dela
   const searchContainer = document.getElementById('searchContainer');
-  document.addEventListener('click', (e) => {
+  const fecharPesquisaAoClicarFora = (e) => {
     if (!searchContainer.contains(e.target)) {
       fecharPesquisaNetflix();
     }
-  });
+  };
+  document.addEventListener('click', fecharPesquisaAoClicarFora, true);
+  document.addEventListener('pointerdown', fecharPesquisaAoClicarFora, true);
 
   searchInput.addEventListener('keydown', e=>{
     if(e.key==='Enter'){ 
