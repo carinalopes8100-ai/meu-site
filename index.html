@@ -996,11 +996,17 @@ video::cue {
 }
 
 .auth-brand {
-  color: #e50914;
-  font-size: 34px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.auth-brand img {
+  width: 220px;
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 .auth-card h2 {
@@ -1290,7 +1296,9 @@ video::cue {
 <div id="authGate">
   <div class="auth-gate-layout">
     <div class="auth-card">
-      <div class="auth-brand">TUGAFLIX</div>
+      <div class="auth-brand">
+        <img src="https://i.postimg.cc/QMZk0fJ9/Adobe-Express-file.png" alt="TUGAFLIX">
+      </div>
       <h2 id="authTitle">Entrar com conta</h2>
       <p id="authDescription">Para abrir o site, entra com o teu email e palavra-passe.</p>
 
@@ -1317,7 +1325,6 @@ video::cue {
       <p>Isto foi necessário por motivos de segurança, porque na versão antiga era possível criar registos com emails que não existiam realmente.</p>
       <p>Agora a criação de conta exige <strong>verificação do email</strong> antes de permitir o acesso ao site.</p>
       <p>Este problema foi corrigido e <strong>não voltará a acontecer</strong> com o novo sistema de validação.</p>
-	  <p><strong>Obrigado pela compreensão!</strong></p>	
     </aside>
   </div>
 </div>
