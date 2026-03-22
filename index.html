@@ -114,20 +114,21 @@ nav div.ativo {
   align-items: center; 
   margin-left: auto; 
   position: relative;
-  gap: 8px;
+  gap: 0;
+  min-width: 36px;
+  height: 36px;
 }
 
 #searchInput {
-  position: relative;
-  top: 3px;
-  width: 0;
-  min-width: 0;
+  position: absolute;
+  right: 44px;
+  top: 50%;
+  width: 220px;
   height: 36px;
-  width: 0;
   opacity: 0;
   pointer-events: none;
   margin-left: 0;
-  padding: 0;
+  padding: 6px 12px;
   border: 0 solid #000;
   border-radius: 4px;
   outline: none;
@@ -137,15 +138,15 @@ nav div.ativo {
   box-sizing: border-box;
   overflow: hidden;
   transform-origin: right center;
-  transition: width 0.25s ease, opacity 0.2s ease, padding 0.25s ease, border-width 0.25s ease;
+  transform: translateY(-50%) scaleX(0);
+  transition: transform 0.25s ease, opacity 0.2s ease, border-width 0.25s ease, box-shadow 0.2s ease;
 }
 
 #searchInput.show {
-  width: 220px;
   opacity: 1;
   pointer-events: auto;
-  padding: 6px 12px;
   border-width: 2px;
+  transform: translateY(-50%) scaleX(1);
 }
 
 #searchInput:focus {
@@ -169,6 +170,8 @@ nav div.ativo {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 2;
 }
 
 #searchContainer button:hover { 
@@ -15801,20 +15804,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const searchButton = document.getElementById('searchButton');
   const abrirPesquisa = () => {
     searchInput.classList.add('show');
-    searchInput.style.width = '220px';
-    searchInput.style.opacity = '1';
-    searchInput.style.pointerEvents = 'auto';
-    searchInput.style.padding = '6px 12px';
-    searchInput.style.borderWidth = '2px';
     searchInput.focus();
   };
   const fecharPesquisa = () => {
     searchInput.classList.remove('show');
-    searchInput.style.width = '0';
-    searchInput.style.opacity = '0';
-    searchInput.style.pointerEvents = 'none';
-    searchInput.style.padding = '0';
-    searchInput.style.borderWidth = '0';
   };
   fecharPesquisa();
   const pesquisarInstantaneamente = () => {
