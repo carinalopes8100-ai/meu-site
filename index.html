@@ -1952,15 +1952,11 @@ btn.onclick = (event) => {
       }))
     };
 
-    setTimeout(() => {
-      abrirVideo(serieAtualizada, temporadaIndex, episodioIndex);
-    }, 0);
+    abrirVideo(serieAtualizada, temporadaIndex, episodioIndex);
     return;
   }
 
-        setTimeout(() => {
-          abrirVideo({ ...item, link: a.link, currentPlayerIndex: playerIndex });
-        }, 0);
+        abrirVideo({ ...item, link: a.link, currentPlayerIndex: playerIndex });
       };
       playerOptions.appendChild(btn);
     });
@@ -15992,6 +15988,7 @@ canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
     iframe.allowFullscreen = true;
     iframe.frameBorder = '0';
     iframe.allow = 'autoplay';
+    iframe.style.backgroundColor = '#000';
     iframe.style.borderRadius = '10px';
     iframe.style.boxShadow = '0 0 20px rgba(0,0,0,0.7)';
     videoModal.appendChild(iframe);
@@ -16094,6 +16091,7 @@ canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
     iframe.allowFullscreen = true;
     iframe.frameBorder = '0';
     iframe.allow = 'autoplay';
+    iframe.style.backgroundColor = '#000';
     videoModal.appendChild(iframe);
   }
 
