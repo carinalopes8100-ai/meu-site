@@ -401,8 +401,8 @@ nav div.ativo {
   top: 60px;         /* controla a altura livremente */
   left: 0;
   width: 100%;
-  pointer-events: auto;
-  cursor: pointer;
+  pointer-events: none;
+  cursor: default;
   z-index: 9999;     /* acima do vídeo */
   white-space: nowrap;
 
@@ -426,6 +426,7 @@ nav div.ativo {
   display: flex;
   align-items: center;
   gap: 50px;
+  pointer-events: auto;
 
   animation: scrollLeft 20s linear infinite;
 
@@ -438,6 +439,11 @@ nav div.ativo {
   /* pausa animação só quando o rato está mesmo em cima dos logos */
 #novidadesTrack:hover {
   animation-play-state: paused;
+}
+
+#novidadesTrack a,
+#novidadesTrack img {
+  cursor: pointer;
 }
 
 
