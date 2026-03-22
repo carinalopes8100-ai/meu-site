@@ -627,6 +627,7 @@ nav div.ativo {
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 12px;
   overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 8px;
   max-height: calc(85vh - 140px);
 }
@@ -638,6 +639,10 @@ nav div.ativo {
   margin: 0;
   text-align: center;
   word-break: break-word;
+}
+
+#playerOptions .player-btn:hover {
+  transform: translateY(-1px);
 }
 
 
