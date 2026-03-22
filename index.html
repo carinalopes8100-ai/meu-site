@@ -1433,6 +1433,7 @@ video::cue {
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 
  
@@ -1656,6 +1657,7 @@ async function saveUserSettings() {
     }
 
     await Promise.all(updates);
+    await saveUserProfileToFirestore(user, newName || user.displayName || '', newEmail || user.email || '');
     toggleSiteAccess(firebase.auth().currentUser);
     const settingsCurrentPassword = document.getElementById('settingsCurrentPassword');
     const settingsPassword = document.getElementById('settingsPassword');
@@ -1691,6 +1693,24 @@ function ensureAuthReady() {
   }
 
   return true;
+}
+
+async function saveUserProfileToFirestore(user, name, email) {
+  if (!window.firebase?.firestore || !user?.uid) return;
+
+  const db = firebase.firestore();
+  const userRef = db.collection('users').doc(user.uid);
+  const existingProfile = await userRef.get();
+  const now = firebase.firestore.FieldValue.serverTimestamp();
+
+  await userRef.set({
+    uid: user.uid,
+    name: name || user.displayName || '',
+    email: email || user.email || '',
+    authProvider: (user.providerData && user.providerData[0] && user.providerData[0].providerId) || 'password',
+    updatedAt: now,
+    createdAt: existingProfile.exists ? (existingProfile.data().createdAt || now) : now
+  }, { merge: true });
 }
 
 function loginUser() {
@@ -1737,6 +1757,7 @@ async function registerUser() {
     if (user) {
       await user.updateProfile({ displayName: name });
       await user.reload();
+      await saveUserProfileToFirestore(user, name, email);
     }
 
     const currentUser = firebase.auth().currentUser;
