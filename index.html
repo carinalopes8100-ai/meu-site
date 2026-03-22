@@ -117,6 +117,15 @@ nav div.ativo {
   gap: 0;
   min-width: 36px;
   height: 36px;
+  z-index: 12002;
+}
+
+#searchDismissOverlay {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  display: none;
+  z-index: 12001;
 }
 
 #searchInput {
@@ -1246,6 +1255,7 @@ video::cue {
 <div onclick="mostrarSecao('lista')">A Minha Lista</div>
 <div onclick="mostrarSecao('canais')">Canais Streaming</div>  
 </nav>
+<div id="searchDismissOverlay" onclick="fecharPesquisaNetflix()"></div>
 <div id="searchContainer">
   <input type="text" id="searchInput" placeholder="Pesquisar...">
   <button id="searchButton" type="button" onclick="toggleSearchBox(event)">🔍︎</button>
@@ -15565,17 +15575,22 @@ function pesquisar() {
 
 function abrirPesquisaNetflix() {
   const searchInput = document.getElementById('searchInput');
+  const searchDismissOverlay = document.getElementById('searchDismissOverlay');
   if (!searchInput) return;
   searchInput.classList.add('show');
   searchInput.style.opacity = '1';
   searchInput.style.pointerEvents = 'auto';
   searchInput.style.borderWidth = '2px';
   searchInput.style.transform = 'translateY(-50%) scaleX(1)';
+  if (searchDismissOverlay) {
+    searchDismissOverlay.style.display = 'block';
+  }
   requestAnimationFrame(() => searchInput.focus());
 }
 
 function fecharPesquisaNetflix() {
   const searchInput = document.getElementById('searchInput');
+  const searchDismissOverlay = document.getElementById('searchDismissOverlay');
   if (!searchInput) return;
   searchInput.blur();
   searchInput.classList.remove('show');
@@ -15583,6 +15598,9 @@ function fecharPesquisaNetflix() {
   searchInput.style.pointerEvents = 'none';
   searchInput.style.borderWidth = '0';
   searchInput.style.transform = 'translateY(-50%) scaleX(0)';
+  if (searchDismissOverlay) {
+    searchDismissOverlay.style.display = 'none';
+  }
 }
 
 function toggleSearchBox(event) {
