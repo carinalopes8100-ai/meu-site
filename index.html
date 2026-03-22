@@ -1245,7 +1245,7 @@ video::cue {
 </nav>
 <div id="searchContainer">
   <input type="text" id="searchInput" placeholder="Pesquisar...">
-  <button id="searchButton">🔍︎</button>
+  <button id="searchButton" type="button" onclick="toggleSearchBox(event)">🔍︎</button>
 </div>
 
 <div class="auth-user-bar">
@@ -15821,9 +15821,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
     searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
   };
 
-searchButton.addEventListener('click', (e) => {
-  e.preventDefault();
-  e.stopPropagation();
+window.toggleSearchBox = (event) => {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
   const estaVisivel = searchInput.classList.contains('show');
   const temTermo = Boolean(searchInput.value.trim());
 
@@ -15834,6 +15837,10 @@ searchButton.addEventListener('click', (e) => {
 
   abrirPesquisa();
   pesquisarInstantaneamente();
+};
+
+searchButton.addEventListener('click', (e) => {
+  window.toggleSearchBox(e);
 });
 
 
