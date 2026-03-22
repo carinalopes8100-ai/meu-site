@@ -15563,6 +15563,52 @@ function pesquisar() {
   }
 }
 
+function abrirPesquisaNetflix() {
+  const searchInput = document.getElementById('searchInput');
+  if (!searchInput) return;
+  searchInput.classList.add('show');
+  searchInput.style.opacity = '1';
+  searchInput.style.pointerEvents = 'auto';
+  searchInput.style.borderWidth = '2px';
+  searchInput.style.transform = 'translateY(-50%) scaleX(1)';
+  requestAnimationFrame(() => searchInput.focus());
+}
+
+function fecharPesquisaNetflix() {
+  const searchInput = document.getElementById('searchInput');
+  if (!searchInput) return;
+  searchInput.classList.remove('show');
+  searchInput.style.opacity = '0';
+  searchInput.style.pointerEvents = 'none';
+  searchInput.style.borderWidth = '0';
+  searchInput.style.transform = 'translateY(-50%) scaleX(0)';
+}
+
+function toggleSearchBox(event) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  const searchInput = document.getElementById('searchInput');
+  if (!searchInput) return;
+
+  const estaVisivel = searchInput.classList.contains('show');
+  const temTermo = Boolean(searchInput.value.trim());
+
+  if (!estaVisivel) {
+    abrirPesquisaNetflix();
+    return;
+  }
+
+  if (temTermo) {
+    pesquisar();
+    return;
+  }
+
+  fecharPesquisaNetflix();
+}
+
 function abrirModalTemporadas(serie) {
   const list = document.getElementById('episodiosList');
   document.getElementById('modalTitle').textContent = `Escolha a temporada de "${serie.titulo}"`;
@@ -15801,47 +15847,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   // Pesquisa
   const searchInput = document.getElementById('searchInput');
-  const searchButton = document.getElementById('searchButton');
-  const abrirPesquisa = () => {
-    searchInput.classList.add('show');
-    searchInput.focus();
-  };
-  const fecharPesquisa = () => {
-    searchInput.classList.remove('show');
-  };
-  fecharPesquisa();
+  fecharPesquisaNetflix();
   const pesquisarInstantaneamente = () => {
     searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
   };
-
-window.toggleSearchBox = (event) => {
-  if (event) {
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  const estaVisivel = searchInput.classList.contains('show');
-  const temTermo = Boolean(searchInput.value.trim());
-
-  if (!estaVisivel && !temTermo) {
-    abrirPesquisa();
-    return;
-  }
-
-  abrirPesquisa();
-  pesquisarInstantaneamente();
-};
-
-searchButton.addEventListener('click', (e) => {
-  window.toggleSearchBox(e);
-});
 
 
   // Fechar a barra se clicar fora dela
   const searchContainer = document.getElementById('searchContainer');
   document.addEventListener('click', (e) => {
     if (!searchContainer.contains(e.target)) {
-      fecharPesquisa();
+      fecharPesquisaNetflix();
     }
   });
 
