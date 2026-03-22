@@ -15784,14 +15784,17 @@ searchButton.addEventListener('click', (e) => {
   e.preventDefault();
   e.stopPropagation();
   const estaVisivel = searchInput.classList.contains('show') && !searchInput.classList.contains('hidden');
+  const temTermo = Boolean(searchInput.value.trim());
 
-  if (!estaVisivel) {
+  if (!estaVisivel && !temTermo) {
     searchInput.classList.remove('hidden');
     searchInput.classList.add('show');
     searchInput.focus();
     return;
   }
 
+  searchInput.classList.remove('hidden');
+  searchInput.classList.add('show');
   pesquisarInstantaneamente();
 });
 
