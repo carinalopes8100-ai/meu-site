@@ -1129,6 +1129,32 @@ video::cue {
   color: #fff;
 }
 
+.auth-email-help-actions {
+  display: none;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.auth-email-help-actions.show {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.auth-email-help-actions button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.auth-email-help-actions button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
 .auth-email-help-box {
   display: none;
   margin-top: 10px;
@@ -1362,6 +1388,9 @@ video::cue {
       <div id="authMessage"></div>
       <div class="auth-email-help">
         <button type="button" onclick="toggleEmailHelp()">Nao recebeu o email? Clique aqui</button>
+        <div id="authEmailHelpActions" class="auth-email-help-actions">
+          <button type="button" onclick="resendVerificationEmail()">Reenviar email de verificacao</button>
+        </div>
         <div id="authEmailHelpBox" class="auth-email-help-box">
           Verifique a pasta Spam ou Lixo eletrónico. Se encontrar lá o email, marque-o como "Nao e spam" para ajudar os próximos emails a chegarem à caixa de entrada.
         </div>
@@ -1587,6 +1616,8 @@ const firebaseConfig = window.TUGAFLIX_FIREBASE_CONFIG || {
 
 let authReady = false;
 let authMode = 'login';
+let lastVerificationEmail = '';
+let emailHelpCanResend = false;
 
 function hasFirebaseConfig() {
   return Boolean(
@@ -1633,14 +1664,53 @@ function toggleEmailHelp() {
   authEmailHelpBox.classList.toggle('show');
 }
 
-function setEmailHelpVisible(isVisible) {
+function setEmailHelpVisible(isVisible, allowResend = false) {
   const authEmailHelp = document.querySelector('.auth-email-help');
   const authEmailHelpBox = document.getElementById('authEmailHelpBox');
+  const authEmailHelpActions = document.getElementById('authEmailHelpActions');
   if (!authEmailHelp) return;
+  emailHelpCanResend = Boolean(allowResend);
   authEmailHelp.classList.toggle('show', Boolean(isVisible));
+  if (authEmailHelpActions) {
+    authEmailHelpActions.classList.toggle('show', Boolean(isVisible) && emailHelpCanResend);
+  }
   if (!isVisible && authEmailHelpBox) {
     authEmailHelpBox.classList.remove('show');
   }
+}
+
+function resendVerificationEmail() {
+  if (!ensureAuthReady()) return;
+
+  const email = lastVerificationEmail || (document.getElementById('authEmail')?.value.trim() || '');
+  const password = document.getElementById('authPassword')?.value || '';
+  if (!email || !password) {
+    setAuthMessage('Escreve o email e a palavra-passe para reenviar a verificacao.', true);
+    return;
+  }
+
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(async ({ user }) => {
+      if (!user) {
+        setAuthMessage('Nao foi possivel reenviar a verificacao.', true);
+        return;
+      }
+
+      if (user.emailVerified) {
+        await firebase.auth().signOut();
+        setEmailHelpVisible(false);
+        setAuthMessage('Esse email ja se encontra verificado.');
+        return;
+      }
+
+      await user.sendEmailVerification();
+      await firebase.auth().signOut();
+      setEmailHelpVisible(true, true);
+      setAuthMessage('Enviámos um novo email de verificacao para esse endereco.');
+    })
+    .catch(() => {
+      setAuthMessage('Nao foi possivel reenviar agora. Tenta novamente daqui a pouco.', true);
+    });
 }
 
 function setSettingsMessage(message, isError = false) {
@@ -1883,9 +1953,10 @@ function loginUser() {
   firebase.auth().signInWithEmailAndPassword(email, password)
     .then(async ({ user }) => {
       if (user && !isAuthUserVerified(user)) {
+        lastVerificationEmail = email;
         await user.sendEmailVerification();
         await firebase.auth().signOut();
-        setEmailHelpVisible(true);
+        setEmailHelpVisible(true, true);
         setAuthMessage('Verifica o teu email antes de entrar. Enviamos um novo link de confirmacao.', true);
         return;
       }
@@ -1919,6 +1990,7 @@ async function registerUser() {
     const { user } = await firebase.auth().createUserWithEmailAndPassword(email, password);
 
     if (user) {
+      lastVerificationEmail = email;
       await user.updateProfile({ displayName: name });
       await user.sendEmailVerification();
       await user.reload();
@@ -1928,7 +2000,7 @@ async function registerUser() {
     await firebase.auth().signOut();
     toggleSiteAccess(null);
     setAuthMode('login');
-    setEmailHelpVisible(true);
+    setEmailHelpVisible(true, true);
     setAuthMessage('Conta criada. Verifica o teu email antes de entrar no site.');
   } catch (error) {
     setEmailHelpVisible(false);
@@ -1947,7 +2019,7 @@ function resetPassword() {
 
   firebase.auth().sendPasswordResetEmail(email)
     .then(() => {
-      setEmailHelpVisible(true);
+      setEmailHelpVisible(true, false);
       setAuthMessage('Enviamos um email para redefinir a palavra-passe.');
     })
     .catch(error => {
