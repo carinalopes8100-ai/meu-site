@@ -1624,6 +1624,7 @@ let authReady = false;
 let authMode = 'login';
 let lastVerificationEmail = '';
 let emailHelpCanResend = false;
+let shouldShowVerificationWarning = false;
 
 function hasFirebaseConfig() {
   return Boolean(
@@ -1982,6 +1983,7 @@ function loginUser() {
     .then(async ({ user }) => {
       if (user && !isAuthUserVerified(user)) {
         lastVerificationEmail = email;
+        shouldShowVerificationWarning = true;
         await user.sendEmailVerification();
         setEmailHelpVisible(true, true);
         setAuthMessage('Verifica o teu email antes de entrar. Enviamos um novo link de confirmacao.', true);
@@ -2018,6 +2020,7 @@ async function registerUser() {
 
     if (user) {
       lastVerificationEmail = email;
+      shouldShowVerificationWarning = true;
       setAuthMode('login');
       const authEmail = document.getElementById('authEmail');
       const authPassword = document.getElementById('authPassword');
@@ -2106,10 +2109,17 @@ function initializeAuth() {
   firebase.auth().onAuthStateChanged(async user => {
     if (user && !isAuthUserVerified(user)) {
       toggleSiteAccess(null);
-      setAuthMessage('Verifica o teu email para poderes entrar no site.', true);
+      if (shouldShowVerificationWarning) {
+        setEmailHelpVisible(true, true);
+        setAuthMessage('Verifica o teu email para poderes entrar no site.', true);
+      } else {
+        setEmailHelpVisible(false);
+        setAuthMessage('');
+      }
       return;
     }
 
+    shouldShowVerificationWarning = false;
     toggleSiteAccess(user);
   });
 }
