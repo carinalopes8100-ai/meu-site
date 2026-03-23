@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -1395,8 +1396,7 @@ video::cue {
       <div class="auth-email-help">
         <button type="button" onclick="toggleEmailHelp()">Nao recebeu o email? Clique aqui</button>
         <div id="authEmailHelpActions" class="auth-email-help-actions">
-          <button id="resendVerificationButton" type="button" onclick="resendVerificationEmail()">Reenviar email de verificacao</button>
-          <button id="resendResetButton" type="button" onclick="resendResetPasswordEmail()">Reenviar email de recuperacao</button>
+          <button type="button" onclick="resendVerificationEmail()">Reenviar email de verificacao</button>
         </div>
         <div id="authEmailHelpBox" class="auth-email-help-box">
           Verifique a pasta Spam ou Lixo eletrónico. Se encontrar lá o email, marque-o como "Nao e spam" para ajudar os próximos emails a chegarem à caixa de entrada.
@@ -1626,7 +1626,6 @@ let authMode = 'login';
 let lastVerificationEmail = '';
 let emailHelpCanResend = false;
 let shouldShowVerificationWarning = false;
-let currentEmailHelpMode = '';
 
 function hasFirebaseConfig() {
   return Boolean(
@@ -1673,24 +1672,15 @@ function toggleEmailHelp() {
   authEmailHelpBox.classList.toggle('show');
 }
 
-function setEmailHelpVisible(isVisible, mode = '') {
+function setEmailHelpVisible(isVisible, allowResend = false) {
   const authEmailHelp = document.querySelector('.auth-email-help');
   const authEmailHelpBox = document.getElementById('authEmailHelpBox');
   const authEmailHelpActions = document.getElementById('authEmailHelpActions');
-  const resendVerificationButton = document.getElementById('resendVerificationButton');
-  const resendResetButton = document.getElementById('resendResetButton');
   if (!authEmailHelp) return;
-  currentEmailHelpMode = isVisible ? mode : '';
-  emailHelpCanResend = Boolean(mode);
+  emailHelpCanResend = Boolean(allowResend);
   authEmailHelp.classList.toggle('show', Boolean(isVisible));
   if (authEmailHelpActions) {
-    authEmailHelpActions.classList.toggle('show', Boolean(isVisible) && Boolean(mode));
-  }
-  if (resendVerificationButton) {
-    resendVerificationButton.style.display = currentEmailHelpMode === 'verification' ? 'inline-flex' : 'none';
-  }
-  if (resendResetButton) {
-    resendResetButton.style.display = currentEmailHelpMode === 'reset' ? 'inline-flex' : 'none';
+    authEmailHelpActions.classList.toggle('show', Boolean(isVisible) && emailHelpCanResend);
   }
   if (!isVisible && authEmailHelpBox) {
     authEmailHelpBox.classList.remove('show');
@@ -1707,7 +1697,7 @@ function resendVerificationEmail() {
   if (currentUser && currentUser.email === email) {
     currentUser.sendEmailVerification()
       .then(() => {
-        setEmailHelpVisible(true, 'verification');
+        setEmailHelpVisible(true, true);
         setAuthMessage('Enviámos um novo email de verificacao para esse endereco.');
       })
       .catch(() => {
@@ -1735,7 +1725,7 @@ function resendVerificationEmail() {
       }
 
       await user.sendEmailVerification();
-      setEmailHelpVisible(true, 'verification');
+      setEmailHelpVisible(true, true);
       setAuthMessage('Enviámos um novo email de verificacao para esse endereco.');
     })
     .catch(error => {
@@ -1744,30 +1734,6 @@ function resendVerificationEmail() {
         return;
       }
 
-      if (error.code === 'auth/too-many-requests') {
-        setAuthMessage('Fizeste demasiadas tentativas. Tenta novamente daqui a pouco.', true);
-        return;
-      }
-
-      setAuthMessage('Nao foi possivel reenviar agora. Tenta novamente daqui a pouco.', true);
-    });
-}
-
-function resendResetPasswordEmail() {
-  if (!ensureAuthReady()) return;
-
-  const { email } = getAuthFormValues();
-  if (!email) {
-    setAuthMessage('Escreve o teu email para reenviar a recuperacao da palavra-passe.', true);
-    return;
-  }
-
-  firebase.auth().sendPasswordResetEmail(email)
-    .then(() => {
-      setEmailHelpVisible(true, 'reset');
-      setAuthMessage('Enviámos um novo email para redefinir a palavra-passe.');
-    })
-    .catch(error => {
       if (error.code === 'auth/too-many-requests') {
         setAuthMessage('Fizeste demasiadas tentativas. Tenta novamente daqui a pouco.', true);
         return;
@@ -2020,7 +1986,7 @@ function loginUser() {
         lastVerificationEmail = email;
         shouldShowVerificationWarning = true;
         await user.sendEmailVerification();
-        setEmailHelpVisible(true, 'verification');
+        setEmailHelpVisible(true, true);
         setAuthMessage('Verifica o teu email antes de entrar. Enviamos um novo link de confirmacao.', true);
         return;
       }
@@ -2068,7 +2034,7 @@ async function registerUser() {
       await saveUserProfileToFirestore(user, name, email);
     }
 
-    setEmailHelpVisible(true, 'verification');
+    setEmailHelpVisible(true, true);
     setAuthMessage('Conta criada. Verifica o teu email antes de entrar no site.');
   } catch (error) {
     setEmailHelpVisible(false);
@@ -2087,7 +2053,7 @@ function resetPassword() {
 
   firebase.auth().sendPasswordResetEmail(email)
     .then(() => {
-      setEmailHelpVisible(true, 'reset');
+      setEmailHelpVisible(true, false);
       setAuthMessage('Enviamos um email para redefinir a palavra-passe.');
     })
     .catch(error => {
@@ -2145,7 +2111,7 @@ function initializeAuth() {
     if (user && !isAuthUserVerified(user)) {
       toggleSiteAccess(null);
       if (shouldShowVerificationWarning) {
-        setEmailHelpVisible(true, 'verification');
+        setEmailHelpVisible(true, true);
         setAuthMessage('Verifica o teu email para poderes entrar no site.', true);
       } else {
         setEmailHelpVisible(false);
