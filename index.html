@@ -2055,7 +2055,6 @@ async function registerUser() {
       const authPassword = document.getElementById('authPassword');
       if (authEmail) authEmail.value = email;
       if (authPassword) authPassword.value = password;
-      setAuthMessage('A enviar o email de verificacao...');
       await user.updateProfile({ displayName: name });
       await user.sendEmailVerification();
       await user.reload();
@@ -2079,6 +2078,7 @@ function resetPassword() {
     return;
   }
 
+  setAuthMessage('A enviar o email de recuperacao...');
   firebase.auth().sendPasswordResetEmail(email)
     .then(() => {
       setEmailHelpVisible(true, 'reset');
