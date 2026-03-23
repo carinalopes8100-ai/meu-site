@@ -1684,6 +1684,20 @@ function resendVerificationEmail() {
 
   const email = lastVerificationEmail || (document.getElementById('authEmail')?.value.trim() || '');
   const password = document.getElementById('authPassword')?.value || '';
+  const currentUser = firebase.auth().currentUser;
+
+  if (currentUser && currentUser.email === email) {
+    currentUser.sendEmailVerification()
+      .then(() => {
+        setEmailHelpVisible(true, true);
+        setAuthMessage('Enviámos um novo email de verificacao para esse endereco.');
+      })
+      .catch(() => {
+        setAuthMessage('Nao foi possivel reenviar agora. Tenta novamente daqui a pouco.', true);
+      });
+    return;
+  }
+
   if (!email || !password) {
     setAuthMessage('Escreve o email e a palavra-passe para reenviar a verificacao.', true);
     return;
@@ -1697,18 +1711,26 @@ function resendVerificationEmail() {
       }
 
       if (user.emailVerified) {
-        await firebase.auth().signOut();
         setEmailHelpVisible(false);
         setAuthMessage('Esse email ja se encontra verificado.');
         return;
       }
 
       await user.sendEmailVerification();
-      await firebase.auth().signOut();
       setEmailHelpVisible(true, true);
       setAuthMessage('Enviámos um novo email de verificacao para esse endereco.');
     })
-    .catch(() => {
+    .catch(error => {
+      if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+        setAuthMessage('A palavra-passe nao esta correta para reenviar a verificacao.', true);
+        return;
+      }
+
+      if (error.code === 'auth/too-many-requests') {
+        setAuthMessage('Fizeste demasiadas tentativas. Tenta novamente daqui a pouco.', true);
+        return;
+      }
+
       setAuthMessage('Nao foi possivel reenviar agora. Tenta novamente daqui a pouco.', true);
     });
 }
@@ -1955,7 +1977,6 @@ function loginUser() {
       if (user && !isAuthUserVerified(user)) {
         lastVerificationEmail = email;
         await user.sendEmailVerification();
-        await firebase.auth().signOut();
         setEmailHelpVisible(true, true);
         setAuthMessage('Verifica o teu email antes de entrar. Enviamos um novo link de confirmacao.', true);
         return;
@@ -1997,8 +2018,6 @@ async function registerUser() {
       await saveUserProfileToFirestore(user, name, email);
     }
 
-    await firebase.auth().signOut();
-    toggleSiteAccess(null);
     setAuthMode('login');
     setEmailHelpVisible(true, true);
     setAuthMessage('Conta criada. Verifica o teu email antes de entrar no site.');
