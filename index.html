@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ac<!DOCTYPE html>
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
@@ -23,6 +23,63 @@ body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
     overflow: auto;
   }
 
+  html, body {
+    overflow-x: hidden;
+  }
+
+  html {
+    scrollbar-color: #5c5c5c #111111;
+    scrollbar-width: thin;
+  }
+
+  html::-webkit-scrollbar {
+    width: 14px;
+  }
+
+  body::-webkit-scrollbar {
+    width: 14px;
+  }
+
+  html::-webkit-scrollbar-track {
+    background: linear-gradient(180deg, #0b0b0b, #171717);
+    border-left: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  body::-webkit-scrollbar-track {
+    background: linear-gradient(180deg, #0b0b0b, #171717);
+    border-left: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  html::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #d6d6d6, #9a9a9a);
+    border-radius: 999px;
+    border: 3px solid #111111;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+
+  body::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #d6d6d6, #9a9a9a);
+    border-radius: 999px;
+    border: 3px solid #111111;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+
+  html::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #efefef, #b3b3b3);
+  }
+
+  body::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #efefef, #b3b3b3);
+  }
+
+  html::-webkit-scrollbar-corner {
+    background: #111111;
+  }
+
+  body::-webkit-scrollbar-corner {
+    background: #111111;
+  }
+
 @media (display-mode: standalone) {
   html, body {
     height: auto;
@@ -39,7 +96,8 @@ body { font-family:'Roboto',sans-serif; background:#141414; color:#fff; }
 
 
 
-header { position: fixed; top:0; left:0; width:100%; height:60px; background:#141414; display:flex; align-items:center; justify-content:flex-start; padding:0 40px; z-index:1000; box-shadow:0 2px 5px rgba(0,0,0,0.5); }
+header { position: fixed; top:0; left:0; width:100%; height:60px; background:linear-gradient(to bottom, rgba(20,20,20,0.72) 0%, rgba(20,20,20,0.28) 70%, rgba(20,20,20,0) 100%); display:flex; align-items:center; justify-content:flex-start; padding:0 40px; z-index:12020; box-shadow:none; transition: background 0.28s ease, box-shadow 0.28s ease, backdrop-filter 0.28s ease; }
+header.header-scrolled { background:#141414; box-shadow:0 2px 10px rgba(0,0,0,0.55); }
 header h1 { color:#e50914; font-size:27px; cursor:pointer; }
 nav { display:flex; gap:15px; margin-left: 15px; }
 nav div { color: rgba(255, 255, 255, 0.8); cursor:pointer; transition:color .2s; border-bottom: none; text-decoration: none; }
@@ -56,6 +114,78 @@ nav div.ativo {
   display: flex; 
   align-items: center; 
   margin-left: auto; 
+  position: relative;
+  gap: 0;
+  min-width: 36px;
+  height: 36px;
+  z-index: 12002;
+}
+
+#searchDismissOverlay {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  display: none;
+  z-index: 12001;
+}
+
+#searchInput {
+  position: absolute;
+  right: 44px;
+  top: 50%;
+  width: 220px;
+  height: 36px;
+  opacity: 0;
+  pointer-events: none;
+  margin-left: 0;
+  padding: 6px 12px;
+  border: 0 solid #000;
+  border-radius: 4px;
+  outline: none;
+  font-size: 14px;
+  background: #000;
+  color: #fff;
+  box-sizing: border-box;
+  overflow: hidden;
+  transform-origin: right center;
+  transform: translateY(-50%) scaleX(0);
+  transition: transform 0.25s ease, opacity 0.2s ease, border-width 0.25s ease, box-shadow 0.2s ease;
+}
+
+#searchInput.show {
+  opacity: 1;
+  pointer-events: auto;
+  border-width: 2px;
+  transform: translateY(-50%) scaleX(1);
+}
+
+#searchInput:focus {
+  border-color: #ff0000;
+  box-shadow: 0 0 5px #ff0000;
+}
+
+#searchContainer button { 
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin-left: 0; 
+  border: none; 
+  border-radius: 4px; 
+  background: transparent; 
+  color: #fff; 
+  cursor: pointer; 
+  font-weight: bold; 
+  transition: background .2s; 
+  font-size: 24px; 
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+#searchContainer button:hover { 
+  background: transparent; 
 }
 
 
@@ -155,8 +285,8 @@ nav div.ativo {
 <div id="descricaoModal" class="modal">...</div>
 
 <!-- Modal de Players -->
-<div id="playerModal" class="modal">
-  <div id="playerList"></div>
+<div id="playerModalLegacy" class="modal" style="display:none !important;">
+  <div id="playerListLegacy"></div>
   <button onclick="fecharPlayerModal()">Fechar</button>
 </div>
 
@@ -219,43 +349,6 @@ nav div.ativo {
   position: relative; /* necessário para o botão ficar posicionado dentro do player */
 }
 
-  
-  
-#searchContainer input { 
-  position: relative; 
-  top: 3px; /* ou ajuste conforme quiser */
-  padding: 6px 12px;   
-  border-radius: 4px; 
-  border: 2px solid #000;
-  outline: none; 
-  font-size: 14px; 
-  background: #000; 
-  color: #fff; 
-}
-
-  #searchContainer input:focus {
-  border-color: #ff0000;
-  box-shadow: 0 0 5px #ff0000; /* efeito glow opcional */
-}
-
-
-#searchContainer button { 
-  padding: 6px 12px; 
-  margin-left: 5px; 
-  border: none; 
-  border-radius: 4px; 
-  background: transparent; 
-  color: #fff; 
-  cursor: pointer; 
-  font-weight: bold; 
-  transition: background .2s; 
-  font-size: 24px; 
-}
-
-#searchContainer button:hover { 
-  background: transparent; 
-}
-
 .hidden {
   display: none;
 }
@@ -309,8 +402,8 @@ nav div.ativo {
   top: 60px;         /* controla a altura livremente */
   left: 0;
   width: 100%;
-  pointer-events: auto;
-  cursor: pointer;
+  pointer-events: none;
+  cursor: default;
   z-index: 9999;     /* acima do vídeo */
   white-space: nowrap;
 
@@ -334,6 +427,7 @@ nav div.ativo {
   display: flex;
   align-items: center;
   gap: 50px;
+  pointer-events: auto;
 
   animation: scrollLeft 20s linear infinite;
 
@@ -343,9 +437,20 @@ nav div.ativo {
 
 
 
-  /* pausa animação ao hover */
-#novidadesContainer:hover #novidadesTrack {
+  /* pausa animação só quando o rato está mesmo em cima dos logos */
+#novidadesTrack:hover {
   animation-play-state: paused;
+}
+
+#novidadesTrack a,
+#novidadesTrack img {
+  cursor: pointer;
+}
+
+#novidadesTrack a {
+  display: inline-block;
+  text-decoration: none;
+  line-height: 0;
 }
 
 
@@ -368,7 +473,7 @@ nav div.ativo {
   .novidade-dazn {
   width: 32px;   /* define a largura que queres */
   height: auto;  /* mantém a proporção */
-  margin-leftt: 4px;  
+  margin-left: 4px;  
   margin-right: 4px;
   vertical-align: middle;
 }
@@ -473,7 +578,7 @@ nav div.ativo {
 .btn-left { left:0; }
 .btn-right { right:0; }
 
-.modal { display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; }
+.modal { display:none; position:fixed; z-index:13000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; }
 .modal-content { background:#222; padding:25px; border-radius:10px; max-width:500px; width:90%; text-align:center; }
 .modal h2 { margin-bottom:20px; }
 .episodio-btn, .temporada-btn { display:block; margin:10px 0; padding:12px; background:#e50914; border:none; border-radius:5px; color:#fff; cursor:pointer; font-size:16px; width:100%; transition:background .2s; }
@@ -564,6 +669,73 @@ nav div.ativo {
 .player-btn:hover {
   background-color: #e50914;
   transform: scale(1.1);
+}
+
+#playerModal {
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.82);
+  z-index: 12000;
+}
+
+#playerModal .modal-content {
+  width: min(100%, 760px);
+  max-height: min(85vh, 900px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+}
+
+#playerModal .modal-content h2 {
+  margin: 0;
+  text-align: center;
+}
+
+#playerOptions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+  max-height: calc(85vh - 140px);
+  scrollbar-color: #e50914 #1a1a1a;
+  scrollbar-width: thin;
+}
+
+#playerOptions .player-btn {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 16px;
+  margin: 0;
+  text-align: center;
+  word-break: break-word;
+}
+
+#playerOptions .player-btn:hover {
+  transform: translateY(-1px);
+}
+
+#playerOptions::-webkit-scrollbar {
+  width: 12px;
+}
+
+#playerOptions::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 999px;
+}
+
+#playerOptions::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff2a2a, #b80710);
+  border-radius: 999px;
+  border: 2px solid #1a1a1a;
+}
+
+#playerOptions::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ff4b4b, #d90b16);
 }
 
 
@@ -685,9 +857,506 @@ video::cue {
   transition: opacity 0.3s;
 }
 .filme:hover .remove-continuar-btn { opacity: 1; }
+
+.site-shell {
+  display: none;
+}
+
+.site-shell.is-authenticated {
+  display: block;
+}
+
+#authLoading {
+  position: fixed;
+  inset: 0;
+  z-index: 50010;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.92)),
+    url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+}
+
+#authLoading[hidden] {
+  display: none !important;
+}
+
+.auth-loading-card {
+  width: min(100%, 360px);
+  padding: 30px 26px;
+  border-radius: 18px;
+  background: rgba(20, 20, 20, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  text-align: center;
+}
+
+.auth-loading-spinner {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.18);
+  border-top-color: #e50914;
+  animation: authSpin 0.9s linear infinite;
+}
+
+.auth-loading-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.auth-loading-text {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.5;
+}
+
+@keyframes authSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#authGate {
+  position: fixed;
+  inset: 0;
+  z-index: 50000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.88)),
+    url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+}
+
+#authGate[hidden] {
+  display: none !important;
+}
+
+.auth-gate-layout {
+  width: min(100%, 1080px);
+  display: grid;
+  grid-template-columns: minmax(320px, 420px) minmax(320px, 420px);
+  justify-content: center;
+  gap: 28px;
+}
+
+.auth-card {
+  width: min(100%, 420px);
+  padding: 0 28px 32px;
+  border-radius: 18px;
+  background: rgba(20, 20, 20, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+.auth-notice {
+  width: min(100%, 420px);
+  padding: 32px 28px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(229, 9, 20, 0.18), rgba(20, 20, 20, 0.94));
+  border: 1px solid rgba(229, 9, 20, 0.3);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  align-self: center;
+}
+
+.auth-notice-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffd166;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.auth-notice h3 {
+  font-size: 26px;
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+
+.auth-notice p {
+  color: rgba(255, 255, 255, 0.84);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.auth-notice strong {
+  color: #fff;
+}
+
+.auth-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 38px;
+  margin: 0 -28px 0;
+  padding: 0 28px 0;
+  border-radius: 18px 18px 0 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+}
+
+.auth-brand img {
+  width: 244px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.auth-card h2 {
+  font-size: 26px;
+  margin: -12px 0 8px;
+}
+
+.auth-card p {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.auth-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+}
+
+.auth-form input:focus {
+  border-color: #e50914;
+  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.18);
+}
+
+.auth-field-hidden {
+  display: none;
+}
+
+.auth-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.auth-actions button,
+#logoutButton,
+#settingsButton,
+.settings-save-btn,
+.settings-close-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.auth-actions button:hover,
+#logoutButton:hover,
+#settingsButton:hover,
+.settings-save-btn:hover,
+.settings-close-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+.auth-primary {
+  background: #e50914;
+  color: #fff;
+}
+
+.auth-secondary {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.auth-google {
+  background: #ffffff;
+  color: #111111;
+}
+
+.auth-tertiary {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+#authMessage {
+  min-height: 22px;
+  margin-top: 14px;
+  font-size: 14px;
+  color: #ffd166;
+}
+
+.auth-user-bar {
+  display: flex;
+  align-items: center;
+  margin-left: 12px;
+  position: relative;
+  padding-bottom: 8px;
+  margin-bottom: -8px;
+}
+
+.auth-account-trigger {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.auth-account-trigger:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+#authUserEmail {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.auth-account-arrow {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 9px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.auth-user-bar:hover .auth-account-arrow {
+  transform: rotate(180deg);
+}
+
+.auth-user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  display: none;
+  min-width: 180px;
+  padding: 12px 8px 8px;
+  border-radius: 12px;
+  background: rgba(15, 15, 15, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  z-index: 12010;
+}
+
+.auth-user-bar:hover .auth-user-dropdown {
+  display: grid;
+  gap: 8px;
+}
+
+#logoutButton,
+#settingsButton {
+  width: 100%;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+#logoutButton {
+  display: none;
+  background: #e50914;
+  color: #fff;
+}
+
+#settingsButton {
+  display: none;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+#settingsModal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.82);
+  z-index: 12000;
+  padding: 20px;
+}
+
+#settingsModal.show {
+  display: flex;
+}
+
+.settings-card {
+  width: min(100%, 440px);
+  background: #181818;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+.settings-card h3 {
+  margin-bottom: 8px;
+  font-size: 24px;
+}
+
+.settings-card p {
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+.settings-form {
+  display: grid;
+  gap: 12px;
+}
+
+.settings-form input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+}
+
+.settings-form input:focus {
+  border-color: #e50914;
+  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.18);
+}
+
+.settings-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.settings-save-btn {
+  background: #e50914;
+  color: #fff;
+}
+
+.settings-close-btn {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+#settingsMessage {
+  min-height: 22px;
+  margin-top: 14px;
+  font-size: 14px;
+  color: #ffd166;
+}
+
+@media (max-width: 900px) {
+  .auth-gate-layout {
+    grid-template-columns: 1fr;
+    width: min(100%, 420px);
+  }
+
+  .auth-notice {
+    order: -1;
+  }
+
+  .auth-user-bar {
+    display: none;
+  }
+}
 </style>
 </head>
 <body>
+<div id="authLoading">
+  <div class="auth-loading-card">
+    <div class="auth-loading-spinner"></div>
+    <div class="auth-loading-title">A carregar</div>
+    <div id="authLoadingText" class="auth-loading-text">A verificar a tua sessao...</div>
+  </div>
+</div>
+
+<div id="authGate">
+  <div class="auth-gate-layout">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <img src="https://i.postimg.cc/QMZk0fJ9/Adobe-Express-file.png" alt="TUGAFLIX">
+      </div>
+      <h2 id="authTitle">Entrar com conta</h2>
+      <p id="authDescription">Para abrir o site, entra com o teu email e palavra-passe.</p>
+
+      <div class="auth-form">
+        <input type="text" id="authName" class="auth-field-hidden" placeholder="Nome" autocomplete="name">
+        <input type="email" id="authEmail" placeholder="Email" autocomplete="email">
+        <input type="password" id="authPassword" placeholder="Palavra-passe" autocomplete="current-password">
+      </div>
+
+      <div class="auth-actions">
+        <button id="loginButton" class="auth-primary" type="button" onclick="loginUser()">Entrar</button>
+        <button id="registerButton" class="auth-secondary" type="button" onclick="registerUser()">Criar conta</button>
+        <button class="auth-google" type="button" onclick="loginWithGoogle()">Entrar com Google</button>
+        <button class="auth-tertiary" type="button" onclick="resetPassword()">Recuperar palavra-passe</button>
+      </div>
+
+      <div id="authMessage"></div>
+    </div>
+
+    <aside class="auth-notice">
+      <div class="auth-notice-label">Comunicado de Segurança</div>
+      <h3>As contas antigas precisam de ser recriadas</h3>
+      <p><strong>Quem já tinha criado conta anteriormente vai ter de criar uma conta nova.</strong></p>
+      <p>Isto foi necessário por motivos de segurança, porque na versão antiga era possível criar registos com emails que não existiam realmente.</p>
+      <p>Agora a criação de conta exige <strong>verificação do email</strong> antes de permitir o acesso ao site.</p>
+      <p>Este problema foi corrigido e <strong>não voltará a acontecer</strong> com o novo sistema de validação.</p>
+	  <p><strong>Obrigado pela compreensão!</strong></p>
+    </aside>
+  </div>
+</div>
+
+<div id="siteShell" class="site-shell">
+
+<div id="settingsModal">
+  <div class="settings-card">
+    <h3>Configuracoes</h3>
+    <p>Altera o teu nome, email ou palavra-passe.</p>
+
+    <div class="settings-form">
+      <input type="text" id="settingsName" placeholder="Nome" autocomplete="name">
+      <input type="email" id="settingsEmail" placeholder="Email" autocomplete="email">
+      <input type="password" id="settingsCurrentPassword" placeholder="Palavra-passe atual" autocomplete="current-password">
+      <input type="password" id="settingsPassword" placeholder="Nova palavra-passe" autocomplete="new-password">
+    </div>
+
+    <div class="settings-actions">
+      <button class="settings-save-btn" type="button" onclick="saveUserSettings()">Guardar alteracoes</button>
+      <button class="settings-close-btn" type="button" onclick="closeSettingsModal()">Fechar</button>
+    </div>
+
+    <div id="settingsMessage"></div>
+  </div>
+</div>
 
 
 
@@ -696,9 +1365,9 @@ video::cue {
 <div id="pumpkinContainer"></div>
   
   <div id="playerModal" class="modal">
-  <div class="modal-content" style="max-width:400px;">
+  <div class="modal-content">
     <h2>Escolha o player</h2>
-    <div id="playerOptions" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;"></div>
+    <div id="playerOptions"></div>
     <button class="close-btn" onclick="fecharPlayerModal()">Fechar</button>
   </div>
 </div>
@@ -728,9 +1397,21 @@ video::cue {
 <div onclick="mostrarSecao('lista')">A Minha Lista</div>
 <div onclick="mostrarSecao('canais')">Canais Streaming</div>  
 </nav>
+<div id="searchDismissOverlay" onclick="fecharPesquisaNetflix()"></div>
 <div id="searchContainer">
   <input type="text" id="searchInput" placeholder="Pesquisar...">
-  <button id="searchButton">🔍︎</button>
+  <button id="searchButton" type="button" onclick="toggleSearchBox(event)">🔍︎</button>
+</div>
+
+<div class="auth-user-bar">
+  <button id="authAccountTrigger" class="auth-account-trigger" type="button" aria-label="Menu da conta">
+    <span id="authUserEmail"></span>
+    <span class="auth-account-arrow">▼</span>
+  </button>
+  <div class="auth-user-dropdown">
+    <button id="settingsButton" type="button" onclick="openSettingsModal()" aria-label="Configuracoes">Configurações</button>
+    <button id="logoutButton" type="button" onclick="logoutUser()">Sair</button>
+  </div>
 </div>
 
 </header>
@@ -831,7 +1512,11 @@ video::cue {
 </div> 
 
 <div id="toastContainer" class="toast-container"></div>
+</div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 
  
@@ -847,6 +1532,416 @@ document.addEventListener('keydown', e => {
     e.preventDefault();
   }
 });
+
+const firebaseConfig = window.TUGAFLIX_FIREBASE_CONFIG || {
+  apiKey: "AIzaSyB5nfRQzdl4KDSkK6rI1ZNhar1H_kvR484",
+  authDomain: "tugaflix-b7979.firebaseapp.com",
+  projectId: "tugaflix-b7979",
+  appId: "1:204209891341:web:cbeda6af71af13e99a8d44"
+};
+
+let authReady = false;
+let authMode = 'login';
+
+function hasFirebaseConfig() {
+  return Boolean(
+    firebaseConfig.apiKey &&
+    firebaseConfig.authDomain &&
+    firebaseConfig.projectId &&
+    firebaseConfig.appId &&
+    !firebaseConfig.apiKey.includes("COLOCA_") &&
+    !firebaseConfig.authDomain.includes("COLOCA_") &&
+    !firebaseConfig.projectId.includes("COLOCA_") &&
+    !firebaseConfig.appId.includes("COLOCA_")
+  );
+}
+
+function setAuthLoading(isLoading, message = 'A verificar a tua sessao...') {
+  const authLoading = document.getElementById('authLoading');
+  const authLoadingText = document.getElementById('authLoadingText');
+  const authGate = document.getElementById('authGate');
+
+  if (authLoadingText) {
+    authLoadingText.textContent = message;
+  }
+
+  if (authLoading) {
+    authLoading.hidden = !isLoading;
+  }
+
+  if (authGate && isLoading) {
+    authGate.hidden = true;
+  }
+}
+
+function setAuthMessage(message, isError = false) {
+  const authMessage = document.getElementById('authMessage');
+  if (!authMessage) return;
+  authMessage.textContent = message;
+  authMessage.style.color = isError ? '#ff8a80' : '#ffd166';
+}
+
+function setSettingsMessage(message, isError = false) {
+  const settingsMessage = document.getElementById('settingsMessage');
+  if (!settingsMessage) return;
+  settingsMessage.textContent = message;
+  settingsMessage.style.color = isError ? '#ff8a80' : '#ffd166';
+}
+
+function setAuthMode(mode) {
+  authMode = mode === 'register' ? 'register' : 'login';
+
+  const authTitle = document.getElementById('authTitle');
+  const authDescription = document.getElementById('authDescription');
+  const authName = document.getElementById('authName');
+  const authPassword = document.getElementById('authPassword');
+  const loginButton = document.getElementById('loginButton');
+  const registerButton = document.getElementById('registerButton');
+  const isRegisterMode = authMode === 'register';
+
+  if (authTitle) {
+    authTitle.textContent = isRegisterMode ? 'Criar conta' : 'Entrar com conta';
+  }
+
+  if (authDescription) {
+    authDescription.textContent = isRegisterMode
+      ? 'Preenche nome, email e palavra-passe para criares a tua conta.'
+      : 'Para abrir o site, entra com o teu email e palavra-passe.';
+  }
+
+  if (authName) {
+    authName.classList.toggle('auth-field-hidden', !isRegisterMode);
+    authName.required = isRegisterMode;
+    if (!isRegisterMode) {
+      authName.value = '';
+    }
+  }
+
+  if (authPassword) {
+    authPassword.autocomplete = isRegisterMode ? 'new-password' : 'current-password';
+  }
+
+  if (loginButton) {
+    loginButton.textContent = isRegisterMode ? 'Voltar para entrar' : 'Entrar';
+  }
+
+  if (registerButton) {
+    registerButton.textContent = isRegisterMode ? 'Confirmar conta' : 'Criar conta';
+  }
+
+  setAuthMessage('');
+}
+
+function isAuthUserVerified(user) {
+  if (!user) return false;
+  const providerIds = (user.providerData || []).map(provider => provider?.providerId);
+  const usesPasswordAuth = providerIds.includes('password') || providerIds.length === 0;
+  return !usesPasswordAuth || Boolean(user.emailVerified);
+}
+
+function toggleSiteAccess(user) {
+  const authGate = document.getElementById('authGate');
+  const siteShell = document.getElementById('siteShell');
+  const logoutButton = document.getElementById('logoutButton');
+  const settingsButton = document.getElementById('settingsButton');
+  const authAccountTrigger = document.getElementById('authAccountTrigger');
+  const authUserEmail = document.getElementById('authUserEmail');
+  const isLoggedIn = Boolean(user) && isAuthUserVerified(user);
+  const displayName = user?.displayName?.trim();
+  const fallbackName = user?.email ? user.email.split('@')[0] : 'Sessao iniciada';
+
+  setAuthLoading(false);
+  if (authGate) authGate.hidden = isLoggedIn;
+  if (siteShell) siteShell.classList.toggle('is-authenticated', isLoggedIn);
+  if (authAccountTrigger) authAccountTrigger.style.display = isLoggedIn ? 'inline-flex' : 'none';
+  if (logoutButton) logoutButton.style.display = isLoggedIn ? 'inline-flex' : 'none';
+  if (settingsButton) settingsButton.style.display = isLoggedIn ? 'inline-flex' : 'none';
+  if (authUserEmail) authUserEmail.textContent = isLoggedIn ? (displayName || fallbackName) : '';
+
+  if (isLoggedIn) {
+    setAuthMessage('');
+  } else {
+    closeSettingsModal();
+  }
+}
+
+function openSettingsModal() {
+  if (!ensureAuthReady()) return;
+
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+
+  const settingsModal = document.getElementById('settingsModal');
+  const settingsName = document.getElementById('settingsName');
+  const settingsEmail = document.getElementById('settingsEmail');
+  const settingsCurrentPassword = document.getElementById('settingsCurrentPassword');
+  const settingsPassword = document.getElementById('settingsPassword');
+
+  if (settingsName) settingsName.value = user.displayName || '';
+  if (settingsEmail) settingsEmail.value = user.email || '';
+  if (settingsCurrentPassword) settingsCurrentPassword.value = '';
+  if (settingsPassword) settingsPassword.value = '';
+
+  setSettingsMessage('');
+  if (settingsModal) settingsModal.classList.add('show');
+}
+
+function closeSettingsModal() {
+  const settingsModal = document.getElementById('settingsModal');
+  const settingsCurrentPassword = document.getElementById('settingsCurrentPassword');
+  const settingsPassword = document.getElementById('settingsPassword');
+
+  if (settingsCurrentPassword) settingsCurrentPassword.value = '';
+  if (settingsPassword) settingsPassword.value = '';
+  setSettingsMessage('');
+  if (settingsModal) settingsModal.classList.remove('show');
+}
+
+async function saveUserSettings() {
+  if (!ensureAuthReady()) return;
+
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    setSettingsMessage('Precisas de iniciar sessao para editar a conta.', true);
+    return;
+  }
+
+  const newName = document.getElementById('settingsName')?.value.trim() || '';
+  const newEmail = document.getElementById('settingsEmail')?.value.trim() || '';
+  const currentPassword = document.getElementById('settingsCurrentPassword')?.value || '';
+  const newPassword = document.getElementById('settingsPassword')?.value || '';
+  const updates = [];
+  const needsSensitiveUpdate =
+    (newEmail && newEmail !== (user.email || '')) || Boolean(newPassword);
+
+  try {
+    if (needsSensitiveUpdate) {
+      if (!currentPassword) {
+        setSettingsMessage('Escreve a palavra-passe atual para alterar email ou palavra-passe.', true);
+        return;
+      }
+
+      const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
+      await user.reauthenticateWithCredential(credential);
+    }
+
+    if (newName && newName !== (user.displayName || '')) {
+      updates.push(user.updateProfile({ displayName: newName }));
+    }
+
+    if (newEmail && newEmail !== (user.email || '')) {
+      updates.push(user.updateEmail(newEmail));
+    }
+
+    if (newPassword) {
+      if (newPassword.length < 6) {
+        setSettingsMessage('A palavra-passe tem de ter pelo menos 6 caracteres.', true);
+        return;
+      }
+      updates.push(user.updatePassword(newPassword));
+    }
+
+    if (!updates.length) {
+      setSettingsMessage('Nao houve alteracoes para guardar.', true);
+      return;
+    }
+
+    await Promise.all(updates);
+    await saveUserProfileToFirestore(user, newName || user.displayName || '', newEmail || user.email || '');
+    toggleSiteAccess(firebase.auth().currentUser);
+    const settingsCurrentPassword = document.getElementById('settingsCurrentPassword');
+    const settingsPassword = document.getElementById('settingsPassword');
+    if (settingsCurrentPassword) settingsCurrentPassword.value = '';
+    if (settingsPassword) settingsPassword.value = '';
+    setSettingsMessage('Dados atualizados com sucesso.');
+  } catch (error) {
+    if (error.code === 'auth/requires-recent-login') {
+      setSettingsMessage('Para alterar email ou palavra-passe, volta a iniciar sessao e tenta novamente.', true);
+      return;
+    }
+
+    if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+      setSettingsMessage('A palavra-passe atual nao esta correta.', true);
+      return;
+    }
+
+    setSettingsMessage(error.message || 'Nao foi possivel guardar as alteracoes.', true);
+  }
+}
+
+function getAuthFormValues() {
+  const name = document.getElementById('authName')?.value.trim() || '';
+  const email = document.getElementById('authEmail')?.value.trim();
+  const password = document.getElementById('authPassword')?.value || '';
+  return { name, email, password };
+}
+
+function ensureAuthReady() {
+  if (!window.firebase || !firebase.apps?.length || !authReady) {
+    setAuthMessage('Falta ligar o Firebase antes de usar o login.', true);
+    return false;
+  }
+
+  return true;
+}
+
+async function saveUserProfileToFirestore(user, name, email) {
+  if (!window.firebase?.firestore || !user?.uid) return;
+
+  const db = firebase.firestore();
+  const userRef = db.collection('users').doc(user.uid);
+  const existingProfile = await userRef.get();
+  const now = firebase.firestore.FieldValue.serverTimestamp();
+
+  await userRef.set({
+    uid: user.uid,
+    name: name || user.displayName || '',
+    email: email || user.email || '',
+    authProvider: (user.providerData && user.providerData[0] && user.providerData[0].providerId) || 'password',
+    updatedAt: now,
+    createdAt: existingProfile.exists ? (existingProfile.data().createdAt || now) : now
+  }, { merge: true });
+}
+
+function loginUser() {
+  if (authMode !== 'login') {
+    setAuthMode('login');
+    return;
+  }
+
+  if (!ensureAuthReady()) return;
+
+  const { email, password } = getAuthFormValues();
+  if (!email || !password) {
+    setAuthMessage('Preenche o email e a palavra-passe.', true);
+    return;
+  }
+
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(async ({ user }) => {
+      if (user && !isAuthUserVerified(user)) {
+        await user.sendEmailVerification();
+        await firebase.auth().signOut();
+        setAuthMessage('Verifica o teu email antes de entrar. Enviamos um novo link de confirmacao.', true);
+        return;
+      }
+
+      setAuthMessage('Sessao iniciada com sucesso.');
+    })
+    .catch(error => setAuthMessage(error.message, true));
+}
+
+async function registerUser() {
+  if (authMode !== 'register') {
+    setAuthMode('register');
+    return;
+  }
+
+  if (!ensureAuthReady()) return;
+
+  const { name, email, password } = getAuthFormValues();
+  if (!name || !email || !password) {
+    setAuthMessage('Preenche o nome, email e palavra-passe para criar conta.', true);
+    return;
+  }
+
+  if (password.length < 6) {
+    setAuthMessage('A palavra-passe tem de ter pelo menos 6 caracteres.', true);
+    return;
+  }
+
+  try {
+    const { user } = await firebase.auth().createUserWithEmailAndPassword(email, password);
+
+    if (user) {
+      await user.updateProfile({ displayName: name });
+      await user.sendEmailVerification();
+      await user.reload();
+      await saveUserProfileToFirestore(user, name, email);
+    }
+
+    await firebase.auth().signOut();
+    toggleSiteAccess(null);
+    setAuthMode('login');
+    setAuthMessage('Conta criada. Verifica o teu email antes de entrar no site.');
+  } catch (error) {
+    setAuthMessage(error.message, true);
+  }
+}
+
+function resetPassword() {
+  if (!ensureAuthReady()) return;
+
+  const { email } = getAuthFormValues();
+  if (!email) {
+    setAuthMessage('Escreve o teu email para recuperar a palavra-passe.', true);
+    return;
+  }
+
+  firebase.auth().sendPasswordResetEmail(email)
+    .then(() => setAuthMessage('Enviamos um email para redefinir a palavra-passe.'))
+    .catch(error => setAuthMessage(error.message, true));
+}
+
+function loginWithGoogle() {
+  if (!ensureAuthReady()) return;
+
+  const provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+
+  firebase.auth().signInWithPopup(provider)
+    .then(() => setAuthMessage('Sessao iniciada com Google.'))
+    .catch(error => {
+      if (error.code === 'auth/operation-not-allowed') {
+        setAuthMessage('Ativa o login com Google no Firebase para usar este botao.', true);
+        return;
+      }
+
+      setAuthMessage(error.message, true);
+    });
+}
+
+function logoutUser() {
+  if (!ensureAuthReady()) return;
+
+  firebase.auth().signOut()
+    .then(() => setAuthMessage('Sessao terminada.'))
+    .catch(error => setAuthMessage(error.message, true));
+}
+
+function initializeAuth() {
+  if (!window.firebase) {
+    setAuthLoading(false);
+    setAuthMessage('Nao foi possivel carregar o Firebase.', true);
+    return;
+  }
+
+  if (!hasFirebaseConfig()) {
+    setAuthLoading(false);
+    setAuthMessage('Falta configurar o Firebase no topo do script para ativar o login.', true);
+    toggleSiteAccess(null);
+    return;
+  }
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  authReady = true;
+  firebase.auth().onAuthStateChanged(async user => {
+    if (user && !isAuthUserVerified(user)) {
+      toggleSiteAccess(null);
+      setAuthMessage('Verifica o teu email para poderes entrar no site.', true);
+      return;
+    }
+
+    toggleSiteAccess(user);
+  });
+}
+
+setAuthLoading(true);
+setAuthMode('login');
+initializeAuth();
 
 
 
@@ -1040,11 +2135,15 @@ bannerVideo.addEventListener('canplaythrough', () => {
 
 
   
-function abrirPlayerModal(item) {
+function abrirPlayerModal(item, serie = null, temporadaIndex = 0, episodioIndex = 0) {
   const playerModal = document.getElementById('playerModal');
   const modalEpisodios = document.getElementById('modal'); // modal de episódios
   const playerOptions = document.getElementById('playerOptions');
   const fecharBtn = playerModal.querySelector('.close-btn');
+  playerModal.hidden = false;
+  playerModal.style.visibility = 'visible';
+  playerModal.style.zIndex = '12000';
+  playerModal.style.pointerEvents = 'auto';
 
   // Verifica se veio do modal de episódios
   const abertoDoEpisodio = modalEpisodios.dataset.episodiosAtivos === 'true';
@@ -1057,13 +2156,42 @@ function abrirPlayerModal(item) {
 
   // Supondo que item.player = [{player: 'PT', src: 'linkPT'}, {player: 'EN', src: 'linkEN'}]
   if(item.player && item.player.length > 0) {
-    item.player.forEach(a => {
+    item.player.forEach((a, playerIndex) => {
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = 'player-btn';
       btn.textContent = a.player;
-btn.onclick = () => {
-  abrirVideo({ titulo: item.titulo, link: a.link }); // ✅ agora é a.link
-};
+btn.onclick = (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  playerModal.dataset.reabrirEpisodios = 'false';
+  fecharPlayerModal();
+
+  if (serie && serie.temporadas && serie.temporadas[temporadaIndex]?.episodios?.[episodioIndex]) {
+    const serieAtualizada = {
+      ...serie,
+      temporadas: serie.temporadas.map((temp, tIndex) => ({
+        ...temp,
+        episodios: temp.episodios.map((ep, eIndex) => {
+          if (ep.player && ep.player[playerIndex]?.link) {
+            return { ...ep, link: ep.player[playerIndex].link };
+          }
+
+          if (tIndex === temporadaIndex && eIndex === episodioIndex) {
+            return { ...ep, link: a.link };
+          }
+
+          return ep;
+        })
+      }))
+    };
+
+    abrirVideo(serieAtualizada, temporadaIndex, episodioIndex);
+    return;
+  }
+
+        abrirVideo({ ...item, link: a.link, currentPlayerIndex: playerIndex });
+      };
       playerOptions.appendChild(btn);
     });
   }
@@ -1085,6 +2213,7 @@ btn.onclick = () => {
   }
 
   // Atualiza texto do botão de fechar
+  fecharBtn.type = 'button';
   fecharBtn.textContent = abertoDoEpisodio ? 'Voltar' : 'Fechar';
   
   // Armazena no dataset se veio de episódio
@@ -1094,16 +2223,23 @@ btn.onclick = () => {
 function fecharPlayerModal() {
   const playerModal = document.getElementById('playerModal');
   const modalEpisodios = document.getElementById('modal');
+  const reabrirEpisodios = playerModal.dataset.reabrirEpisodios !== 'false';
 
   // Esconde modal de players
   playerModal.style.display = 'none';
+  playerModal.style.opacity = '0';
+  playerModal.style.pointerEvents = 'none';
+  playerModal.style.visibility = 'hidden';
+  playerModal.style.zIndex = '-1';
+  playerModal.hidden = true;
 
   // Se veio do modal de episódios, reabre o modal de episódios
-  if (playerModal.dataset.abertoDoEpisodio === 'true') {
+  if (reabrirEpisodios && playerModal.dataset.abertoDoEpisodio === 'true') {
     modalEpisodios.style.display = 'flex';
   }
 
   delete playerModal.dataset.abertoDoEpisodio;
+  delete playerModal.dataset.reabrirEpisodios;
 }
 
   
@@ -1166,7 +2302,7 @@ function abrirVideo(item) {
     position: fixed; top:0; left:0; width:100%; height:100%;
     background: rgba(0,0,0,0.9); display:flex;
     justify-content:center; align-items:center; flex-direction:column;
-    z-index:10000;
+    z-index:13000;
   `;
 
   // Guarda título do episódio
@@ -1261,7 +2397,7 @@ videoModal.style.cssText = `
   width: 100%;
   height: 100%;
   background: rgba(0,0,0,0.9);
-  z-index: 10000;
+  z-index: 13000;
   overflow: auto; /* permite scroll se o vídeo for grande */
   display: flex;
   justify-content: center;
@@ -1311,7 +2447,7 @@ document.body.appendChild(videoModal);
       playerContainer.style.cssText = `
         position:absolute; top:60px; left:50%;
         transform:translateX(-50%);
-        display:flex; gap:10px; flex-wrap:wrap; z-index:10001;
+        display:flex; gap:10px; flex-wrap:wrap; z-index:13001;
       `;
       item.player.forEach(a => {
         const btn = document.createElement('button');
@@ -1873,8 +3009,13 @@ const filmes = [
   trailer: "https://www.youtube.com/embed/3kLcQYyhQlU?autoplay=1",
   descricao: "2026 Cillian Murphy, Barry Keoghan, Rebecca Ferguson e Tim Roth estrelam este drama policial épico sobre uma gangue de Birmingham envolvida em um complô nazista.",
 						  											  					    player: [
-    { player: "Player 1", link: "https://filemoon.to/e/0mjlcnov0rr8?c1_file=https://megatuga.io/legendas/Peaky.Blinders.The.Immortal.Man.2026.srt&c1_label=Portuguese" },
-    { player: "Player 2", link: "https://filedecrypt.link/#qv93rv&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Peaky.Blinders.The.Immortal.Man.2026.srt%22}]" }																
+    { player: "Player 1", link: "https://vidfast.pro/movie/875828?autoPlay=true&theme=8B5CF6" },
+    { player: "Player 2", link: "https://vidrock.net/movie/875828" },
+	{ player: "Player 3", link: "https://player.videasy.net/movie/875828?color=8B5CF6" },
+	{ player: "Player 4", link: "https://filemoon.to/e/0mjlcnov0rr8?c1_file=https://megatuga.io/legendas/Peaky.Blinders.The.Immortal.Man.2026.srt&c1_label=Portuguese" },
+	{ player: "Player 5", link: "https://filedecrypt.link/#qv93rv&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Peaky.Blinders.The.Immortal.Man.2026.srt%22}]" }																					
+
+
   ]
 },
 	
@@ -2910,8 +4051,8 @@ const filmes = [
                                        {
     titulo: "TVI",
     img: "https://img.iol.pt/image/id/5f49477f0cf2e21cf33181c7/600.jpg",
-    link: "https://tviplayer.iol.pt/direto",
-    tipo: "canal-com-token"
+	link: "https://tviplayer.iol.pt/direto",									   
+    tipo: "canal"
   },
                                     {
     titulo: "TVI Reality",
@@ -2921,9 +4062,9 @@ const filmes = [
   },
 
 	                                     {
-    titulo: "Secret Story 10 (4 cameras)",
-    img: "https://www.atelevisao.com/wp-content/uploads/2024/07/promo-2-inscricoes-secret-story-.jpg",
-    link: "https://eus21.playlist.live-video.net/v1/playlist/Cv4F4HyjkxHWWDBJFKstIz4wdpuW5ogZVoQNW8YLLGC-wP90xIpchicFz_i1W9Ij9Pbr8LOZfhqhEjxKGv7bfzYVyoAoAeFmiGDWTeFn_ar5ToWK2sYa-mFH905vD0tPfP4jLDkWSdUAyZ_vsaoaqBxLlI20_AWxIYoA3Ebnmq7VictinoLOFfTVh80LJsV6T0FdYiOr0laU5c6YMIDu__DcdgICzkUV4wlDekAcqn2twFVJx4uQyggKK9gCd2tt3LAqSf39vEcgdISXsXluvg1fO1dfbAQPtsVeJRmPVefab4g1dF3-p2oBUHgwGMsIXMXShjEO2097VqTPf1YBtlIUqwlEFb1N0fsTFhxiINKj-BP0YhaiS8nNjX_8eKfbD72HJxjCuajlvpoz9vDJRMS_pIW8lJxlGi0hAnyl77cK3JappTRo4tua0aCMMX9imgdaGKHZN3sNA0fgCXE315ZdhNHE0J0rzbBHXnRSMNGMnEzTiaUm06wiIpbYQ2870BRom0fmAhzoNzlNBOOxsOwcVSF0P05OXgFwOVuOiibExa9TzhGHnMtyHvrq6f1X7OC0jdXa4b0CxlaycqtkXu5PbSjqK6ESUMAoJ6aW4AZg-zOfsHZfpoeN5fg5ekjYrdt_yOjxgNknKHm4zbO7JHuSh1XuHKJIRu2TR7GQHlnzJu5K6O-7bQ0420blGVacBd9ukJL5DesM7n3PL2Z1gBMVipQtXMdQ1zcA1nzbVv7xo4fczsrusZJjya8pBIVnYrIaLmL9jNC2CC0ERoUv5d0GHNc4uoZ_9F9-sjsk78TwW5UUyFilqR2xT5pF7KxK4ZDl_U_zva_FmGSH-Xsj8M6cgouCTGXvYnNDL_fTR2l_1MJ8ocV0wsN_5puvx9Mi7bk1n84Cys7rH0bKKMzLsw5ZvjBzJhMqqQnyzYaPPOkBu-IzUKVfKxG-TDGXxCoCWfL2oHEVaZs3PTcScLxq6HtNLWrsLnuYg16NZGcQbzUiMeAT4oxPJcZzH7Te_YRMpBoMSrj4wzzXxg5PY74YIAEqCWV1LXdlc3QtMjDQDg.m3u8",
+    titulo: "Secret Story 10 (Casa dos Segredos 10) (4 cameras)",
+    img: "https://www.atelevisao.com/wp-content/uploads/2025/10/casa-dos-segredos.jpg",
+    link: "https://player.kick.com/Zonrealiti",
     tipo: "canal"
   },
 
@@ -5992,71 +7133,531 @@ const series = [
     {
       "numero": 1,
       "episodios": [
-        { "numero": 1, "link": "https://filemoon.sx/e/2lxv72aw8msf" },
-        { "numero": 2, "link": "https://filemoon.sx/e/kbdx36r5wqwo" },
-        { "numero": 3, "link": "https://filemoon.sx/e/bq1b4fk6tgez" },
-        { "numero": 4, "link": "https://filemoon.sx/e/nx0oa7tz3vqn" },
-        { "numero": 5, "link": "https://filemoon.sx/e/3x5a9qqd5oea" },
-        { "numero": 6, "link": "https://filemoon.sx/e/68bvj5ttfq7m" },
+            { 
+      "numero": 1, 
+      "player": [
+        { "player": "Player 1", "link": "https://bysedikamoum.com/e/8n4rz6y3lxni/peaky-blinders-sangue-apostas-e-navalhas-s01e01-1080p-web-dl-dual-www-bludv-tv" },
+        { "player": "Player 2", "link": "https://streamtape.com/e/bz7Lrbj99wfPAya/Peaky.Blinders.Sangue.Apostas.e.Navalhas.S01E01.1080p.WEB-DL.x264.DUAL-WWW.BLUDV.TV.mkv.mp4" },
+		{ "player": "Player 3", "link": "https://myvidplay.com/e/1jk9svgi144u" }
       ]
     },
-        {
+             { 
+      "numero": 2, 
+      "player": [
+        { "player": "Player 1", "link": "https://bysedikamoum.com/e/708trqoirkib/peaky-blinders-sangue-apostas-e-navalhas-s01e02-1080p-web-dl-dual-www-bludv-tv" },
+        { "player": "Player 2", "link": "https://streamtape.com/e/jZPXDbpkobHLK0/Peaky.Blinders.Sangue.Apostas.e.Navalhas.S01E02.1080p.WEB-DL.x264.DUAL-WWW.BLUDV.TV.mkv.mp4" },
+		{ "player": "Player 3", "link": "https://myvidplay.com/e/ofefgzg2ppd2" }
+      ]
+    },
+    { 
+      "numero": 3, 
+      "player": [
+        { "player": "Player 1", "link": "https://bysedikamoum.com/e/b4qiw6tmvp4o/peaky-blinders-sangue-apostas-e-navalhas-s01e03-1080p-web-dl-dual-www-bludv-tv" },
+        { "player": "Player 2", "link": "https://streamtape.com/e/ZXa7lQJDYduqVQV/Peaky.Blinders.Sangue.Apostas.e.Navalhas.S01E03.1080p.WEB-DL.x264.DUAL-WWW.BLUDV.TV.mkv.mp4" },
+		{ "player": "Player 3", "link": "https://myvidplay.com/e/x8r2oak1jkjg" }
+      ]
+    },
+     { 
+      "numero": 4, 
+      "player": [
+        { "player": "Player 1", "link": "https://bysedikamoum.com/e/e50imty8gjjj/peaky-blinders-sangue-apostas-e-navalhas-s01e04-1080p-web-dl-dual-www-bludv-tv" },
+        { "player": "Player 2", "link": "https://streamtape.com/e/WgR7wzWLX8U0oM/Peaky.Blinders.Sangue.Apostas.e.Navalhas.S01E04.1080p.WEB-DL.x264.DUAL-WWW.BLUDV.TV.mkv" },
+		{ "player": "Player 3", "link": "https://myvidplay.com/e/al0lbvftejq7" }
+      ]
+    },
+      { 
+      "numero": 5, 
+      "player": [
+        { "player": "Player 1", "link": "https://bysedikamoum.com/e/fidjv1sct7bg/peaky-blinders-sangue-apostas-e-navalhas-s01e05-1080p-web-dl-dual-www-bludv-tv" },
+        { "player": "Player 2", "link": "https://streamtape.com/e/Oaa3LBYpOBSZBdJ/Peaky.Blinders.Sangue.Apostas.e.Navalhas.S01E05.1080p.WEB-DL.x264.DUAL-WWW.BLUDV.TV.mkv.mp4" },
+		{ "player": "Player 3", "link": "https://myvidplay.com/e/ie295pqzmney" }
+      ]
+    },
+      { 
+      "numero": 6, 
+      "player": [
+        { "player": "Player 1", "link": "https://bysedikamoum.com/e/5zcawqswlgsa/peaky-blinders-sangue-apostas-e-navalhas-s01e06-1080p-web-dl-dual-www-bludv-tv" },
+        { "player": "Player 2", "link": "https://streamtape.com/e/XBDD70WkOwhDjzB/Peaky.Blinders.Sangue.Apostas.e.Navalhas.S01E06.1080p.WEB-DL.x264.DUAL-WWW.BLUDV.TV.mkv.mp4" },
+		{ "player": "Player 3", "link": "https://myvidplay.com/d/recgxre65au6" }
+
+          ]
+      }
+    ]
+  },
+  {
       "numero": 2,
       "episodios": [
-        { "numero": 1, "link": "https://filemoon.sx/e/1ujxnex2qsi8" },
-        { "numero": 2, "link": "https://filemoon.sx/e/wj0j30eouag0" },
-        { "numero": 3, "link": "https://filemoon.sx/e/0ikby70fwzl2" },
-        { "numero": 4, "link": "https://filemoon.sx/e/bzn7lprluzw5" },
-        { "numero": 5, "link": "https://filemoon.sx/e/gt3rxt4w7pys" },
-        { "numero": 6, "link": "https://filemoon.sx/e/86dznffuezmz" },
+            { 
+      "numero": 1, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/h8btksfnwx4z?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E01.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#univjc&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S02E01.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/7ueel9zds7v3?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E01.srt&c1_label=Portuguese" }
       ]
     },
+             { 
+      "numero": 2, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/w7l4f0xtcwel?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E02.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#kr65qh&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S02E02.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/bbjo7vh6q6nv?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E02.srt&c1_label=Portuguese" }
+      ]
+    },
+    { 
+      "numero": 3, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/5snrgoyvzopt?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E03.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#meao9z&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S02E03.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/qcpwnbh0ehvt?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E03.srt&c1_label=Portuguese" }
+      ]
+    },
+     { 
+      "numero": 4, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/ex3bsxx1pcos?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E04.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#twdgmj&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S02E04.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/nurp3gea7mfa?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E04.srt&c1_label=Portuguese" }
+      ]
+    },
+      { 
+      "numero": 5, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/3wamld92etgt?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E05.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#meaodb&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S02E05.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/xiqlkky368rz?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E05.srt&c1_label=Portuguese" }
+      ]
+    },
+      { 
+      "numero": 6, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/9mrqy138qek8?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E06.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#ip1ncm&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S02E06.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/yt4os0t7zisc?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E06.srt&c1_label=Portuguese" }
+      ]
+    },
+      { 
+      "numero": 7, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/r0oymbo7vpbi?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E07.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#j3lf6m&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S02E07.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/4iae6a20lkvo?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E07.srt&c1_label=Portuguese" }
+      ]
+    },
+              { 
+      "numero": 8, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/ow0fuysb39zt?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E08.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#6szrtg&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S02E08.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/2qskko13xsak?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E08.srt&c1_label=Portuguese" }
+      ]
+    },
+		                { 
+      "numero": 9, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/6fwzk0ephgnt?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E09.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#kr65xc&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S02E09.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/cvujpnlsxl6p?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E09.srt&c1_label=Portuguese" }
+      ]
+    },
+		                { 
+      "numero": 10, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/6tibjl69pp3j?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E10.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#ip1nzp&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S02E10.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/0b9epa231vif?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E10.srt&c1_label=Portuguese" }
+      ]
+    },
+		  		                { 
+      "numero": 11, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/qbor6wnvd2g4?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E11.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#6szrzs&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S02E11.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/wxrjcuf8nkdc?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E11.srt&c1_label=Portuguese" }
+      ]
+    },
+		  		                { 
+      "numero": 12, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/vboubl6zwvm2?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E12.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#skb8x3&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S02E12.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/ylkp3t0zn5kb?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E12.srt&c1_label=Portuguese" }
+      ]
+    },
+
+     { 
+      "numero": 13, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/pshd7v8tmxff?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E13.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#v1nicb&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S02E13.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/6wnri7in0o3m?c1_file=https://megatuga.io/legendas/Breaking.Bad.S02E13.srt&c1_label=Portuguese" }
+        
+         ]
+      }
+    ]
+  },
+
         {
       "numero": 3,
       "episodios": [
-        { "numero": 1, "link": "https://filemoon.sx/e/3e3h25s6sp74" },
-        { "numero": 2, "link": "https://filemoon.sx/e/c42itzx8t7zx" },
-        { "numero": 3, "link": "https://filemoon.sx/e/05epkioytl8y" },
-        { "numero": 4, "link": "https://filemoon.sx/e/tf39tuypri64" },
-        { "numero": 5, "link": "https://filemoon.sx/e/41f3piuqipb6" },
-        { "numero": 6, "link": "https://filemoon.sx/e/u9pbrnd1du69" },
+            { 
+      "numero": 1, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/rqtwsvfhzj1v?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E01.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#ip1qm5&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.2008.S03E01.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/1ypdagvu65pl?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E01.srt&c1_label=Portuguese" }
       ]
     },
+             { 
+      "numero": 2, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/n2f7x511awpz?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E02.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#qt9mt3&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.2008.S03E02.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/26m31hlj71b7?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E02.srt&c1_label=Portuguese" }
+      ]
+    },
+    { 
+      "numero": 3, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/5atflg4n9cft?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E03.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#6szqu3&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.2008.S03E03.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/v036frzp9onk?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E03.srt&c1_label=Portuguese" }
+      ]
+    },
+     { 
+      "numero": 4, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/qom2remhs80l?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E04.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#twde6n&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.2008.S03E04.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/wzg36e38mm5o?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E04.srt&c1_label=Portuguese" }
+      ]
+    },
+      { 
+      "numero": 5, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/h77zagasrwhc?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E05.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#85kgun&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.2008.S03E05.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/vjkxwi6skcfi?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E05.srt&c1_label=Portuguese" }
+      ]
+    },
+      { 
+      "numero": 6, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/2d28u7t74jhg?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E06.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#puxv9d&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.2008.S03E06.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/afc0t4tsxb2x?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E06.srt&c1_label=Portuguese" }
+      ]
+    },
+      { 
+      "numero": 7, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/i7ny3p6cho7r?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E07.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#ncpxvc&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.2008.S03E07.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/tfo8jeixdiuz?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E07.srt&c1_label=Portuguese" }
+      ]
+    },
+              { 
+      "numero": 8, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/voy5m5a3egf6?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E08.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#ghwqnt&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.2008.S03E08.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/p0ofi5rg3atv?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E08.srt&c1_label=Portuguese" }
+      ]
+    },
+		                { 
+      "numero": 9, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/h8a8bi8o7ll4?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E09.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#qt9gls&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.2008.S03E09.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/o75bl84lwkqe?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E09.srt&c1_label=Portuguese" }
+      ]
+    },
+		                { 
+      "numero": 10, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/yxn0npeqkt1k?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E10.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#3aoeqi&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.2008.S03E10.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/sw4xjasqrdj7?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E10.srt&c1_label=Portuguese" }
+      ]
+    },
+		  		                { 
+      "numero": 11, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/nuvexq1i3oq7?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E11.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#85ki35&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.2008.S03E11.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/xxnwh5rw8v27?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E11.srt&c1_label=Portuguese" }
+      ]
+    },
+		  		                { 
+      "numero": 12, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/cpqbc4yiz0y4?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E12.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#h9y5k6&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.2008.S03E12.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/1abzfjpy7jq7?c1_file=https://megatuga.io/legendas/Breaking.Bad.2008.S03E12.srt&c1_label=Portuguese" }
+      ]
+    },
+
+     { 
+      "numero": 13, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/238acs7nw839?c1_file=https://megatuga.io/legendas/Breaking.Bad.S03E13.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#qt9prs&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S03E13.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/t8so3d3bs4yd?c1_file=https://megatuga.io/legendas/Breaking.Bad.S03E13.srt&c1_label=Portuguese" }
+        
+         ]
+      }
+    ]
+  },
+
+
             {
       "numero": 4,
       "episodios": [
-        { "numero": 1, "link": "https://filemoon.sx/e/psc3c0xbmlru" },
-        { "numero": 2, "link": "https://filemoon.sx/e/5dl1e2fo5xtn" },
-        { "numero": 3, "link": "https://filemoon.sx/e/9qpqek8jt9sj" },
-        { "numero": 4, "link": "https://filemoon.sx/e/wuinw7mquykf" },
-        { "numero": 5, "link": "https://filemoon.sx/e/3alqx0d0iahy" },
-        { "numero": 6, "link": "https://filemoon.sx/e/9w4w4j5apini" },
+            { 
+      "numero": 1, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/w7kx1d2jtxxy?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E01.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#qt9uje&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S04E01.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/phw4cnz6l7ix?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E01.srt&c1_label=Portuguese" }
       ]
     },
+             { 
+      "numero": 2, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/y3t1jkj2riqv?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E02.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#elfbee&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S04E02.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/aq3anblyiqxl?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E02.srt&c1_label=Portuguese" }
+      ]
+    },
+    { 
+      "numero": 3, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/mmhkznmtbpu4?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E03.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#mea1es&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S04E03.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/oxrbpvuwpvbo?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E03.srt&c1_label=Portuguese" }
+      ]
+    },
+     { 
+      "numero": 4, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/l6aaxkpdnbyn?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E04.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#pux6oh&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S04E04.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/ctpf770yv3nr?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E04.srt&c1_label=Portuguese" }
+      ]
+    },
+      { 
+      "numero": 5, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/vhwn7q3f927o?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E05.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#h9ymdd&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S04E05.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/jxjc3thw5faf?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E05.srt&c1_label=Portuguese" }
+      ]
+    },
+      { 
+      "numero": 6, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/nj8wr7sr2cwm?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E06.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#xivzlc&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S04E06.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/1hcktkyc75jk?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E06.srt&c1_label=Portuguese" }
+      ]
+    },
+      { 
+      "numero": 7, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/04425pcameu5?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E07.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#pux6c5&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S04E07.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/8kzx02pc2535?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E07.srt&c1_label=Portuguese" }
+      ]
+    },
+              { 
+      "numero": 8, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/0aq2u63pzpik?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E08.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#v1n8s6&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S04E08.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/5msi8n6fz9xc?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E08.srt&c1_label=Portuguese" }
+      ]
+    },
+		                { 
+      "numero": 9, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/hagvfybe6xqp?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E09.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#v1n89h&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S04E09.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/k70fqgt0a90z?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E09.srt&c1_label=Portuguese" }
+      ]
+    },
+		                { 
+      "numero": 10, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/7wp1bv1ryrus?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E10.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#mea135&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S04E10.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/tf1zdr51p5zp?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E10.srt&c1_label=Portuguese" }
+      ]
+    },
+		  		                { 
+      "numero": 11, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/oc169cf37w6q?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E11.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#v1n8d9&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S04E11.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/vzm42tbu6ry1?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E11.srt&c1_label=Portuguese" }
+      ]
+    },
+		  		                { 
+      "numero": 12, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/gz164oop239i?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E12.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#unisiv&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S04E12.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/42gzszkmqk1f?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E12.srt&c1_label=Portuguese" }
+      ]
+    },
+
+     { 
+      "numero": 13, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/e43z5g7zg28d?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E13.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#ghwfbw&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S04E13.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/iwv226jdhehh?c1_file=https://megatuga.io/legendas/Breaking.Bad.S04E13.srt&c1_label=Portuguese" }
+        
+         ]
+      }
+    ]
+  },
+
             {
       "numero": 5,
       "episodios": [
-        { "numero": 1, "link": "https://filemoon.sx/e/lgf32143goi4" },
-        { "numero": 2, "link": "https://filemoon.sx/e/rvc9h21xsdog" },
-        { "numero": 3, "link": "https://filemoon.sx/e/666n069lc30e" },
-        { "numero": 4, "link": "https://filemoon.sx/e/7rch570i3cjg" },
-        { "numero": 5, "link": "https://filemoon.sx/e/ut7revp4g0zf" },
-        { "numero": 6, "link": "https://filemoon.sx/e/bw7r0icjdco0" },
+            { 
+      "numero": 1, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/wi62izjr27n8?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E01.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#ghwya8&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S05E01.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/hn6twxu1ihn1?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E01.srt&c1_label=Portuguese" }
       ]
     },
-    {
-      "numero": 6,
-      "episodios": [
-        { "numero": 1, "link": "https://filemoon.sx/e/ysfxxg8b9na9" },
-        { "numero": 2, "link": "https://filemoon.sx/e/hiawnjwzxgi5" },
-        { "numero": 3, "link": "https://filemoon.sx/e/7eyswac607dc" },
-        { "numero": 4, "link": "https://filemoon.sx/e/chduw3eejfda" },
-        { "numero": 5, "link": "https://filemoon.sx/e/pm6ca6l73bt4" },
-        { "numero": 6, "link": "https://filemoon.sx/e/qh74c9bi1fz3" },
+             { 
+      "numero": 2, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/hijo7nwt3smu?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E02.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#b65zvj&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S05E02.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/381p79icr9q2?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E02.srt&c1_label=Portuguese" }
       ]
-    }
-  ]
-},
+    },
+    { 
+      "numero": 3, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/o4apostnum8y?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E03.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#5zr88p&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S05E03.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/5a9i7unemjty?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E03.srt&c1_label=Portuguese" }
+      ]
+    },
+     { 
+      "numero": 4, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/bb3gu41wd4en?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E04.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#dqh9ot&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S05E04.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/nqgi2phn4qq0?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E04.srt&c1_label=Portuguese" }
+      ]
+    },
+      { 
+      "numero": 5, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/q4gowigkobkz?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E05.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#ncpoqm&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S05E05.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/2wrb10q0qk8b?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E05.srt&c1_label=Portuguese" }
+      ]
+    },
+      { 
+      "numero": 6, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/tuc2hlk42smz?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E06.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#meayi5&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S05E06.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/2yskkvebaamb?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E06.srt&c1_label=Portuguese" }
+      ]
+    },
+      { 
+      "numero": 7, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/3qso4gxcmx7q?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E07.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#6szxpv&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S05E07.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/nfwecd7jat3h?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E07.srt&c1_label=Portuguese" }
+      ]
+    },
+              { 
+      "numero": 8, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/tmd85izp6eo7?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E08.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#xivfpj&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S05E08.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/pcmo9hxna9yq?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E08.srt&c1_label=Portuguese" }
+      ]
+    },
+		                { 
+      "numero": 9, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/ocdan1upmph7?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E09.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#ip1mnu&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S05E09.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/2ip1968iief1?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E09.srt&c1_label=Portuguese" }
+      ]
+    },
+		                { 
+      "numero": 10, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/kqh92kxidylo?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E10.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#ip1mjo&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S05E10.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/dmv6cvxo9dtw?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E10.srt&c1_label=Portuguese" }
+      ]
+    },
+		  		                { 
+      "numero": 11, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/tr0kwgum0drd?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E11.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#puxeto&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S05E11.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/j5d2ud7hhp6f?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E11.srt&c1_label=Portuguese" }
+      ]
+    },
+		  		                { 
+      "numero": 12, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/8vi6gepzi77m?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E12.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#lomhv6&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S05E12.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/cg6ugbuvzghq?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E12.srt&c1_label=Portuguese" }
+      ]
+    },
+		  		  		                { 
+      "numero": 13, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/7z07mdg2l99l?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E13.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#puxpnd&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S05E13.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/7f5apg0659no?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E13.srt&c1_label=Portuguese" }
+      ]
+    },
+		  		  		                { 
+      "numero": 14, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/3ccg4sarv9js?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E14.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#v1nviz&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S05E14.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/mzizyh7plhes?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E14.srt&c1_label=Portuguese" }
+      ]
+    },
+		  		  		                { 
+      "numero": 15, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/2d0apmthkyv2?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E15.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#ip1ids&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S05E15.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/82nonzfioegv?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E15.srt&c1_label=Portuguese" }
+      ]
+    },
+
+     { 
+      "numero": 16, 
+      "player": [
+        { "player": "Player 1", "link": "https://filemoon.to/e/0nhe7aj22ews?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E16.srt&c1_label=Portuguese" },
+        { "player": "Player 2", "link": "https://filedecrypt.link/#ojeozg&subs=[{%22language%22:%20%22pt%22,%20%22label%22:%20%22Portuguese%22,%20%22url%22:%20%22https://megatuga.io/legendas/Breaking.Bad.S05E16.srt%22}]" },
+		{ "player": "Player 3", "link": "https://dsvplay.com/e/g173andkv53o?c1_file=https://megatuga.io/legendas/Breaking.Bad.S05E16.srt&c1_label=Portuguese" }
+    
+            ]
+          }
+        ]
+      }
+    ]
+  },
 
 
 
@@ -14167,6 +15768,61 @@ function pesquisar() {
   }
 }
 
+function abrirPesquisaNetflix() {
+  const searchInput = document.getElementById('searchInput');
+  const searchDismissOverlay = document.getElementById('searchDismissOverlay');
+  if (!searchInput) return;
+  searchInput.classList.add('show');
+  searchInput.style.opacity = '1';
+  searchInput.style.pointerEvents = 'auto';
+  searchInput.style.borderWidth = '2px';
+  searchInput.style.transform = 'translateY(-50%) scaleX(1)';
+  if (searchDismissOverlay) {
+    searchDismissOverlay.style.display = 'block';
+  }
+  requestAnimationFrame(() => searchInput.focus());
+}
+
+function fecharPesquisaNetflix() {
+  const searchInput = document.getElementById('searchInput');
+  const searchDismissOverlay = document.getElementById('searchDismissOverlay');
+  if (!searchInput) return;
+  searchInput.blur();
+  searchInput.classList.remove('show');
+  searchInput.style.opacity = '0';
+  searchInput.style.pointerEvents = 'none';
+  searchInput.style.borderWidth = '0';
+  searchInput.style.transform = 'translateY(-50%) scaleX(0)';
+  if (searchDismissOverlay) {
+    searchDismissOverlay.style.display = 'none';
+  }
+}
+
+function toggleSearchBox(event) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  const searchInput = document.getElementById('searchInput');
+  if (!searchInput) return;
+
+  const estaVisivel = searchInput.classList.contains('show');
+  const temTermo = Boolean(searchInput.value.trim());
+
+  if (!estaVisivel) {
+    abrirPesquisaNetflix();
+    return;
+  }
+
+  if (temTermo) {
+    pesquisar();
+    return;
+  }
+
+  fecharPesquisaNetflix();
+}
+
 function abrirModalTemporadas(serie) {
   const list = document.getElementById('episodiosList');
   document.getElementById('modalTitle').textContent = `Escolha a temporada de "${serie.titulo}"`;
@@ -14251,7 +15907,8 @@ btn.onclick = () => {
 
   // 🔹 Verifica se o episódio possui múltiplos players
   if (ep.player && ep.player.length > 1) {
-    abrirPlayerModal(ep); // abre o modal de players
+    const temporadaIndex = serie.temporadas.findIndex(t => t.numero === temporada.numero);
+    abrirPlayerModal(ep, serie, temporadaIndex, ep.numero - 1); // abre o modal de players
   } else {
     // Caso não tenha múltiplos players, abre o vídeo normalmente
     const temporadaIndex = serie.temporadas.findIndex(t => t.numero === temporada.numero);
@@ -14376,6 +16033,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
   carregarLista();
   carregarProgresso();
   mostrarSecao('inicio');
+  const siteHeader = document.querySelector('header');
+  const atualizarHeaderScroll = () => {
+    if (!siteHeader) return;
+    siteHeader.classList.toggle('header-scrolled', window.scrollY > 20);
+  };
+  atualizarHeaderScroll();
+  window.addEventListener('scroll', atualizarHeaderScroll, { passive: true });
 
     // Reaplica episódios selecionados
   episodioSelecionado = JSON.parse(localStorage.getItem('episodioSelecionado') || '{}');
@@ -14404,28 +16068,35 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   // Pesquisa
   const searchInput = document.getElementById('searchInput');
-  const searchButton = document.getElementById('searchButton');
-
-searchButton.addEventListener('click', (e) => {
-  e.stopPropagation();
-  searchInput.classList.toggle('show');
-  if (searchInput.classList.contains('show')) searchInput.focus();
-  else searchInput.value = '';
-});
+  fecharPesquisaNetflix();
+  const pesquisarInstantaneamente = () => {
+    searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio');
+  };
 
 
   // Fechar a barra se clicar fora dela
   const searchContainer = document.getElementById('searchContainer');
-  document.addEventListener('click', (e) => {
+  const fecharPesquisaAoClicarFora = (e) => {
     if (!searchContainer.contains(e.target)) {
-      searchInput.classList.add('hidden');
+      fecharPesquisaNetflix();
     }
+  };
+  document.addEventListener('click', fecharPesquisaAoClicarFora, true);
+  document.addEventListener('pointerdown', fecharPesquisaAoClicarFora, true);
+
+  searchInput.addEventListener('blur', () => {
+    setTimeout(() => {
+      const elementoAtivo = document.activeElement;
+      if (!searchContainer.contains(elementoAtivo)) {
+        fecharPesquisaNetflix();
+      }
+    }, 0);
   });
 
   searchInput.addEventListener('keydown', e=>{
     if(e.key==='Enter'){ 
       e.preventDefault();
-      searchInput.value.trim() ? pesquisar() : mostrarSecao('inicio'); 
+      pesquisarInstantaneamente();
     }
   });
 
@@ -14445,7 +16116,7 @@ searchButton.addEventListener('click', (e) => {
 });
 
 const container = document.getElementById("pumpkinContainer");
-const NUM_PUMPKINS = 30;
+const NUM_PUMPKINS = 0;
 const pumpkinURL = "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/84f6d3c7-19b3-471c-99b3-ebe943ca814d/dkkyxxj-2ea18044-3c5c-4d81-b199-7479690147b5.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi84NGY2ZDNjNy0xOWIzLTQ3MWMtOTliMy1lYmU5NDNjYTgxNGQvZGtreXh4ai0yZWExODA0NC0zYzVjLTRkODEtYjE5OS03NDc5NjkwMTQ3YjUucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.vS2BqeIFwE9CYFKq4faHslJ2rc5EN2HAOUZVp5htcBo";
 
 const pumpkins = [];
@@ -14556,14 +16227,53 @@ async function playChannel(canal) {
 function abrirVideo(item, temporadaIndex = 0, episodioIndex = 0) {
 
 canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
+  const currentPlayerIndex = Number.isInteger(item.currentPlayerIndex) ? item.currentPlayerIndex : 0;
+  const bannerVideoEl = document.getElementById('bannerVideo');
+
+  if (bannerVideoEl && !bannerVideoEl.paused && bannerVideoEl.style.display !== 'none') {
+    bannerVideoEl.dataset.pausedByPlayer = 'true';
+    bannerVideoEl.pause();
+  }
+
+  if (document.activeElement && typeof document.activeElement.blur === 'function') {
+    document.activeElement.blur();
+  }
+
+  const previousHtmlOverflow = document.documentElement.style.overflow;
+  const previousBodyOverflow = document.body.style.overflow;
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
 	
   const videoModal = document.createElement('div');
   videoModal.style.cssText = `
     position: fixed; top:0; left:0; width:100%; height:100%;
     background: rgba(0,0,0,0.9); display:flex;
     justify-content:center; align-items:center; flex-direction:column;
-    z-index:10000;
+    z-index:13000;
   `;
+  videoModal.tabIndex = -1;
+
+  const cleanupVideoModal = () => {
+    document.documentElement.style.overflow = previousHtmlOverflow;
+    document.body.style.overflow = previousBodyOverflow;
+    if (bannerVideoEl && bannerVideoEl.dataset.pausedByPlayer === 'true') {
+      bannerVideoEl.play().catch(() => {});
+      delete bannerVideoEl.dataset.pausedByPlayer;
+    }
+  };
+
+  const cleanupForPlayerSwitch = () => {
+    document.documentElement.style.overflow = previousHtmlOverflow;
+    document.body.style.overflow = previousBodyOverflow;
+    videoModal.remove();
+  };
+
+  videoModal.addEventListener('click', e => e.stopPropagation());
+  videoModal.addEventListener('keydown', e => {
+    if ((e.code === 'Space' || e.key === ' ') && document.activeElement === videoModal) {
+      e.preventDefault();
+    }
+  });
 
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
@@ -14581,6 +16291,7 @@ canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
     iframe.allowFullscreen = true;
     iframe.frameBorder = '0';
     iframe.allow = 'autoplay';
+    iframe.style.backgroundColor = '#000';
     iframe.style.borderRadius = '10px';
     iframe.style.boxShadow = '0 0 20px rgba(0,0,0,0.7)';
     videoModal.appendChild(iframe);
@@ -14645,14 +16356,47 @@ canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
     atualizarIframe();
 } else {
 
-  const iframe = document.createElement('iframe');
-  iframe.src = item.link;
-  iframe.width = '80%';
-  iframe.height = '80%';
-  iframe.allowFullscreen = true;
-  iframe.frameBorder = '0';
-  iframe.allow = 'autoplay';
-  videoModal.appendChild(iframe);
+  const isHlsStream = typeof item.link === 'string' && item.link.includes('.m3u8');
+
+  if (isHlsStream) {
+    const video = document.createElement('video');
+    video.controls = true;
+    video.autoplay = true;
+    video.muted = false;
+    video.playsInline = true;
+    video.style.width = '80%';
+    video.style.height = '80%';
+    video.style.objectFit = 'contain';
+    video.style.backgroundColor = '#000';
+    video.style.borderRadius = '10px';
+    video.style.boxShadow = '0 0 20px rgba(0,0,0,0.7)';
+    videoModal.appendChild(video);
+
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = item.link;
+      video.addEventListener('loadedmetadata', () => video.play().catch(() => {}));
+    } else if (typeof Hls !== 'undefined' && Hls.isSupported()) {
+      const hls = new Hls({ enableWorker: true, lowLatencyMode: true, backBufferLength: 90 });
+      hls.loadSource(item.link);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MEDIA_ATTACHED, () => video.play().catch(() => {}));
+    } else {
+      const unsupported = document.createElement('p');
+      unsupported.textContent = 'Este navegador não suporta HLS.';
+      unsupported.style.color = '#fff';
+      videoModal.appendChild(unsupported);
+    }
+  } else {
+    const iframe = document.createElement('iframe');
+    iframe.src = item.link;
+    iframe.width = '80%';
+    iframe.height = '80%';
+    iframe.allowFullscreen = true;
+    iframe.frameBorder = '0';
+    iframe.allow = 'autoplay';
+    iframe.style.backgroundColor = '#000';
+    videoModal.appendChild(iframe);
+  }
 
   // 🔥 Se for canal, adiciona botões Anterior / Próximo
   if (canalAtualIndex !== -1) {
@@ -14667,19 +16411,28 @@ canalAtualIndex = canaisStreaming.findIndex(c => c.titulo === item.titulo);
 
 // 🔹 Botão Anterior
 btnAnterior.onclick = () => {
+  if (item.player && item.player.length > 1) {
+    if (currentPlayerIndex > 0) {
+      const novoPlayerIndex = currentPlayerIndex - 1;
+      cleanupForPlayerSwitch();
+      abrirVideo({ ...item, link: item.player[novoPlayerIndex].link, currentPlayerIndex: novoPlayerIndex });
+      return;
+    }
+  }
+
   let novoIndex = canalAtualIndex - 1;
   if (novoIndex < 0) novoIndex = canaisStreaming.length - 1;
 
   const canalAnterior = canaisStreaming[novoIndex];
+  cleanupForPlayerSwitch();
 
   // Se tiver vários players, abre o primeiro player diretamente
   if (canalAnterior.player && canalAnterior.player.length > 1) {
-    abrirVideo(canalAnterior, 0, 0); // 0 = primeira temporada, 0 = primeiro player
+    abrirVideo({ ...canalAnterior, link: canalAnterior.player[0].link, currentPlayerIndex: 0 }, 0, 0);
   } else {
     abrirVideo(canalAnterior);
   }
 
-  videoModal.remove(); // remove o modal atual
 };
 
     const btnProximo = document.createElement('button');
@@ -14691,19 +16444,28 @@ btnAnterior.onclick = () => {
     btnProximo.style.transform = 'translateY(-50%)';
 
 btnProximo.onclick = () => {
+  if (item.player && item.player.length > 1) {
+    if (currentPlayerIndex < item.player.length - 1) {
+      const novoPlayerIndex = currentPlayerIndex + 1;
+      cleanupForPlayerSwitch();
+      abrirVideo({ ...item, link: item.player[novoPlayerIndex].link, currentPlayerIndex: novoPlayerIndex });
+      return;
+    }
+  }
+
   let novoIndex = canalAtualIndex + 1;
   if(novoIndex >= canaisStreaming.length) novoIndex = 0;
 
   const proximoCanal = canaisStreaming[novoIndex];
+  cleanupForPlayerSwitch();
 
   // Se tiver vários players, abre o primeiro player ou continue do selecionado
   if(proximoCanal.player && proximoCanal.player.length > 1){
-    abrirVideo(proximoCanal, 0, 0); // 0 = primeira temporada, 0 = primeiro player
+    abrirVideo({ ...proximoCanal, link: proximoCanal.player[0].link, currentPlayerIndex: 0 }, 0, 0);
   } else {
     abrirVideo(proximoCanal);
   }
 
-  videoModal.remove();
 };
 
     videoModal.appendChild(btnAnterior);
@@ -14711,8 +16473,12 @@ btnProximo.onclick = () => {
   }
 }
 
-  fecharBtn.onclick = () => videoModal.remove();
+  fecharBtn.onclick = () => {
+    cleanupVideoModal();
+    videoModal.remove();
+  };
   document.body.appendChild(videoModal);
+  videoModal.focus();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14824,18 +16590,31 @@ if ("serviceWorker" in navigator) {
 document.addEventListener('DOMContentLoaded', () => {
   const track = document.getElementById('novidadesTrack');
   const container = document.getElementById('novidadesContainer');
+  let pausado = false;
+
+  if (track) {
+    track.addEventListener('mouseenter', () => {
+      pausado = true;
+    });
+
+    track.addEventListener('mouseleave', () => {
+      pausado = false;
+    });
+  }
 
   // começa totalmente à direita, fora da tela
   let x = container.offsetWidth;  
   const speed = 1; // pixels por frame
 
   function animar() {
-    x -= speed; // move para a esquerda
-    track.style.transform = `translateX(${x}px)`;
+    if (!pausado) {
+      x -= speed; // move para a esquerda
+      track.style.transform = `translateX(${x}px)`;
 
-    // quando a track inteira sair da tela à esquerda
-    if (x + track.offsetWidth < 0) {
-      x = container.offsetWidth; // volta para a direita
+      // quando a track inteira sair da tela à esquerda
+      if (x + track.offsetWidth < 0) {
+        x = container.offsetWidth; // volta para a direita
+      }
     }
 
     requestAnimationFrame(animar);
@@ -14882,7 +16661,7 @@ function abrirEmbedModal(url, titulo = 'Embed') {
     position: fixed; top:0; left:0; width:100%; height:100%;
     background: rgba(0,0,0,0.9); display:flex;
     justify-content:center; align-items:center; flex-direction:column;
-    z-index:10000;
+    z-index:13000;
   `;
 
   const iframe = document.createElement('iframe');
