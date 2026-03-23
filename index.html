@@ -1155,6 +1155,12 @@ video::cue {
   background: rgba(255, 255, 255, 0.12);
 }
 
+.auth-email-help-actions button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.04);
+}
+
 .auth-email-help-box {
   display: none;
   margin-top: 10px;
@@ -2012,13 +2018,18 @@ async function registerUser() {
 
     if (user) {
       lastVerificationEmail = email;
+      setAuthMode('login');
+      const authEmail = document.getElementById('authEmail');
+      const authPassword = document.getElementById('authPassword');
+      if (authEmail) authEmail.value = email;
+      if (authPassword) authPassword.value = password;
+      setAuthMessage('A enviar o email de verificacao...');
       await user.updateProfile({ displayName: name });
       await user.sendEmailVerification();
       await user.reload();
       await saveUserProfileToFirestore(user, name, email);
     }
 
-    setAuthMode('login');
     setEmailHelpVisible(true, true);
     setAuthMessage('Conta criada. Verifica o teu email antes de entrar no site.');
   } catch (error) {
