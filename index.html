@@ -2051,22 +2051,26 @@ async function registerUser() {
       lastVerificationEmail = email;
       shouldShowVerificationWarning = true;
       setAuthMode('login');
+
       const authEmail = document.getElementById('authEmail');
       const authPassword = document.getElementById('authPassword');
+
       if (authEmail) authEmail.value = email;
       if (authPassword) authPassword.value = password;
+
       setAuthMessage('A enviar o email de verificacao...');
       await user.updateProfile({ displayName: name });
       await user.sendEmailVerification();
       await user.reload();
       await saveUserProfileToFirestore(user, name, email);
+      await firebase.auth().signOut();
     }
 
     setEmailHelpVisible(true, 'verification');
     setAuthMessage('Conta criada. Verifica o teu email antes de entrar no site.');
   } catch (error) {
     setEmailHelpVisible(false);
-    setAuthMessage(error.message, true);
+    setAuthMessage(error.message || 'Nao foi possivel criar conta.', true);
   }
 }
 
