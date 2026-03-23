@@ -1106,6 +1106,40 @@ video::cue {
   color: #ffd166;
 }
 
+.auth-email-help {
+  margin-top: 6px;
+}
+
+.auth-email-help button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.auth-email-help button:hover {
+  color: #fff;
+}
+
+.auth-email-help-box {
+  display: none;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.auth-email-help-box.show {
+  display: block;
+}
+
 .auth-user-bar {
   display: flex;
   align-items: center;
@@ -1321,6 +1355,12 @@ video::cue {
       </div>
 
       <div id="authMessage"></div>
+      <div class="auth-email-help">
+        <button type="button" onclick="toggleEmailHelp()">Nao recebeu o email? Clique aqui</button>
+        <div id="authEmailHelpBox" class="auth-email-help-box">
+          Verifique a pasta Spam ou Lixo eletrónico. Se encontrar lá o email, marque-o como "Nao e spam" para ajudar os próximos emails a chegarem à caixa de entrada.
+        </div>
+      </div>
     </div>
 
     <aside class="auth-notice">
@@ -1579,6 +1619,12 @@ function setAuthMessage(message, isError = false) {
   if (!authMessage) return;
   authMessage.textContent = message;
   authMessage.style.color = isError ? '#ff8a80' : '#ffd166';
+}
+
+function toggleEmailHelp() {
+  const authEmailHelpBox = document.getElementById('authEmailHelpBox');
+  if (!authEmailHelpBox) return;
+  authEmailHelpBox.classList.toggle('show');
 }
 
 function setSettingsMessage(message, isError = false) {
