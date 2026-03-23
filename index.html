@@ -1107,7 +1107,12 @@ video::cue {
 }
 
 .auth-email-help {
+  display: none;
   margin-top: 6px;
+}
+
+.auth-email-help.show {
+  display: block;
 }
 
 .auth-email-help button {
@@ -1622,9 +1627,20 @@ function setAuthMessage(message, isError = false) {
 }
 
 function toggleEmailHelp() {
+  const authEmailHelp = document.querySelector('.auth-email-help');
   const authEmailHelpBox = document.getElementById('authEmailHelpBox');
-  if (!authEmailHelpBox) return;
+  if (!authEmailHelp || !authEmailHelpBox || !authEmailHelp.classList.contains('show')) return;
   authEmailHelpBox.classList.toggle('show');
+}
+
+function setEmailHelpVisible(isVisible) {
+  const authEmailHelp = document.querySelector('.auth-email-help');
+  const authEmailHelpBox = document.getElementById('authEmailHelpBox');
+  if (!authEmailHelp) return;
+  authEmailHelp.classList.toggle('show', Boolean(isVisible));
+  if (!isVisible && authEmailHelpBox) {
+    authEmailHelpBox.classList.remove('show');
+  }
 }
 
 function setSettingsMessage(message, isError = false) {
@@ -1675,6 +1691,7 @@ function setAuthMode(mode) {
     registerButton.textContent = isRegisterMode ? 'Confirmar conta' : 'Criar conta';
   }
 
+  setEmailHelpVisible(false);
   setAuthMessage('');
 }
 
@@ -1868,10 +1885,12 @@ function loginUser() {
       if (user && !isAuthUserVerified(user)) {
         await user.sendEmailVerification();
         await firebase.auth().signOut();
+        setEmailHelpVisible(true);
         setAuthMessage('Verifica o teu email antes de entrar. Enviamos um novo link de confirmacao.', true);
         return;
       }
 
+      setEmailHelpVisible(false);
       setAuthMessage('Sessao iniciada com sucesso.');
     })
     .catch(error => setAuthMessage(error.message, true));
@@ -1909,8 +1928,10 @@ async function registerUser() {
     await firebase.auth().signOut();
     toggleSiteAccess(null);
     setAuthMode('login');
+    setEmailHelpVisible(true);
     setAuthMessage('Conta criada. Verifica o teu email antes de entrar no site.');
   } catch (error) {
+    setEmailHelpVisible(false);
     setAuthMessage(error.message, true);
   }
 }
@@ -1925,8 +1946,14 @@ function resetPassword() {
   }
 
   firebase.auth().sendPasswordResetEmail(email)
-    .then(() => setAuthMessage('Enviamos um email para redefinir a palavra-passe.'))
-    .catch(error => setAuthMessage(error.message, true));
+    .then(() => {
+      setEmailHelpVisible(true);
+      setAuthMessage('Enviamos um email para redefinir a palavra-passe.');
+    })
+    .catch(error => {
+      setEmailHelpVisible(false);
+      setAuthMessage(error.message, true);
+    });
 }
 
 function loginWithGoogle() {
