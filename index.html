@@ -2150,7 +2150,17 @@ function initializeAuth() {
     }
 
     shouldShowVerificationWarning = false;
+    if (user && isAuthUserVerified(user)) {
+      try {
+        await loadUserDataFromFirestore(user);
+      } catch (_) {}
+    }
     toggleSiteAccess(user);
+    if (user && isAuthUserVerified(user)) {
+      try {
+        mostrarSecao(secaoAtual);
+      } catch (_) {}
+    }
   });
 }
 
@@ -2171,9 +2181,59 @@ let temporadaSelecionada = JSON.parse(localStorage.getItem('temporadaSelecionada
   let secaoAtual = 'inicio'; // guarda a seção atual
 
 
-function salvarLista() { localStorage.setItem("minhaLista", JSON.stringify(minhaLista)); }
+function getCurrentVerifiedUser() {
+  const user = window.firebase?.auth?.().currentUser;
+  return user && isAuthUserVerified(user) ? user : null;
+}
+
+async function saveUserDataToFirestore() {
+  const user = getCurrentVerifiedUser();
+  if (!window.firebase?.firestore || !user?.uid) return;
+
+  const db = firebase.firestore();
+  const userDataRef = db.collection('userData').doc(user.uid);
+  const existingData = await userDataRef.get();
+  const now = firebase.firestore.FieldValue.serverTimestamp();
+
+  await userDataRef.set({
+    minhaLista: Array.isArray(minhaLista) ? minhaLista : [],
+    progresso: progresso || {},
+    updatedAt: now,
+    createdAt: existingData.exists ? (existingData.data().createdAt || now) : now
+  }, { merge: true });
+}
+
+async function loadUserDataFromFirestore(user) {
+  if (!window.firebase?.firestore || !user?.uid) return false;
+
+  const db = firebase.firestore();
+  const userDataRef = db.collection('userData').doc(user.uid);
+  const snapshot = await userDataRef.get();
+
+  if (!snapshot.exists) {
+    if ((Array.isArray(minhaLista) && minhaLista.length) || Object.keys(progresso || {}).length) {
+      await saveUserDataToFirestore();
+    }
+    return false;
+  }
+
+  const data = snapshot.data() || {};
+  minhaLista = Array.isArray(data.minhaLista) ? data.minhaLista : [];
+  progresso = data.progresso && typeof data.progresso === 'object' ? data.progresso : {};
+  localStorage.setItem("minhaLista", JSON.stringify(minhaLista));
+  localStorage.setItem("progresso", JSON.stringify(progresso));
+  return true;
+}
+
+function salvarLista() {
+  localStorage.setItem("minhaLista", JSON.stringify(minhaLista));
+  saveUserDataToFirestore().catch(() => {});
+}
 function carregarLista() { const lista = localStorage.getItem("minhaLista"); if(lista) minhaLista = JSON.parse(lista); }
-function salvarProgresso() { localStorage.setItem("progresso", JSON.stringify(progresso)); }
+function salvarProgresso() {
+  localStorage.setItem("progresso", JSON.stringify(progresso));
+  saveUserDataToFirestore().catch(() => {});
+}
 function carregarProgresso() { const p = localStorage.getItem("progresso"); if(p) progresso = JSON.parse(p); }
 
 function mostrarToast(mensagem){
