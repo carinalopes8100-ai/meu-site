@@ -1995,7 +1995,8 @@ async function saveUserProfileToFirestore(user, name, email) {
   }, { merge: true });
 }
 
-function loginUser() {
+
+async function loginUser() {
   if (authMode !== 'login') {
     setAuthMode('login');
     return;
@@ -2009,41 +2010,45 @@ function loginUser() {
     return;
   }
 
-  firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(async ({ user }) => {
-      if (user && !isAuthUserVerified(user)) {
-        lastVerificationEmail = email;
-        shouldShowVerificationWarning = true;
-        await user.sendEmailVerification();
-        setEmailHelpVisible(true, 'verification');
-        setAuthMessage('Verifica o teu email antes de entrar. Enviamos um novo link de confirmacao.', true);
-        return;
-      }
+  try {
+    const { user } = await firebase.auth().signInWithEmailAndPassword(email, password);
 
-      setEmailHelpVisible(false);
-      setAuthMessage('Sessao iniciada com sucesso.');
-    })
-    .catch(error => setAuthMessage(error.message, true));
+    if (!user) {
+      setAuthMessage('Nao foi possivel iniciar sessao.', true);
+      return;
+    }
+
+    await user.reload();
+    const updatedUser = firebase.auth().currentUser;
+
+    if (!updatedUser) {
+      setAuthMessage('Nao foi possivel obter os dados da conta.', true);
+      return;
+    }
+
+    if (!isAuthUserVerified(updatedUser)) {
+      lastVerificationEmail = email;
+      shouldShowVerificationWarning = true;
+      setEmailHelpVisible(true, 'verification');
+      setAuthMessage('O teu email ainda nao está verificado.', true);
+      await firebase.auth().signOut();
+      return;
+    }
+
+    shouldShowVerificationWarning = false;
+    setEmailHelpVisible(false);
+    setAuthMessage('Sessao iniciada com sucesso.');
+
+    try {
+      await loadUserDataFromFirestore(updatedUser);
+    } catch (_) {}
+
+    toggleSiteAccess(updatedUser);
+    mostrarSecao(secaoAtual || 'inicio');
+  } catch (error) {
+    setAuthMessage(error.message || 'Erro ao iniciar sessao.', true);
+  }
 }
-
-async function registerUser() {
-  if (authMode !== 'register') {
-    setAuthMode('register');
-    return;
-  }
-
-  if (!ensureAuthReady()) return;
-
-  const { name, email, password } = getAuthFormValues();
-  if (!name || !email || !password) {
-    setAuthMessage('Preenche o nome, email e palavra-passe para criar conta.', true);
-    return;
-  }
-
-  if (password.length < 6) {
-    setAuthMessage('A palavra-passe tem de ter pelo menos 6 caracteres.', true);
-    return;
-  }
 
   try {
     const { user } = await firebase.auth().createUserWithEmailAndPassword(email, password);
