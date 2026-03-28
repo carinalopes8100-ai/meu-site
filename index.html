@@ -10733,6 +10733,7 @@ const series = [
       "episodios": [
             { 
       "numero": 1, 
+      "titulo": "Sandra y Culebra",
       "player": [
         { "player": "Player 1", "link": "https://streamtape.com/e/28RO6OlAjmUKAq/1._Sandra_y_Culebra.mp4" },
         { "player": "Player 2", "link": "https://bysedikamoum.com/e/hf08gowlsdz2/1-sandra-y-culebra" }, 
@@ -10740,6 +10741,7 @@ const series = [
     },
              { 
       "numero": 2, 
+      "titulo": "Rosa y Claudia",
       "player": [
         { "player": "Player 1", "link": "https://streamtape.com/e/qWb1GvDmXDha1g/2._Rosa_y_Claudia.mp4" },
         { "player": "Player 2", "link": "https://bysedikamoum.com/e/lr9lmz9xshmc/2-rosa-y-claudia" },
@@ -10747,6 +10749,7 @@ const series = [
     },
     { 
       "numero": 3, 
+      "titulo": "Carlos, Lucía y Borja",
       "player": [
         { "player": "Player 1", "link": "https://streamtape.com/e/Yp0V8XOYYZCo8o/3._Carlos%2C_Luc%C3%ADa_y_Borja.mp4" },
         { "player": "Player 2", "link": "https://bysedikamoum.com/e/7axq24txlts5/3-carlos-lucía-y-borja" },
@@ -10754,6 +10757,7 @@ const series = [
     },
      { 
       "numero": 4, 
+      "titulo": "Lucas y Paqui",
       "player": [
         { "player": "Player 1", "link": "https://streamtape.com/e/7qlgGYKkpbsBxY/4._Lucas_y_Paqui.mp4" },
         { "player": "Player 2", "link": "https://bysedikamoum.com/e/ti445mkxwe0e/4-lucas-y-paqui" },
@@ -10761,6 +10765,7 @@ const series = [
     },
     { 
       "numero": 5, 
+      "titulo": "Mario y Dora",
       "player": [
         { "player": "Player 1", "link": "https://streamtape.com/e/QWgjr4eL2xh0DQ2/5._Mario_y_Dora.mp4" },
         { "player": "Player 2", "link": "https://bysedikamoum.com/e/0337ycgiyogr/5-mario-y-dora" },
@@ -16383,6 +16388,7 @@ function abrirModalEpisodios(temporada, serieTitulo, serie) {
     const btn = document.createElement('button');
     btn.className = 'episodio-btn';
     btn.dataset.numero = ep.numero;
+    const episodioLabel = ep.titulo || `Episódio ${ep.numero}`;
 
 if (ep.novosTodosOsDias) {
   btn.textContent = `Episódios novos todos os dias`;
@@ -16391,13 +16397,13 @@ if (ep.novosTodosOsDias) {
   btn.style.cursor = "default";
 } 
 else if (ep.link === "#" || temporada.emBreve) {
-  btn.textContent = `Episódio ${ep.numero} - Em Breve`;
+  btn.textContent = `${episodioLabel} - Em Breve`;
   btn.disabled = true;
   btn.style.backgroundColor = "#555";
   btn.style.cursor = "not-allowed";
 } 
 else {
-  btn.textContent = `Episódio ${ep.numero}`;
+  btn.textContent = episodioLabel;
 }
 
 
