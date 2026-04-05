@@ -19719,10 +19719,19 @@ function getBBBParticipantesApi() {
   return window.BBB_PARTICIPANTES_API || 'https://bbb-participantes.tugaflix042.workers.dev';
 }
 
+function getBBBNomeadosFixos() {
+  return new Set([
+    'chaiany',
+    'juliano floss',
+    'marciele'
+  ]);
+}
+
 function criarCardParticipanteBBB(item) {
   const card = document.createElement('div');
   const eliminado = Boolean(item.eliminado);
-  const nomeado = Boolean(item.nomeado) && !eliminado;
+  const lider = Boolean(item.lider) && !eliminado;
+  const nomeado = (Boolean(item.nomeado) || getBBBNomeadosFixos().has((item.nome || '').toLowerCase())) && !eliminado && !lider;
   card.style.cssText = `
     display:flex;
     flex-direction:column;
@@ -19741,7 +19750,7 @@ function criarCardParticipanteBBB(item) {
     height:140px;
     object-fit:cover;
     border-radius:50%;
-    border:3px solid ${nomeado ? '#f5b700' : '#ff1493'};
+    border:3px solid ${lider ? '#1e88e5' : (nomeado ? '#f5b700' : '#ff1493')};
     background:#101010;
     box-shadow:0 10px 24px rgba(0,0,0,0.25);
     filter:${eliminado ? 'grayscale(1) opacity(0.55)' : 'none'};
@@ -19752,12 +19761,26 @@ function criarCardParticipanteBBB(item) {
   nome.style.cssText = `
     font-size:18px;
     font-weight:700;
-    color:${eliminado ? '#8e8e8e' : (nomeado ? '#b36b00' : '#4b18e6')};
+    color:${eliminado ? '#8e8e8e' : (lider ? '#1565c0' : (nomeado ? '#b36b00' : '#4b18e6'))};
   `;
 
-  if (nomeado) {
+  if (lider) {
     const badge = document.createElement('div');
-    badge.textContent = 'No Paredão';
+    badge.textContent = 'Lider';
+    badge.style.cssText = `
+      padding:4px 10px;
+      border-radius:999px;
+      background:#dbeafe;
+      color:#0b57d0;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+    `;
+    card.appendChild(badge);
+  } else if (nomeado) {
+    const badge = document.createElement('div');
+    badge.textContent = 'No Paredao';
     badge.style.cssText = `
       padding:4px 10px;
       border-radius:999px;
@@ -20087,3 +20110,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
+
