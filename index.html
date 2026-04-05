@@ -19588,7 +19588,10 @@ function abrirEmbedModal(url, titulo = 'Embed') {
   document.body.appendChild(modal);
 }
 const TVI_REALITY_NOMEADOS_URL = 'https://tvi.iol.pt/secretstory/concorrentes';
-const TVI_REALITY_NOMEADOS_PROXY = 'https://api.allorigins.win/raw?url=';
+const TVI_REALITY_NOMEADOS_PROXIES = [
+  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`
+];
 
 function normalizarTextoNomeados(valor) {
   return (valor || '')
@@ -19664,6 +19667,40 @@ function criarCardNomeadoTVIReality(item) {
   return card;
 }
 
+function fetchComTimeout(url, timeoutMs = 8000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  return fetch(url, {
+    signal: controller.signal,
+    cache: 'no-store'
+  }).finally(() => clearTimeout(timer));
+}
+
+async function carregarHtmlNomeadosTVIReality() {
+  let ultimoErro = null;
+
+  for (const criarProxyUrl of TVI_REALITY_NOMEADOS_PROXIES) {
+    try {
+      const res = await fetchComTimeout(criarProxyUrl(TVI_REALITY_NOMEADOS_URL));
+      if (!res.ok) {
+        throw new Error(`Proxy respondeu com ${res.status}`);
+      }
+
+      const html = await res.text();
+      if (!html || html.trim().length < 100) {
+        throw new Error('Resposta vazia ou incompleta');
+      }
+
+      return html;
+    } catch (error) {
+      ultimoErro = error;
+    }
+  }
+
+  throw ultimoErro || new Error('Falha ao carregar nomeados.');
+}
+
 function abrirNomeadosTVIReality() {
   const overlay = document.createElement('div');
   overlay.style.cssText = `
@@ -19714,11 +19751,7 @@ function abrirNomeadosTVIReality() {
     if (e.target === overlay) overlay.remove();
   });
 
-  fetch(`${TVI_REALITY_NOMEADOS_PROXY}${encodeURIComponent(TVI_REALITY_NOMEADOS_URL)}`)
-    .then(res => {
-      if (!res.ok) throw new Error('Falha ao carregar a pagina da TVI.');
-      return res.text();
-    })
+  carregarHtmlNomeadosTVIReality()
     .then(html => {
       const nomeados = extrairNomeadosTVIReality(html);
       if (!nomeados.length) {
@@ -19731,9 +19764,9 @@ function abrirNomeadosTVIReality() {
       nomeados.forEach(item => grelha.appendChild(criarCardNomeadoTVIReality(item)));
     })
     .catch(() => {
-      estado.textContent = 'Nao deu para carregar os nomeados automaticamente agora. A TVI ou o proxy podem ter bloqueado a leitura.';
+      estado.textContent = 'Nao foi possivel carregar os nomeados automaticamente. A TVI ou os proxies bloquearam o acesso.';
       estado.style.color = '#ff8a80';
-      grelha.innerHTML = '<p style="margin:0; color:rgba(255,255,255,0.7);">Se isto falhar, eu posso ajustar o extrator para a estrutura atual da TVI.</p>';
+      grelha.innerHTML = '<p style="margin:0; color:rgba(255,255,255,0.7);">Em HTML puro, isto depende de proxies externos e pode ser bloqueado. Se quiseres uma solucao realmente estavel e automatica, vamos precisar de um backend ou worker.</p>';
     });
 }
 
