@@ -19885,12 +19885,14 @@ function abrirParticipantesBBBModal() {
       grelha.innerHTML = '';
       participantes.forEach(item => grelha.appendChild(criarCardParticipanteBBB(item)));
     })
-    .catch(() => {
+    .catch((error) => {
+      const detalheErro = error && error.message ? error.message : 'Erro desconhecido';
       estado.textContent = 'Nao foi possivel carregar os participantes automaticamente pela API.';
       estado.style.color = '#d92d20';
       grelha.innerHTML = `
         <div style="grid-column:1 / -1; color:rgba(0,0,0,0.68); line-height:1.5;">
           Confirma que tens o worker dos participantes publicado e que <code style="color:#111;">window.BBB_PARTICIPANTES_API</code> aponta para o endpoint certo.
+          <div style="margin-top:10px; color:#111; font-weight:700;">${detalheErro}</div>
         </div>
       `;
     });
