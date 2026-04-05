@@ -19736,7 +19736,12 @@ async function carregarDetalheParticipanteBBB(slug) {
   const url = `${api}?slug=${encodeURIComponent(slug)}`;
   const res = await fetchBBBParticipantes(url);
   if (!res.ok) {
-    throw new Error(`Detalhe respondeu com ${res.status}`);
+    let detalheErro = '';
+    try {
+      const erroData = await res.json();
+      detalheErro = erroData?.detalhe || erroData?.erro || erroData?.error || '';
+    } catch (_) {}
+    throw new Error(detalheErro || `Detalhe respondeu com ${res.status}`);
   }
   const data = await res.json();
   if (!data || !data.detalhe) {
@@ -19870,21 +19875,125 @@ function abrirDetalheParticipanteBBB(item) {
   const renderResumo = () => {
     if (!detalheAtual) return;
     content.innerHTML = '';
-    const cardResumo = document.createElement('div');
-    cardResumo.style.cssText = `
+    const status = Array.isArray(detalheAtual.status) ? detalheAtual.status : [];
+    const historico = detalheAtual.historico || {};
+    const resumo = Array.isArray(detalheAtual.resumoJogo) ? detalheAtual.resumoJogo : [];
+
+    const topo = document.createElement('div');
+    topo.style.cssText = 'display:flex; flex-direction:column; gap:14px; margin-bottom:18px;';
+
+    const statusCard = document.createElement('div');
+    statusCard.style.cssText = `
       padding:16px 18px;
       border-radius:16px;
       background:#f5f5f7;
-      line-height:1.5;
     `;
-    cardResumo.textContent = detalheAtual.queridometro || 'Sem dados de Queridometro disponiveis.';
-    content.appendChild(cardResumo);
+    statusCard.innerHTML = '<div style="font-weight:800; margin-bottom:10px;">Status</div>';
+    const statusWrap = document.createElement('div');
+    statusWrap.style.cssText = 'display:flex; flex-wrap:wrap; gap:10px;';
+    if (status.length) {
+      status.forEach(itemStatus => {
+        const pill = document.createElement('div');
+        pill.textContent = itemStatus;
+        pill.style.cssText = `
+          padding:6px 12px;
+          border-radius:999px;
+          background:${itemStatus.toLowerCase() === 'lider' ? '#dbeafe' : '#fff3bf'};
+          color:${itemStatus.toLowerCase() === 'lider' ? '#0b57d0' : '#8a5a00'};
+          font-weight:800;
+          font-size:13px;
+          text-transform:uppercase;
+        `;
+        statusWrap.appendChild(pill);
+      });
+    } else {
+      const vazio = document.createElement('div');
+      vazio.textContent = 'Sem status automatico disponivel.';
+      vazio.style.cssText = 'color:#666;';
+      statusWrap.appendChild(vazio);
+    }
+    statusCard.appendChild(statusWrap);
+
+    const estalecasCard = document.createElement('div');
+    estalecasCard.style.cssText = `
+      padding:16px 18px;
+      border-radius:16px;
+      background:#f5f5f7;
+    `;
+    estalecasCard.innerHTML = `
+      <div style="font-weight:800; margin-bottom:10px;">Estalecas</div>
+      <div style="font-size:18px;">${detalheAtual.estalecas || 'Sem valor automatico disponivel.'}</div>
+    `;
+
+    const historicoCard = document.createElement('div');
+    historicoCard.style.cssText = `
+      padding:16px 18px;
+      border-radius:16px;
+      background:#f5f5f7;
+    `;
+    historicoCard.innerHTML = '<div style="font-weight:800; margin-bottom:10px;">Historico</div>';
+    const histGrid = document.createElement('div');
+    histGrid.style.cssText = 'display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px;';
+    [
+      ['Lider', historico.lider],
+      ['Paredao', historico.paredao],
+      ['Imune', historico.imune],
+      ['Anjo', historico.anjo],
+      ['Na mira', historico.naMira],
+      ['Monstro', historico.monstro],
+      ['VIP', historico.vip],
+      ['Xepa', historico.xepa]
+    ].forEach(([label, value]) => {
+      const itemHist = document.createElement('div');
+      itemHist.style.cssText = 'padding:10px 12px; border-radius:12px; background:#fff;';
+      itemHist.innerHTML = `<div style="font-weight:700; margin-bottom:4px;">${label}</div><div>${value ?? 0}</div>`;
+      histGrid.appendChild(itemHist);
+    });
+    historicoCard.appendChild(histGrid);
+
+    topo.appendChild(statusCard);
+    topo.appendChild(estalecasCard);
+    topo.appendChild(historicoCard);
+    content.appendChild(topo);
+
+    const lista = document.createElement('div');
+    lista.style.cssText = 'display:flex; flex-direction:column; gap:14px;';
+    if (!resumo.length) {
+      const vazio = document.createElement('div');
+      vazio.textContent = 'Sem resumo automatico do jogo disponivel.';
+      vazio.style.cssText = `
+        padding:16px 18px;
+        border-radius:16px;
+        background:#f5f5f7;
+        line-height:1.5;
+      `;
+      lista.appendChild(vazio);
+    } else {
+      resumo.forEach((itemResumo, index) => {
+        const cardResumo = document.createElement('div');
+        cardResumo.style.cssText = `
+          padding:16px 18px;
+          border-radius:16px;
+          background:#f5f5f7;
+          line-height:1.5;
+        `;
+        const tituloLinha = document.createElement('div');
+        tituloLinha.textContent = itemResumo.titulo || `Resumo ${index + 1}`;
+        tituloLinha.style.cssText = 'font-weight:800; margin-bottom:8px; color:#111;';
+        const textoLinha = document.createElement('div');
+        textoLinha.textContent = itemResumo.resumo || '';
+        cardResumo.appendChild(tituloLinha);
+        cardResumo.appendChild(textoLinha);
+        lista.appendChild(cardResumo);
+      });
+    }
+    content.appendChild(lista);
   };
 
   const tabsConfig = [
     { label: 'Sobre', render: renderSobre },
     { label: 'Curiosidades', render: renderCuriosidades },
-    { label: 'Queridometro', render: renderResumo }
+    { label: 'Resumo do jogo', render: renderResumo }
   ];
 
   tabsConfig.forEach((tabInfo, index) => {
@@ -20024,7 +20133,12 @@ function fetchBBBParticipantes(url, timeoutMs = 10000) {
 async function carregarParticipantesBBB() {
   const res = await fetchBBBParticipantes(getBBBParticipantesApi());
   if (!res.ok) {
-    throw new Error(`API respondeu com ${res.status}`);
+    let detalheErro = '';
+    try {
+      const erroData = await res.json();
+      detalheErro = erroData?.detalhe || erroData?.erro || erroData?.error || '';
+    } catch (_) {}
+    throw new Error(detalheErro || `API respondeu com ${res.status}`);
   }
 
   const data = await res.json();
