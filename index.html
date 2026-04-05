@@ -19715,7 +19715,9 @@ function abrirNomeadosIframe(url) {
   });
 }
 
-const BBB_PARTICIPANTES_API = window.BBB_PARTICIPANTES_API || 'https://bbb-participantes.tugaflix042.workers.dev';
+function getBBBParticipantesApi() {
+  return window.BBB_PARTICIPANTES_API || 'https://bbb-participantes.tugaflix042.workers.dev';
+}
 
 function criarCardParticipanteBBB(item) {
   const card = document.createElement('div');
@@ -19767,7 +19769,7 @@ function fetchBBBParticipantes(url, timeoutMs = 10000) {
 }
 
 async function carregarParticipantesBBB() {
-  const res = await fetchBBBParticipantes(BBB_PARTICIPANTES_API);
+  const res = await fetchBBBParticipantes(getBBBParticipantesApi());
   if (!res.ok) {
     throw new Error(`API respondeu com ${res.status}`);
   }
