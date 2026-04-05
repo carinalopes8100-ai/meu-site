@@ -19637,6 +19637,19 @@ function abrirNomeadosTVIReality() {
     display: block;
   `;
 
+  const promoMask = document.createElement('div');
+  promoMask.style.cssText = `
+    position: absolute;
+    top: 116px;
+    right: 22px;
+    width: 330px;
+    height: 64px;
+    background: #ffffff;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: 6px;
+  `;
+
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
   fecharBtn.className = 'player-btn';
@@ -19656,6 +19669,7 @@ function abrirNomeadosTVIReality() {
   fecharBtn.onclick = fecharModalNomeados;
 
   iframeViewport.appendChild(iframe);
+  iframeViewport.appendChild(promoMask);
   frameWrap.appendChild(iframeViewport);
   frameWrap.appendChild(fecharBtn);
   modal.appendChild(frameWrap);
