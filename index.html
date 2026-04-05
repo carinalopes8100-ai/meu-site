@@ -18424,7 +18424,14 @@ overlay.appendChild(btnPlay);
 
 
     const btnDireito = document.createElement('button');
-    if(item.titulo === 'Morangos com Açúcar' && item.verao && item.verao.length > 0){
+    if(tipo === 'canal' && item.titulo === 'TVI Reality'){
+      btnDireito.textContent = 'Nomeados';
+      btnDireito.onclick = e => {
+        e.stopPropagation();
+        abrirEmbedModal('https://tvi.iol.pt/secretstory/concorrentes', 'Nomeados');
+      };
+      overlay.appendChild(btnDireito);
+    } else if(item.titulo === 'Morangos com Açúcar' && item.verao && item.verao.length > 0){
       btnDireito.textContent = '▶ Verão';
       btnDireito.onclick = e => { e.stopPropagation(); abrirModalTemporadas({...item, temporadas: item.verao}); };
       overlay.appendChild(btnDireito);
@@ -19749,3 +19756,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
+
