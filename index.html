@@ -19587,66 +19587,7 @@ function abrirEmbedModal(url, titulo = 'Embed') {
 
   document.body.appendChild(modal);
 }
-const TVI_REALITY_NOMEADOS_URL = 'https://tvi.iol.pt/secretstory/concorrentes';
-const TVI_REALITY_NOMEADOS_PROXIES = [
-  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-  url => `https://corsproxy.io/?${encodeURIComponent(url)}`
-];
-
-function normalizarTextoNomeados(valor) {
-  return (valor || '')
-    .replace(/\s+/g, ' ')
-    .replace(/\b(custo chamada.*|mais direto.*|torne-se premium.*|reality em direto.*)\b/gi, '')
-    .trim();
-}
-
-function textoCandidatoNomeados(card, img) {
-  const fontes = [
-    img?.getAttribute('alt'),
-    img?.getAttribute('title'),
-    img?.getAttribute('aria-label'),
-    card?.querySelector('h1, h2, h3, h4, strong, b, figcaption, .name, .title, .nome, [class*=name], [class*=nome]')?.textContent,
-    card?.querySelector('span, p, div')?.textContent
-  ];
-
-  for (const fonte of fontes) {
-    const nome = normalizarTextoNomeados(fonte);
-    if (!nome) continue;
-    if (nome.length < 2 || nome.length > 40) continue;
-    if (/concorrentes|secret story|premium|reality|tvi|candidatos|votar/i.test(nome)) continue;
-    return nome;
-  }
-
-  return '';
-}
-
-function extrairNomeadosTVIReality(html) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  const vistos = new Set();
-  const nomeados = [];
-  const imagens = [...doc.querySelectorAll('img')];
-
-  imagens.forEach(img => {
-    const src = img.getAttribute('src') || img.getAttribute('data-src') || img.getAttribute('srcset')?.split(' ')[0] || '';
-    if (!src || src.startsWith('data:')) return;
-
-    const card = img.closest('a, article, figure, li, div, section');
-    const nome = textoCandidatoNomeados(card, img);
-    if (!nome) return;
-
-    const chave = nome.toLowerCase();
-    if (vistos.has(chave)) return;
-    vistos.add(chave);
-
-    nomeados.push({
-      nome,
-      img: src.startsWith('//') ? `https:${src}` : src
-    });
-  });
-
-  return nomeados.filter(item => item.img && /^https?:/i.test(item.img));
-}
+const TVI_REALITY_NOMEADOS_API = window.TVI_REALITY_NOMEADOS_API || '/api/tvi-reality-nomeados';
 
 function criarCardNomeadoTVIReality(item) {
   const card = document.createElement('div');
@@ -19667,38 +19608,31 @@ function criarCardNomeadoTVIReality(item) {
   return card;
 }
 
-function fetchComTimeout(url, timeoutMs = 8000) {
+function fetchNomeadosComTimeout(url, timeoutMs = 10000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   return fetch(url, {
     signal: controller.signal,
-    cache: 'no-store'
+    cache: 'no-store',
+    headers: {
+      'Accept': 'application/json'
+    }
   }).finally(() => clearTimeout(timer));
 }
 
-async function carregarHtmlNomeadosTVIReality() {
-  let ultimoErro = null;
-
-  for (const criarProxyUrl of TVI_REALITY_NOMEADOS_PROXIES) {
-    try {
-      const res = await fetchComTimeout(criarProxyUrl(TVI_REALITY_NOMEADOS_URL));
-      if (!res.ok) {
-        throw new Error(`Proxy respondeu com ${res.status}`);
-      }
-
-      const html = await res.text();
-      if (!html || html.trim().length < 100) {
-        throw new Error('Resposta vazia ou incompleta');
-      }
-
-      return html;
-    } catch (error) {
-      ultimoErro = error;
-    }
+async function carregarNomeadosTVIReality() {
+  const res = await fetchNomeadosComTimeout(TVI_REALITY_NOMEADOS_API);
+  if (!res.ok) {
+    throw new Error(`API respondeu com ${res.status}`);
   }
 
-  throw ultimoErro || new Error('Falha ao carregar nomeados.');
+  const data = await res.json();
+  if (!data || !Array.isArray(data.nomeados)) {
+    throw new Error('Resposta da API invalida.');
+  }
+
+  return data.nomeados;
 }
 
 function abrirNomeadosTVIReality() {
@@ -19729,7 +19663,7 @@ function abrirNomeadosTVIReality() {
   titulo.style.cssText = 'margin:0 0 8px; padding-right:110px; font-size:34px;';
 
   const subtitulo = document.createElement('p');
-  subtitulo.textContent = 'Lista carregada automaticamente a partir da pagina da TVI.';
+  subtitulo.textContent = 'Lista carregada automaticamente pela API dos nomeados.';
   subtitulo.style.cssText = 'margin:0 0 24px; color:rgba(255,255,255,0.72); font-size:15px;';
 
   const estado = document.createElement('div');
@@ -19751,11 +19685,10 @@ function abrirNomeadosTVIReality() {
     if (e.target === overlay) overlay.remove();
   });
 
-  carregarHtmlNomeadosTVIReality()
-    .then(html => {
-      const nomeados = extrairNomeadosTVIReality(html);
+  carregarNomeadosTVIReality()
+    .then(nomeados => {
       if (!nomeados.length) {
-        throw new Error('Nao foi possivel identificar os nomeados automaticamente.');
+        throw new Error('A API nao devolveu nomeados.');
       }
 
       estado.textContent = `Encontrados ${nomeados.length} nomeados.`;
@@ -19764,9 +19697,11 @@ function abrirNomeadosTVIReality() {
       nomeados.forEach(item => grelha.appendChild(criarCardNomeadoTVIReality(item)));
     })
     .catch(() => {
-      estado.textContent = 'Nao foi possivel carregar os nomeados automaticamente. A TVI ou os proxies bloquearam o acesso.';
+      estado.textContent = 'Nao foi possivel carregar os nomeados automaticamente pela API.';
       estado.style.color = '#ff8a80';
-      grelha.innerHTML = '<p style="margin:0; color:rgba(255,255,255,0.7);">Em HTML puro, isto depende de proxies externos e pode ser bloqueado. Se quiseres uma solucao realmente estavel e automatica, vamos precisar de um backend ou worker.</p>';
+      grelha.innerHTML = `<p style="margin:0; color:rgba(255,255,255,0.7);">
+        Confirma que tens o worker publicado e que <code style="color:#fff;">window.TVI_REALITY_NOMEADOS_API</code> aponta para o endpoint certo.
+      </p>`;
     });
 }
 
