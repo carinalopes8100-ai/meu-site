@@ -18435,7 +18435,7 @@ overlay.appendChild(btnPlay);
       btnDireito.textContent = 'Nomeados';
       btnDireito.onclick = e => {
         e.stopPropagation();
-        abrirNomeadosIframe('https://www.dci.com.br/dci-mais/bbb-26/confira-nomes-e-fotos-de-todos-os-participantes-do-bbb-26/326763/');
+        window.open('https://gshow.globo.com/realities/bbb/bbb-26/participantes/', '_blank', 'noopener,noreferrer');
       };
       overlay.appendChild(btnDireito);
     } else if(item.titulo === 'Morangos com Açúcar' && item.verao && item.verao.length > 0){
