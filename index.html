@@ -19727,6 +19727,247 @@ function getBBBNomeadosFixos() {
   ]);
 }
 
+function getBBBDetalhesHabilitados() {
+  return new Set(['samira']);
+}
+
+async function carregarDetalheParticipanteBBB(slug) {
+  const api = getBBBParticipantesApi();
+  const url = `${api}?slug=${encodeURIComponent(slug)}`;
+  const res = await fetchBBBParticipantes(url);
+  if (!res.ok) {
+    throw new Error(`Detalhe respondeu com ${res.status}`);
+  }
+  const data = await res.json();
+  if (!data || !data.detalhe) {
+    throw new Error('Resposta do detalhe invalida.');
+  }
+  return data.detalhe;
+}
+
+function abrirDetalheParticipanteBBB(item) {
+  const slug = (item.nome || '').toLowerCase();
+  if (!getBBBDetalhesHabilitados().has(slug)) return;
+
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.72);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 13030;
+  `;
+
+  const panel = document.createElement('div');
+  panel.style.cssText = `
+    width: min(440px, 96vw);
+    max-height: 90vh;
+    overflow: auto;
+    position: relative;
+    border-radius: 22px;
+    background: linear-gradient(180deg, #ffffff, #fafafa);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.45);
+    color: #111;
+  `;
+
+  const fecharBtn = document.createElement('button');
+  fecharBtn.textContent = 'Fechar';
+  fecharBtn.className = 'player-btn';
+  fecharBtn.style.cssText = `
+    position:absolute;
+    top:16px;
+    right:16px;
+    z-index:2;
+    background: rgba(0,0,0,0.82);
+  `;
+  fecharBtn.onclick = () => overlay.remove();
+
+  const hero = document.createElement('div');
+  hero.style.cssText = `
+    padding: 28px 24px 18px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  `;
+
+  const img = document.createElement('img');
+  img.src = item.img;
+  img.alt = item.nome;
+  img.style.cssText = `
+    width: 128px;
+    height: 128px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 16px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+  `;
+
+  const nome = document.createElement('h3');
+  nome.textContent = item.nome;
+  nome.style.cssText = 'margin:0 0 14px; font-size:28px;';
+
+  const tabs = document.createElement('div');
+  tabs.style.cssText = `
+    display:flex;
+    justify-content:center;
+    gap:18px;
+    font-size:16px;
+    font-weight:700;
+  `;
+
+  const content = document.createElement('div');
+  content.style.cssText = 'padding: 22px 24px 26px;';
+
+  const loading = document.createElement('div');
+  loading.textContent = 'A carregar detalhes...';
+  loading.style.cssText = 'padding: 8px 0; color:#6b7280; font-weight:700;';
+  content.appendChild(loading);
+
+  let detalheAtual = null;
+
+  const renderSobre = () => {
+    if (!detalheAtual) return;
+    content.innerHTML = '';
+    (detalheAtual.sobre || []).forEach(itemSobre => {
+      const bloco = document.createElement('div');
+      bloco.style.cssText = 'margin-bottom:22px;';
+
+      const label = document.createElement('div');
+      label.textContent = itemSobre.label;
+      label.style.cssText = 'font-weight:800; margin-bottom:6px;';
+
+      const value = document.createElement('div');
+      value.textContent = itemSobre.value;
+      value.style.cssText = 'font-size:18px;';
+
+      bloco.appendChild(label);
+      bloco.appendChild(value);
+      content.appendChild(bloco);
+    });
+  };
+
+  const renderCuriosidades = () => {
+    if (!detalheAtual) return;
+    content.innerHTML = '';
+    const lista = document.createElement('div');
+    lista.style.cssText = 'display:flex; flex-direction:column; gap:14px;';
+    (detalheAtual.curiosidades || []).forEach(curiosidade => {
+      const itemCuriosidade = document.createElement('div');
+      itemCuriosidade.textContent = curiosidade;
+      itemCuriosidade.style.cssText = `
+        padding:14px 16px;
+        border-radius:14px;
+        background:#f5f5f7;
+        line-height:1.45;
+      `;
+      lista.appendChild(itemCuriosidade);
+    });
+    content.appendChild(lista);
+  };
+
+  const renderResumo = () => {
+    if (!detalheAtual) return;
+    content.innerHTML = '';
+    const resumoTexto = detalheAtual.queridometro || 'Sem dados de Queridometro disponiveis.';
+    const partes = resumoTexto
+      .split(/(?<=\.)\s+/)
+      .map(parte => parte.trim())
+      .filter(Boolean);
+
+    const lista = document.createElement('div');
+    lista.style.cssText = 'display:flex; flex-direction:column; gap:14px;';
+
+    if (!partes.length) {
+      const vazio = document.createElement('div');
+      vazio.textContent = 'Sem dados de Queridometro disponiveis.';
+      vazio.style.cssText = `
+        padding:16px 18px;
+        border-radius:16px;
+        background:#f5f5f7;
+        line-height:1.5;
+      `;
+      lista.appendChild(vazio);
+    } else {
+      partes.forEach((parte, index) => {
+        const cardResumo = document.createElement('div');
+        cardResumo.style.cssText = `
+          padding:16px 18px;
+          border-radius:16px;
+          background:#f5f5f7;
+          line-height:1.5;
+        `;
+
+        const tituloLinha = document.createElement('div');
+        tituloLinha.textContent = index === 0 ? 'Destaque' : `Resumo ${index + 1}`;
+        tituloLinha.style.cssText = 'font-weight:800; margin-bottom:8px; color:#111;';
+
+        const textoLinha = document.createElement('div');
+        textoLinha.textContent = parte;
+
+        cardResumo.appendChild(tituloLinha);
+        cardResumo.appendChild(textoLinha);
+        lista.appendChild(cardResumo);
+      });
+    }
+
+    content.appendChild(lista);
+  };
+
+  const tabsConfig = [
+    { label: 'Sobre', render: renderSobre },
+    { label: 'Curiosidades', render: renderCuriosidades },
+    { label: 'Queridometro', render: renderResumo }
+  ];
+
+  tabsConfig.forEach((tabInfo, index) => {
+    const btn = document.createElement('button');
+    btn.textContent = tabInfo.label;
+    btn.style.cssText = `
+      border:none;
+      background:transparent;
+      padding:0 0 8px;
+      cursor:pointer;
+      font:inherit;
+      color:${index === 0 ? '#111' : '#555'};
+      border-bottom:${index === 0 ? '3px solid #6d28d9' : '3px solid transparent'};
+    `;
+    btn.onclick = () => {
+      [...tabs.children].forEach(tab => {
+        tab.style.color = '#555';
+        tab.style.borderBottom = '3px solid transparent';
+      });
+      btn.style.color = '#111';
+      btn.style.borderBottom = '3px solid #6d28d9';
+      tabInfo.render();
+    };
+    tabs.appendChild(btn);
+  });
+
+  hero.appendChild(img);
+  hero.appendChild(nome);
+  hero.appendChild(tabs);
+  panel.appendChild(fecharBtn);
+  panel.appendChild(hero);
+  panel.appendChild(content);
+  overlay.appendChild(panel);
+  document.body.appendChild(overlay);
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  carregarDetalheParticipanteBBB(slug)
+    .then(detalhe => {
+      detalheAtual = detalhe;
+      renderSobre();
+    })
+    .catch(error => {
+      content.innerHTML = `<div style="color:#b42318; font-weight:700;">Nao foi possivel carregar os detalhes automaticamente.</div><div style="margin-top:10px; color:#555;">${error.message || 'Erro desconhecido'}</div>`;
+    });
+}
+
 function criarCardParticipanteBBB(item) {
   const card = document.createElement('div');
   const eliminado = Boolean(item.eliminado);
@@ -19739,6 +19980,7 @@ function criarCardParticipanteBBB(item) {
     gap:12px;
     text-align:center;
     min-width:0;
+    cursor:${getBBBDetalhesHabilitados().has((item.nome || '').toLowerCase()) ? 'pointer' : 'default'};
   `;
 
   const img = document.createElement('img');
@@ -19780,7 +20022,7 @@ function criarCardParticipanteBBB(item) {
     card.appendChild(badge);
   } else if (nomeado) {
     const badge = document.createElement('div');
-    badge.textContent = 'No Paredão';
+    badge.textContent = 'No Paredao';
     badge.style.cssText = `
       padding:4px 10px;
       border-radius:999px;
@@ -19796,6 +20038,9 @@ function criarCardParticipanteBBB(item) {
 
   card.appendChild(img);
   card.appendChild(nome);
+  if (getBBBDetalhesHabilitados().has((item.nome || '').toLowerCase())) {
+    card.onclick = () => abrirDetalheParticipanteBBB(item);
+  }
   return card;
 }
 
