@@ -19727,7 +19727,9 @@ function getBBBNomeadosFixos() {
   ]);
 }
 
-const BBB_DETALHES_HABILITADOS = new Set(['samira']);
+function getBBBDetalhesHabilitados() {
+  return new Set(['samira']);
+}
 
 async function carregarDetalheParticipanteBBB(slug) {
   const api = getBBBParticipantesApi();
@@ -19745,7 +19747,7 @@ async function carregarDetalheParticipanteBBB(slug) {
 
 function abrirDetalheParticipanteBBB(item) {
   const slug = (item.nome || '').toLowerCase();
-  if (!BBB_DETALHES_HABILITADOS.has(slug)) return;
+  if (!getBBBDetalhesHabilitados().has(slug)) return;
 
   const overlay = document.createElement('div');
   overlay.style.cssText = `
@@ -19944,7 +19946,7 @@ function criarCardParticipanteBBB(item) {
     gap:12px;
     text-align:center;
     min-width:0;
-    cursor:${BBB_DETALHES_HABILITADOS.has((item.nome || '').toLowerCase()) ? 'pointer' : 'default'};
+    cursor:${getBBBDetalhesHabilitados().has((item.nome || '').toLowerCase()) ? 'pointer' : 'default'};
   `;
 
   const img = document.createElement('img');
@@ -20002,7 +20004,7 @@ function criarCardParticipanteBBB(item) {
 
   card.appendChild(img);
   card.appendChild(nome);
-  if (BBB_DETALHES_HABILITADOS.has((item.nome || '').toLowerCase())) {
+  if (getBBBDetalhesHabilitados().has((item.nome || '').toLowerCase())) {
     card.onclick = () => abrirDetalheParticipanteBBB(item);
   }
   return card;
