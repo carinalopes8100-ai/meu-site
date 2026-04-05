@@ -19719,10 +19719,16 @@ function getBBBParticipantesApi() {
   return window.BBB_PARTICIPANTES_API || 'https://bbb-participantes.tugaflix042.workers.dev';
 }
 
+const BBB_NOMEADOS_FIXOS = new Set([
+  'chaiany',
+  'juliano floss',
+  'marciele'
+]);
+
 function criarCardParticipanteBBB(item) {
   const card = document.createElement('div');
   const eliminado = Boolean(item.eliminado);
-  const nomeado = Boolean(item.nomeado) && !eliminado;
+  const nomeado = (Boolean(item.nomeado) || BBB_NOMEADOS_FIXOS.has((item.nome || '').toLowerCase())) && !eliminado;
   card.style.cssText = `
     display:flex;
     flex-direction:column;
@@ -19757,7 +19763,7 @@ function criarCardParticipanteBBB(item) {
 
   if (nomeado) {
     const badge = document.createElement('div');
-    badge.textContent = 'Nomeado';
+    badge.textContent = 'No Paredao';
     badge.style.cssText = `
       padding:4px 10px;
       border-radius:999px;
