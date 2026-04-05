@@ -19556,36 +19556,75 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ===== Função para abrir embed em modal =====
 function abrirEmbedModal(url, titulo = 'Embed') {
+  const previousHtmlOverflow = document.documentElement.style.overflow;
+  const previousBodyOverflow = document.body.style.overflow;
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
+
   const modal = document.createElement('div');
   modal.style.cssText = `
-    position: fixed; top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.9); display:flex;
-    justify-content:center; align-items:center; flex-direction:column;
-    z-index:13000;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.94);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    z-index: 13000;
+  `;
+
+  const frameWrap = document.createElement('div');
+  frameWrap.style.cssText = `
+    position: relative;
+    width: min(1600px, 99vw);
+    height: min(96vh, 980px);
+    background: #ffffff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.08);
   `;
 
   const iframe = document.createElement('iframe');
   iframe.src = url;
-  iframe.width = '90%';
-  iframe.height = '90%';
   iframe.frameBorder = '0';
   iframe.allowFullscreen = true;
-  iframe.style.borderRadius = '10px';
-  iframe.style.boxShadow = '0 0 20px rgba(0,0,0,0.7)';
-  modal.appendChild(iframe);
+  iframe.style.cssText = `
+    width: calc(100% - 14px);
+    height: 100%;
+    background: #ffffff;
+    display: block;
+  `;
 
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
-  fecharBtn.style.position = 'absolute';
-  fecharBtn.style.top = '20px';
-  fecharBtn.style.right = '20px';
-  fecharBtn.style.padding = '10px';
-  fecharBtn.style.zIndex = '1001';
   fecharBtn.className = 'player-btn';
-  fecharBtn.onclick = () => modal.remove();
-  modal.appendChild(fecharBtn);
+  fecharBtn.style.cssText = `
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    z-index: 2;
+    background: rgba(0,0,0,0.82);
+    backdrop-filter: blur(6px);
+  `;
+  const fecharEmbed = () => {
+    document.documentElement.style.overflow = previousHtmlOverflow;
+    document.body.style.overflow = previousBodyOverflow;
+    modal.remove();
+  };
+  fecharBtn.onclick = fecharEmbed;
+
+  frameWrap.appendChild(iframe);
+  frameWrap.appendChild(fecharBtn);
+  modal.appendChild(frameWrap);
 
   document.body.appendChild(modal);
+
+  modal.addEventListener('click', e => {
+    if (e.target === modal) {
+      fecharEmbed();
+    }
+  });
 }
 function abrirNomeadosTVIReality() {
   const previousHtmlOverflow = document.documentElement.style.overflow;
@@ -19637,17 +19676,6 @@ function abrirNomeadosTVIReality() {
     display: block;
   `;
 
-  const footerMask = document.createElement('div');
-  footerMask.style.cssText = `
-    position: absolute;
-    left: 0;
-    right: 14px;
-    bottom: 0;
-    height: 150px;
-    background: #ffffff;
-    z-index: 1;
-    pointer-events: none;
-  `;
 
   const fecharBtn = document.createElement('button');
   fecharBtn.textContent = 'Fechar';
@@ -19668,7 +19696,6 @@ function abrirNomeadosTVIReality() {
   fecharBtn.onclick = fecharModalNomeados;
 
   iframeViewport.appendChild(iframe);
-  iframeViewport.appendChild(footerMask);
   frameWrap.appendChild(iframeViewport);
   frameWrap.appendChild(fecharBtn);
   modal.appendChild(frameWrap);
