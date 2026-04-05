@@ -18435,7 +18435,7 @@ overlay.appendChild(btnPlay);
       btnDireito.textContent = 'Nomeados';
       btnDireito.onclick = e => {
         e.stopPropagation();
-        window.open('https://gshow.globo.com/realities/bbb/bbb-26/participantes/', '_blank', 'noopener,noreferrer');
+        abrirParticipantesBBBModal();
       };
       overlay.appendChild(btnDireito);
     } else if(item.titulo === 'Morangos com Açúcar' && item.verao && item.verao.length > 0){
@@ -19713,6 +19713,187 @@ function abrirNomeadosIframe(url) {
       fecharModalNomeados();
     }
   });
+}
+
+const BBB_PARTICIPANTES_API = window.BBB_PARTICIPANTES_API || '/api/bbb-participantes';
+
+function criarCardParticipanteBBB(item) {
+  const card = document.createElement('div');
+  card.style.cssText = `
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+    text-align:center;
+    min-width:0;
+  `;
+
+  const img = document.createElement('img');
+  img.src = item.img;
+  img.alt = item.nome;
+  img.loading = 'lazy';
+  img.style.cssText = `
+    width:140px;
+    height:140px;
+    object-fit:cover;
+    border-radius:50%;
+    border:3px solid #ff1493;
+    background:#101010;
+    box-shadow:0 10px 24px rgba(0,0,0,0.25);
+  `;
+
+  const nome = document.createElement('div');
+  nome.textContent = item.nome;
+  nome.style.cssText = `
+    font-size:18px;
+    font-weight:700;
+    color:#111;
+  `;
+
+  card.appendChild(img);
+  card.appendChild(nome);
+  return card;
+}
+
+function fetchBBBParticipantes(url, timeoutMs = 10000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  return fetch(url, {
+    signal: controller.signal,
+    cache: 'no-store',
+    headers: { 'Accept': 'application/json' }
+  }).finally(() => clearTimeout(timer));
+}
+
+async function carregarParticipantesBBB() {
+  const res = await fetchBBBParticipantes(BBB_PARTICIPANTES_API);
+  if (!res.ok) {
+    throw new Error(`API respondeu com ${res.status}`);
+  }
+
+  const data = await res.json();
+  if (!data || !Array.isArray(data.participantes)) {
+    throw new Error('Resposta da API invalida.');
+  }
+
+  return data.participantes;
+}
+
+function abrirParticipantesBBBModal() {
+  const previousHtmlOverflow = document.documentElement.style.overflow;
+  const previousBodyOverflow = document.body.style.overflow;
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
+
+  const modal = document.createElement('div');
+  modal.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.94);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 13020;
+  `;
+
+  const panel = document.createElement('div');
+  panel.style.cssText = `
+    width: min(1320px, 96vw);
+    max-height: 92vh;
+    overflow: auto;
+    position: relative;
+    padding: 28px;
+    border-radius: 24px;
+    background: linear-gradient(180deg, #ffffff, #f6f6f6);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,255,255,0.16);
+  `;
+
+  const fecharBtn = document.createElement('button');
+  fecharBtn.textContent = 'Fechar';
+  fecharBtn.className = 'player-btn';
+  fecharBtn.style.cssText = `
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 2;
+    background: rgba(0,0,0,0.82);
+    backdrop-filter: blur(6px);
+  `;
+
+  const titulo = document.createElement('h2');
+  titulo.textContent = 'Participantes BBB 26';
+  titulo.style.cssText = `
+    margin:0 0 8px;
+    padding-right:120px;
+    font-size:38px;
+    color:#111;
+  `;
+
+  const subtitulo = document.createElement('p');
+  subtitulo.textContent = 'Lista carregada automaticamente a partir da pagina da Globo.';
+  subtitulo.style.cssText = `
+    margin:0 0 24px;
+    color:rgba(0,0,0,0.62);
+    font-size:16px;
+  `;
+
+  const estado = document.createElement('div');
+  estado.textContent = 'A carregar participantes...';
+  estado.style.cssText = `
+    margin-bottom:20px;
+    color:#b36b00;
+    font-weight:700;
+  `;
+
+  const grelha = document.createElement('div');
+  grelha.style.cssText = `
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));
+    gap:28px 24px;
+  `;
+
+  const fecharModal = () => {
+    document.documentElement.style.overflow = previousHtmlOverflow;
+    document.body.style.overflow = previousBodyOverflow;
+    modal.remove();
+  };
+
+  fecharBtn.onclick = fecharModal;
+  panel.appendChild(fecharBtn);
+  panel.appendChild(titulo);
+  panel.appendChild(subtitulo);
+  panel.appendChild(estado);
+  panel.appendChild(grelha);
+  modal.appendChild(panel);
+  document.body.appendChild(modal);
+
+  modal.addEventListener('click', e => {
+    if (e.target === modal) fecharModal();
+  });
+
+  carregarParticipantesBBB()
+    .then(participantes => {
+      if (!participantes.length) {
+        throw new Error('A API nao devolveu participantes.');
+      }
+
+      estado.textContent = `Encontrados ${participantes.length} participantes.`;
+      estado.style.color = '#18794e';
+      grelha.innerHTML = '';
+      participantes.forEach(item => grelha.appendChild(criarCardParticipanteBBB(item)));
+    })
+    .catch(() => {
+      estado.textContent = 'Nao foi possivel carregar os participantes automaticamente pela API.';
+      estado.style.color = '#d92d20';
+      grelha.innerHTML = `
+        <div style="grid-column:1 / -1; color:rgba(0,0,0,0.68); line-height:1.5;">
+          Confirma que tens o worker dos participantes publicado e que <code style="color:#111;">window.BBB_PARTICIPANTES_API</code> aponta para o endpoint certo.
+        </div>
+      `;
+    });
 }
 
 
