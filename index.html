@@ -19722,6 +19722,7 @@ function getBBBParticipantesApi() {
 function criarCardParticipanteBBB(item) {
   const card = document.createElement('div');
   const eliminado = Boolean(item.eliminado);
+  const nomeado = Boolean(item.nomeado) && !eliminado;
   card.style.cssText = `
     display:flex;
     flex-direction:column;
@@ -19740,7 +19741,7 @@ function criarCardParticipanteBBB(item) {
     height:140px;
     object-fit:cover;
     border-radius:50%;
-    border:3px solid #ff1493;
+    border:3px solid ${nomeado ? '#f5b700' : '#ff1493'};
     background:#101010;
     box-shadow:0 10px 24px rgba(0,0,0,0.25);
     filter:${eliminado ? 'grayscale(1) opacity(0.55)' : 'none'};
@@ -19751,8 +19752,24 @@ function criarCardParticipanteBBB(item) {
   nome.style.cssText = `
     font-size:18px;
     font-weight:700;
-    color:${eliminado ? '#8e8e8e' : '#4b18e6'};
+    color:${eliminado ? '#8e8e8e' : (nomeado ? '#b36b00' : '#4b18e6')};
   `;
+
+  if (nomeado) {
+    const badge = document.createElement('div');
+    badge.textContent = 'Nomeado';
+    badge.style.cssText = `
+      padding:4px 10px;
+      border-radius:999px;
+      background:#fff3bf;
+      color:#8a5a00;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+    `;
+    card.appendChild(badge);
+  }
 
   card.appendChild(img);
   card.appendChild(nome);
