@@ -19588,6 +19588,11 @@ function abrirEmbedModal(url, titulo = 'Embed') {
   document.body.appendChild(modal);
 }
 function abrirNomeadosTVIReality() {
+  const previousHtmlOverflow = document.documentElement.style.overflow;
+  const previousBodyOverflow = document.body.style.overflow;
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
+
   const modal = document.createElement('div');
   modal.style.cssText = `
     position: fixed;
@@ -19643,7 +19648,12 @@ function abrirNomeadosTVIReality() {
     background: rgba(0,0,0,0.82);
     backdrop-filter: blur(6px);
   `;
-  fecharBtn.onclick = () => modal.remove();
+  const fecharModalNomeados = () => {
+    document.documentElement.style.overflow = previousHtmlOverflow;
+    document.body.style.overflow = previousBodyOverflow;
+    modal.remove();
+  };
+  fecharBtn.onclick = fecharModalNomeados;
 
   iframeViewport.appendChild(iframe);
   frameWrap.appendChild(iframeViewport);
@@ -19653,7 +19663,7 @@ function abrirNomeadosTVIReality() {
 
   modal.addEventListener('click', e => {
     if (e.target === modal) {
-      modal.remove();
+      fecharModalNomeados();
     }
   });
 }
