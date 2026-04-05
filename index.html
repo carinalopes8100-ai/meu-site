@@ -19719,18 +19719,10 @@ function getBBBParticipantesApi() {
   return window.BBB_PARTICIPANTES_API || 'https://bbb-participantes.tugaflix042.workers.dev';
 }
 
-function getBBBNomeadosFixos() {
-  return new Set([
-    'chaiany',
-    'juliano floss',
-    'marciele'
-  ]);
-}
-
 function criarCardParticipanteBBB(item) {
   const card = document.createElement('div');
   const eliminado = Boolean(item.eliminado);
-  const nomeado = (Boolean(item.nomeado) || getBBBNomeadosFixos().has((item.nome || '').toLowerCase())) && !eliminado;
+  const nomeado = Boolean(item.nomeado) && !eliminado;
   card.style.cssText = `
     display:flex;
     flex-direction:column;
