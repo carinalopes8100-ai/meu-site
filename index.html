@@ -19870,15 +19870,49 @@ function abrirDetalheParticipanteBBB(item) {
   const renderResumo = () => {
     if (!detalheAtual) return;
     content.innerHTML = '';
-    const cardResumo = document.createElement('div');
-    cardResumo.style.cssText = `
-      padding:16px 18px;
-      border-radius:16px;
-      background:#f5f5f7;
-      line-height:1.5;
-    `;
-    cardResumo.textContent = detalheAtual.queridometro || 'Sem dados de Queridometro disponiveis.';
-    content.appendChild(cardResumo);
+    const resumoTexto = detalheAtual.queridometro || 'Sem dados de Queridometro disponiveis.';
+    const partes = resumoTexto
+      .split(/(?<=\.)\s+/)
+      .map(parte => parte.trim())
+      .filter(Boolean);
+
+    const lista = document.createElement('div');
+    lista.style.cssText = 'display:flex; flex-direction:column; gap:14px;';
+
+    if (!partes.length) {
+      const vazio = document.createElement('div');
+      vazio.textContent = 'Sem dados de Queridometro disponiveis.';
+      vazio.style.cssText = `
+        padding:16px 18px;
+        border-radius:16px;
+        background:#f5f5f7;
+        line-height:1.5;
+      `;
+      lista.appendChild(vazio);
+    } else {
+      partes.forEach((parte, index) => {
+        const cardResumo = document.createElement('div');
+        cardResumo.style.cssText = `
+          padding:16px 18px;
+          border-radius:16px;
+          background:#f5f5f7;
+          line-height:1.5;
+        `;
+
+        const tituloLinha = document.createElement('div');
+        tituloLinha.textContent = index === 0 ? 'Destaque' : `Resumo ${index + 1}`;
+        tituloLinha.style.cssText = 'font-weight:800; margin-bottom:8px; color:#111;';
+
+        const textoLinha = document.createElement('div');
+        textoLinha.textContent = parte;
+
+        cardResumo.appendChild(tituloLinha);
+        cardResumo.appendChild(textoLinha);
+        lista.appendChild(cardResumo);
+      });
+    }
+
+    content.appendChild(lista);
   };
 
   const tabsConfig = [
