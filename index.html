@@ -19612,13 +19612,22 @@ function abrirNomeadosTVIReality() {
     border: 1px solid rgba(255,255,255,0.08);
   `;
 
+  const iframeViewport = document.createElement('div');
+  iframeViewport.style.cssText = `
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: #ffffff;
+  `;
+
   const iframe = document.createElement('iframe');
   iframe.src = 'https://tvi.iol.pt/secretstory/concorrentes';
   iframe.frameBorder = '0';
   iframe.allowFullscreen = true;
   iframe.style.cssText = `
     width: 100%;
-    height: 100%;
+    height: calc(100% + 120px);
+    margin-top: -120px;
     background: #ffffff;
     display: block;
   `;
@@ -19636,7 +19645,8 @@ function abrirNomeadosTVIReality() {
   `;
   fecharBtn.onclick = () => modal.remove();
 
-  frameWrap.appendChild(iframe);
+  iframeViewport.appendChild(iframe);
+  frameWrap.appendChild(iframeViewport);
   frameWrap.appendChild(fecharBtn);
   modal.appendChild(frameWrap);
   document.body.appendChild(modal);
