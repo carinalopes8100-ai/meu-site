@@ -18428,7 +18428,7 @@ overlay.appendChild(btnPlay);
       btnDireito.textContent = 'Nomeados';
       btnDireito.onclick = e => {
         e.stopPropagation();
-        abrirEmbedModal('https://tvi.iol.pt/secretstory/concorrentes', 'Nomeados');
+        abrirNomeadosTVIReality();
       };
       overlay.appendChild(btnDireito);
     } else if(item.titulo === 'Morangos com Açúcar' && item.verao && item.verao.length > 0){
@@ -19587,6 +19587,155 @@ function abrirEmbedModal(url, titulo = 'Embed') {
 
   document.body.appendChild(modal);
 }
+const TVI_REALITY_NOMEADOS_URL = 'https://tvi.iol.pt/secretstory/concorrentes';
+const TVI_REALITY_NOMEADOS_PROXY = 'https://api.allorigins.win/raw?url=';
+
+function normalizarTextoNomeados(valor) {
+  return (valor || '')
+    .replace(/\s+/g, ' ')
+    .replace(/\b(custo chamada.*|mais direto.*|torne-se premium.*|reality em direto.*)\b/gi, '')
+    .trim();
+}
+
+function textoCandidatoNomeados(card, img) {
+  const fontes = [
+    img?.getAttribute('alt'),
+    img?.getAttribute('title'),
+    img?.getAttribute('aria-label'),
+    card?.querySelector('h1, h2, h3, h4, strong, b, figcaption, .name, .title, .nome, [class*=name], [class*=nome]')?.textContent,
+    card?.querySelector('span, p, div')?.textContent
+  ];
+
+  for (const fonte of fontes) {
+    const nome = normalizarTextoNomeados(fonte);
+    if (!nome) continue;
+    if (nome.length < 2 || nome.length > 40) continue;
+    if (/concorrentes|secret story|premium|reality|tvi|candidatos|votar/i.test(nome)) continue;
+    return nome;
+  }
+
+  return '';
+}
+
+function extrairNomeadosTVIReality(html) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const vistos = new Set();
+  const nomeados = [];
+  const imagens = [...doc.querySelectorAll('img')];
+
+  imagens.forEach(img => {
+    const src = img.getAttribute('src') || img.getAttribute('data-src') || img.getAttribute('srcset')?.split(' ')[0] || '';
+    if (!src || src.startsWith('data:')) return;
+
+    const card = img.closest('a, article, figure, li, div, section');
+    const nome = textoCandidatoNomeados(card, img);
+    if (!nome) return;
+
+    const chave = nome.toLowerCase();
+    if (vistos.has(chave)) return;
+    vistos.add(chave);
+
+    nomeados.push({
+      nome,
+      img: src.startsWith('//') ? `https:${src}` : src
+    });
+  });
+
+  return nomeados.filter(item => item.img && /^https?:/i.test(item.img));
+}
+
+function criarCardNomeadoTVIReality(item) {
+  const card = document.createElement('div');
+  card.style.cssText = 'display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center;';
+
+  const img = document.createElement('img');
+  img.src = item.img;
+  img.alt = item.nome;
+  img.loading = 'lazy';
+  img.style.cssText = 'width:140px; height:140px; object-fit:cover; border-radius:50%; border:3px solid #ff2aa3; background:#111;';
+
+  const nome = document.createElement('div');
+  nome.textContent = item.nome;
+  nome.style.cssText = 'font-size:18px; font-weight:700; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,0.5);';
+
+  card.appendChild(img);
+  card.appendChild(nome);
+  return card;
+}
+
+function abrirNomeadosTVIReality() {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position: fixed; inset: 0; background: rgba(0,0,0,0.88);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px; z-index: 13050;
+  `;
+
+  const modal = document.createElement('div');
+  modal.style.cssText = `
+    width: min(1200px, 96vw); max-height: 92vh; overflow: auto;
+    border-radius: 24px; padding: 28px; position: relative;
+    background: linear-gradient(180deg, rgba(18,18,18,0.98), rgba(8,8,8,0.98));
+    box-shadow: 0 24px 80px rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,255,255,0.08);
+  `;
+
+  const fecharBtn = document.createElement('button');
+  fecharBtn.textContent = 'Fechar';
+  fecharBtn.className = 'player-btn';
+  fecharBtn.style.cssText = 'position:absolute; top:20px; right:20px; z-index:2;';
+  fecharBtn.onclick = () => overlay.remove();
+
+  const titulo = document.createElement('h2');
+  titulo.textContent = 'Nomeados TVI Reality';
+  titulo.style.cssText = 'margin:0 0 8px; padding-right:110px; font-size:34px;';
+
+  const subtitulo = document.createElement('p');
+  subtitulo.textContent = 'Lista carregada automaticamente a partir da pagina da TVI.';
+  subtitulo.style.cssText = 'margin:0 0 24px; color:rgba(255,255,255,0.72); font-size:15px;';
+
+  const estado = document.createElement('div');
+  estado.textContent = 'A carregar nomeados...';
+  estado.style.cssText = 'margin-bottom:20px; color:#ffd166; font-weight:700;';
+
+  const grelha = document.createElement('div');
+  grelha.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:24px;';
+
+  modal.appendChild(fecharBtn);
+  modal.appendChild(titulo);
+  modal.appendChild(subtitulo);
+  modal.appendChild(estado);
+  modal.appendChild(grelha);
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  fetch(`${TVI_REALITY_NOMEADOS_PROXY}${encodeURIComponent(TVI_REALITY_NOMEADOS_URL)}`)
+    .then(res => {
+      if (!res.ok) throw new Error('Falha ao carregar a pagina da TVI.');
+      return res.text();
+    })
+    .then(html => {
+      const nomeados = extrairNomeadosTVIReality(html);
+      if (!nomeados.length) {
+        throw new Error('Nao foi possivel identificar os nomeados automaticamente.');
+      }
+
+      estado.textContent = `Encontrados ${nomeados.length} nomeados.`;
+      estado.style.color = '#7CFC9A';
+      grelha.innerHTML = '';
+      nomeados.forEach(item => grelha.appendChild(criarCardNomeadoTVIReality(item)));
+    })
+    .catch(() => {
+      estado.textContent = 'Nao deu para carregar os nomeados automaticamente agora. A TVI ou o proxy podem ter bloqueado a leitura.';
+      estado.style.color = '#ff8a80';
+      grelha.innerHTML = '<p style="margin:0; color:rgba(255,255,255,0.7);">Se isto falhar, eu posso ajustar o extrator para a estrutura atual da TVI.</p>';
+    });
+}
 
 
 
@@ -19756,5 +19905,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
+
 
 
