@@ -18428,7 +18428,14 @@ overlay.appendChild(btnPlay);
       btnDireito.textContent = 'Nomeados';
       btnDireito.onclick = e => {
         e.stopPropagation();
-        abrirNomeadosTVIReality();
+        abrirNomeadosIframe('https://tvi.iol.pt/secretstory/concorrentes');
+      };
+      overlay.appendChild(btnDireito);
+    } else if(tipo === 'canal' && item.titulo === 'Big Brother Brasil (2026)'){
+      btnDireito.textContent = 'Nomeados';
+      btnDireito.onclick = e => {
+        e.stopPropagation();
+        abrirNomeadosIframe('https://gshow.globo.com/realities/bbb/bbb-26/participantes/');
       };
       overlay.appendChild(btnDireito);
     } else if(item.titulo === 'Morangos com Açúcar' && item.verao && item.verao.length > 0){
@@ -19626,7 +19633,7 @@ function abrirEmbedModal(url, titulo = 'Embed') {
     }
   });
 }
-function abrirNomeadosTVIReality() {
+function abrirNomeadosIframe(url) {
   const previousHtmlOverflow = document.documentElement.style.overflow;
   const previousBodyOverflow = document.body.style.overflow;
   document.documentElement.style.overflow = 'hidden';
@@ -19665,7 +19672,7 @@ function abrirNomeadosTVIReality() {
   `;
 
   const iframe = document.createElement('iframe');
-  iframe.src = 'https://tvi.iol.pt/secretstory/concorrentes';
+  iframe.src = url;
   iframe.frameBorder = '0';
   iframe.allowFullscreen = true;
   iframe.style.cssText = `
